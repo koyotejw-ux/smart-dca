@@ -1,13 +1,17 @@
-[출시 노트 - v3.0.0]
+[ko-KR]
+• 물타기(평단가 낮추기) 시뮬레이션 기능 제공
+• 사용자의 평균 매수 단가 및 보유 수량에 따른 신규 평단가 실시간 계산
+• 여러 일괄 매수(Batch) 시나리오 동시 비교 기능 추가
+• 목표 평단가 달성을 위한 추가 매수 필요 수량 계산 기능 탑재
+• 주가 변동성에 따른 민감도(What-If Sensitivity) 시뮬레이터 제공
+• 로컬 암호화 저장을 활용한 안전한 포트폴리오 관리 기능 구현
+• 더욱 직관적이고 미려한 다크 네온 테마 UI/UX 적용
 
-물타기 계산기 (Strategy Simulator) - 프리미엄 금융 유틸리티
-
-이번 버전에서는 사용자 인터페이스를 전면 재구축하여 더욱 직관적이고 강력한 분석 도구로 거듭났습니다.
-
-1. 새로운 3D 럭셔리 디자인: 고대비 OLED 최적화 다크 테마와 입체적인 시각 효과를 적용했습니다.
-2. 고정형 스마트 헤더: 어느 화면에서나 즉시 설정과 도움말을 이용할 수 있도록 persistence를 강화했습니다.
-3. 목표 수익률 전략 모드: 희망하는 평단가를 설정하면 필요한 추가 매수량을 즉시 역계산해 줍니다.
-4. 정밀한 반응형 그리드: 폴드 4와 같은 대화면 환경에서도 완벽한 가독성을 제공합니다.
-5. 유연한 설정: 원화/달러 단위 변환 및 한국어/영어 로컬라이징을 완벽하게 지원합니다.
-
-계획적인 투자, 물타기 계산기와 함께하세요.
+[en-US]
+• Provided average-down (purchase strategy) simulation feature.
+• Real-time calculations of new average price based on initial purchase price and quantity.
+• Compare multiple multi-batch purchase plans simultaneously.
+• Calculator for required purchase quantity to reach a specific target average price.
+• Added a "What-If" Sensitivity Simulator for price volatility analysis.
+• Secured local data storage for private portfolio management.
+• Sleek and premium dark neon theme UI/UX design.
