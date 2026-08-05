@@ -102,7 +102,7 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
             right: 0,
             child: Center(
               child: Text(
-                'v1.0.0 Elite Edition',
+                'v1.0.1 Elite Edition',
                 style: theme.textTheme.labelMedium?.copyWith(
                   color: Colors.white.withOpacity(0.5),
                 ),
