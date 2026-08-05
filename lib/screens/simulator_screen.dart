@@ -250,9 +250,12 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
           ),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
-        children: [
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1000),
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            children: [
           const SizedBox(height: 16),
           _buildNeonPrimaryHeader(context, lang)
             .animate().fadeIn(duration: 400.ms).slideY(begin: 0.1, end: 0), // Huge Result LCD
@@ -290,8 +293,9 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
           const SizedBox(height: 80),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildSimulatorHeader(BuildContext context, LanguageType lang) {
     return Row(

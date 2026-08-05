@@ -62,10 +62,25 @@ class StorageService {
   }
 
   Future<void> setSeenOnboarding() async {
+    await setSetting('hasSeenOnboarding', 'true');
+  }
+
+  Future<String?> getSetting(String key) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'settings',
+      where: 'key = ?',
+      whereArgs: [key],
+    );
+    if (maps.isEmpty) return null;
+    return maps.first['value'] as String?;
+  }
+
+  Future<void> setSetting(String key, String value) async {
     final db = await database;
     await db.insert(
       'settings',
-      {'key': 'hasSeenOnboarding', 'value': 'true'},
+      {'key': key, 'value': value},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }

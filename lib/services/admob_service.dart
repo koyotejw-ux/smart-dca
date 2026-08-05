@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../theme/neon_colors.dart';
+import 'event_service.dart';
 
 class AdmobService {
   // Real Ad Unit IDs provided by the user
@@ -100,8 +101,8 @@ class AdmobService {
   }
 
   /// Show App Open Ad if available
-  static void showAppOpenAd({VoidCallback? onDismiss}) {
-    if (kIsWeb || _appOpenAd == null) {
+  static void showAppOpenAd({VoidCallback? onDismiss}) async {
+    if (kIsWeb || await EventService.isAdFreeActive() || _appOpenAd == null) {
       onDismiss?.call();
       loadAppOpenAd();
       return;
@@ -127,8 +128,8 @@ class AdmobService {
   static void showInterstitial({
     required VoidCallback onDismissed,
     Function(AdError)? onFailed,
-  }) {
-    if (kIsWeb) {
+  }) async {
+    if (kIsWeb || await EventService.isAdFreeActive()) {
       onDismissed();
       return;
     }
@@ -163,8 +164,8 @@ class AdmobService {
     required Function(RewardItem) onUserEarnedReward,
     required VoidCallback onDismissed,
     Function(AdError)? onFailed,
-  }) {
-    if (kIsWeb) {
+  }) async {
+    if (kIsWeb || await EventService.isAdFreeActive()) {
       onDismissed();
       return;
     }
@@ -217,16 +218,19 @@ class _AdmobBannerWidgetState extends State<AdmobBannerWidget> {
     }
   }
 
-  void _loadAd() {
+  void _loadAd() async {
+    if (await EventService.isAdFreeActive()) return;
     _bannerAd = BannerAd(
       adUnitId: AdmobService.bannerAdUnitId,
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(
         onAdLoaded: (ad) {
-          setState(() {
-            _isLoaded = true;
-          });
+          if (mounted) {
+            setState(() {
+              _isLoaded = true;
+            });
+          }
         },
         onAdFailedToLoad: (ad, error) {
           ad.dispose();
@@ -275,7 +279,8 @@ class _AdmobNativeAdCardState extends State<AdmobNativeAdCard> {
     }
   }
 
-  void _loadAd() {
+  void _loadAd() async {
+    if (await EventService.isAdFreeActive()) return;
     _nativeAd = NativeAd(
       adUnitId: AdmobService.nativeAdUnitId,
       request: const AdRequest(),
@@ -303,9 +308,11 @@ class _AdmobNativeAdCardState extends State<AdmobNativeAdCard> {
       ),
       listener: NativeAdListener(
         onAdLoaded: (ad) {
-          setState(() {
-            _isLoaded = true;
-          });
+          if (mounted) {
+            setState(() {
+              _isLoaded = true;
+            });
+          }
         },
         onAdFailedToLoad: (ad, error) {
           ad.dispose();

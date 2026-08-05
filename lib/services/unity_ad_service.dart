@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:unity_ads_plugin/unity_ads_plugin.dart';
+import 'event_service.dart';
 
 class UnityAdService {
   static const String _androidGameId = '4347587';
@@ -63,6 +64,10 @@ class UnityAdService {
     VoidCallback? onSkipped,
     Function(String, String)? onFailed,
   }) async {
+    if (await EventService.isAdFreeActive()) {
+      onComplete?.call();
+      return;
+    }
     final placementId = interstitialPlacementId;
     
     try {
@@ -96,6 +101,10 @@ class UnityAdService {
     VoidCallback? onSkipped,
     Function(String, String)? onFailed,
   }) async {
+    if (await EventService.isAdFreeActive()) {
+      onComplete?.call();
+      return;
+    }
     final placementId = rewardedPlacementId;
 
     try {
