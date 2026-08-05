@@ -8,10 +8,8 @@ class CelebrationModal extends StatelessWidget {
 
   const CelebrationModal({
     super.key,
-    required onClaimed,
-  }) : _onClaimed = onClaimed;
-
-  final VoidCallback _onClaimed;
+    required this.onClaimed,
+  });
 
   static Future<void> show(BuildContext context, {required VoidCallback onClaimed}) async {
     return showDialog(
@@ -26,9 +24,10 @@ class CelebrationModal extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-      child: Container(
-        maxWidth: 440,
-        decoration: BoxDecoration(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 440),
+        child: Container(
+          decoration: BoxDecoration(
           color: const Color(0xFF161C24).withOpacity(0.95),
           borderRadius: BorderRadius.circular(28),
           border: Border.all(
@@ -150,7 +149,7 @@ class CelebrationModal extends StatelessWidget {
                   await EventService.claim100DownloadsEvent();
                   if (context.mounted) {
                     Navigator.of(context).pop();
-                    _onClaimed();
+                    onClaimed();
                   }
                 },
                 child: const Text(
@@ -166,8 +165,9 @@ class CelebrationModal extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildBenefitRow({
     required IconData icon,
