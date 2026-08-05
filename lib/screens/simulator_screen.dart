@@ -294,7 +294,8 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
         ],
       ),
     ),
-  );
+  ),
+);
 }
 
   Widget _buildSimulatorHeader(BuildContext context, LanguageType lang) {
