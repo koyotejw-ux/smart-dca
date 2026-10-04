@@ -43,7 +43,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
 
   bool _isCompareMode = false;
   bool _isTargetMode = false;
-  bool _isFeeEnabled = false;
+  final bool _isFeeEnabled = false;
   double _simulatedPriceFactor = 1.0;
   CalculationResult? _resultA;
   CalculationResult? _resultB;
