@@ -1,65 +1,83 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'neon_colors.dart';
-
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'neon_colors.dart';
+import 't_membership_colors.dart';
 
 class OneUITheme {
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
     colorScheme: const ColorScheme.light(
-      surface: Colors.white,
-      primary: NeonColors.cyan,
-      secondary: NeonColors.pink,
-      error: NeonColors.pink,
+      surface: TMembershipColors.lightSurface,
+      primary: TMembershipColors.primaryBlue,
+      secondary: TMembershipColors.accentPurple,
+      tertiary: TMembershipColors.accentMagenta,
+      error: TMembershipColors.accentCoral,
+      onPrimary: Colors.white,
+      onSurface: TMembershipColors.lightTextPrimary,
     ),
-    scaffoldBackgroundColor: const Color(0xFFF2F2F7),
+    scaffoldBackgroundColor: TMembershipColors.lightBg,
     textTheme: GoogleFonts.interTextTheme().copyWith(
       headlineLarge: GoogleFonts.inter(
-        fontSize: 32,
+        fontSize: 30,
         fontWeight: FontWeight.w900,
-        color: Colors.black,
-        letterSpacing: -1,
+        color: TMembershipColors.lightTextPrimary,
+        letterSpacing: -0.8,
+      ),
+      headlineMedium: GoogleFonts.inter(
+        fontSize: 24,
+        fontWeight: FontWeight.w800,
+        color: TMembershipColors.lightTextPrimary,
+        letterSpacing: -0.5,
       ),
       titleLarge: GoogleFonts.inter(
-        fontSize: 22,
-        fontWeight: FontWeight.w900,
-        color: Colors.black,
+        fontSize: 20,
+        fontWeight: FontWeight.w800,
+        color: TMembershipColors.lightTextPrimary,
+        letterSpacing: -0.3,
+      ),
+      titleMedium: GoogleFonts.inter(
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
+        color: TMembershipColors.lightTextPrimary,
+      ),
+      bodyLarge: GoogleFonts.inter(
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+        color: TMembershipColors.lightTextSecondary,
       ),
       bodyMedium: GoogleFonts.inter(
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: FontWeight.w400,
-        color: Colors.black87,
+        color: TMembershipColors.lightTextSecondary,
       ),
       labelLarge: GoogleFonts.inter(
         fontSize: 14,
         fontWeight: FontWeight.w700,
-        color: Colors.black87,
+        color: TMembershipColors.primaryBlue,
       ),
     ),
     cardTheme: CardThemeData(
-      color: Colors.white,
-      elevation: 4,
-      shadowColor: Colors.black.withOpacity(0.1),
+      color: TMembershipColors.lightSurface,
+      elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Colors.black, width: 1.5),
+        borderRadius: BorderRadius.circular(24),
+        side: const BorderSide(color: TMembershipColors.lightCardBorder, width: 1.2),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: NeonColors.cyan,
-        foregroundColor: Colors.black,
-        minimumSize: const Size(double.infinity, 60),
+        backgroundColor: TMembershipColors.primaryBlue,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        minimumSize: const Size(double.infinity, 56),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: Colors.black, width: 2),
+          borderRadius: BorderRadius.circular(16),
         ),
-        elevation: 6,
-        textStyle: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 18),
+        textStyle: GoogleFonts.inter(
+          fontWeight: FontWeight.w800,
+          fontSize: 16,
+          letterSpacing: -0.2,
+        ),
       ),
     ),
   );
@@ -68,54 +86,77 @@ class OneUITheme {
     useMaterial3: true,
     brightness: Brightness.dark,
     colorScheme: const ColorScheme.dark(
-      surface: NeonColors.surface,
-      primary: NeonColors.cyan,
-      secondary: NeonColors.pink,
-      error: NeonColors.pink,
+      surface: TMembershipColors.darkSurface,
+      primary: TMembershipColors.primaryBlue,
+      secondary: TMembershipColors.accentCyan,
+      tertiary: TMembershipColors.accentMagenta,
+      error: TMembershipColors.accentCoral,
+      onPrimary: Colors.white,
+      onSurface: TMembershipColors.darkTextPrimary,
     ),
-    scaffoldBackgroundColor: NeonColors.background,
+    scaffoldBackgroundColor: TMembershipColors.darkBg,
     textTheme: GoogleFonts.interTextTheme().copyWith(
       headlineLarge: GoogleFonts.inter(
-        fontSize: 32,
+        fontSize: 30,
         fontWeight: FontWeight.w900,
-        color: Colors.white,
-        letterSpacing: -1,
+        color: TMembershipColors.darkTextPrimary,
+        letterSpacing: -0.8,
+      ),
+      headlineMedium: GoogleFonts.inter(
+        fontSize: 24,
+        fontWeight: FontWeight.w800,
+        color: TMembershipColors.darkTextPrimary,
+        letterSpacing: -0.5,
       ),
       titleLarge: GoogleFonts.inter(
-        fontSize: 22,
-        fontWeight: FontWeight.w900,
-        color: Colors.white,
+        fontSize: 20,
+        fontWeight: FontWeight.w800,
+        color: TMembershipColors.darkTextPrimary,
+        letterSpacing: -0.3,
+      ),
+      titleMedium: GoogleFonts.inter(
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
+        color: TMembershipColors.darkTextPrimary,
+      ),
+      bodyLarge: GoogleFonts.inter(
+        fontSize: 15,
+        fontWeight: FontWeight.w500,
+        color: TMembershipColors.darkTextSecondary,
       ),
       bodyMedium: GoogleFonts.inter(
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: FontWeight.w400,
-        color: Colors.white70,
+        color: TMembershipColors.darkTextSecondary,
       ),
       labelLarge: GoogleFonts.inter(
         fontSize: 14,
         fontWeight: FontWeight.w700,
-        color: Colors.white,
+        color: TMembershipColors.accentCyan,
       ),
     ),
     cardTheme: CardThemeData(
-      color: NeonColors.surface,
+      color: TMembershipColors.darkSurface,
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: const BorderSide(color: Colors.white, width: 2),
+        borderRadius: BorderRadius.circular(24),
+        side: const BorderSide(color: TMembershipColors.darkCardBorder, width: 1.2),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: NeonColors.cyan,
-        foregroundColor: Colors.black,
-        minimumSize: const Size(double.infinity, 64),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: const BorderSide(color: Colors.white, width: 2.5),
-        ),
+        backgroundColor: TMembershipColors.primaryBlue,
+        foregroundColor: Colors.white,
         elevation: 0,
-        textStyle: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 18),
+        minimumSize: const Size(double.infinity, 56),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        textStyle: GoogleFonts.inter(
+          fontWeight: FontWeight.w800,
+          fontSize: 16,
+          letterSpacing: -0.2,
+        ),
       ),
     ),
   );

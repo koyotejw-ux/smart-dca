@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; 
-import 'package:haptic_feedback/haptic_feedback.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
-import '../widgets/one_ui_scroll_view.dart';
-import '../widgets/recovery_gauge.dart';
-import '../widgets/price_chart.dart';
 import '../services/calculator_service.dart';
-import 'report_screen.dart';
 import '../providers/language_provider.dart';
 import '../utils/l10n.dart';
 import '../providers/asset_provider.dart';
 import '../models/asset_model.dart';
-import '../widgets/glass_card.dart';
-import '../theme/one_ui_colors.dart';
-import '../widgets/master_guide_overlay.dart';
 import '../models/scenario_model.dart';
 import '../providers/scenario_provider.dart';
-import 'scenario_history_screen.dart';
-import '../theme/neon_colors.dart';
-import 'package:uuid/uuid.dart';
+import '../theme/t_membership_colors.dart';
 import '../services/admob_service.dart';
 
 class SimulatorScreen extends ConsumerStatefulWidget {
@@ -38,29 +29,26 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
   final _assetSymbolController = TextEditingController(text: 'BTC');
   final _initialPriceController = TextEditingController();
   final _initialQtyController = TextEditingController();
-  
+
   // Scenario A
   final List<TextEditingController> _priceControllersA = [TextEditingController()];
   final List<TextEditingController> _qtyControllersA = [TextEditingController()];
-  
+
   // Scenario B (Comparison)
   final List<TextEditingController> _priceControllersB = [TextEditingController()];
   final List<TextEditingController> _qtyControllersB = [TextEditingController()];
 
-  bool _showGuide = true; // Show on first load for now
   final TextEditingController _targetPriceController = TextEditingController();
+  final TextEditingController _purchasePriceController = TextEditingController();
+
   bool _isCompareMode = false;
   bool _isTargetMode = false;
-  double _totalAvgPrice = 0.0;
-  bool _isBullMode = false;
   bool _isFeeEnabled = false;
   double _simulatedPriceFactor = 1.0;
   CalculationResult? _resultA;
   CalculationResult? _resultB;
   double? _requiredQty;
   final _currencyFormat = NumberFormat.currency(symbol: '', decimalDigits: 0);
-
-  final _purchasePriceController = TextEditingController();
 
   @override
   void initState() {
@@ -78,8 +66,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
       final s = widget.initialScenario!;
       _initialPriceController.text = s.initialPrice.toStringAsFixed(0);
       _initialQtyController.text = s.initialQuantity.toStringAsFixed(0);
-      
-      // Clear defaults
+
       _priceControllersA[0].text = '';
       _qtyControllersA[0].text = '';
 
@@ -129,7 +116,6 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
     }
   }
 
-
   double _parseVal(String text) {
     return double.tryParse(text.replaceAll(',', '')) ?? 0;
   }
@@ -140,7 +126,6 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
 
     if (ip <= 0 || iq <= 0) return;
 
-    // Calc Scenario A
     final basePrice = ip * _simulatedPriceFactor;
 
     if (_isTargetMode) {
@@ -162,14 +147,15 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
             feeRate: _isFeeEnabled ? 0.00015 : 0.0,
           );
         });
+        return;
       }
-    } else {
-      _resultA = _calcBatch(basePrice, iq, _priceControllersA, _qtyControllersA);
-      if (_isCompareMode) {
-        _resultB = _calcBatch(basePrice, iq, _priceControllersB, _qtyControllersB);
-      }
-      setState(() {});
     }
+
+    _resultA = _calcBatch(basePrice, iq, _priceControllersA, _qtyControllersA);
+    if (_isCompareMode) {
+      _resultB = _calcBatch(basePrice, iq, _priceControllersB, _qtyControllersB);
+    }
+    setState(() {});
   }
 
   void _adjustPrice(TextEditingController controller, double percent) {
@@ -234,318 +220,46 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final lang = ref.watch(languageProvider);
-    final width = MediaQuery.of(context).size.width;
+  Future<void> _saveScenario() async {
+    if (_resultA == null) return;
 
-    return Scaffold(
-      backgroundColor: NeonColors.background,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-            child: _buildSimulatorHeader(context, lang),
-          ),
-        ),
-      ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1000),
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            children: [
-          const SizedBox(height: 16),
-          _buildNeonPrimaryHeader(context, lang)
-            .animate().fadeIn(duration: 400.ms).slideY(begin: 0.1, end: 0), // Huge Result LCD
-          const SizedBox(height: 32),
-          _buildMasterInputCard(context, lang)
-            .animate().fadeIn(duration: 600.ms, delay: 100.ms).slideY(begin: 0.1, end: 0), // Step 1
-          const SizedBox(height: 32),
-          _buildSensitivitySlider(context, lang),
-          const SizedBox(height: 24),
-          _buildConcentrationWarning(context, lang),
-          const SizedBox(height: 32),
-          if (_isCompareMode)
-            width > 900 
-              ? Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(child: _buildInputSection(context, lang, false)),
-                    const SizedBox(width: 24),
-                    Expanded(child: _buildInputSection(context, lang, true)),
-                  ],
-                )
-              : Column(
-                  children: [
-                    _buildInputSection(context, lang, false),
-                    const SizedBox(height: 16),
-                    _buildInputSection(context, lang, true),
-                  ],
-                )
-          else
-            _isTargetMode ? _buildTargetInputCard(context, lang) : _buildInputSection(context, lang, false),
-          const SizedBox(height: 32),
-          if (!_isCompareMode) _buildDropStrategyTable(context, lang),
-          const SizedBox(height: 32),
-          _buildStrategyToggles(context, lang),
-          const SizedBox(height: 80),
-        ],
-      ),
-    ),
-  ),
-);
-}
-
-  Widget _buildSimulatorHeader(BuildContext context, LanguageType lang) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 24),
-              onPressed: () => Navigator.pop(context),
-            ),
-            const SizedBox(width: 12),
-            Text(
-              "물타기 계산기",
-              style: GoogleFonts.inter(
-                color: Colors.white,
-                fontWeight: FontWeight.w900,
-                fontSize: 28,
-              ),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            IconButton(
-              onPressed: () => setState(() => _isCompareMode = !_isCompareMode),
-              icon: Icon(_isCompareMode ? Icons.view_day_outlined : Icons.compare_arrows_rounded, color: NeonColors.cyan),
-            ),
-            IconButton(
-              onPressed: _resetInputs,
-              icon: const Text("AC", style: TextStyle(color: Colors.orange, fontWeight: FontWeight.w900)),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNeonPrimaryHeader(BuildContext context, LanguageType lang) {
-    final theme = Theme.of(context);
-    final val = _resultA?.averagePrice ?? 0;
-    final pnl = _resultA?.recoveryPercentage ?? 0;
-    final pnlColor = pnl >= 0 ? NeonColors.green : NeonColors.pink;
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: NeonColors.glassyBorder(NeonColors.cyan),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            L10n.s(lang, 'new_avg_price').toUpperCase(),
-            style: NeonColors.textGlow(Colors.white54).copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-              letterSpacing: 2,
-            ),
-          ),
-          const SizedBox(height: 8),
-          FittedBox(
-            child: Text(
-              _currencyFormat.format(val),
-              style: GoogleFonts.notoSansMono(
-                color: NeonColors.cyan,
-                fontWeight: FontWeight.w900,
-                fontSize: 64,
-                letterSpacing: -2,
-                shadows: [],
-              ),
-            ),
-          ),
-          if (_resultA != null)
-            Text(
-              _isBullMode 
-                ? "PROFIT TARGET: ${pnl.abs().toStringAsFixed(1)}%" 
-                : "RECOVERY: ${pnl.toStringAsFixed(1)}%",
-              style: NeonColors.textGlow(pnlColor).copyWith(
-                fontSize: 16, 
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            const SizedBox(height: 16),
-            _buildBreakEvenProgress(context),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBreakEvenProgress(BuildContext context) {
-    if (_resultA == null) return const SizedBox.shrink();
-    
     final ip = _parseVal(_initialPriceController.text);
-    final currentPrice = ip * _simulatedPriceFactor;
-    final avgPrice = _resultA!.averagePrice;
-    
-    // Progress is how close currentPrice is to avgPrice
-    // 0% means currentPrice is very far, 100% means currentPrice >= avgPrice
-    double progress = 0;
-    if (avgPrice > 0) {
-       progress = (currentPrice / avgPrice).clamp(0.0, 1.25) / 1.25;
-    }
+    final iq = _parseVal(_initialQtyController.text);
+    final batches = _calcBatches(false);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text("BREAK-EVEN PROXIMITY", style: TextStyle(color: Colors.white30, fontSize: 10, fontWeight: FontWeight.bold)),
-            Text("${(progress * 125).toStringAsFixed(0)}%", style: const TextStyle(color: NeonColors.cyan, fontSize: 10, fontWeight: FontWeight.bold)),
-          ],
+    final scenario = Scenario(
+      id: const Uuid().v4(),
+      name: "계산 시나리오 ${DateFormat('MM.dd HH:mm').format(DateTime.now())}",
+      initialPrice: ip,
+      initialQuantity: iq,
+      batches: batches,
+      createdAt: DateTime.now(),
+    );
+
+    await ref.read(scenarioProvider.notifier).addScenario(scenario);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("시나리오가 저장되었습니다. (기록 화면에서 확인 가능)"),
+          behavior: SnackBarBehavior.floating,
         ),
-        const SizedBox(height: 8),
-        Container(
-          height: 6,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white10,
-            borderRadius: BorderRadius.circular(3),
-          ),
-          child: FractionallySizedBox(
-            alignment: Alignment.centerLeft,
-            widthFactor: progress.clamp(0.0, 1.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: NeonColors.cyan,
-                borderRadius: BorderRadius.circular(3),
-                border: Border.all(color: Colors.black, width: 1),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSensitivitySlider(BuildContext context, LanguageType lang) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      decoration: NeonColors.borderGlow(Colors.white10).copyWith(color: Colors.black),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text("WHAT-IF SENSITIVITY", style: TextStyle(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1)),
-              Text(
-                "${(_simulatedPriceFactor * 100).toStringAsFixed(0)}% Price",
-                style: const TextStyle(color: NeonColors.pink, fontWeight: FontWeight.w900, fontSize: 13),
-              ),
-            ],
-          ),
-          SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-               activeTrackColor: NeonColors.pink,
-               inactiveTrackColor: Colors.white12,
-               thumbColor: NeonColors.pink,
-               overlayColor: NeonColors.pink.withOpacity(0.2),
-            ),
-            child: Slider(
-              value: _simulatedPriceFactor,
-              min: 0.5,
-              max: 1.5,
-              onChanged: (val) {
-                setState(() => _simulatedPriceFactor = val);
-                _calculate();
-                HapticFeedback.selectionClick();
-              },
-            ),
-          ),
-          const Text("주가 변동에 따른 실시간 수익률 시뮬레이션", style: TextStyle(color: Colors.white24, fontSize: 10)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNeonMetricGrid(BuildContext context, LanguageType lang) {
-    if (_resultA == null) return const SizedBox.shrink();
-    
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      childAspectRatio: 2.2,
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      children: [
-        _buildNeonMetric(L10n.s(lang, 'total_quantity'), _resultA!.totalQuantity.toStringAsFixed(0), NeonColors.cyan),
-        _buildNeonMetric(L10n.s(lang, 'total_invested'), _currencyFormat.format(_resultA!.totalInvestment), NeonColors.pink),
-      ],
-    );
-  }
-
-  Widget _buildNeonMetric(String label, String value, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: NeonColors.borderGlow(color),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.white54)),
-          const Spacer(),
-          FittedBox(child: Text(value, style: GoogleFonts.notoSansMono(fontSize: 22, fontWeight: FontWeight.w900, color: color, shadows: []))),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildConcentrationWarning(BuildContext context, LanguageType lang) {
-    if (_resultA == null) return const SizedBox.shrink();
-
-    final assets = ref.watch(assetsProvider);
-    double totalPortfolioValue = 0;
-    for (var a in assets) {
-      totalPortfolioValue += a.initialPrice * a.initialQuantity;
+      );
     }
+  }
 
-    final currentInvestment = _resultA!.totalInvestment;
-    final combinedTotal = totalPortfolioValue + currentInvestment;
-    final percentage = combinedTotal > 0 ? (currentInvestment / combinedTotal) * 100 : 0.0;
-
-    if (percentage < 30) return const SizedBox.shrink();
-
-    return Container(
-      margin: const EdgeInsets.only(top: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: percentage > 70 ? Colors.red.withOpacity(0.1) : Colors.orange.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: percentage > 70 ? Colors.red : Colors.orange, width: 2),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.warning_amber_rounded, color: percentage > 70 ? Colors.red : Colors.orange),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              "집중 투자 주의: 이 매수 시 전체 자산의 ${percentage.toStringAsFixed(1)}%가 이 종목에 집중됩니다.",
-              style: TextStyle(
-                fontWeight: FontWeight.w900, 
-                fontSize: 13, 
-                color: percentage > 70 ? Colors.red : Colors.orange
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+  List<PurchaseBatch> _calcBatches(bool isB) {
+    final List<PurchaseBatch> batches = [];
+    final prices = isB ? _priceControllersB : _priceControllersA;
+    final qtys = isB ? _qtyControllersB : _qtyControllersA;
+    for (int i = 0; i < prices.length; i++) {
+      final pp = _parseVal(prices[i].text);
+      final pq = _parseVal(qtys[i].text);
+      if (pp > 0 && pq > 0) {
+        batches.add(PurchaseBatch(price: pp, quantity: pq));
+      }
+    }
+    return batches;
   }
 
   void _resetInputs() {
@@ -564,342 +278,438 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
       _resultB = null;
       _requiredQty = null;
     });
+    HapticFeedback.mediumImpact();
   }
 
-  Future<void> _saveScenario() async {
-    if (_resultA == null) return;
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final lang = ref.watch(languageProvider);
+    final width = MediaQuery.of(context).size.width;
 
-    final ip = _parseVal(_initialPriceController.text);
-    final iq = _parseVal(_initialQtyController.text);
-    final batches = _calcBatches(false);
+    final bgColor = isDark ? TMembershipColors.darkBg : TMembershipColors.lightBg;
 
-    final scenario = Scenario(
-      id: const Uuid().v4(),
-      name: "Scenario ${DateTime.now().hour}:${DateTime.now().minute}",
-      initialPrice: ip,
-      initialQuantity: iq,
-      batches: batches,
-      createdAt: DateTime.now(),
+    return Scaffold(
+      backgroundColor: bgColor,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(64),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: _buildHeader(context, isDark, lang),
+          ),
+        ),
+      ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 960),
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            children: [
+              const SizedBox(height: 8),
+              _buildResultCard(context, isDark, lang)
+                  .animate().fadeIn(duration: 400.ms).slideY(begin: 0.08, end: 0),
+              const SizedBox(height: 16),
+              _buildModeSelector(context, isDark, lang),
+              const SizedBox(height: 16),
+              _buildInitialStepCard(context, isDark, lang)
+                  .animate().fadeIn(duration: 450.ms, delay: 50.ms).slideY(begin: 0.08, end: 0),
+              const SizedBox(height: 16),
+              if (_isTargetMode)
+                _buildTargetCalculatorCard(context, isDark, lang)
+              else if (_isCompareMode && width > 768)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(child: _buildPurchasePlanCard(context, isDark, lang, false)),
+                    const SizedBox(width: 16),
+                    Expanded(child: _buildPurchasePlanCard(context, isDark, lang, true)),
+                  ],
+                )
+              else ...[
+                _buildPurchasePlanCard(context, isDark, lang, false),
+                if (_isCompareMode) ...[
+                  const SizedBox(height: 16),
+                  _buildPurchasePlanCard(context, isDark, lang, true),
+                ],
+              ],
+              const SizedBox(height: 16),
+              _buildSensitivityCard(context, isDark, lang),
+              const SizedBox(height: 20),
+              _buildBottomActionButtons(context, isDark, lang),
+              const SizedBox(height: 60),
+            ],
+          ),
+        ),
+      ),
     );
-
-    await ref.read(scenarioProvider.notifier).addScenario(scenario);
-    
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("시나리오가 저장되었습니다. (History 확인 가능)")),
-      );
-    }
   }
 
-  List<PurchaseBatch> _calcBatches(bool isB) {
-    final List<PurchaseBatch> batches = [];
-    final prices = isB ? _priceControllersB : _priceControllersA;
-    final qtys = isB ? _qtyControllersB : _qtyControllersA;
-    for (int i = 0; i < prices.length; i++) {
-        final pp = _parseVal(prices[i].text);
-        final pq = _parseVal(qtys[i].text);
-        if (pp > 0 && pq > 0) {
-            batches.add(PurchaseBatch(price: pp, quantity: pq));
-        }
-    }
-    return batches;
-  }
+  Widget _buildHeader(BuildContext context, bool isDark, LanguageType lang) {
+    final titleColor = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
 
-  Widget _buildMetricGrid(BuildContext context, LanguageType lang) {
-    if (_resultA == null) return const SizedBox.shrink();
-    
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      childAspectRatio: 2.2,
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildTactileMetric(L10n.s(lang, 'total_quantity'), _resultA!.totalQuantity.toStringAsFixed(0), Colors.blue),
-        _buildTactileMetric(L10n.s(lang, 'total_invested'), _currencyFormat.format(_resultA!.totalInvestment), Colors.orange),
+        Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.arrow_back_ios_new_rounded, color: titleColor, size: 20),
+              onPressed: () => Navigator.pop(context),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              "물타기 시뮬레이터",
+              style: GoogleFonts.inter(
+                color: titleColor,
+                fontWeight: FontWeight.w900,
+                fontSize: 18,
+                letterSpacing: -0.4,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            TextButton.icon(
+              onPressed: _resetInputs,
+              icon: const Icon(Icons.refresh_rounded, size: 16, color: TMembershipColors.accentOrange),
+              label: const Text(
+                "초기화",
+                style: TextStyle(
+                  color: TMembershipColors.accentOrange,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 13,
+                ),
+              ),
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                backgroundColor: TMembershipColors.accentOrange.withOpacity(0.1),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
 
-  Widget _buildTactileMetric(String label, String value, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black, width: 2),
-        boxShadow: const [BoxShadow(color: Colors.black12, offset: Offset(0, 4), blurRadius: 0)],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.grey)),
-          const Spacer(),
-          FittedBox(child: Text(value, style: GoogleFonts.notoSansMono(fontSize: 18, fontWeight: FontWeight.w900, color: Colors.white70))),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDropStrategyTable(BuildContext context, LanguageType lang) {
-    final ip = double.tryParse(_initialPriceController.text) ?? 0;
-    final iq = double.tryParse(_initialQtyController.text) ?? 0;
-    if (ip <= 0 || iq <= 0) return const SizedBox.shrink();
+  /// Top Highlight: T-Membership Style Vivid Result Card
+  Widget _buildResultCard(BuildContext context, bool isDark, LanguageType lang) {
+    final val = _resultA?.averagePrice ?? 0;
+    final recovery = _resultA?.recoveryPercentage ?? 0;
+    final totalInvested = _resultA?.totalInvestment ?? 0;
+    final totalQty = _resultA?.totalQuantity ?? 0;
 
     return Container(
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.black, width: 2),
+        gradient: TMembershipColors.primaryGradient,
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: TMembershipColors.colorfulGlow(TMembershipColors.primaryBlue, opacity: 0.35),
       ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Text(L10n.s(lang, 'drop_strategy'), style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14)),
-          const SizedBox(height: 16),
-          Table(
-            children: [
-              TableRow(
-                children: [
-                  _buildHeaderCell(L10n.s(lang, 'drop_label')),
-                  _buildHeaderCell(L10n.s(lang, 'target_label')),
-                  _buildHeaderCell(L10n.s(lang, 'buy_qty_label')),
-                ],
+          Positioned(
+            right: -20,
+            top: -20,
+            child: Container(
+              width: 140,
+              height: 140,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.08),
               ),
-              ...[5.0, 10.0, 15.0, 20.0, 30.0].map((drop) {
-                final targetPrice = ip * (1 - drop / 100);
-                return TableRow(
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildCell("-$drop%", color: Colors.redAccent),
-                    _buildCell(_currencyFormat.format(targetPrice)),
-                    _buildCell(_currencyFormat.format(iq * (drop/10))), 
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Text(
+                        "CALCULATION RESULT",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 10,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ),
+                    if (_resultA != null)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          "평단가 변화: ${recovery >= 0 ? '+' : ''}${recovery.toStringAsFixed(1)}%",
+                          style: TextStyle(
+                            color: recovery <= 0 ? const Color(0xFF69F0AE) : const Color(0xFFFF8A80),
+                            fontWeight: FontWeight.w800,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ),
                   ],
-                );
-              }),
-            ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  L10n.s(lang, 'new_avg_price'),
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                FittedBox(
+                  child: Text(
+                    val > 0 ? _currencyFormat.format(val) : "0",
+                    style: GoogleFonts.inter(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 48,
+                      letterSpacing: -1.5,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Compact specs strip
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Column(
+                        children: [
+                          const Text("총 보유 수량", style: TextStyle(color: Colors.white70, fontSize: 11)),
+                          const SizedBox(height: 2),
+                          Text(
+                            "${totalQty.toStringAsFixed(0)} 주",
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14),
+                          ),
+                        ],
+                      ),
+                      Container(height: 20, width: 1, color: Colors.white24),
+                      Column(
+                        children: [
+                          const Text("총 투자 원금", style: TextStyle(color: Colors.white70, fontSize: 11)),
+                          const SizedBox(height: 2),
+                          Text(
+                            _currencyFormat.format(totalInvested),
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14),
+                          ),
+                        ],
+                      ),
+                      if (_isCompareMode && _resultB != null) ...[
+                        Container(height: 20, width: 1, color: Colors.white24),
+                        Column(
+                          children: [
+                            const Text("시나리오 B", style: TextStyle(color: Color(0xFFFFB74D), fontSize: 11, fontWeight: FontWeight.bold)),
+                            const SizedBox(height: 2),
+                            Text(
+                              _currencyFormat.format(_resultB!.averagePrice),
+                              style: const TextStyle(color: Color(0xFFFFB74D), fontWeight: FontWeight.w900, fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildHeaderCell(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Text(text, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12, color: Colors.grey)),
-    );
-  }
-
-  Widget _buildCell(String text, {Color? color}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Text(
-        text, 
-        textAlign: TextAlign.center, 
-        style: TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: color),
-      ),
-    );
-  }
-
-  Widget _buildScenarioLabel(String label, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-      child: Text(label, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12)),
-    );
-  }
-
-
-  Widget _buildMetricCard(BuildContext context, String label, String value, IconData icon, Color color, {String? subtitle}) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+  /// Segmented Tab Switcher
+  Widget _buildModeSelector(BuildContext context, bool isDark, LanguageType lang) {
+    final cardBg = isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface;
+    final cardBorder = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
 
     return Container(
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: isDark ? theme.colorScheme.surface : Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.black.withOpacity(0.12), width: 1.5),
+        color: cardBg,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: cardBorder, width: 1.2),
+        boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 8, dy: 2),
       ),
-      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: _buildModeTab(
+              label: "추가 매수 계산",
+              isSelected: !_isTargetMode && !_isCompareMode,
+              onTap: () => setState(() {
+                _isTargetMode = false;
+                _isCompareMode = false;
+                _calculate();
+              }),
+            ),
+          ),
+          Expanded(
+            child: _buildModeTab(
+              label: "시나리오 비교",
+              isSelected: _isCompareMode,
+              onTap: () => setState(() {
+                _isCompareMode = !_isCompareMode;
+                if (_isCompareMode) _isTargetMode = false;
+                _calculate();
+              }),
+            ),
+          ),
+          Expanded(
+            child: _buildModeTab(
+              label: "목표가 계산",
+              isSelected: _isTargetMode,
+              onTap: () => setState(() {
+                _isTargetMode = !_isTargetMode;
+                if (_isTargetMode) _isCompareMode = false;
+                _calculate();
+              }),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildModeTab({required String label, required bool isSelected, required VoidCallback onTap}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? TMembershipColors.primaryBlue : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: GoogleFonts.inter(
+              color: isSelected ? Colors.white : (Theme.of(context).brightness == Brightness.dark ? Colors.white60 : TMembershipColors.lightTextSecondary),
+              fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+              fontSize: 12,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Step 1: Currently Held Asset
+  Widget _buildInitialStepCard(BuildContext context, bool isDark, LanguageType lang) {
+    final cardBg = isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface;
+    final cardBorder = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
+    final titleColor = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: cardBorder, width: 1.2),
+        boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 14, dy: 4),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
-              Icon(icon, size: 16, color: color),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  label,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: isDark ? Colors.white70 : Colors.black54,
-                    fontWeight: FontWeight.w800,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+              Container(
+                width: 26,
+                height: 26,
+                decoration: const BoxDecoration(
+                  color: TMembershipColors.primaryBlue,
+                  shape: BoxShape.circle,
+                ),
+                child: const Center(
+                  child: Text("1", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 13)),
                 ),
               ),
-              if (subtitle != null)
-                Text(
-                  subtitle,
-                  style: TextStyle(color: color, fontWeight: FontWeight.w900, fontSize: 12),
+              const SizedBox(width: 10),
+              Text(
+                "현재 보유 평단가 및 수량",
+                style: GoogleFonts.inter(
+                  color: titleColor,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 15,
                 ),
+              ),
             ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w900,
-              color: isDark ? Colors.white : Colors.black,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildModeToggle(BuildContext context, LanguageType lang) {
-    final theme = Theme.of(context);
-    return Column(
-      children: [
-        SegmentedButton<bool>(
-          segments: [
-            ButtonSegment(value: false, label: Text(L10n.s(lang, 'simulator')), icon: const Icon(Icons.calculate_rounded)),
-            ButtonSegment(value: true, label: Text(L10n.s(lang, 'target_calculator')), icon: const Icon(Icons.flag_rounded)),
-          ],
-          selected: {_isTargetMode},
-          onSelectionChanged: (val) => setState(() {
-            _isTargetMode = val.first;
-            if (_isTargetMode) _isCompareMode = false;
-            _calculate();
-          }),
-        ),
-        if (!_isTargetMode) ...[
           const SizedBox(height: 16),
-          _buildCompareSwitch(context, lang),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildCompareSwitch(BuildContext context, LanguageType lang) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      decoration: BoxDecoration(
-        color: _isCompareMode ? Colors.blue.withOpacity(0.08) : Colors.grey.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: _isCompareMode ? Colors.blue.withOpacity(0.2) : Colors.transparent),
-      ),
-      child: Row(
-        children: [
-          _buildStepBadge("3"),
-          const SizedBox(width: 12),
-          const Icon(Icons.compare_arrows_rounded, color: Colors.blue, size: 24),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              L10n.s(lang, 'scenario_compare'), 
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900, color: Colors.blue),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStrategyToggles(BuildContext context, LanguageType lang) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: NeonColors.glassyBorder(Colors.white10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          _buildToggleItem(
-            L10n.s(lang, 'scenario_compare'),
-            _isCompareMode,
-            (val) => setState(() {
-              _isCompareMode = val;
-              if (val) _isTargetMode = false;
-              _calculate();
-            }),
-          ),
-          Container(width: 1, height: 24, color: Colors.white10),
-          _buildToggleItem(
-            "목표가 전략",
-            _isTargetMode,
-            (val) => setState(() {
-              _isTargetMode = val;
-              if (val) _isCompareMode = false;
-              _calculate();
-            }),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildToggleItem(String label, bool value, Function(bool) onChanged) {
-    return Row(
-      children: [
-        Text(label.toUpperCase(), style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w900, color: value ? NeonColors.cyan : Colors.white38)),
-        const SizedBox(width: 8),
-        Switch.adaptive(
-          value: value,
-          activeColor: NeonColors.cyan,
-          onChanged: onChanged,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMasterInputCard(BuildContext context, LanguageType lang) {
-     return Container(
-       padding: const EdgeInsets.all(24),
-       decoration: NeonColors.glassyBorder(Colors.white10).copyWith(
-         color: Colors.black,
-         boxShadow: NeonColors.depthShadow(NeonColors.pink.withOpacity(0.05)),
-       ),
-       child: Column(
-         crossAxisAlignment: CrossAxisAlignment.start,
-         children: [
-            Row(
-              children: [
-                _buildStepBadge("1"),
-                const SizedBox(width: 12),
-                Text(L10n.s(lang, 'step_1_initial').toUpperCase(), style: const TextStyle(color: NeonColors.cyan, fontWeight: FontWeight.w900, fontSize: 13, letterSpacing: 1)),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.mic_rounded, color: NeonColors.cyan, size: 24),
-                  onPressed: () => _showVoiceInput(context),
+          Row(
+            children: [
+              Expanded(
+                child: _buildInputBox(
+                  controller: _initialPriceController,
+                  label: "현재 평단가",
+                  unit: "원",
+                  icon: Icons.payments_outlined,
+                  isDark: isDark,
+                  onQuickMinus: () => _adjustPrice(_initialPriceController, -0.01),
+                  onQuickPlus: () => _adjustPrice(_initialPriceController, 0.01),
                 ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(child: _buildTextField(_initialPriceController, L10n.s(lang, 'avg_price'), Icons.attach_money_rounded)),
-                const SizedBox(width: 16),
-                Expanded(child: _buildTextField(_initialQtyController, L10n.s(lang, 'quantity'), Icons.numbers_rounded)),
-              ],
-            ),
-         ],
-       ),
-     );
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildInputBox(
+                  controller: _initialQtyController,
+                  label: "현재 수량",
+                  unit: "주",
+                  icon: Icons.pin_outlined,
+                  isDark: isDark,
+                  onQuickMinus: () => _adjustQty(_initialQtyController, -10),
+                  onQuickPlus: () => _adjustQty(_initialQtyController, 10),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
-  Widget _buildInputSection(BuildContext context, LanguageType lang, bool isB) {
+  /// Step 2: Additional Buy Plan Card
+  Widget _buildPurchasePlanCard(BuildContext context, bool isDark, LanguageType lang, bool isB) {
+    final cardBg = isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface;
+    final cardBorder = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
+    final titleColor = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
+
     final prices = isB ? _priceControllersB : _priceControllersA;
-    final theme = Theme.of(context);
+    final qtys = isB ? _qtyControllersB : _qtyControllersA;
+    final planColor = isB ? TMembershipColors.accentOrange : TMembershipColors.accentPurple;
 
     return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: NeonColors.borderGlow(isB ? Colors.orange : NeonColors.pink).copyWith(color: Colors.black),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: cardBorder, width: 1.2),
+        boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 14, dy: 4),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -908,317 +718,393 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
             children: [
               Row(
                 children: [
-                  _buildStepBadge("2"),
-                  const SizedBox(width: 12),
+                  Container(
+                    width: 26,
+                    height: 26,
+                    decoration: BoxDecoration(
+                      color: planColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: Text(isB ? "B" : "2", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 13)),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
                   Text(
-                    isB ? L10n.s(lang, 'scenario_compare').toUpperCase() : L10n.s(lang, 'step_2_plan').split(' (')[0].toUpperCase(),
-                    style: TextStyle(
-                      color: isB ? Colors.orange : NeonColors.pink,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 13,
-                      letterSpacing: 1,
+                    isB ? "비교 시나리오 B" : "추가 매수 계획",
+                    style: GoogleFonts.inter(
+                      color: titleColor,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 15,
                     ),
                   ),
                 ],
               ),
-              ElevatedButton.icon(
-                onPressed: () => _addBatch(isB), 
-                icon: const Icon(Icons.add_rounded, size: 20, color: Colors.black),
-                label: Text(L10n.s(lang, 'add_batch').split(' ')[0], style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w900)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: isB ? Colors.orange : NeonColors.pink,
-                  minimumSize: const Size(100, 48),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              TextButton.icon(
+                onPressed: () => _addBatch(isB),
+                icon: const Icon(Icons.add_rounded, size: 16, color: Colors.white),
+                label: const Text("차수 추가", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12)),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  backgroundColor: planColor,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 24),
-          if (prices.isNotEmpty)
-            Table(
-              columnWidths: const {
-                0: FlexColumnWidth(1.2),
-                1: FlexColumnWidth(1.2),
-                2: FixedColumnWidth(40),
-              },
-              children: List.generate(prices.length, (index) => _buildBatchTableRow(index, lang, isB)),
-            ),
+          const SizedBox(height: 16),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: prices.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 12),
+            itemBuilder: (context, index) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: _buildInputBox(
+                      controller: prices[index],
+                      label: "${index + 1}차 매수가",
+                      unit: "원",
+                      icon: Icons.add_shopping_cart_rounded,
+                      isDark: isDark,
+                      onQuickMinus: () => _adjustPrice(prices[index], -0.01),
+                      onQuickPlus: () => _adjustPrice(prices[index], 0.01),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _buildInputBox(
+                      controller: qtys[index],
+                      label: "${index + 1}차 수량",
+                      unit: "주",
+                      icon: Icons.numbers_rounded,
+                      isDark: isDark,
+                      onQuickMinus: () => _adjustQty(qtys[index], -10),
+                      onQuickPlus: () => _adjustQty(qtys[index], 10),
+                    ),
+                  ),
+                  if (prices.length > 1) ...[
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: const Icon(Icons.remove_circle_outline_rounded, color: TMembershipColors.accentCoral, size: 22),
+                      onPressed: () => _removeBatch(index, isB),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(minWidth: 32, minHeight: 48),
+                    ),
+                  ],
+                ],
+              );
+            },
+          ),
         ],
       ),
     );
   }
 
-  TableRow _buildBatchTableRow(int index, LanguageType lang, bool isB) {
-    final prices = isB ? _priceControllersB : _priceControllersA;
-    final qtys = isB ? _qtyControllersB : _qtyControllersA;
-    return TableRow(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8, bottom: 12),
-          child: _buildTextField(prices[index], L10n.s(lang, 'price'), Icons.price_check_rounded, small: true, accentColor: isB ? Colors.orange : NeonColors.pink),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 8, bottom: 12),
-          child: _buildTextField(qtys[index], L10n.s(lang, 'quantity'), Icons.plus_one_rounded, small: true, accentColor: isB ? Colors.orange : NeonColors.pink),
-        ),
-        if (prices.length > 1)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: IconButton(
-              icon: const Icon(Icons.remove_circle_outline_rounded, color: Colors.red, size: 24),
-              onPressed: () => _removeBatch(index, isB),
-            ),
-          )
-        else
-          const SizedBox.shrink(),
-      ],
-    );
-  }
+  /// Target Price Mode Card
+  Widget _buildTargetCalculatorCard(BuildContext context, bool isDark, LanguageType lang) {
+    final cardBg = isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface;
+    final cardBorder = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
+    final titleColor = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
 
-  Widget _buildStepBadge(String step) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: Colors.white12, borderRadius: BorderRadius.circular(12)),
-      child: Text(step, style: const TextStyle(color: NeonColors.cyan, fontWeight: FontWeight.w900, fontSize: 12)),
-    );
-  }
-
-  Widget _buildBatchRow(int index, LanguageType lang, bool isB) {
-    final prices = isB ? _priceControllersB : _priceControllersA;
-    final qtys = isB ? _qtyControllersB : _qtyControllersA;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: Row(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: cardBorder, width: 1.2),
+        boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 14, dy: 4),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(child: _buildTextField(prices[index], L10n.s(lang, 'price'), Icons.price_check_rounded, small: true)),
-          const SizedBox(width: 8),
-          Expanded(child: _buildTextField(qtys[index], L10n.s(lang, 'quantity'), Icons.plus_one_rounded, small: true)),
-          if (prices.length > 1)
-            IconButton(
-              icon: const Icon(Icons.remove_circle_outline_rounded, color: Colors.red, size: 20),
-              onPressed: () => _removeBatch(index, isB),
+          Row(
+            children: [
+              Container(
+                width: 26,
+                height: 26,
+                decoration: const BoxDecoration(
+                  color: TMembershipColors.accentMagenta,
+                  shape: BoxShape.circle,
+                ),
+                child: const Center(
+                  child: Text("🎯", style: TextStyle(fontSize: 12)),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                "목표 평단가 맞추기",
+                style: GoogleFonts.inter(
+                  color: titleColor,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _buildInputBox(
+                  controller: _targetPriceController,
+                  label: "희망 목표 평단가",
+                  unit: "원",
+                  icon: Icons.flag_rounded,
+                  isDark: isDark,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildInputBox(
+                  controller: _purchasePriceController,
+                  label: "추가 매수가격",
+                  unit: "원",
+                  icon: Icons.shopping_bag_outlined,
+                  isDark: isDark,
+                ),
+              ),
+            ],
+          ),
+          if (_requiredQty != null && _requiredQty! > 0) ...[
+            const SizedBox(height: 16),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: TMembershipColors.accentMagenta.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: TMembershipColors.accentMagenta.withOpacity(0.3)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("필요 매수 수량", style: TextStyle(color: TMembershipColors.accentMagenta, fontWeight: FontWeight.bold, fontSize: 12)),
+                  const SizedBox(height: 4),
+                  Text(
+                    "${_currencyFormat.format(_requiredQty)} 주",
+                    style: GoogleFonts.inter(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                      color: isDark ? Colors.white : TMembershipColors.lightTextPrimary,
+                    ),
+                  ),
+                ],
+              ),
             ),
+          ],
         ],
       ),
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, IconData icon, {bool small = false, Color accentColor = NeonColors.cyan}) {
+  /// Clean, Modern Input Box with Quick Steppers
+  Widget _buildInputBox({
+    required TextEditingController controller,
+    required String label,
+    required String unit,
+    required IconData icon,
+    required bool isDark,
+    VoidCallback? onQuickMinus,
+    VoidCallback? onQuickPlus,
+  }) {
+    final subColor = isDark ? TMembershipColors.darkTextTertiary : TMembershipColors.lightTextTertiary;
+    final textColor = isDark ? Colors.white : TMembershipColors.lightTextPrimary;
+    final boxBg = isDark ? const Color(0xFF131923) : const Color(0xFFF8FAFD);
+    final boxBorder = isDark ? TMembershipColors.darkCardBorder : const Color(0xFFE4E9F2);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label.toUpperCase(), style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 11, color: Colors.white38, letterSpacing: 1)),
-            if (label.contains('가') || label.contains('Price'))
+            Text(
+              label,
+              style: TextStyle(
+                color: subColor,
+                fontWeight: FontWeight.w700,
+                fontSize: 12,
+              ),
+            ),
+            if (onQuickMinus != null && onQuickPlus != null)
               Row(
                 children: [
-                  _buildQuickAdj(controller, "-1%", () => _adjustPrice(controller, -0.01), color: accentColor),
-                  const SizedBox(width: 8),
-                  _buildQuickAdj(controller, "+1%", () => _adjustPrice(controller, 0.01), color: accentColor),
-                ],
-              )
-            else if (label.contains('량') || label.contains('Qty'))
-              Row(
-                children: [
-                  _buildQuickAdj(controller, "-10", () => _adjustQty(controller, -10), color: accentColor),
-                  const SizedBox(width: 8),
-                  _buildQuickAdj(controller, "+100", () => _adjustQty(controller, 100), color: accentColor),
+                  InkWell(
+                    onTap: onQuickMinus,
+                    borderRadius: BorderRadius.circular(6),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: TMembershipColors.primaryBlue.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Text("-", style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.w900, fontSize: 11)),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  InkWell(
+                    onTap: onQuickPlus,
+                    borderRadius: BorderRadius.circular(6),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: TMembershipColors.primaryBlue.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Text("+", style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.w900, fontSize: 11)),
+                    ),
+                  ),
                 ],
               ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 6),
         Container(
           decoration: BoxDecoration(
-            boxShadow: NeonColors.depthShadow(accentColor.withOpacity(0.1)),
+            color: boxBg,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: boxBorder, width: 1.2),
           ),
           child: TextField(
             controller: controller,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             textAlign: TextAlign.right,
-            cursorColor: accentColor,
-            inputFormatters: [ThousandsSeparatorInputFormatter()],
-            style: GoogleFonts.notoSansMono(fontWeight: FontWeight.w900, fontSize: small ? 18 : 22, color: Colors.white),
-            decoration: InputDecoration(
-              prefixIcon: Icon(icon, size: small ? 18 : 22, color: accentColor.withOpacity(0.5)),
-              filled: true,
-              fillColor: const Color(0xFF0F0F0F),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: accentColor.withOpacity(0.3), width: 1.5)),
-              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: accentColor.withOpacity(0.3), width: 1.5)),
-              focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: accentColor, width: 2)),
-              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: small ? 12 : 18),
+            style: GoogleFonts.inter(
+              color: textColor,
+              fontWeight: FontWeight.w800,
+              fontSize: 16,
             ),
-            onChanged: (val) => _calculate(),
+            inputFormatters: [ThousandsSeparatorInputFormatter()],
+            decoration: InputDecoration(
+              isDense: true,
+              prefixIcon: Icon(icon, color: TMembershipColors.primaryBlue, size: 18),
+              suffixText: " $unit",
+              suffixStyle: TextStyle(color: subColor, fontWeight: FontWeight.w600, fontSize: 13),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildQuickAdj(TextEditingController controller, String label, VoidCallback onTap, {Color color = NeonColors.cyan}) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(4),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(4),
-          boxShadow: NeonColors.depthShadow(color),
-        ),
-        child: Text(
-          label, 
-          style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 10)
-        ),
-      ),
-    );
-  }
+  /// What-if Sensitivity Slider
+  Widget _buildSensitivityCard(BuildContext context, bool isDark, LanguageType lang) {
+    final cardBg = isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface;
+    final cardBorder = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
+    final titleColor = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
 
-  Widget _buildTargetInputCard(BuildContext context, LanguageType lang) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(L10n.s(lang, 'target_settings'), style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                IconButton(
-                  icon: const Icon(Icons.mic_rounded, color: Colors.blue),
-                  onPressed: () => _showVoiceInput(context),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _buildTextField(_initialPriceController, L10n.s(lang, 'avg_price'), Icons.attach_money_rounded),
-            const SizedBox(height: 12),
-            _buildTextField(_initialQtyController, L10n.s(lang, 'quantity'), Icons.numbers_rounded),
-            const Divider(height: 48),
-            _buildTextField(_targetPriceController, L10n.s(lang, 'target_avg_price'), Icons.flag_circle_rounded),
-            const SizedBox(height: 12),
-            _buildTextField(_purchasePriceController, L10n.s(lang, 'purchase_price'), Icons.shopping_cart_rounded),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _saveToPortfolio,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: NeonColors.cyan,
-                  foregroundColor: Colors.black,
-                  padding: const EdgeInsets.all(16),
-                ),
-                icon: const Icon(Icons.bookmark_add_rounded),
-                label: Text(L10n.s(lang, 'save_to_portfolio')),
-              ),
-            ),
-          ],
-        ),
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: cardBorder, width: 1.2),
+        boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 10, dy: 3),
       ),
-    );
-  }
-
-  void _showVoiceInput(BuildContext context, {TextEditingController? targetController}) {
-    final lang = ref.read(languageProvider);
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: 300,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(32), topRight: Radius.circular(32)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2))),
-              const SizedBox(height: 32),
-              const Icon(Icons.mic_rounded, size: 64, color: OneUIColors.kakaoYellow),
-              Text(L10n.s(lang, 'ready_msg'), style: Theme.of(context).textTheme.titleLarge?.copyWith(color: OneUIColors.kakaoBrown)),
-              const SizedBox(height: 24),
-              Text(L10n.s(lang, 'voice_price_hint'), style: Theme.of(context).textTheme.bodyMedium),
-              const Spacer(),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style: ElevatedButton.styleFrom(backgroundColor: NeonColors.cyan, foregroundColor: Colors.black),
-                child: Text(L10n.s(lang, 'close')),
+              Row(
+                children: [
+                  const Icon(Icons.insights_rounded, color: TMembershipColors.primaryBlue, size: 20),
+                  const SizedBox(width: 8),
+                  Text(
+                    "주가 변동 민감도 시뮬레이션",
+                    style: GoogleFonts.inter(
+                      color: titleColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: TMembershipColors.primaryBlue.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  "${(_simulatedPriceFactor * 100).toStringAsFixed(0)}%",
+                  style: const TextStyle(
+                    color: TMembershipColors.primaryBlue,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 12,
+                  ),
+                ),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-
-  Widget _buildComparisonChart(BuildContext context, LanguageType lang) {
-    if (_resultA == null) return const SizedBox.shrink();
-
-    final ip = _parseVal(_initialPriceController.text);
-    final np = _resultA!.averagePrice;
-    
-    final maxVal = (ip > np ? ip : np) * 1.1;
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.black, width: 2),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(L10n.s(lang, 'comparison_view'), style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 13, color: Colors.grey)),
-          const SizedBox(height: 24),
-          _buildBar(context, L10n.s(lang, 'current_avg'), ip, maxVal, Colors.white12),
-          const SizedBox(height: 16),
-          _buildBar(context, L10n.s(lang, 'after_sim'), np, maxVal, NeonColors.cyan, isBold: true),
+          SliderTheme(
+            data: SliderTheme.of(context).copyWith(
+              activeTrackColor: TMembershipColors.primaryBlue,
+              inactiveTrackColor: isDark ? Colors.white12 : const Color(0xFFE2E8F0),
+              thumbColor: TMembershipColors.primaryBlue,
+              overlayColor: TMembershipColors.primaryBlue.withOpacity(0.15),
+            ),
+            child: Slider(
+              value: _simulatedPriceFactor,
+              min: 0.5,
+              max: 1.5,
+              onChanged: (val) {
+                setState(() => _simulatedPriceFactor = val);
+                _calculate();
+                HapticFeedback.selectionClick();
+              },
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildBar(BuildContext context, String label, double value, double max, Color color, {bool isBold = false}) {
-    final widthFactor = (value / max).clamp(0.05, 1.0);
-    
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  /// Bottom Actions: Save Scenario, Save to Portfolio
+  Widget _buildBottomActionButtons(BuildContext context, bool isDark, LanguageType lang) {
+    return Row(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(label, style: TextStyle(fontWeight: isBold ? FontWeight.w900 : FontWeight.w700, fontSize: 12)),
-            Text(_currencyFormat.format(value), style: GoogleFonts.notoSansMono(fontWeight: FontWeight.w900, fontSize: 12)),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Stack(
-          children: [
-            Container(height: 12, width: double.infinity, decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(6))),
-            FractionallySizedBox(
-              widthFactor: widthFactor,
-              child: Container(
-                height: 12, 
-                decoration: BoxDecoration(
-                  color: color, 
-                  borderRadius: BorderRadius.circular(6),
-                  border: isBold ? Border.all(color: Colors.black, width: 1.5) : null,
-                ),
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: _saveScenario,
+            icon: const Icon(Icons.bookmark_border_rounded, size: 18),
+            label: const Text("시나리오 저장"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isDark ? TMembershipColors.darkSurface : Colors.white,
+              foregroundColor: TMembershipColors.primaryBlue,
+              elevation: 0,
+              minimumSize: const Size(double.infinity, 54),
+              side: BorderSide(
+                color: isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder,
+                width: 1.2,
               ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             ),
-          ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: _saveToPortfolio,
+            icon: const Icon(Icons.account_balance_wallet_outlined, size: 18),
+            label: const Text("자산에 등록"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: TMembershipColors.primaryBlue,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              minimumSize: const Size(double.infinity, 54),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            ),
+          ),
         ),
       ],
     );
   }
-
 }
 
 class ThousandsSeparatorInputFormatter extends TextInputFormatter {
@@ -1233,8 +1119,7 @@ class ThousandsSeparatorInputFormatter extends TextInputFormatter {
     if (value == null) return oldValue;
 
     final String formattedText = _formatter.format(value);
-    
-    // Calculate cursor position
+
     int selectionIndex = newValue.selection.end;
     int commaCountBefore = oldValue.text.split(',').length - 1;
     int commaCountAfter = formattedText.split(',').length - 1;

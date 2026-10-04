@@ -1,29 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import '../widgets/ai_voice_panel.dart';
-import '../widgets/allocation_chart.dart';
-import '../widgets/recovery_gauge.dart';
 import '../widgets/celebration_modal.dart';
 import '../providers/asset_provider.dart';
 import '../providers/currency_provider.dart';
-import '../providers/market_provider.dart';
 import '../providers/language_provider.dart';
 import '../utils/l10n.dart';
 import '../models/asset_model.dart';
-import '../models/scenario_model.dart';
 import 'simulator_screen.dart';
-import 'target_price_screen.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import '../theme/neon_colors.dart';
 import 'scenario_history_screen.dart';
 import 'portfolio_report_screen.dart';
 import 'help_screen.dart';
 import 'settings_screen.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../services/unity_ad_service.dart';
 import '../services/admob_service.dart';
 import '../services/event_service.dart';
+import '../theme/t_membership_colors.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -70,64 +65,71 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final assets = ref.watch(assetsProvider);
     final currency = ref.watch(currencyProvider);
     final currencyNotifier = ref.read(currencyProvider.notifier);
     final lang = ref.watch(languageProvider);
 
+    final bgColor = isDark ? TMembershipColors.darkBg : TMembershipColors.lightBg;
+
     return Scaffold(
-      backgroundColor: NeonColors.background,
+      backgroundColor: bgColor,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(_isAdFree ? 140 : 100),
+        preferredSize: Size.fromHeight(_isAdFree ? 120 : 80),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildPureStaticHeader(context, lang),
+                _buildHeader(context, isDark, lang),
                 if (_isAdFree) ...[
-                  const SizedBox(height: 10),
-                  _buildAdFreeVipBadge(),
+                  const SizedBox(height: 8),
+                  _buildAdFreeVipBadge(isDark),
                 ],
               ],
             ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.large(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAiPanel(context),
-        backgroundColor: NeonColors.cyan,
-        foregroundColor: Colors.black,
-        child: const Icon(Icons.mic_rounded, shadows: [Shadow(blurRadius: 10, color: Colors.blueAccent)]),
+        backgroundColor: TMembershipColors.primaryBlue,
+        foregroundColor: Colors.white,
+        elevation: 6,
+        icon: const Icon(Icons.mic_rounded),
+        label: Text(
+          "AI 비서",
+          style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14),
+        ),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          final isWideScreen = constraints.maxWidth > 768;
-          final contentPadding = isWideScreen ? 48.0 : 24.0;
+          final isWide = constraints.maxWidth > 768;
+          final padding = isWide ? 40.0 : 20.0;
 
-          if (isWideScreen) {
+          if (isWide) {
             return Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 1100),
+                constraints: const BoxConstraints(maxWidth: 1080),
                 child: ListView(
-                  padding: EdgeInsets.symmetric(horizontal: contentPadding),
+                  padding: EdgeInsets.symmetric(horizontal: padding, vertical: 12),
                   children: [
-                    const SizedBox(height: 16),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          flex: 5,
+                          flex: 6,
                           child: Column(
                             children: [
-                              _buildPortfolioSummaryBanner(context, ref, assets, currency, currencyNotifier, lang)
-                                  .animate().fadeIn(duration: 400.ms).slideY(begin: 0.1, end: 0),
+                              _buildMembershipCard(context, ref, assets, currency, currencyNotifier, lang, isDark)
+                                  .animate().fadeIn(duration: 400.ms).slideY(begin: 0.08, end: 0),
                               const SizedBox(height: 20),
-                              _buildPrimaryActionLinear(context, lang)
-                                  .animate().fadeIn(duration: 500.ms).slideY(begin: 0.1, end: 0),
+                              _buildQuickActions(context, lang, isDark)
+                                  .animate().fadeIn(duration: 500.ms, delay: 100.ms).slideY(begin: 0.08, end: 0),
                               const SizedBox(height: 20),
-                              _buildPrivacyCard(context, lang),
+                              _buildSecurityNoticeCard(context, isDark),
                             ],
                           ),
                         ),
@@ -140,17 +142,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 const AdmobNativeAdCard(),
                                 const SizedBox(height: 20),
                               ],
-                              _buildHistorySectionLinear(context, lang)
-                                  .animate().fadeIn(duration: 600.ms).slideY(begin: 0.1, end: 0),
-                              const SizedBox(height: 20),
-                              _buildAssetListLinear(context, assets, lang)
-                                  .animate().fadeIn(duration: 700.ms).slideY(begin: 0.1, end: 0),
+                              _buildAssetList(context, assets, lang, isDark)
+                                  .animate().fadeIn(duration: 600.ms, delay: 200.ms).slideY(begin: 0.08, end: 0),
                             ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 60),
+                    const SizedBox(height: 48),
                   ],
                 ),
               ),
@@ -158,25 +157,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           }
 
           return ListView(
-            padding: EdgeInsets.symmetric(horizontal: contentPadding),
+            padding: EdgeInsets.symmetric(horizontal: padding, vertical: 8),
             children: [
+              _buildMembershipCard(context, ref, assets, currency, currencyNotifier, lang, isDark)
+                  .animate().fadeIn(duration: 400.ms).slideY(begin: 0.08, end: 0),
               const SizedBox(height: 16),
-              _buildPortfolioSummaryBanner(context, ref, assets, currency, currencyNotifier, lang)
-                  .animate().fadeIn(duration: 400.ms).slideY(begin: 0.2, end: 0),
-              const SizedBox(height: 20),
               if (!_isAdFree) ...[
                 const AdmobNativeAdCard(),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
               ],
-              _buildPrimaryActionLinear(context, lang)
-                  .animate().fadeIn(duration: 600.ms, delay: 100.ms).slideY(begin: 0.2, end: 0),
-              const SizedBox(height: 24),
-              _buildHistorySectionLinear(context, lang)
-                  .animate().fadeIn(duration: 800.ms, delay: 200.ms).slideY(begin: 0.2, end: 0),
-              const SizedBox(height: 24),
-              _buildAssetListLinear(context, assets, lang)
-                  .animate().fadeIn(duration: 1000.ms, delay: 300.ms).slideY(begin: 0.2, end: 0),
-              const SizedBox(height: 60),
+              _buildQuickActions(context, lang, isDark)
+                  .animate().fadeIn(duration: 500.ms, delay: 100.ms).slideY(begin: 0.08, end: 0),
+              const SizedBox(height: 20),
+              _buildAssetList(context, assets, lang, isDark)
+                  .animate().fadeIn(duration: 600.ms, delay: 200.ms).slideY(begin: 0.08, end: 0),
+              const SizedBox(height: 20),
+              _buildSecurityNoticeCard(context, isDark),
+              const SizedBox(height: 80),
             ],
           );
         },
@@ -192,60 +189,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildAdFreeVipBadge() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            NeonColors.cyan.withOpacity(0.2),
-            Colors.purpleAccent.withOpacity(0.2),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: NeonColors.cyan.withOpacity(0.5),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.bolt_rounded, color: NeonColors.cyan, size: 18),
-              const SizedBox(width: 6),
-              const Text(
-                '100회 다운로드 기념: 1달 광고 제거 적용 중',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-            decoration: BoxDecoration(
-              color: NeonColors.cyan,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Text(
-              'D-$_remainingDays',
-              style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w900,
-                fontSize: 11,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ).animate().fadeIn(duration: 500.ms).shimmer(delay: 800.ms, duration: 1500.ms);
-  }
-
   void _showAiPanel(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -255,42 +198,73 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildPureStaticHeader(BuildContext context, LanguageType lang) {
+  Widget _buildHeader(BuildContext context, bool isDark, LanguageType lang) {
+    final textColor = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
           children: [
-            Text(
-              "물타기 계산기",
-              style: GoogleFonts.inter(
-                color: Colors.white,
-                fontWeight: FontWeight.w900,
-                fontSize: 32,
-                letterSpacing: -1,
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                gradient: TMembershipColors.primaryGradient,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: TMembershipColors.colorfulGlow(TMembershipColors.primaryBlue, opacity: 0.3),
+              ),
+              child: const Center(
+                child: Text(
+                  "T",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 22,
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 2),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: const BoxDecoration(color: NeonColors.cyan),
-              child: const Text(
-                "STRATEGY MANAGER",
-                style: TextStyle(color: Colors.black, fontWeight: FontWeight.w900, fontSize: 9, letterSpacing: 2),
-              ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "물타기 계산기",
+                  style: GoogleFonts.inter(
+                    color: textColor,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 20,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                Text(
+                  "SMART STRATEGY MANAGER",
+                  style: GoogleFonts.inter(
+                    color: TMembershipColors.primaryBlue,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 10,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
         Row(
           children: [
-            IconButton(
-              icon: const Icon(Icons.help_outline_rounded, color: Colors.white54, size: 26),
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HelpScreen())),
+            _buildIconButton(
+              icon: Icons.help_outline_rounded,
+              isDark: isDark,
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => HelpScreen())),
             ),
-            IconButton(
-              icon: const Icon(Icons.settings_outlined, color: Colors.white54, size: 26),
-              onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsScreen())),
+            const SizedBox(width: 8),
+            _buildIconButton(
+              icon: Icons.settings_outlined,
+              isDark: isDark,
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SettingsScreen())),
             ),
           ],
         ),
@@ -298,230 +272,609 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Widget _buildPortfolioSummaryBanner(
+  Widget _buildIconButton({
+    required IconData icon,
+    required bool isDark,
+    required VoidCallback onTap,
+  }) {
+    final bg = isDark ? TMembershipColors.darkSurface : Colors.white;
+    final border = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
+    final color = isDark ? Colors.white70 : TMembershipColors.lightTextSecondary;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: border, width: 1),
+        boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 8, dy: 2),
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: color, size: 20),
+        onPressed: onTap,
+        padding: const EdgeInsets.all(8),
+        constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+      ),
+    );
+  }
+
+  Widget _buildAdFreeVipBadge(bool isDark) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            TMembershipColors.gold.withOpacity(0.18),
+            TMembershipColors.accentOrange.withOpacity(0.18),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: TMembershipColors.gold.withOpacity(0.6),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.stars_rounded, color: TMembershipColors.gold, size: 18),
+              const SizedBox(width: 8),
+              Text(
+                '100회 돌파 기념 VIP: 1달 광고 제거 적용 중',
+                style: TextStyle(
+                  color: isDark ? Colors.white : TMembershipColors.lightTextPrimary,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              gradient: TMembershipColors.vipGoldGradient,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              'D-$_remainingDays',
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w900,
+                fontSize: 11,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 400.ms).shimmer(delay: 600.ms, duration: 1500.ms);
+  }
+
+  /// SK T-Membership Signature Card Widget
+  Widget _buildMembershipCard(
     BuildContext context,
     WidgetRef ref,
     List<Asset> assets,
     CurrencyType currency,
     CurrencyNotifier currencyNotifier,
     LanguageType lang,
+    bool isDark,
   ) {
     final totalInvested = assets.fold(0.0, (sum, item) => sum + (item.initialPrice * item.initialQuantity));
     final currentValue = assets.fold(0.0, (sum, item) => sum + (item.initialPrice * item.initialQuantity));
     final pnl = currentValue - totalInvested;
-    final pnlColor = pnl >= 0 ? NeonColors.green : Colors.redAccent;
     final pnlPercent = totalInvested > 0 ? (pnl / totalInvested) * 100 : 0.0;
 
     return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: NeonColors.glassyBorder(NeonColors.cyan),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: TMembershipColors.primaryGradient,
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: TMembershipColors.colorfulGlow(TMembershipColors.primaryBlue, opacity: 0.35),
+      ),
+      child: Stack(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(L10n.s(lang, 'total_invested'), style: const TextStyle(color: Colors.white54, fontSize: 13, fontWeight: FontWeight.bold)),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.white10,
-                  borderRadius: BorderRadius.circular(8),
+          // Background decorative circular shapes for depth
+          Positioned(
+            right: -30,
+            top: -30,
+            child: Container(
+              width: 160,
+              height: 160,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.08),
+              ),
+            ),
+          ),
+          Positioned(
+            left: -40,
+            bottom: -50,
+            child: Container(
+              width: 140,
+              height: 140,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.06),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+                          ),
+                          child: const Text(
+                            "T MEMBERSHIP PORTFOLIO",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 10,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    InkWell(
+                      onTap: currencyNotifier.toggle,
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.25),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.white.withOpacity(0.25)),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              currency == CurrencyType.krw ? 'KRW (\u20a9)' : 'USD (\$)',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 11,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            const Icon(Icons.sync_alt_rounded, color: Colors.white70, size: 12),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                child: InkWell(
-                  onTap: currencyNotifier.toggle,
+                const SizedBox(height: 20),
+                Text(
+                  L10n.s(lang, 'total_invested'),
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.85),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                FittedBox(
                   child: Text(
-                    currency == CurrencyType.krw ? 'KRW (\u20a9)' : 'USD (\$)',
-                    style: const TextStyle(color: NeonColors.cyan, fontWeight: FontWeight.bold, fontSize: 11),
+                    NumberFormat.currency(
+                      symbol: currency == CurrencyType.krw ? '\u20a9' : '\$',
+                      decimalDigits: 0,
+                    ).format(totalInvested),
+                    style: GoogleFonts.inter(
+                      color: Colors.white,
+                      fontSize: 34,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -1,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            NumberFormat.currency(symbol: currency == CurrencyType.krw ? '\u20a9' : '\$', decimalDigits: 0).format(totalInvested),
-            style: GoogleFonts.notoSansMono(color: Colors.white, fontSize: 32, fontWeight: FontWeight.w900),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(L10n.s(lang, 'pnl'), style: const TextStyle(color: Colors.white38, fontSize: 11)),
-                  Text(
-                    "${pnl >= 0 ? '+' : ''}${NumberFormat.currency(symbol: currency == CurrencyType.krw ? '\u20a9' : '\$', decimalDigits: 0).format(pnl)}",
-                    style: TextStyle(color: pnlColor, fontSize: 16, fontWeight: FontWeight.w900),
+                const SizedBox(height: 20),
+                // Bottom stats strip & barcode imitation
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(color: pnlColor.withOpacity(0.1), borderRadius: BorderRadius.circular(8), border: Border.all(color: pnlColor, width: 1.5)),
-                child: Text(
-                  "${pnl >= 0 ? '+' : ''}${pnlPercent.toStringAsFixed(2)}%",
-                  style: TextStyle(color: pnlColor, fontWeight: FontWeight.w900, fontSize: 13),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "보유 자산 종목",
+                            style: TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w500),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            "${assets.length}개 종목",
+                            style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w900),
+                          ),
+                        ],
+                      ),
+                      Container(height: 24, width: 1, color: Colors.white24),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            L10n.s(lang, 'pnl'),
+                            style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w500),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            "${pnl >= 0 ? '+' : ''}${pnlPercent.toStringAsFixed(1)}%",
+                            style: const TextStyle(
+                              color: Color(0xFF69F0AE),
+                              fontSize: 15,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(height: 24, width: 1, color: Colors.white24),
+                      ElevatedButton(
+                        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SimulatorScreen())),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: TMembershipColors.primaryBlue,
+                          elevation: 0,
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          minimumSize: Size.zero,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: Row(
+                          children: const [
+                            Text("계산하기", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12)),
+                            SizedBox(width: 4),
+                            Icon(Icons.arrow_forward_rounded, size: 14),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPrimaryActionLinear(BuildContext context, LanguageType lang) {
-    return InkWell(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SimulatorScreen())),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(28),
-        decoration: NeonColors.borderGlow(NeonColors.pink).copyWith(
-          color: NeonColors.pink,
-          boxShadow: NeonColors.depthShadow(NeonColors.pink.withOpacity(0.3)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(L10n.s(lang, 'label_sim').toUpperCase(), style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w900, fontSize: 20)),
-                const SizedBox(height: 4),
-                const Text("예상 수익 및 신규 평단가 시뮬레이션", style: TextStyle(color: Colors.black54, fontSize: 12, fontWeight: FontWeight.bold)),
-              ],
-            ),
-            const Icon(Icons.arrow_forward_ios_rounded, color: Colors.black, size: 26),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHistorySectionLinear(BuildContext context, LanguageType lang) {
+  /// T-Membership Style Quick Action Grid
+  Widget _buildQuickActions(BuildContext context, LanguageType lang, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(L10n.s(lang, 'label_history').toUpperCase(), style: const TextStyle(color: Colors.white30, fontWeight: FontWeight.w900, fontSize: 13, letterSpacing: 1)),
-        const SizedBox(height: 12),
-        _buildActionCard(
-          context,
-          "최근 계산 내역 확인",
-          Icons.history_rounded,
-          Colors.white.withOpacity(0.08),
-          () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ScenarioHistoryScreen())),
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 10),
+          child: Text(
+            "자주 찾는 기능",
+            style: GoogleFonts.inter(
+              fontWeight: FontWeight.w800,
+              fontSize: 16,
+              color: isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary,
+            ),
+          ),
         ),
-        const SizedBox(height: 8),
-        _buildActionCard(
-          context,
-          L10n.s(lang, 'label_portfolio'),
-          Icons.pie_chart_rounded,
-          NeonColors.cyan,
-          () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PortfolioReportScreen())),
+        Row(
+          children: [
+            Expanded(
+              child: _buildActionTile(
+                context: context,
+                title: "물타기 시뮬레이터",
+                subtitle: "신규 평단가 & 수익 계산",
+                icon: Icons.calculate_rounded,
+                gradient: TMembershipColors.actionPurpleGradient,
+                isDark: isDark,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SimulatorScreen())),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildActionTile(
+                context: context,
+                title: "시나리오 기록",
+                subtitle: "과거 계산 내역 비교",
+                icon: Icons.history_toggle_off_rounded,
+                gradient: TMembershipColors.cardTealBlueGradient,
+                isDark: isDark,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ScenarioHistoryScreen())),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _buildActionTile(
+                context: context,
+                title: "포트폴리오 리포트",
+                subtitle: "자산 비중 및 회복력 분석",
+                icon: Icons.pie_chart_outline_rounded,
+                gradient: TMembershipColors.vipGoldGradient,
+                isDark: isDark,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PortfolioReportScreen())),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildActionTile(
+                context: context,
+                title: "음성 비서 입력",
+                subtitle: "말 한마디로 자동 계산",
+                icon: Icons.graphic_eq_rounded,
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFFF007F), Color(0xFFFF5252)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                isDark: isDark,
+                onTap: () => _showAiPanel(context),
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
 
-  Widget _buildAssetListLinear(BuildContext context, List<Asset> assets, LanguageType lang) {
+  Widget _buildActionTile({
+    required BuildContext context,
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Gradient gradient,
+    required bool isDark,
+    required VoidCallback onTap,
+  }) {
+    final cardBg = isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface;
+    final cardBorder = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
+    final titleColor = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
+    final subColor = isDark ? TMembershipColors.darkTextTertiary : TMembershipColors.lightTextTertiary;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: cardBorder, width: 1.2),
+        boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 14, dy: 4),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    gradient: gradient,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Center(
+                    child: Icon(icon, color: Colors.white, size: 22),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 14,
+                    color: titleColor,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 11,
+                    color: subColor,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// T-Membership clean asset list
+  Widget _buildAssetList(BuildContext context, List<Asset> assets, LanguageType lang, bool isDark) {
+    final cardBg = isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface;
+    final cardBorder = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
+    final titleColor = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
+    final subColor = isDark ? TMembershipColors.darkTextTertiary : TMembershipColors.lightTextTertiary;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(L10n.s(lang, 'my_assets').toUpperCase(), style: const TextStyle(color: Colors.white30, fontWeight: FontWeight.w900, fontSize: 13, letterSpacing: 1)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "내 등록 자산",
+              style: GoogleFonts.inter(
+                fontWeight: FontWeight.w800,
+                fontSize: 16,
+                color: titleColor,
+              ),
+            ),
+            if (assets.isNotEmpty)
+              Text(
+                "총 ${assets.length}개",
+                style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 13),
+              ),
+          ],
+        ),
         const SizedBox(height: 12),
         if (assets.isEmpty)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 20),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.02),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.white10),
+              color: cardBg,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: cardBorder, width: 1.2),
+              boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 10, dy: 3),
             ),
-            child: const Text(
-              "등록된 자산이 없습니다. 시뮬레이터에서 새로운 주식/코인을 계산하고 저장해보세요.",
-              style: TextStyle(color: Colors.white38, fontSize: 12),
+            child: Column(
+              children: [
+                Icon(Icons.inventory_2_outlined, color: subColor, size: 40),
+                const SizedBox(height: 12),
+                Text(
+                  "등록된 자산이 없습니다",
+                  style: TextStyle(color: titleColor, fontWeight: FontWeight.w700, fontSize: 14),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "시뮬레이터에서 계산 후 자산으로 저장해보세요.",
+                  style: TextStyle(color: subColor, fontSize: 12),
+                ),
+              ],
             ),
           )
         else
-          ...assets.take(4).map((asset) => Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(color: Colors.white.withOpacity(0.03), border: Border.all(color: Colors.white12, width: 1), borderRadius: BorderRadius.circular(12)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(asset.name, style: const TextStyle(color: Colors.white70, fontWeight: FontWeight.bold)),
-                  Text(NumberFormat.decimalPattern().format(asset.initialPrice), style: GoogleFonts.notoSansMono(color: Colors.white)),
-                ],
-              ),
+          Container(
+            decoration: BoxDecoration(
+              color: cardBg,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: cardBorder, width: 1.2),
+              boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 12, dy: 4),
             ),
-          )).toList(),
+            child: ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: assets.take(5).length,
+              separatorBuilder: (context, index) => Divider(
+                height: 1,
+                thickness: 1,
+                color: isDark ? TMembershipColors.darkDivider : TMembershipColors.lightDivider,
+              ),
+              itemBuilder: (context, index) {
+                final asset = assets[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 36,
+                            height: 36,
+                            decoration: BoxDecoration(
+                              color: TMembershipColors.primaryBlue.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Center(
+                              child: Icon(Icons.show_chart_rounded, color: TMembershipColors.primaryBlue, size: 20),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                asset.name,
+                                style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 14, color: titleColor),
+                              ),
+                              Text(
+                                "${asset.initialQuantity.toStringAsFixed(0)} 주 / 코인",
+                                style: TextStyle(color: subColor, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Text(
+                        NumberFormat.decimalPattern().format(asset.initialPrice),
+                        style: GoogleFonts.notoSansMono(
+                          color: titleColor,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
       ],
     );
   }
 
-  Widget _buildPrivacyCard(BuildContext context, LanguageType lang) {
+  /// Security Notice Card
+  Widget _buildSecurityNoticeCard(BuildContext context, bool isDark) {
+    final cardBg = isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface;
+    final cardBorder = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
+    final titleColor = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
+    final subColor = isDark ? TMembershipColors.darkTextSecondary : TMembershipColors.lightTextSecondary;
+
     return Container(
-      padding: const EdgeInsets.all(24),
       width: double.infinity,
-      decoration: NeonColors.borderGlow(NeonColors.cyan).copyWith(color: NeonColors.surface),
-      child: Column(
-        children: const [
-          Icon(Icons.security_rounded, color: NeonColors.cyan, size: 32),
-          SizedBox(height: 12),
-          Text(
-            "Privacy & Security Guaranteed",
-            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16, color: Colors.white, letterSpacing: -0.5),
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: cardBorder, width: 1.2),
+        boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 10, dy: 3),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: TMembershipColors.accentMint.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(Icons.shield_outlined, color: TMembershipColors.accentMint, size: 22),
           ),
-          SizedBox(height: 8),
-          Text(
-            "모든 자산 및 계산 내역은 서버 전송 없이 100% 로컬 기기에 암호화 저장됩니다.",
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white54, fontSize: 13, height: 1.4),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "100% 로컬 보안 보장",
+                  style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 13, color: titleColor),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  "외부 서버로 개인 자산 데이터를 절대 전송하지 않습니다.",
+                  style: TextStyle(color: subColor, fontSize: 11),
+                ),
+              ],
+            ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildActionCard(BuildContext context, String title, IconData icon, Color color, VoidCallback onTap) {
-    return Container(
-      decoration: NeonColors.borderGlow(color).copyWith(color: NeonColors.surface),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: color, width: 1),
-                ),
-                child: Icon(icon, color: color, size: 24),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
-                ),
-              ),
-              const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.white38),
-            ],
-          ),
-        ),
       ),
     );
   }
