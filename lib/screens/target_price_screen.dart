@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../widgets/one_ui_scroll_view.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import '../services/calculator_service.dart';
 import '../providers/language_provider.dart';
+import '../providers/currency_provider.dart';
+import '../theme/t_membership_colors.dart';
 import '../utils/l10n.dart';
 
 class TargetPriceScreen extends ConsumerStatefulWidget {
@@ -22,11 +26,29 @@ class _TargetPriceScreenState extends ConsumerState<TargetPriceScreen> {
   double _requiredQty = 0;
   final _currencyFormat = NumberFormat.currency(symbol: '', decimalDigits: 0);
 
+  @override
+  void initState() {
+    super.initState();
+    _currentPriceController.addListener(_calculate);
+    _currentQtyController.addListener(_calculate);
+    _targetPriceController.addListener(_calculate);
+    _purchasePriceController.addListener(_calculate);
+  }
+
+  @override
+  void dispose() {
+    _currentPriceController.dispose();
+    _currentQtyController.dispose();
+    _targetPriceController.dispose();
+    _purchasePriceController.dispose();
+    super.dispose();
+  }
+
   void _calculate() {
-    final cp = double.tryParse(_currentPriceController.text) ?? 0;
-    final cq = double.tryParse(_currentQtyController.text) ?? 0;
-    final tp = double.tryParse(_targetPriceController.text) ?? 0;
-    final pp = double.tryParse(_purchasePriceController.text) ?? 0;
+    final cp = double.tryParse(_currentPriceController.text.replaceAll(',', '')) ?? 0;
+    final cq = double.tryParse(_currentQtyController.text.replaceAll(',', '')) ?? 0;
+    final tp = double.tryParse(_targetPriceController.text.replaceAll(',', '')) ?? 0;
+    final pp = double.tryParse(_purchasePriceController.text.replaceAll(',', '')) ?? 0;
 
     if (cp > 0 && cq > 0 && tp > 0 && pp > 0) {
       setState(() {
@@ -37,101 +59,258 @@ class _TargetPriceScreenState extends ConsumerState<TargetPriceScreen> {
           purchasePrice: pp,
         );
       });
+    } else {
+      if (_requiredQty != 0) setState(() => _requiredQty = 0);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final lang = ref.watch(languageProvider);
+    final currency = ref.watch(currencyProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return OneUIScrollView(
-      title: L10n.s(lang, 'target_price'),
-      children: [
-        if (_requiredQty > 0) ...[
-          Card(
-            color: theme.colorScheme.primaryContainer,
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                children: [
-                  Text(L10n.s(lang, 'required_qty'), style: theme.textTheme.bodyMedium),
-                  const SizedBox(height: 8),
-                  Text(
-                    _requiredQty.toStringAsFixed(2),
-                    style: theme.textTheme.headlineLarge?.copyWith(
-                      color: theme.colorScheme.onPrimaryContainer,
-                      fontWeight: FontWeight.bold,
+    final bgColor = isDark ? TMembershipColors.darkBg : TMembershipColors.lightBg;
+    final cardBg = isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface;
+    final cardBorder = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
+    final textPrimary = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
+    final textSecondary = isDark ? TMembershipColors.darkTextSecondary : TMembershipColors.lightTextSecondary;
+    final currSymbol = currency == CurrencyType.krw ? '원' : '\$';
+
+    final pp = double.tryParse(_purchasePriceController.text.replaceAll(',', '')) ?? 0;
+    final totalCost = _requiredQty > 0 ? _requiredQty * pp : 0;
+
+    return Scaffold(
+      backgroundColor: bgColor,
+      appBar: AppBar(
+        backgroundColor: bgColor,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: textPrimary, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          L10n.s(lang, 'target_price'),
+          style: GoogleFonts.inter(
+            color: textPrimary,
+            fontWeight: FontWeight.w900,
+            fontSize: 18,
+            letterSpacing: -0.4,
+          ),
+        ),
+      ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            children: [
+              // Result Card (T-Membership style)
+              if (_requiredQty > 0)
+                Container(
+                  margin: const EdgeInsets.only(bottom: 20),
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    gradient: TMembershipColors.primaryGradient,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: TMembershipColors.colorfulGlow(TMembershipColors.primaryBlue, opacity: 0.35),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            L10n.s(lang, 'required_qty').toUpperCase(),
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 11,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Text("TARGET ACHIEVED", style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          Text(
+                            _requiredQty.toStringAsFixed(0),
+                            style: GoogleFonts.inter(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 36,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          const Text(
+                            "주 필요",
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+                      const Divider(color: Colors.white24, height: 1),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            L10n.s(lang, 'total_cost'),
+                            style: const TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600),
+                          ),
+                          Text(
+                            "${_currencyFormat.format(totalCost)}$currSymbol",
+                            style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+              // Inputs Card
+              Container(
+                padding: const EdgeInsets.all(22),
+                decoration: BoxDecoration(
+                  color: cardBg,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: cardBorder, width: 1.2),
+                  boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 14, dy: 4),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: TMembershipColors.primaryBlue.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(Icons.track_changes_rounded, color: TMembershipColors.primaryBlue, size: 20),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          L10n.s(lang, 'target_settings'),
+                          style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 16, color: textPrimary),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    '${L10n.s(lang, 'total_cost')}: ${_currencyFormat.format(_requiredQty * (double.tryParse(_purchasePriceController.text) ?? 0))}',
-                    style: theme.textTheme.bodyLarge,
-                  ),
-                ],
+                    const SizedBox(height: 20),
+                    Text(
+                      "현재 보유 정보",
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: textSecondary),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildInputField(_currentPriceController, L10n.s(lang, 'avg_price'), '예: 75,000', isDark),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildInputField(_currentQtyController, L10n.s(lang, 'quantity'), '예: 100', isDark),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Divider(height: 1, color: isDark ? TMembershipColors.darkDivider : TMembershipColors.lightDivider),
+                    const SizedBox(height: 20),
+                    Text(
+                      "목표 및 추가 매수 계획",
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: textSecondary),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildInputField(_targetPriceController, L10n.s(lang, 'target_avg_price'), '예: 70,000', isDark),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildInputField(_purchasePriceController, L10n.s(lang, 'purchase_price'), '예: 65,000', isDark),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          _calculate();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: TMembershipColors.primaryBlue,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          elevation: 4,
+                        ),
+                        child: Text(
+                          L10n.s(lang, 'find_amount'),
+                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(height: 36),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInputField(TextEditingController controller, String label, String hint, bool isDark) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            color: isDark ? Colors.white60 : Colors.black54,
+          ),
+        ),
+        const SizedBox(height: 6),
+        TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w800,
+            color: isDark ? Colors.white : Colors.black87,
+          ),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: TextStyle(color: isDark ? Colors.white24 : Colors.black26, fontSize: 13),
+            filled: true,
+            fillColor: isDark ? Colors.black26 : const Color(0xFFF7F8FA),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(14),
+              borderSide: BorderSide.none,
             ),
           ),
-          const SizedBox(height: 20),
-        ],
-        _buildInputCard(context, lang),
+        ),
       ],
-    );
-  }
-
-  Widget _buildInputCard(BuildContext context, LanguageType lang) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(L10n.s(lang, 'target_settings'), style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 16),
-            _buildTextField(_currentPriceController, L10n.s(lang, 'avg_price'), '0'),
-            const SizedBox(height: 12),
-            _buildTextField(_currentQtyController, L10n.s(lang, 'quantity'), '0'),
-            const SizedBox(height: 16),
-            const Divider(),
-            const SizedBox(height: 16),
-            _buildTextField(_targetPriceController, L10n.s(lang, 'target_avg_price'), '0'),
-            const SizedBox(height: 12),
-            _buildTextField(_purchasePriceController, L10n.s(lang, 'purchase_price'), '0'),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: _calculate,
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                ),
-                child: Text(L10n.s(lang, 'find_amount')),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(TextEditingController controller, String label, String hint) {
-    return TextField(
-      controller: controller,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        filled: true,
-        fillColor: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      ),
-      onChanged: (_) => _calculate(),
     );
   }
 }

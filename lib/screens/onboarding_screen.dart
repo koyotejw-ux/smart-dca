@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../theme/neon_colors.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../theme/t_membership_colors.dart';
 import '../utils/l10n.dart';
 import '../providers/language_provider.dart';
 import '../services/storage_service.dart';
@@ -23,19 +25,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       titleKey: 'onboarding_title_1',
       descKey: 'onboarding_desc_1',
       icon: Icons.trending_up_rounded,
-      color: NeonColors.cyan,
+      gradient: TMembershipColors.primaryGradient,
     ),
     OnboardingData(
       titleKey: 'onboarding_title_2',
       descKey: 'onboarding_desc_2',
       icon: Icons.calculate_rounded,
-      color: NeonColors.pink,
+      gradient: TMembershipColors.actionPurpleGradient,
     ),
     OnboardingData(
       titleKey: 'onboarding_title_3',
       descKey: 'onboarding_desc_3',
       icon: Icons.auto_awesome_rounded,
-      color: NeonColors.green,
+      gradient: TMembershipColors.cardTealBlueGradient,
     ),
   ];
 
@@ -52,116 +54,133 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final lang = ref.watch(languageProvider);
-    final theme = Theme.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? TMembershipColors.darkBg : TMembershipColors.lightBg;
+    final textPrimary = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
+    final textSecondary = isDark ? TMembershipColors.darkTextSecondary : TMembershipColors.lightTextSecondary;
 
     return Scaffold(
-      body: Stack(
-        children: [
-          PageView.builder(
-            controller: _pageController,
-            onPageChanged: (index) => setState(() => _currentPage = index),
-            itemCount: _onboardingData.length,
-            itemBuilder: (context, index) {
-              final data = _onboardingData[index];
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(48),
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        border: Border.all(color: data.color, width: 3),
-                        borderRadius: BorderRadius.circular(32),
-                      ),
-                      child: Icon(data.icon, size: 80, color: data.color),
-                    ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
-                    const SizedBox(height: 60),
-                    Text(
-                      L10n.s(lang, data.titleKey),
-                      style: theme.textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.onSurface,
-                      ),
-                      textAlign: TextAlign.center,
-                    ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.2, end: 0),
-                    const SizedBox(height: 20),
-                    Text(
-                      L10n.s(lang, data.descKey),
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                      textAlign: TextAlign.center,
-                    ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2, end: 0),
-                  ],
-                ),
-              );
-            },
-          ),
-          Positioned(
-            bottom: 50,
-            left: 20,
-            right: 20,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    _onboardingData.length,
-                    (index) => AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      height: 8,
-                      width: _currentPage == index ? 24 : 8,
-                      decoration: BoxDecoration(
-                        color: _currentPage == index ? theme.colorScheme.primary : theme.colorScheme.outlineVariant,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
+      backgroundColor: bgColor,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            PageView.builder(
+              controller: _pageController,
+              onPageChanged: (index) => setState(() => _currentPage = index),
+              itemCount: _onboardingData.length,
+              itemBuilder: (context, index) {
+                final data = _onboardingData[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 36),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 140,
+                        height: 140,
+                        decoration: BoxDecoration(
+                          gradient: data.gradient,
+                          borderRadius: BorderRadius.circular(36),
+                          boxShadow: TMembershipColors.colorfulGlow(TMembershipColors.primaryBlue, opacity: 0.35),
+                        ),
+                        child: Center(
+                          child: Icon(data.icon, size: 70, color: Colors.white),
+                        ),
+                      ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
+                      const SizedBox(height: 50),
+                      Text(
+                        L10n.s(lang, data.titleKey),
+                        style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 24,
+                          color: textPrimary,
+                          letterSpacing: -0.5,
+                        ),
+                        textAlign: TextAlign.center,
+                      ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1, end: 0),
+                      const SizedBox(height: 16),
+                      Text(
+                        L10n.s(lang, data.descKey),
+                        style: TextStyle(
+                          fontSize: 14,
+                          height: 1.5,
+                          color: textSecondary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
+                      ).animate().fadeIn(delay: 350.ms).slideY(begin: 0.1, end: 0),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 40),
-                SizedBox(
-                  width: double.infinity,
-                  height: 60,
-                  child: FilledButton(
-                    onPressed: () {
-                      if (_currentPage == _onboardingData.length - 1) {
-                        _onFinish();
-                      } else {
-                        _pageController.nextPage(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeInOut,
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: NeonColors.cyan,
-                      foregroundColor: Colors.black,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: const BorderSide(color: Colors.black, width: 2.5),
-                      ),
-                    ),
-                    child: Text(
-                      _currentPage == _onboardingData.length - 1
-                          ? L10n.s(lang, 'get_started').toUpperCase()
-                          : L10n.s(lang, 'next').toUpperCase(),
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, letterSpacing: 1),
-                    ),
-                  ),
-                ),
-                if (_currentPage < _onboardingData.length - 1)
-                  TextButton(
-                    onPressed: _onFinish,
-                    child: Text(L10n.s(lang, 'skip')),
-                  ),
-              ],
+                );
+              },
             ),
-          ),
-        ],
+            Positioned(
+              bottom: 30,
+              left: 24,
+              right: 24,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      _onboardingData.length,
+                      (index) => AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        margin: const EdgeInsets.symmetric(horizontal: 4),
+                        height: 6,
+                        width: _currentPage == index ? 24 : 6,
+                        decoration: BoxDecoration(
+                          color: _currentPage == index
+                              ? TMembershipColors.primaryBlue
+                              : (isDark ? Colors.white24 : Colors.black12),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_currentPage == _onboardingData.length - 1) {
+                          _onFinish();
+                        } else {
+                          _pageController.nextPage(
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: TMembershipColors.primaryBlue,
+                        elevation: 4,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                      ),
+                      child: Text(
+                        _currentPage == _onboardingData.length - 1
+                            ? L10n.s(lang, 'get_started')
+                            : L10n.s(lang, 'next'),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  if (_currentPage < _onboardingData.length - 1)
+                    TextButton(
+                      onPressed: _onFinish,
+                      child: Text(
+                        L10n.s(lang, 'skip'),
+                        style: TextStyle(color: textSecondary, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -171,12 +190,12 @@ class OnboardingData {
   final String titleKey;
   final String descKey;
   final IconData icon;
-  final Color color;
+  final LinearGradient gradient;
 
   OnboardingData({
     required this.titleKey,
     required this.descKey,
     required this.icon,
-    required this.color,
+    required this.gradient,
   });
 }

@@ -217,21 +217,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: Row(
             children: [
               Container(
-                width: 38,
-                height: 38,
+                width: 40,
+                height: 40,
                 decoration: BoxDecoration(
                   gradient: TMembershipColors.primaryGradient,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: TMembershipColors.colorfulGlow(TMembershipColors.primaryBlue, opacity: 0.3),
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: TMembershipColors.colorfulGlow(TMembershipColors.primaryBlue, opacity: 0.35),
                 ),
-                child: const Center(
-                  child: Text(
-                    "T",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 22,
-                    ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: Image.asset(
+                    'assets/app_icon.png',
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),

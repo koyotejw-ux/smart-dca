@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import '../utils/l10n.dart';
 import '../providers/language_provider.dart';
 import '../services/storage_service.dart';
+import '../theme/t_membership_colors.dart';
 import 'onboarding_screen.dart';
 import 'home_screen.dart';
 import '../services/admob_service.dart';
@@ -23,10 +26,10 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
   }
 
   Future<void> _navigateToNext() async {
-    await Future.delayed(const Duration(milliseconds: 2500));
+    await Future.delayed(const Duration(milliseconds: 2400));
     final storage = StorageService();
     final hasSeenOnboarding = await storage.hasSeenOnboarding();
-    
+
     if (mounted) {
       AdmobService.showAppOpenAd(
         onDismiss: () {
@@ -46,9 +49,9 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
   @override
   Widget build(BuildContext context) {
     final lang = ref.watch(languageProvider);
-    final theme = Theme.of(context);
 
     return Scaffold(
+      backgroundColor: const Color(0xFF0F141C),
       body: Stack(
         children: [
           // Background Gradient Image
@@ -56,57 +59,69 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
             child: Image.asset(
               'assets/splash_bg.png',
               fit: BoxFit.cover,
-            ).animate().fadeIn(duration: 1000.ms),
+            ).animate().fadeIn(duration: 800.ms),
           ),
-          // Logo & Title
+
+          // Central Floating Glass Logo & Branding
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: 120,
-                  height: 120,
+                  width: 124,
+                  height: 124,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
+                    borderRadius: BorderRadius.circular(32),
+                    boxShadow: TMembershipColors.colorfulGlow(TMembershipColors.primaryBlue, opacity: 0.45),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: Image.asset('assets/app_icon.png'),
+                    borderRadius: BorderRadius.circular(32),
+                    child: Image.asset(
+                      'assets/app_icon.png',
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ).animate()
                   .scale(duration: 800.ms, curve: Curves.easeOutBack)
-                  .shimmer(delay: 1000.ms, duration: 1500.ms),
-                const SizedBox(height: 32),
+                  .shimmer(delay: 900.ms, duration: 1400.ms),
+                const SizedBox(height: 28),
                 Text(
                   L10n.s(lang, 'app_title'),
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+                  style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 26,
                     color: Colors.white,
-                    letterSpacing: 1.2,
+                    letterSpacing: -0.5,
                   ),
-                ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.2, end: 0),
+                ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.15, end: 0),
+                const SizedBox(height: 8),
+                Text(
+                  "스마트 물타기 및 평단가 관리 비서",
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.7),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                    letterSpacing: 0.2,
+                  ),
+                ).animate().fadeIn(delay: 450.ms),
               ],
             ),
           ),
-          // Bottom Version or Credits
+
+          // Bottom Credits
           Positioned(
             bottom: 40,
             left: 0,
             right: 0,
             child: Center(
               child: Text(
-                'v1.0.1 Elite Edition',
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: Colors.white.withOpacity(0.5),
+                'v3.2.0 T-Edition • 100% On-Device Safe',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.4),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
                 ),
-              ).animate().fadeIn(delay: 1500.ms),
+              ).animate().fadeIn(delay: 1000.ms),
             ),
           ),
         ],
