@@ -96,23 +96,30 @@ class ScenarioHistoryScreen extends ConsumerWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      gradient: TMembershipColors.primaryGradient,
-                                      borderRadius: BorderRadius.circular(8),
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        gradient: TMembershipColors.primaryGradient,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: const Text("STRATEGY", style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
                                     ),
-                                    child: const Text("STRATEGY", style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    s.name,
-                                    style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 15, color: textPrimary),
-                                  ),
-                                ],
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        s.name,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 15, color: textPrimary),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
+                              const SizedBox(width: 8),
                               Text(dateFormat.format(s.createdAt), style: TextStyle(color: textSecondary, fontSize: 11)),
                             ],
                           ),
@@ -184,7 +191,11 @@ class ScenarioHistoryScreen extends ConsumerWidget {
       children: [
         Text(label, style: TextStyle(fontSize: 11, color: labelColor, fontWeight: FontWeight.w600)),
         const SizedBox(height: 4),
-        Text(value, style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14, color: valueColor)),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: Text(value, style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14, color: valueColor)),
+        ),
       ],
     );
   }

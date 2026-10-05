@@ -190,19 +190,30 @@ class PortfolioReportScreen extends ConsumerWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(a.name, style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14, color: textPrimary)),
+                                    Text(
+                                      a.name,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14, color: textPrimary),
+                                    ),
                                     const SizedBox(height: 4),
                                     Text(
                                       "${a.initialQuantity.toStringAsFixed(0)}주 • 평단 ${formatter.format(a.initialPrice)}",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                       style: TextStyle(color: textSecondary, fontSize: 11),
                                     ),
                                   ],
                                 ),
                               ),
+                              const SizedBox(width: 8),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Text(formatter.format(value), style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14, color: textPrimary)),
+                                  FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(formatter.format(value), style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14, color: textPrimary)),
+                                  ),
                                   const SizedBox(height: 4),
                                   Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),

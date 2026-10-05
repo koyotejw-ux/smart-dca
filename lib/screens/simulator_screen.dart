@@ -620,12 +620,18 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Center(
-          child: Text(
-            label,
-            style: GoogleFonts.inter(
-              color: isSelected ? Colors.white : (Theme.of(context).brightness == Brightness.dark ? Colors.white60 : TMembershipColors.lightTextSecondary),
-              fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-              fontSize: 12,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                label,
+                style: GoogleFonts.inter(
+                  color: isSelected ? Colors.white : (Theme.of(context).brightness == Brightness.dark ? Colors.white60 : TMembershipColors.lightTextSecondary),
+                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
             ),
           ),
         ),
@@ -936,12 +942,18 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              label,
-              style: TextStyle(
-                color: subColor,
-                fontWeight: FontWeight.w700,
-                fontSize: 12,
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    color: subColor,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                  ),
+                ),
               ),
             ),
             if (onQuickMinus != null && onQuickPlus != null)

@@ -811,35 +811,44 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                              color: TMembershipColors.primaryBlue.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Center(
-                              child: Icon(Icons.show_chart_rounded, color: TMembershipColors.primaryBlue, size: 20),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                asset.name,
-                                style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 14, color: titleColor),
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: TMembershipColors.primaryBlue.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              Text(
-                                "${asset.initialQuantity.toStringAsFixed(0)} 주 / 코인",
-                                style: TextStyle(color: subColor, fontSize: 12),
+                              child: const Center(
+                                child: Icon(Icons.show_chart_rounded, color: TMembershipColors.primaryBlue, size: 20),
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    asset.name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 14, color: titleColor),
+                                  ),
+                                  Text(
+                                    "${asset.initialQuantity.toStringAsFixed(0)} 주 / 코인",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(color: subColor, fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 10),
                       Text(
                         NumberFormat.decimalPattern().format(asset.initialPrice),
                         style: GoogleFonts.notoSansMono(
