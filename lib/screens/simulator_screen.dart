@@ -351,23 +351,31 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            IconButton(
-              icon: Icon(Icons.arrow_back_ios_new_rounded, color: titleColor, size: 20),
-              onPressed: () => Navigator.pop(context),
-            ),
-            const SizedBox(width: 4),
-            Text(
-              "물타기 시뮬레이터",
-              style: GoogleFonts.inter(
-                color: titleColor,
-                fontWeight: FontWeight.w900,
-                fontSize: 18,
-                letterSpacing: -0.4,
+        Expanded(
+          child: Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.arrow_back_ios_new_rounded, color: titleColor, size: 20),
+                onPressed: () => Navigator.pop(context),
               ),
-            ),
-          ],
+              const SizedBox(width: 4),
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "물타기 시뮬레이터",
+                    style: GoogleFonts.inter(
+                      color: titleColor,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 18,
+                      letterSpacing: -0.4,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         Row(
           children: [
@@ -493,44 +501,51 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                     color: Colors.black.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
-                        children: [
-                          const Text("총 보유 수량", style: TextStyle(color: Colors.white70, fontSize: 11)),
-                          const SizedBox(height: 2),
-                          Text(
-                            "${totalQty.toStringAsFixed(0)} 주",
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14),
-                          ),
-                        ],
-                      ),
-                      Container(height: 20, width: 1, color: Colors.white24),
-                      Column(
-                        children: [
-                          const Text("총 투자 원금", style: TextStyle(color: Colors.white70, fontSize: 11)),
-                          const SizedBox(height: 2),
-                          Text(
-                            _currencyFormat.format(totalInvested),
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14),
-                          ),
-                        ],
-                      ),
-                      if (_isCompareMode && _resultB != null) ...[
-                        Container(height: 20, width: 1, color: Colors.white24),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
                         Column(
                           children: [
-                            const Text("시나리오 B", style: TextStyle(color: Color(0xFFFFB74D), fontSize: 11, fontWeight: FontWeight.bold)),
+                            const Text("총 보유 수량", style: TextStyle(color: Colors.white70, fontSize: 11)),
                             const SizedBox(height: 2),
                             Text(
-                              _currencyFormat.format(_resultB!.averagePrice),
-                              style: const TextStyle(color: Color(0xFFFFB74D), fontWeight: FontWeight.w900, fontSize: 14),
+                              "${totalQty.toStringAsFixed(0)} 주",
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14),
                             ),
                           ],
                         ),
+                        const SizedBox(width: 16),
+                        Container(height: 20, width: 1, color: Colors.white24),
+                        const SizedBox(width: 16),
+                        Column(
+                          children: [
+                            const Text("총 투자 원금", style: TextStyle(color: Colors.white70, fontSize: 11)),
+                            const SizedBox(height: 2),
+                            Text(
+                              _currencyFormat.format(totalInvested),
+                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14),
+                            ),
+                          ],
+                        ),
+                        if (_isCompareMode && _resultB != null) ...[
+                          const SizedBox(width: 16),
+                          Container(height: 20, width: 1, color: Colors.white24),
+                          const SizedBox(width: 16),
+                          Column(
+                            children: [
+                              const Text("시나리오 B", style: TextStyle(color: Color(0xFFFFB74D), fontSize: 11, fontWeight: FontWeight.bold)),
+                              const SizedBox(height: 2),
+                              Text(
+                                _currencyFormat.format(_resultB!.averagePrice),
+                                style: const TextStyle(color: Color(0xFFFFB74D), fontWeight: FontWeight.w900, fontSize: 14),
+                              ),
+                            ],
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
               ],

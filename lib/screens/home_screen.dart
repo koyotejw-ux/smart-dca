@@ -76,19 +76,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       backgroundColor: bgColor,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(_isAdFree ? 120 : 80),
+        preferredSize: Size.fromHeight(_isAdFree ? 120 : 72),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildHeader(context, isDark, lang),
-                if (_isAdFree) ...[
-                  const SizedBox(height: 8),
-                  _buildAdFreeVipBadge(isDark),
-                ],
-              ],
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildHeader(context, isDark, lang),
+                      if (_isAdFree) ...[
+                        const SizedBox(height: 6),
+                        _buildAdFreeVipBadge(isDark),
+                      ],
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -205,55 +213,69 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Row(
-          children: [
-            Container(
-              width: 38,
-              height: 38,
-              decoration: BoxDecoration(
-                gradient: TMembershipColors.primaryGradient,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: TMembershipColors.colorfulGlow(TMembershipColors.primaryBlue, opacity: 0.3),
-              ),
-              child: const Center(
-                child: Text(
-                  "T",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 22,
+        Expanded(
+          child: Row(
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  gradient: TMembershipColors.primaryGradient,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: TMembershipColors.colorfulGlow(TMembershipColors.primaryBlue, opacity: 0.3),
+                ),
+                child: const Center(
+                  child: Text(
+                    "T",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 22,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "물타기 계산기",
-                  style: GoogleFonts.inter(
-                    color: textColor,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 20,
-                    letterSpacing: -0.5,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "물타기 계산기",
+                      style: GoogleFonts.inter(
+                        color: textColor,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 20,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
                   ),
-                ),
-                Text(
-                  "SMART STRATEGY MANAGER",
-                  style: GoogleFonts.inter(
-                    color: TMembershipColors.primaryBlue,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 10,
-                    letterSpacing: 1.2,
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "SMART STRATEGY MANAGER",
+                      style: GoogleFonts.inter(
+                        color: TMembershipColors.primaryBlue,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 10,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
+        ),
+        const SizedBox(width: 12),
         Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             _buildIconButton(
               icon: Icons.help_outline_rounded,
@@ -490,7 +512,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     color: Colors.black.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Row(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
@@ -507,7 +532,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ),
                         ],
                       ),
+                      const SizedBox(width: 16),
                       Container(height: 24, width: 1, color: Colors.white24),
+                      const SizedBox(width: 16),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -526,7 +553,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ),
                         ],
                       ),
+                      const SizedBox(width: 16),
                       Container(height: 24, width: 1, color: Colors.white24),
+                      const SizedBox(width: 16),
                       ElevatedButton(
                         onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SimulatorScreen())),
                         style: ElevatedButton.styleFrom(
@@ -547,6 +576,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                     ],
                   ),
+                ),
                 ),
               ],
             ),
