@@ -76,28 +76,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       backgroundColor: bgColor,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(_isAdFree ? 120 : 72),
+        preferredSize: const Size.fromHeight(68),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildHeader(context, isDark, lang),
-                      if (_isAdFree) ...[
-                        const SizedBox(height: 6),
-                        _buildAdFreeVipBadge(isDark),
-                      ],
-                    ],
-                  ),
-                );
-              },
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: _buildHeader(context, isDark, lang),
           ),
         ),
       ),
@@ -106,7 +89,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         backgroundColor: TMembershipColors.primaryBlue,
         foregroundColor: Colors.white,
         elevation: 6,
-        icon: const Icon(Icons.mic_rounded),
+        icon: const Icon(Icons.mic_rounded, size: 22),
         label: Text(
           "AI 비서",
           style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14),
@@ -115,7 +98,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isWide = constraints.maxWidth > 768;
-          final padding = isWide ? 40.0 : 20.0;
+          final padding = isWide ? 40.0 : 16.0;
 
           if (isWide) {
             return Center(
@@ -124,6 +107,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: ListView(
                   padding: EdgeInsets.symmetric(horizontal: padding, vertical: 12),
                   children: [
+                    if (_isAdFree) ...[
+                      _buildAdFreeVipBadge(isDark, lang),
+                      const SizedBox(height: 16),
+                    ],
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -167,6 +154,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           return ListView(
             padding: EdgeInsets.symmetric(horizontal: padding, vertical: 8),
             children: [
+              if (_isAdFree) ...[
+                _buildAdFreeVipBadge(isDark, lang),
+                const SizedBox(height: 14),
+              ],
               _buildMembershipCard(context, ref, assets, currency, currencyNotifier, lang, isDark)
                   .animate().fadeIn(duration: 400.ms).slideY(begin: 0.08, end: 0),
               const SizedBox(height: 16),
@@ -217,19 +208,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: Row(
             children: [
               Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  gradient: TMembershipColors.primaryGradient,
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: TMembershipColors.colorfulGlow(TMembershipColors.primaryBlue, opacity: 0.35),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: Image.asset(
-                    'assets/app_icon.png',
-                    fit: BoxFit.cover,
-                  ),
+                width: 42,
+                height: 42,
+                alignment: Alignment.center,
+                child: Image.asset(
+                  'assets/app_icon.png',
+                  fit: BoxFit.contain,
                 ),
               ),
               const SizedBox(width: 12),
@@ -295,61 +279,80 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     required IconData icon,
     required bool isDark,
     required VoidCallback onTap,
+    String? tooltip,
   }) {
     final bg = isDark ? TMembershipColors.darkSurface : Colors.white;
     final border = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
-    final color = isDark ? Colors.white70 : TMembershipColors.lightTextSecondary;
+    final color = isDark ? Colors.white : TMembershipColors.lightTextPrimary;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: border, width: 1),
-        boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 8, dy: 2),
-      ),
-      child: IconButton(
-        icon: Icon(icon, color: color, size: 20),
-        onPressed: onTap,
-        padding: const EdgeInsets.all(8),
-        constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+    return Tooltip(
+      message: tooltip ?? '',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: border, width: 1.2),
+              boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 8, dy: 2),
+            ),
+            child: Center(
+              child: Icon(icon, color: color, size: 21),
+            ),
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildAdFreeVipBadge(bool isDark) {
+  Widget _buildAdFreeVipBadge(bool isDark, LanguageType lang) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            TMembershipColors.gold.withOpacity(0.18),
-            TMembershipColors.accentOrange.withOpacity(0.18),
+            TMembershipColors.gold.withOpacity(0.16),
+            TMembershipColors.accentOrange.withOpacity(0.16),
           ],
         ),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: TMembershipColors.gold.withOpacity(0.6),
-          width: 1,
+          color: TMembershipColors.gold.withOpacity(0.55),
+          width: 1.2,
         ),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              const Icon(Icons.stars_rounded, color: TMembershipColors.gold, size: 18),
-              const SizedBox(width: 8),
-              Text(
-                '100회 돌파 기념 VIP: 1달 광고 제거 적용 중',
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: TMembershipColors.gold.withOpacity(0.2),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.stars_rounded, color: TMembershipColors.gold, size: 18),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                lang == LanguageType.ko ? 'VIP 혜택: 1달 광고 제거 적용 중' : 'VIP Benefit: Ad-Free Active',
                 style: TextStyle(
                   color: isDark ? Colors.white : TMembershipColors.lightTextPrimary,
-                  fontWeight: FontWeight.w700,
+                  fontWeight: FontWeight.w800,
                   fontSize: 12,
                 ),
               ),
-            ],
+            ),
           ),
+          const SizedBox(width: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
@@ -370,7 +373,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ).animate().fadeIn(duration: 400.ms).shimmer(delay: 600.ms, duration: 1500.ms);
   }
 
-  /// SK T-Membership Signature Card Widget
+  /// 스마트 포트폴리오 메인 카드
   Widget _buildMembershipCard(
     BuildContext context,
     WidgetRef ref,
@@ -427,26 +430,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
-                          ),
-                          child: const Text(
-                            "T MEMBERSHIP PORTFOLIO",
-                            style: TextStyle(
+                    Flexible(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+                        ),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            lang == LanguageType.ko ? "스마트 포트폴리오" : "PORTFOLIO",
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w900,
                               fontSize: 10,
-                              letterSpacing: 1.2,
+                              letterSpacing: 1.0,
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
                     InkWell(
                       onTap: currencyNotifier.toggle,
@@ -705,24 +709,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Text(
-                  title,
-                  style: GoogleFonts.inter(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 14,
-                    color: titleColor,
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    title,
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                      color: titleColor,
+                    ),
                   ),
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  subtitle,
-                  style: GoogleFonts.inter(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 11,
-                    color: subColor,
+                const SizedBox(height: 3),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    subtitle,
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 11,
+                      color: subColor,
+                    ),
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),

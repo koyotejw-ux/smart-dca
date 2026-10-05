@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../providers/asset_provider.dart';
 import '../providers/currency_provider.dart';
 import '../providers/market_provider.dart';
+import '../providers/language_provider.dart';
 import '../models/asset_model.dart';
 import '../theme/t_membership_colors.dart';
 
@@ -16,6 +17,8 @@ class PortfolioReportScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final assets = ref.watch(assetsProvider);
     final currency = ref.watch(currencyProvider);
+    final lang = ref.watch(languageProvider);
+    final isKo = lang == LanguageType.ko;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final bgColor = isDark ? TMembershipColors.darkBg : TMembershipColors.lightBg;
@@ -39,12 +42,37 @@ class PortfolioReportScreen extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: bgColor,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, color: textPrimary, size: 20),
-          onPressed: () => Navigator.pop(context),
+        leadingWidth: 56,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 16),
+          child: Center(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => Navigator.pop(context),
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: isDark ? TMembershipColors.darkSurface : Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder,
+                      width: 1.2,
+                    ),
+                    boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 6, dy: 2),
+                  ),
+                  child: Center(
+                    child: Icon(Icons.arrow_back_ios_new_rounded, color: textPrimary, size: 16),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
         title: Text(
-          "포트폴리오 리포트 (Report)",
+          isKo ? "포트폴리오 리포트 (Report)" : "Portfolio Report",
           style: GoogleFonts.inter(
             color: textPrimary,
             fontWeight: FontWeight.w900,
@@ -59,7 +87,7 @@ class PortfolioReportScreen extends ConsumerWidget {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             children: [
-              // T-Membership Total Value Gradient Card
+              // Total Value Gradient Card
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -89,28 +117,32 @@ class PortfolioReportScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            "${assets.length}개 종목",
+                            "${assets.length}${isKo ? '개 종목' : ' Assets'}",
                             style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 12),
-                    Text(
-                      formatter.format(totalInvested),
-                      style: GoogleFonts.inter(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
-                        fontSize: 32,
-                        letterSpacing: -0.5,
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        formatter.format(totalInvested),
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 32,
+                          letterSpacing: -0.5,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 12),
                     const Divider(color: Colors.white24, height: 1),
                     const SizedBox(height: 10),
-                    const Text(
-                      "분할 매수 전략으로 체계적인 평단가 관리가 진행 중입니다.",
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
+                    Text(
+                      isKo ? "체계적인 분할 매수 평단가 관리가 진행 중입니다." : "Systematic DCA portfolio management active.",
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 12),
                     ),
                   ],
                 ),
@@ -119,7 +151,7 @@ class PortfolioReportScreen extends ConsumerWidget {
 
               // Risk Heatmap
               Text(
-                "종목별 손익 및 회복 현황 (Status)",
+                isKo ? "종목별 손익 및 회복 현황 (Status)" : "Profit / Loss & Recovery Status",
                 style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 15, color: textPrimary),
               ),
               const SizedBox(height: 12),
@@ -128,7 +160,7 @@ class PortfolioReportScreen extends ConsumerWidget {
 
               // Asset Strategy List
               Text(
-                "보유 자산 상세 내역 (Assets)",
+                isKo ? "보유 자산 상세 내역 (Assets)" : "Portfolio Assets List",
                 style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 15, color: textPrimary),
               ),
               const SizedBox(height: 12),
@@ -141,7 +173,7 @@ class PortfolioReportScreen extends ConsumerWidget {
                     border: Border.all(color: cardBorder),
                   ),
                   child: Center(
-                    child: Text("등록된 보유 자산이 없습니다.", style: TextStyle(color: textSecondary)),
+                    child: Text(isKo ? "등록된 보유 자산이 없습니다." : "No registered assets.", style: TextStyle(color: textSecondary)),
                   ),
                 )
               else
@@ -190,18 +222,22 @@ class PortfolioReportScreen extends ConsumerWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      a.name,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14, color: textPrimary),
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        a.name,
+                                        style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14, color: textPrimary),
+                                      ),
                                     ),
                                     const SizedBox(height: 4),
-                                    Text(
-                                      "${a.initialQuantity.toStringAsFixed(0)}주 • 평단 ${formatter.format(a.initialPrice)}",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(color: textSecondary, fontSize: 11),
+                                    FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "${a.initialQuantity.toStringAsFixed(0)}${isKo ? '주' : ' shares'} • ${isKo ? '평단' : 'Avg'} ${formatter.format(a.initialPrice)}",
+                                        style: TextStyle(color: textSecondary, fontSize: 11),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -278,15 +314,16 @@ class PortfolioReportScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    a.symbol,
-                    style: TextStyle(
-                      color: isDark ? Colors.white70 : Colors.black87,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 11,
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      a.symbol,
+                      style: TextStyle(
+                        color: isDark ? Colors.white70 : Colors.black87,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 11,
+                      ),
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 6),
                   Text(

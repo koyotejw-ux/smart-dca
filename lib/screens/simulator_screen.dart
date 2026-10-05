@@ -354,11 +354,30 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
         Expanded(
           child: Row(
             children: [
-              IconButton(
-                icon: Icon(Icons.arrow_back_ios_new_rounded, color: titleColor, size: 20),
-                onPressed: () => Navigator.pop(context),
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => Navigator.pop(context),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: isDark ? TMembershipColors.darkSurface : Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder,
+                        width: 1.2,
+                      ),
+                      boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 6, dy: 2),
+                    ),
+                    child: Center(
+                      child: Icon(Icons.arrow_back_ios_new_rounded, color: titleColor, size: 18),
+                    ),
+                  ),
+                ),
               ),
-              const SizedBox(width: 4),
+              const SizedBox(width: 10),
               Flexible(
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
@@ -377,23 +396,37 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
             ],
           ),
         ),
+        const SizedBox(width: 8),
         Row(
           children: [
-            TextButton.icon(
-              onPressed: _resetInputs,
-              icon: const Icon(Icons.refresh_rounded, size: 16, color: TMembershipColors.accentOrange),
-              label: const Text(
-                "초기화",
-                style: TextStyle(
-                  color: TMembershipColors.accentOrange,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 13,
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: _resetInputs,
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                  decoration: BoxDecoration(
+                    color: TMembershipColors.accentOrange.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: TMembershipColors.accentOrange.withOpacity(0.3), width: 1),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Icon(Icons.refresh_rounded, size: 16, color: TMembershipColors.accentOrange),
+                      SizedBox(width: 4),
+                      Text(
+                        "초기화",
+                        style: TextStyle(
+                          color: TMembershipColors.accentOrange,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                backgroundColor: TMembershipColors.accentOrange.withOpacity(0.1),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
             ),
           ],
@@ -402,7 +435,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
     );
   }
 
-  /// Top Highlight: T-Membership Style Vivid Result Card
+  /// Top Highlight: Smart Vivid Result Card
   Widget _buildResultCard(BuildContext context, bool isDark, LanguageType lang) {
     final val = _resultA?.averagePrice ?? 0;
     final recovery = _resultA?.recoveryPercentage ?? 0;
@@ -438,38 +471,50 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Text(
-                        "CALCULATION RESULT",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 10,
-                          letterSpacing: 1.2,
-                        ),
-                      ),
-                    ),
-                    if (_resultA != null)
-                      Container(
+                    Flexible(
+                      child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.white.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Text(
-                          "평단가 변화: ${recovery >= 0 ? '+' : ''}${recovery.toStringAsFixed(1)}%",
-                          style: TextStyle(
-                            color: recovery <= 0 ? const Color(0xFF69F0AE) : const Color(0xFFFF8A80),
-                            fontWeight: FontWeight.w800,
-                            fontSize: 11,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            lang == LanguageType.ko ? "계산 결과 리포트" : "RESULT REPORT",
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 10,
+                              letterSpacing: 0.8,
+                            ),
                           ),
                         ),
                       ),
+                    ),
+                    if (_resultA != null) ...[
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              "${lang == LanguageType.ko ? '변화' : 'Diff'}: ${recovery >= 0 ? '+' : ''}${recovery.toStringAsFixed(1)}%",
+                              style: TextStyle(
+                                color: recovery <= 0 ? const Color(0xFF69F0AE) : const Color(0xFFFF8A80),
+                                fontWeight: FontWeight.w800,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -959,29 +1004,37 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
             if (onQuickMinus != null && onQuickPlus != null)
               Row(
                 children: [
-                  InkWell(
-                    onTap: onQuickMinus,
-                    borderRadius: BorderRadius.circular(6),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: TMembershipColors.primaryBlue.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(6),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: onQuickMinus,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: TMembershipColors.primaryBlue.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: TMembershipColors.primaryBlue.withOpacity(0.25), width: 1),
+                        ),
+                        child: const Text("-", style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.w900, fontSize: 13, height: 1)),
                       ),
-                      child: const Text("-", style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.w900, fontSize: 11)),
                     ),
                   ),
-                  const SizedBox(width: 4),
-                  InkWell(
-                    onTap: onQuickPlus,
-                    borderRadius: BorderRadius.circular(6),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: TMembershipColors.primaryBlue.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(6),
+                  const SizedBox(width: 6),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: onQuickPlus,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: TMembershipColors.primaryBlue.withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: TMembershipColors.primaryBlue.withOpacity(0.25), width: 1),
+                        ),
+                        child: const Text("+", style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.w900, fontSize: 13, height: 1)),
                       ),
-                      child: const Text("+", style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.w900, fontSize: 11)),
                     ),
                   ),
                 ],

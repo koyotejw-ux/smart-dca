@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../providers/scenario_provider.dart';
+import '../providers/language_provider.dart';
 import '../theme/t_membership_colors.dart';
 import 'simulator_screen.dart';
 
@@ -24,17 +25,45 @@ class ScenarioHistoryScreen extends ConsumerWidget {
     final textPrimary = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
     final textSecondary = isDark ? TMembershipColors.darkTextSecondary : TMembershipColors.lightTextSecondary;
 
+    final lang = ref.watch(languageProvider);
+    final isKo = lang == LanguageType.ko;
+
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
         backgroundColor: bgColor,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, color: textPrimary, size: 20),
-          onPressed: () => Navigator.pop(context),
+        leadingWidth: 56,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 16),
+          child: Center(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => Navigator.pop(context),
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: isDark ? TMembershipColors.darkSurface : Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder,
+                      width: 1.2,
+                    ),
+                    boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 6, dy: 2),
+                  ),
+                  child: Center(
+                    child: Icon(Icons.arrow_back_ios_new_rounded, color: textPrimary, size: 16),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
         title: Text(
-          "계산 기록 (History)",
+          isKo ? "계산 기록 (History)" : "Calculation History",
           style: GoogleFonts.inter(
             color: textPrimary,
             fontWeight: FontWeight.w900,
@@ -64,12 +93,12 @@ class ScenarioHistoryScreen extends ConsumerWidget {
                         ),
                         const SizedBox(height: 20),
                         Text(
-                          "저장된 물타기 시나리오가 없습니다.",
+                          isKo ? "저장된 물타기 시나리오가 없습니다." : "No saved scenarios yet.",
                           style: TextStyle(color: textPrimary, fontWeight: FontWeight.w800, fontSize: 16),
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "시뮬레이터에서 계산 후 시나리오를 저장해 보세요.",
+                          isKo ? "시뮬레이터에서 계산 후 시나리오를 저장해 보세요." : "Calculate in the simulator and save scenarios.",
                           style: TextStyle(color: textSecondary, fontSize: 13),
                         ),
                       ],
@@ -109,11 +138,13 @@ class ScenarioHistoryScreen extends ConsumerWidget {
                                     ),
                                     const SizedBox(width: 8),
                                     Expanded(
-                                      child: Text(
-                                        s.name,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 15, color: textPrimary),
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          s.name,
+                                          style: GoogleFonts.inter(fontWeight: FontWeight.w900, fontSize: 15, color: textPrimary),
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -127,13 +158,13 @@ class ScenarioHistoryScreen extends ConsumerWidget {
                           Row(
                             children: [
                               Expanded(
-                                child: _buildInfoItem("초기 진입 단가", "${currencyFormat.format(s.initialPrice)}원", textSecondary, textPrimary),
+                                child: _buildInfoItem(isKo ? "초기 단가" : "Init Price", "${currencyFormat.format(s.initialPrice)}", textSecondary, textPrimary),
                               ),
                               Expanded(
-                                child: _buildInfoItem("초기 보유 수량", "${s.initialQuantity.toStringAsFixed(0)}주", textSecondary, textPrimary),
+                                child: _buildInfoItem(isKo ? "초기 수량" : "Init Qty", "${s.initialQuantity.toStringAsFixed(0)}", textSecondary, textPrimary),
                               ),
                               Expanded(
-                                child: _buildInfoItem("추가 분할 매수", "${s.batches.length}회", textSecondary, TMembershipColors.accentMagenta),
+                                child: _buildInfoItem(isKo ? "추가 매수" : "Batches", "${s.batches.length}${isKo ? '회' : 'x'}", textSecondary, TMembershipColors.accentMagenta),
                               ),
                             ],
                           ),
@@ -154,7 +185,13 @@ class ScenarioHistoryScreen extends ConsumerWidget {
                                     );
                                   },
                                   icon: const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 18),
-                                  label: const Text("시뮬레이터로 불러오기", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 13)),
+                                  label: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      isKo ? "시뮬레이터로 불러오기" : "Load in Simulator",
+                                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 13),
+                                    ),
+                                  ),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: TMembershipColors.primaryBlue,
                                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -168,7 +205,7 @@ class ScenarioHistoryScreen extends ConsumerWidget {
                                 onPressed: () {
                                   ref.read(scenarioProvider.notifier).removeScenario(s.id);
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("시나리오가 삭제되었습니다."), behavior: SnackBarBehavior.floating),
+                                    SnackBar(content: Text(isKo ? "시나리오가 삭제되었습니다." : "Scenario deleted."), behavior: SnackBarBehavior.floating),
                                   );
                                 },
                                 icon: const Icon(Icons.delete_outline_rounded, color: TMembershipColors.accentCoral, size: 22),

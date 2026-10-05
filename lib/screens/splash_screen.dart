@@ -68,18 +68,12 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: 124,
-                  height: 124,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(32),
-                    boxShadow: TMembershipColors.colorfulGlow(TMembershipColors.primaryBlue, opacity: 0.45),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(32),
-                    child: Image.asset(
-                      'assets/app_icon.png',
-                      fit: BoxFit.cover,
-                    ),
+                  width: 140,
+                  height: 140,
+                  alignment: Alignment.center,
+                  child: Image.asset(
+                    'assets/app_icon.png',
+                    fit: BoxFit.contain,
                   ),
                 ).animate()
                   .scale(duration: 800.ms, curve: Curves.easeOutBack)
@@ -96,9 +90,9 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
                 ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.15, end: 0),
                 const SizedBox(height: 8),
                 Text(
-                  "스마트 물타기 및 평단가 관리 비서",
+                  lang == LanguageType.ko ? "스마트 물타기 및 평단가 관리 비서" : "Smart DCA & Average Down Assistant",
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withOpacity(0.85),
                     fontWeight: FontWeight.w600,
                     fontSize: 13,
                     letterSpacing: 0.2,
@@ -115,7 +109,7 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
             right: 0,
             child: Center(
               child: Text(
-                'v3.2.0 T-Edition • 100% On-Device Safe',
+                'v3.2.0 Pro Edition • 100% On-Device Safe',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.4),
                   fontSize: 11,
