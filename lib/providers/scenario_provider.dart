@@ -39,6 +39,12 @@ class ScenarioNotifier extends StateNotifier<List<Scenario>> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('saved_scenarios', json.encode(state.map((s) => s.toJson()).toList()));
   }
+
+  Future<void> clearAll() async {
+    state = [];
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('saved_scenarios');
+  }
 }
 
 final scenarioProvider = StateNotifierProvider<ScenarioNotifier, List<Scenario>>((ref) {

@@ -28,4 +28,9 @@ class AssetNotifier extends StateNotifier<List<Asset>> {
     await _storage.deleteAsset(id);
     await refresh();
   }
+
+  Future<void> clearAll() async {
+    await _storage.clearAllAssets();
+    await refresh();
+  }
 }
