@@ -175,7 +175,7 @@ class SettingsScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 24),
-              _buildSectionHeader(lang == LanguageType.ko ? "이벤트 혜택 & 광고" : (lang == LanguageType.ja ? "イベント特典＆広告" : "VIP Events & Ads"), isDark),
+              _buildSectionHeader(L10n.s(lang, 'event_section_title'), isDark),
               const SizedBox(height: 8),
               _buildSettingCard(
                 isDark: isDark,
@@ -192,11 +192,11 @@ class SettingsScreen extends ConsumerWidget {
                         return Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: active ? TMembershipColors.accentMint.withOpacity(0.15) : Colors.grey.withOpacity(0.15),
+                            color: active ? TMembershipColors.accentMint.withValues(alpha: 0.15) : Colors.grey.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            active ? L10n.s(lang, 'active_badge') : (lang == LanguageType.ko ? "미적용" : "Inactive"),
+                            active ? L10n.s(lang, 'active_badge') : L10n.s(lang, 'ad_inactive_badge'),
                             style: TextStyle(
                               color: active ? TMembershipColors.accentMint : Colors.grey,
                               fontWeight: FontWeight.w900,
@@ -211,7 +211,7 @@ class SettingsScreen extends ConsumerWidget {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(lang == LanguageType.ko ? "현재 광고 제거 혜택이 D-$days일 남아있습니다." : "VIP Ad-Free benefit remaining: D-$days"),
+                            content: Text("VIP: D-$days"),
                             behavior: SnackBarBehavior.floating,
                           ),
                         );
@@ -226,16 +226,8 @@ class SettingsScreen extends ConsumerWidget {
                     icon: Icons.ads_click_rounded,
                     onTap: () {
                       AdmobService.showInterstitial(
-                        onDismissed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(lang == LanguageType.ko ? "광고가 정상 종료되었습니다." : "Ad finished successfully.")),
-                          );
-                        },
-                        onFailed: (err) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("광고 로드 상태: ${err.message}")),
-                          );
-                        },
+                        onDismissed: () {},
+                        onFailed: (err) {},
                       );
                     },
                     trailing: OutlinedButton(
@@ -248,19 +240,11 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                       onPressed: () {
                         AdmobService.showInterstitial(
-                          onDismissed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(lang == LanguageType.ko ? "광고가 정상 종료되었습니다." : "Ad finished successfully.")),
-                            );
-                          },
-                          onFailed: (err) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("광고 로드 상태: ${err.message}")),
-                            );
-                          },
+                          onDismissed: () {},
+                          onFailed: (err) {},
                         );
                       },
-                      child: Text(lang == LanguageType.ko ? "광고 테스트" : "Test Ad", style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12)),
+                      child: Text(L10n.s(lang, 'ad_test_btn'), style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12)),
                     ),
                     isDark: isDark,
                   ),
@@ -283,16 +267,17 @@ class SettingsScreen extends ConsumerWidget {
                 child: Column(
                   children: [
                     Text(
-                      "스마트 물타기 계산기 v3.2",
+                      L10n.s(lang, 'app_version_name'),
                       style: GoogleFonts.inter(
                         fontWeight: FontWeight.w800,
                         fontSize: 14,
                         color: titleColor,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 6),
                     Text(
-                      "Smart Clean UI • 100% On-Device Local Security",
+                      L10n.s(lang, 'app_version_desc'),
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: isDark ? TMembershipColors.darkTextTertiary : TMembershipColors.lightTextTertiary,
                         fontSize: 11,

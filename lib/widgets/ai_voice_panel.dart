@@ -7,6 +7,9 @@ import '../theme/t_membership_colors.dart';
 import '../models/scenario_model.dart';
 import '../services/calculator_service.dart';
 import '../screens/simulator_screen.dart';
+import '../providers/language_provider.dart';
+import '../providers/currency_provider.dart';
+import '../utils/l10n.dart';
 
 class AiVoicePanel extends ConsumerStatefulWidget {
   const AiVoicePanel({super.key});
@@ -20,22 +23,14 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
   final TextEditingController _inputController = TextEditingController();
 
   bool _isListening = false;
-  String _recognizedText = "삼성전자 75,000원 100주, 68,000원에 50주 물타기";
   
   // Parsed simulation state
-  String _parsedStock = "삼성전자";
-  double _initialPrice = 75000;
-  double _initialQty = 100;
-  double _targetBuyPrice = 68000;
-  double _targetBuyQty = 50;
+  String _parsedStock = "AAPL";
+  double _initialPrice = 180;
+  double _initialQty = 50;
+  double _targetBuyPrice = 150;
+  double _targetBuyQty = 30;
   bool _isParsed = true;
-
-  final List<String> _presetPrompts = [
-    "삼성전자 75,000원 100주, 68,000원에 50주 물타기",
-    "비트코인 95,000,000원 2개, 88,000,000원에 1개 추가",
-    "애플 180달러 30주, 165달러에 20주 매수",
-    "카카오 52,000원 80주, 43,000원에 40주 물타기",
-  ];
 
   @override
   void initState() {
@@ -45,8 +40,82 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
       duration: const Duration(milliseconds: 1400),
     )..repeat(reverse: true);
 
-    _inputController.text = _recognizedText;
-    _parsePrompt(_recognizedText);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final lang = ref.read(languageProvider);
+      final initialPrompt = _getDefaultPrompt(lang);
+      setState(() {
+        _inputController.text = initialPrompt;
+        _parsePrompt(initialPrompt);
+      });
+    });
+  }
+
+  String _getDefaultPrompt(LanguageType lang) {
+    switch (lang) {
+      case LanguageType.ko:
+        return "삼성전자 75,000원 100주, 68,000원에 50주 물타기";
+      case LanguageType.ja:
+        return "ソニー 12,000円 100株、10,500円で50株 ナンピン";
+      case LanguageType.zh:
+        return "腾讯控股 380元 100股，340元补仓 50股";
+      case LanguageType.es:
+        return "Apple 180 USD 100 acc., 150 USD comprar 50 acc.";
+      case LanguageType.vi:
+        return "Vinamilk 75,000 VND 100 cổ, 65,000 mua 50 cổ";
+      case LanguageType.id:
+        return "BBCA 9,500 IDR 100 lot, 8,500 beli 50 lot";
+      case LanguageType.en:
+        return "Apple 180 USD 100 shares, buy 50 shares at 150 USD";
+    }
+  }
+
+  List<String> _getPresets(LanguageType lang) {
+    switch (lang) {
+      case LanguageType.ko:
+        return [
+          "삼성전자 75,000원 100주, 68,000원에 50주 물타기",
+          "비트코인 95,000,000원 2개, 88,000,000원에 1개 추가",
+          "애플 180달러 30주, 165달러에 20주 매수",
+          "카카오 52,000원 80주, 43,000원에 40주 물타기",
+        ];
+      case LanguageType.ja:
+        return [
+          "ソニー 12,000円 100株、10,500円で50株 ナンピン",
+          "トヨタ 2,800円 200株、2,400円で100株 買い増し",
+          "ビットコイン 9,500,000円 2枚、8,000,000円で1枚追加",
+        ];
+      case LanguageType.zh:
+        return [
+          "腾讯控股 380元 100股，340元补仓 50股",
+          "贵州茅台 1600元 50股，1450元买入 30股",
+          "特斯拉 240美元 50股，200美元补仓 40股",
+        ];
+      case LanguageType.es:
+        return [
+          "Apple 180 USD 100 acc., comprar 50 acc. a 150 USD",
+          "Bitcoin 65,000 USD 2 token, añadir 1 token a 58,000 USD",
+          "Tesla 220 USD 50 acc., comprar 30 acc. a 190 USD",
+        ];
+      case LanguageType.vi:
+        return [
+          "Vinamilk 75,000 VND 100 cổ, mua 50 cổ giá 65,000",
+          "FPT 120,000 VND 200 cổ, mua thêm 100 cổ giá 110,000",
+          "Bitcoin 65,000 USD 2 token, mua 1 token giá 58,000",
+        ];
+      case LanguageType.id:
+        return [
+          "BBCA 9,500 IDR 100 lot, beli 50 lot di 8,500",
+          "BBRI 5,200 IDR 200 lot, tambah 100 lot di 4,600",
+          "Bitcoin 65,000 USD 2 koin, beli 1 koin di 58,000",
+        ];
+      case LanguageType.en:
+        return [
+          "Apple 180 USD 100 shares, buy 50 shares at 150 USD",
+          "Tesla 240 USD 50 shares, buy 30 shares at 200 USD",
+          "Bitcoin 65,000 USD 2 tokens, add 1 token at 58,000 USD",
+          "Microsoft 420 USD 40 shares, buy 20 shares at 380 USD",
+        ];
+    }
   }
 
   @override
@@ -60,7 +129,6 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
     HapticFeedback.mediumImpact();
     setState(() {
       _isListening = true;
-      _recognizedText = "음성을 듣고 분석하는 중입니다...";
     });
 
     Future.delayed(const Duration(milliseconds: 900), () {
@@ -68,7 +136,6 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
       HapticFeedback.lightImpact();
       setState(() {
         _isListening = false;
-        _recognizedText = prompt;
         _inputController.text = prompt;
         _parsePrompt(prompt);
       });
@@ -141,6 +208,9 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
 
   @override
   Widget build(BuildContext context) {
+    final lang = ref.watch(languageProvider);
+    final currency = ref.watch(currencyProvider);
+    final presets = _getPresets(lang);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
@@ -165,7 +235,7 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
               width: 44,
               height: 5,
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.3),
+                color: Colors.grey.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(3),
               ),
             ),
@@ -196,27 +266,32 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                             ],
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          "스마트 음성 물타기 비서",
-                          style: GoogleFonts.inter(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w900,
-                            color: isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary,
+                        const SizedBox(width: 10),
+                        Flexible(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              L10n.s(lang, 'voice_panel_title'),
+                              style: GoogleFonts.inter(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w900,
+                                color: isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary,
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 8),
                     Text(
-                      "자산명, 현재 평단가/수량, 추가 매수 가격을 자연스럽게 말씀하세요.",
+                      L10n.s(lang, 'voice_panel_desc'),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,
                         color: isDark ? TMembershipColors.darkTextSecondary : TMembershipColors.lightTextSecondary,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
 
                     // Voice Wave / Mic Button
                     ScaleTransition(
@@ -224,7 +299,7 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                         CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
                       ),
                       child: GestureDetector(
-                        onTap: () => _simulateVoiceListening(_presetPrompts[0]),
+                        onTap: () => _simulateVoiceListening(presets.first),
                         child: Container(
                           width: 80,
                           height: 80,
@@ -246,22 +321,22 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 14),
                     Text(
-                      _isListening ? "음성 청취 및 파싱 중..." : "마이크 터치하여 음성 인식 시작",
+                      _isListening ? L10n.s(lang, 'voice_listening') : L10n.s(lang, 'voice_tap_hint'),
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: _isListening ? TMembershipColors.accentCoral : TMembershipColors.primaryBlue,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
 
                     // Preset Quick Chips
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "자주 쓰는 음성 예시 터치하기",
+                        L10n.s(lang, 'voice_quick_examples'),
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w800,
@@ -269,13 +344,13 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
-                      children: _presetPrompts.map((prompt) {
+                      children: presets.map((prompt) {
                         return ActionChip(
-                          backgroundColor: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.04),
+                          backgroundColor: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.04),
                           side: BorderSide(
                             color: isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder,
                           ),
@@ -290,7 +365,7 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                         );
                       }).toList(),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
 
                     // Editable Recognized Query
                     TextField(
@@ -301,35 +376,34 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                         color: isDark ? Colors.white : Colors.black87,
                       ),
                       decoration: InputDecoration(
-                        labelText: "인식된 명령문 (직접 수정 가능)",
+                        labelText: L10n.s(lang, 'voice_query_label'),
                         prefixIcon: const Icon(Icons.edit_note_rounded, size: 20),
                         filled: true,
-                        fillColor: isDark ? Colors.black26 : Colors.grey.withOpacity(0.08),
+                        fillColor: isDark ? Colors.black26 : Colors.grey.withValues(alpha: 0.08),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                           borderSide: BorderSide.none,
                         ),
                       ),
                       onChanged: (val) {
-                        _recognizedText = val;
                         _parsePrompt(val);
                       },
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
 
                     // Parsed Data Preview Card
                     if (_isParsed)
                       Container(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(18),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: isDark
                                 ? [TMembershipColors.darkSurface, const Color(0xFF1E2846)]
                                 : [Colors.blue.shade50, Colors.purple.shade50],
                           ),
-                          borderRadius: BorderRadius.circular(18),
+                          borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: TMembershipColors.primaryBlue.withOpacity(0.3),
+                            color: TMembershipColors.primaryBlue.withValues(alpha: 0.3),
                           ),
                         ),
                         child: Column(
@@ -338,10 +412,28 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                             Row(
                               children: [
                                 const Icon(Icons.check_circle_rounded, color: TMembershipColors.accentMint, size: 18),
-                                const SizedBox(width: 6),
-                                Text(
-                                  "AI 파싱 완료: $_parsedStock",
-                                  style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "${L10n.s(lang, 'voice_parsed_success')}: $_parsedStock",
+                                      style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildParsedTag(L10n.s(lang, 'current_avg_label'), "${currency.symbol}${_initialPrice.toStringAsFixed(currency.decimalDigits)}"),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: _buildParsedTag(L10n.s(lang, 'current_qty_label'), "${_initialQty.toStringAsFixed(0)} ${L10n.s(lang, 'unit_share')}"),
                                 ),
                               ],
                             ),
@@ -349,23 +441,11 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                             Row(
                               children: [
                                 Expanded(
-                                  child: _buildParsedTag("현재 평단가", "${_initialPrice.toStringAsFixed(0)}원"),
+                                  child: _buildParsedTag(L10n.s(lang, 'batch_price_label'), "${currency.symbol}${_targetBuyPrice.toStringAsFixed(currency.decimalDigits)}"),
                                 ),
-                                const SizedBox(width: 8),
+                                const SizedBox(width: 12),
                                 Expanded(
-                                  child: _buildParsedTag("보유 수량", "${_initialQty.toStringAsFixed(0)}주"),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: _buildParsedTag("추가 매수가", "${_targetBuyPrice.toStringAsFixed(0)}원"),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: _buildParsedTag("추가 수량", "${_targetBuyQty.toStringAsFixed(0)}주"),
+                                  child: _buildParsedTag(L10n.s(lang, 'batch_qty_label'), "${_targetBuyQty.toStringAsFixed(0)} ${L10n.s(lang, 'unit_share')}"),
                                 ),
                               ],
                             ),
@@ -378,9 +458,14 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
               ),
             ),
 
-            // Action Buttons
+            // Action Buttons with Safe Area for navigation bar
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              padding: EdgeInsets.fromLTRB(
+                20,
+                16,
+                20,
+                16 + MediaQuery.paddingOf(context).bottom,
+              ),
               decoration: BoxDecoration(
                 color: isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface,
                 border: Border(
@@ -399,7 +484,7 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       ),
-                      child: const Text("닫기", style: TextStyle(fontWeight: FontWeight.bold)),
+                      child: Text(L10n.s(lang, 'close_btn'), style: const TextStyle(fontWeight: FontWeight.bold)),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -408,9 +493,12 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                     child: ElevatedButton.icon(
                       onPressed: _isParsed ? _applyToSimulator : null,
                       icon: const Icon(Icons.calculate_rounded, color: Colors.white, size: 20),
-                      label: const Text(
-                        "시뮬레이터에 적용하기",
-                        style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+                      label: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          L10n.s(lang, 'apply_to_sim_btn'),
+                          style: const TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+                        ),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: TMembershipColors.primaryBlue,

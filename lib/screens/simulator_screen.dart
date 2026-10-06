@@ -224,13 +224,14 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
   Future<void> _saveScenario() async {
     if (_resultA == null) return;
 
+    final lang = ref.read(languageProvider);
     final ip = _parseVal(_initialPriceController.text);
     final iq = _parseVal(_initialQtyController.text);
     final batches = _calcBatches(false);
 
     final scenario = Scenario(
       id: const Uuid().v4(),
-      name: "계산 시나리오 ${DateFormat('MM.dd HH:mm').format(DateTime.now())}",
+      name: "${L10n.s(lang, 'default_scenario_name')} ${DateFormat('MM.dd HH:mm').format(DateTime.now())}",
       initialPrice: ip,
       initialQuantity: iq,
       batches: batches,
@@ -241,8 +242,8 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("시나리오가 저장되었습니다. (기록 화면에서 확인 가능)"),
+        SnackBar(
+          content: Text(L10n.s(lang, 'scenario_saved_msg')),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -1127,7 +1128,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                   const Icon(Icons.insights_rounded, color: TMembershipColors.primaryBlue, size: 20),
                   const SizedBox(width: 8),
                   Text(
-                    "주가 변동 민감도 시뮬레이션",
+                    L10n.s(lang, 'sensitivity_title'),
                     style: GoogleFonts.inter(
                       color: titleColor,
                       fontWeight: FontWeight.w700,
@@ -1184,7 +1185,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
           child: ElevatedButton.icon(
             onPressed: _saveScenario,
             icon: const Icon(Icons.bookmark_border_rounded, size: 18),
-            label: const Text("시나리오 저장"),
+            label: Text(L10n.s(lang, 'save_scenario_btn')),
             style: ElevatedButton.styleFrom(
               backgroundColor: isDark ? TMembershipColors.darkSurface : Colors.white,
               foregroundColor: TMembershipColors.primaryBlue,
@@ -1203,7 +1204,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
           child: ElevatedButton.icon(
             onPressed: _saveToPortfolio,
             icon: const Icon(Icons.account_balance_wallet_outlined, size: 18),
-            label: const Text("자산에 등록"),
+            label: Text(L10n.s(lang, 'save_to_portfolio_btn')),
             style: ElevatedButton.styleFrom(
               backgroundColor: TMembershipColors.primaryBlue,
               foregroundColor: Colors.white,

@@ -235,7 +235,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 5),
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
@@ -724,7 +724,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 9),
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,
@@ -849,6 +849,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 14, color: titleColor),
                                   ),
+                                  const SizedBox(height: 5),
                                   Text(
                                     "${asset.initialQuantity.toStringAsFixed(0)} ${L10n.s(lang, 'asset_unit_share_coin')}",
                                     maxLines: 1,
@@ -915,10 +916,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   L10n.s(lang, 'security_title'),
                   style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 13, color: titleColor),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
                   L10n.s(lang, 'security_sub'),
-                  style: TextStyle(color: subColor, fontSize: 11),
+                  style: TextStyle(color: subColor, fontSize: 11, height: 1.4),
                 ),
               ],
             ),

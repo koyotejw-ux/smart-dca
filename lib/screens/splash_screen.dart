@@ -67,30 +67,27 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: 140,
-                  height: 140,
+                  width: 150,
+                  height: 150,
                   decoration: BoxDecoration(
                     color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(32),
+                    borderRadius: BorderRadius.circular(36),
                     boxShadow: [
                       BoxShadow(
                         color: const Color(0xFF6C5CE7).withValues(alpha: 0.35),
-                        blurRadius: 36,
+                        blurRadius: 40,
                         spreadRadius: 2,
                       ),
                     ],
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(32),
-                    child: Image.asset(
-                      'assets/app_icon.png',
-                      fit: BoxFit.contain,
-                    ),
+                  child: Image.asset(
+                    'assets/app_icon.png',
+                    fit: BoxFit.contain,
                   ),
                 ).animate()
                   .scale(duration: 800.ms, curve: Curves.easeOutBack)
                   .shimmer(delay: 900.ms, duration: 1400.ms),
-                const SizedBox(height: 28),
+                const SizedBox(height: 32),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: FittedBox(
@@ -99,14 +96,14 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
                       L10n.s(lang, 'app_title'),
                       style: GoogleFonts.inter(
                         fontWeight: FontWeight.w900,
-                        fontSize: 26,
+                        fontSize: 27,
                         color: Colors.white,
                         letterSpacing: -0.5,
                       ),
                     ),
                   ),
                 ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.15, end: 0),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32),
                   child: FittedBox(
@@ -116,7 +113,7 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.85),
                         fontWeight: FontWeight.w600,
-                        fontSize: 13,
+                        fontSize: 13.5,
                         letterSpacing: 0.2,
                       ),
                     ),

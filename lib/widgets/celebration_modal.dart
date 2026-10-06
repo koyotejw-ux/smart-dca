@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../theme/neon_colors.dart';
 import '../services/event_service.dart';
+import '../providers/language_provider.dart';
+import '../utils/l10n.dart';
 
-class CelebrationModal extends StatelessWidget {
+class CelebrationModal extends ConsumerWidget {
   final VoidCallback onClaimed;
 
   const CelebrationModal({
@@ -20,7 +23,8 @@ class CelebrationModal extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final lang = ref.watch(languageProvider);
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
@@ -80,25 +84,25 @@ class CelebrationModal extends StatelessWidget {
               shaderCallback: (bounds) => LinearGradient(
                 colors: [Colors.white, NeonColors.cyan],
               ).createShader(bounds),
-              child: const Text(
-                '🎉 다운로드 100회 감사 이벤트!',
+              child: Text(
+                '🎉 ${L10n.s(lang, 'event_modal_title')}',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
+                style: const TextStyle(
+                  fontSize: 20,
                   fontWeight: FontWeight.w900,
                   color: Colors.white,
                   letterSpacing: -0.5,
                 ),
               ),
             ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2, end: 0),
-            const SizedBox(height: 8),
-            const Text(
-              '스마트 물타기 계산기를 이용해주시는 사용자분들을 위해 준비한 특별 선물입니다.',
+            const SizedBox(height: 10),
+            Text(
+              L10n.s(lang, 'event_modal_desc'),
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 13,
                 color: Colors.white70,
-                height: 1.4,
+                height: 1.45,
               ),
             ).animate().fadeIn(delay: 300.ms),
             const SizedBox(height: 24),
@@ -117,15 +121,15 @@ class CelebrationModal extends StatelessWidget {
                   _buildBenefitRow(
                     icon: Icons.block_rounded,
                     color: Colors.amberAccent,
-                    title: '1달간(30일) 모든 광고 제거',
-                    subtitle: '전면/배너/네이티브 광고 없이 쾌적하게',
+                    title: L10n.s(lang, 'event_benefit_1_title'),
+                    subtitle: L10n.s(lang, 'event_benefit_1_sub'),
                   ),
                   const Divider(height: 24, color: Colors.white12),
                   _buildBenefitRow(
                     icon: Icons.bolt_rounded,
                     color: NeonColors.cyan,
-                    title: 'VIP 몰입형 인터페이스',
-                    subtitle: '계산 및 분석 작업 속도 최적화',
+                    title: L10n.s(lang, 'event_benefit_2_title'),
+                    subtitle: L10n.s(lang, 'event_benefit_2_sub'),
                   ),
                 ],
               ),
@@ -152,9 +156,9 @@ class CelebrationModal extends StatelessWidget {
                     onClaimed();
                   }
                 },
-                child: const Text(
-                  '혜택 적용하고 시작하기',
-                  style: TextStyle(
+                child: Text(
+                  L10n.s(lang, 'event_claim_btn'),
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     letterSpacing: 0.2,
