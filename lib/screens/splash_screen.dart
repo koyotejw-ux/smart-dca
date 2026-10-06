@@ -130,7 +130,7 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
             right: 0,
             child: Center(
               child: Text(
-                'v3.2.0 Pro Edition • 100% On-Device Safe',
+                'v3.2.0 • 100% On-Device Safe',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.4),
                   fontSize: 11,

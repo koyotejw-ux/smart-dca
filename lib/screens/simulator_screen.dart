@@ -161,17 +161,29 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
 
   void _adjustPrice(TextEditingController controller, double percent) {
     final val = _parseVal(controller.text);
-    if (val > 0) {
-      final newVal = val * (1 + percent);
-      controller.text = _currencyFormat.format(newVal).trim();
-      _calculate();
-      HapticFeedback.selectionClick();
+    double newVal;
+    if (val <= 0) {
+      newVal = percent > 0 ? 10000 : 0;
+    } else {
+      newVal = (val * (1 + percent)).roundToDouble();
+      if (newVal == val) {
+        newVal = percent > 0 ? val + 100 : val - 100;
+      }
     }
+    newVal = newVal.clamp(0, double.infinity);
+    controller.text = _currencyFormat.format(newVal).trim();
+    _calculate();
+    HapticFeedback.selectionClick();
   }
 
   void _adjustQty(TextEditingController controller, double amount) {
     final val = _parseVal(controller.text);
-    final newVal = (val + amount).clamp(0, double.infinity);
+    double newVal;
+    if (val <= 0 && amount > 0) {
+      newVal = amount;
+    } else {
+      newVal = (val + amount).clamp(0, double.infinity);
+    }
     controller.text = _currencyFormat.format(newVal).trim();
     _calculate();
     HapticFeedback.selectionClick();
@@ -734,33 +746,47 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: _buildInputBox(
-                  controller: _initialPriceController,
-                  label: L10n.s(lang, 'current_avg_label'),
-                  unit: currency.symbol,
-                  icon: Icons.payments_outlined,
-                  isDark: isDark,
-                  onQuickMinus: () => _adjustPrice(_initialPriceController, -0.01),
-                  onQuickPlus: () => _adjustPrice(_initialPriceController, 0.01),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildInputBox(
-                  controller: _initialQtyController,
-                  label: L10n.s(lang, 'current_qty_label'),
-                  unit: L10n.s(lang, 'unit_share'),
-                  icon: Icons.pin_outlined,
-                  isDark: isDark,
-                  onQuickMinus: () => _adjustQty(_initialQtyController, -10),
-                  onQuickPlus: () => _adjustQty(_initialQtyController, 10),
-                ),
-              ),
-            ],
+          const SizedBox(height: 18),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final isNarrow = constraints.maxWidth < 340;
+              final priceBox = _buildInputBox(
+                controller: _initialPriceController,
+                label: L10n.s(lang, 'current_avg_label'),
+                unit: currency.symbol,
+                icon: Icons.payments_outlined,
+                isDark: isDark,
+                onQuickMinus: () => _adjustPrice(_initialPriceController, -0.01),
+                onQuickPlus: () => _adjustPrice(_initialPriceController, 0.01),
+              );
+              final qtyBox = _buildInputBox(
+                controller: _initialQtyController,
+                label: L10n.s(lang, 'current_qty_label'),
+                unit: L10n.s(lang, 'unit_share'),
+                icon: Icons.pin_outlined,
+                isDark: isDark,
+                onQuickMinus: () => _adjustQty(_initialQtyController, -10),
+                onQuickPlus: () => _adjustQty(_initialQtyController, 10),
+              );
+
+              if (isNarrow) {
+                return Column(
+                  children: [
+                    priceBox,
+                    const SizedBox(height: 14),
+                    qtyBox,
+                  ],
+                );
+              }
+
+              return Row(
+                children: [
+                  Expanded(child: priceBox),
+                  const SizedBox(width: 14),
+                  Expanded(child: qtyBox),
+                ],
+              );
+            },
           ),
         ],
       ),
@@ -848,44 +874,110 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: prices.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 12),
+            separatorBuilder: (context, index) => const SizedBox(height: 14),
             itemBuilder: (context, index) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: _buildInputBox(
-                      controller: prices[index],
-                      label: "${index + 1} • ${L10n.s(lang, 'batch_price_label')}",
-                      unit: currency.symbol,
-                      icon: Icons.add_shopping_cart_rounded,
-                      isDark: isDark,
-                      onQuickMinus: () => _adjustPrice(prices[index], -0.01),
-                      onQuickPlus: () => _adjustPrice(prices[index], 0.01),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _buildInputBox(
-                      controller: qtys[index],
-                      label: "${index + 1} • ${L10n.s(lang, 'batch_qty_label')}",
-                      unit: L10n.s(lang, 'unit_share'),
-                      icon: Icons.numbers_rounded,
-                      isDark: isDark,
-                      onQuickMinus: () => _adjustQty(qtys[index], -10),
-                      onQuickPlus: () => _adjustQty(qtys[index], 10),
-                    ),
-                  ),
-                  if (prices.length > 1) ...[
-                    const SizedBox(width: 8),
-                    IconButton(
-                      icon: const Icon(Icons.remove_circle_outline_rounded, color: TMembershipColors.accentCoral, size: 22),
-                      onPressed: () => _removeBatch(index, isB),
-                      padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(minWidth: 32, minHeight: 48),
-                    ),
-                  ],
-                ],
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  final isNarrow = constraints.maxWidth < 360;
+                  final priceBox = _buildInputBox(
+                    controller: prices[index],
+                    label: "${index + 1} • ${L10n.s(lang, 'batch_price_label')}",
+                    unit: currency.symbol,
+                    icon: Icons.add_shopping_cart_rounded,
+                    isDark: isDark,
+                    onQuickMinus: () => _adjustPrice(prices[index], -0.01),
+                    onQuickPlus: () => _adjustPrice(prices[index], 0.01),
+                  );
+                  final qtyBox = _buildInputBox(
+                    controller: qtys[index],
+                    label: "${index + 1} • ${L10n.s(lang, 'batch_qty_label')}",
+                    unit: L10n.s(lang, 'unit_share'),
+                    icon: Icons.numbers_rounded,
+                    isDark: isDark,
+                    onQuickMinus: () => _adjustQty(qtys[index], -10),
+                    onQuickPlus: () => _adjustQty(qtys[index], 10),
+                  );
+
+                  final deleteButton = prices.length > 1
+                      ? InkWell(
+                          onTap: () => _removeBatch(index, isB),
+                          borderRadius: BorderRadius.circular(10),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                            decoration: BoxDecoration(
+                              color: TMembershipColors.accentCoral.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: TMembershipColors.accentCoral.withValues(alpha: 0.3), width: 1),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.delete_outline_rounded, color: TMembershipColors.accentCoral, size: 16),
+                                const SizedBox(width: 4),
+                                Text(
+                                  L10n.s(lang, 'delete_btn'),
+                                  style: const TextStyle(
+                                    color: TMembershipColors.accentCoral,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink();
+
+                  if (isNarrow) {
+                    return Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF161E2C) : const Color(0xFFF3F6FB),
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(
+                          color: isDark ? const Color(0xFF222D3E) : const Color(0xFFE2E7F0),
+                          width: 1,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          priceBox,
+                          const SizedBox(height: 14),
+                          qtyBox,
+                          if (prices.length > 1) ...[
+                            const SizedBox(height: 12),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: deleteButton,
+                            ),
+                          ],
+                        ],
+                      ),
+                    );
+                  }
+
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(child: priceBox),
+                      const SizedBox(width: 14),
+                      Expanded(child: qtyBox),
+                      if (prices.length > 1) ...[
+                        const SizedBox(width: 10),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: IconButton(
+                            icon: const Icon(Icons.remove_circle_outline_rounded, color: TMembershipColors.accentCoral, size: 24),
+                            onPressed: () => _removeBatch(index, isB),
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(minWidth: 36, minHeight: 48),
+                          ),
+                        ),
+                      ],
+                    ],
+                  );
+                },
               );
             },
           ),
@@ -942,29 +1034,47 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: _buildInputBox(
-                  controller: _targetPriceController,
-                  label: L10n.s(lang, 'target_goal_price'),
-                  unit: currency.symbol,
-                  icon: Icons.flag_rounded,
-                  isDark: isDark,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: _buildInputBox(
-                  controller: _purchasePriceController,
-                  label: L10n.s(lang, 'target_buy_price'),
-                  unit: currency.symbol,
-                  icon: Icons.shopping_bag_outlined,
-                  isDark: isDark,
-                ),
-              ),
-            ],
+          const SizedBox(height: 18),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final isNarrow = constraints.maxWidth < 340;
+              final targetPriceBox = _buildInputBox(
+                controller: _targetPriceController,
+                label: L10n.s(lang, 'target_goal_price'),
+                unit: currency.symbol,
+                icon: Icons.flag_rounded,
+                isDark: isDark,
+                onQuickMinus: () => _adjustPrice(_targetPriceController, -0.01),
+                onQuickPlus: () => _adjustPrice(_targetPriceController, 0.01),
+              );
+              final purchasePriceBox = _buildInputBox(
+                controller: _purchasePriceController,
+                label: L10n.s(lang, 'target_buy_price'),
+                unit: currency.symbol,
+                icon: Icons.shopping_bag_outlined,
+                isDark: isDark,
+                onQuickMinus: () => _adjustPrice(_purchasePriceController, -0.01),
+                onQuickPlus: () => _adjustPrice(_purchasePriceController, 0.01),
+              );
+
+              if (isNarrow) {
+                return Column(
+                  children: [
+                    targetPriceBox,
+                    const SizedBox(height: 14),
+                    purchasePriceBox,
+                  ],
+                );
+              }
+
+              return Row(
+                children: [
+                  Expanded(child: targetPriceBox),
+                  const SizedBox(width: 14),
+                  Expanded(child: purchasePriceBox),
+                ],
+              );
+            },
           ),
           if (_requiredQty != null && _requiredQty! > 0) ...[
             const SizedBox(height: 16),
@@ -998,7 +1108,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
     );
   }
 
-  /// Clean, Modern Input Box with Quick Steppers
+  /// Clean, Modern Input Box with Roomy Quick Steppers & Touch Friendly Controls
   Widget _buildInputBox({
     required TextEditingController controller,
     required String label,
@@ -1016,69 +1126,88 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    color: subColor,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 12,
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      color: subColor,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 12.5,
+                    ),
                   ),
                 ),
               ),
-            ),
-            if (onQuickMinus != null && onQuickPlus != null)
-              Row(
-                children: [
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: onQuickMinus,
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: TMembershipColors.primaryBlue.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: TMembershipColors.primaryBlue.withValues(alpha: 0.25), width: 1),
+              if (onQuickMinus != null && onQuickPlus != null)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: onQuickMinus,
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: TMembershipColors.primaryBlue.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: TMembershipColors.primaryBlue.withValues(alpha: 0.28), width: 1),
+                          ),
+                          child: const Text(
+                            "−",
+                            style: TextStyle(
+                              color: TMembershipColors.primaryBlue,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 15,
+                              height: 1,
+                            ),
+                          ),
                         ),
-                        child: const Text("-", style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.w900, fontSize: 13, height: 1)),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 6),
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: onQuickPlus,
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: TMembershipColors.primaryBlue.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: TMembershipColors.primaryBlue.withValues(alpha: 0.25), width: 1),
+                    const SizedBox(width: 8),
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: onQuickPlus,
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: TMembershipColors.primaryBlue.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: TMembershipColors.primaryBlue.withValues(alpha: 0.28), width: 1),
+                          ),
+                          child: const Text(
+                            "+",
+                            style: TextStyle(
+                              color: TMembershipColors.primaryBlue,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 15,
+                              height: 1,
+                            ),
+                          ),
                         ),
-                        child: const Text("+", style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.w900, fontSize: 13, height: 1)),
                       ),
                     ),
-                  ),
-                ],
-              ),
-          ],
+                  ],
+                ),
+            ],
+          ),
         ),
-        const SizedBox(height: 9),
         Container(
           decoration: BoxDecoration(
             color: boxBg,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: boxBorder, width: 1.2),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: boxBorder, width: 1.4),
           ),
           child: TextField(
             controller: controller,
@@ -1087,16 +1216,20 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
             style: GoogleFonts.inter(
               color: textColor,
               fontWeight: FontWeight.w800,
-              fontSize: 16,
+              fontSize: 17,
             ),
             inputFormatters: [ThousandsSeparatorInputFormatter()],
             decoration: InputDecoration(
               isDense: true,
-              prefixIcon: Icon(icon, color: TMembershipColors.primaryBlue, size: 18),
+              prefixIcon: Padding(
+                padding: const EdgeInsets.only(left: 14, right: 8),
+                child: Icon(icon, color: TMembershipColors.primaryBlue, size: 20),
+              ),
+              prefixIconConstraints: const BoxConstraints(minWidth: 42, minHeight: 42),
               suffixText: " $unit",
-              suffixStyle: TextStyle(color: subColor, fontWeight: FontWeight.w600, fontSize: 13),
+              suffixStyle: TextStyle(color: subColor, fontWeight: FontWeight.w700, fontSize: 13.5),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
             ),
           ),
         ),

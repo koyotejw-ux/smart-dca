@@ -212,41 +212,53 @@ class _TargetPriceScreenState extends ConsumerState<TargetPriceScreen> {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      "현재 보유 정보",
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: textSecondary),
+                      lang == LanguageType.ko ? "현재 보유 정보" : "Currently Held",
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: textSecondary),
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildInputField(_currentPriceController, L10n.s(lang, 'avg_price'), '예: 75,000', isDark),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _buildInputField(_currentQtyController, L10n.s(lang, 'quantity'), '예: 100', isDark),
-                        ),
-                      ],
+                    const SizedBox(height: 10),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final isNarrow = constraints.maxWidth < 340;
+                        final priceField = _buildInputField(_currentPriceController, L10n.s(lang, 'avg_price'), '예: 75,000', isDark);
+                        final qtyField = _buildInputField(_currentQtyController, L10n.s(lang, 'quantity'), '예: 100', isDark);
+                        if (isNarrow) {
+                          return Column(children: [priceField, const SizedBox(height: 12), qtyField]);
+                        }
+                        return Row(
+                          children: [
+                            Expanded(child: priceField),
+                            const SizedBox(width: 14),
+                            Expanded(child: qtyField),
+                          ],
+                        );
+                      },
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 22),
                     Divider(height: 1, color: isDark ? TMembershipColors.darkDivider : TMembershipColors.lightDivider),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 22),
                     Text(
-                      "목표 및 추가 매수 계획",
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800, color: textSecondary),
+                      lang == LanguageType.ko ? "목표 및 추가 매수 계획" : "Target & Buy Plan",
+                      style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: textSecondary),
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildInputField(_targetPriceController, L10n.s(lang, 'target_avg_price'), '예: 70,000', isDark),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _buildInputField(_purchasePriceController, L10n.s(lang, 'purchase_price'), '예: 65,000', isDark),
-                        ),
-                      ],
+                    const SizedBox(height: 10),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final isNarrow = constraints.maxWidth < 340;
+                        final targetField = _buildInputField(_targetPriceController, L10n.s(lang, 'target_avg_price'), '예: 70,000', isDark);
+                        final purchaseField = _buildInputField(_purchasePriceController, L10n.s(lang, 'purchase_price'), '예: 65,000', isDark);
+                        if (isNarrow) {
+                          return Column(children: [targetField, const SizedBox(height: 12), purchaseField]);
+                        }
+                        return Row(
+                          children: [
+                            Expanded(child: targetField),
+                            const SizedBox(width: 14),
+                            Expanded(child: purchaseField),
+                          ],
+                        );
+                      },
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 26),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -256,13 +268,17 @@ class _TargetPriceScreenState extends ConsumerState<TargetPriceScreen> {
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: TMembershipColors.primaryBlue,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          padding: const EdgeInsets.symmetric(vertical: 18),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                           elevation: 4,
                         ),
-                        child: Text(
-                          L10n.s(lang, 'find_amount'),
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 15),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            L10n.s(lang, 'find_amount'),
+                            maxLines: 1,
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
+                          ),
                         ),
                       ),
                     ),
@@ -281,32 +297,51 @@ class _TargetPriceScreenState extends ConsumerState<TargetPriceScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w700,
-            color: isDark ? Colors.white60 : Colors.black54,
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12.5,
+              fontWeight: FontWeight.w700,
+              color: isDark ? Colors.white70 : Colors.black87,
+            ),
           ),
         ),
-        const SizedBox(height: 6),
         TextField(
           controller: controller,
           keyboardType: TextInputType.number,
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: FontWeight.w800,
             color: isDark ? Colors.white : Colors.black87,
           ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(color: isDark ? Colors.white24 : Colors.black26, fontSize: 13),
+            hintStyle: TextStyle(color: isDark ? Colors.white24 : Colors.black26, fontSize: 14),
             filled: true,
-            fillColor: isDark ? Colors.black26 : const Color(0xFFF7F8FA),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+            fillColor: isDark ? const Color(0xFF131923) : const Color(0xFFF8FAFD),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: isDark ? TMembershipColors.darkCardBorder : const Color(0xFFE4E9F2),
+                width: 1.2,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: isDark ? TMembershipColors.darkCardBorder : const Color(0xFFE4E9F2),
+                width: 1.2,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(
+                color: TMembershipColors.primaryBlue,
+                width: 1.6,
+              ),
             ),
           ),
         ),
