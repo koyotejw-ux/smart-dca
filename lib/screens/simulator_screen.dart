@@ -15,6 +15,7 @@ import '../models/scenario_model.dart';
 import '../providers/scenario_provider.dart';
 import '../theme/t_membership_colors.dart';
 import '../services/admob_service.dart';
+import '../providers/currency_provider.dart';
 
 class SimulatorScreen extends ConsumerStatefulWidget {
   final Scenario? initialScenario;
@@ -383,7 +384,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "물타기 시뮬레이터",
+                    L10n.s(lang, 'sim_title'),
                     style: GoogleFonts.inter(
                       color: titleColor,
                       fontWeight: FontWeight.w900,
@@ -413,12 +414,12 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(Icons.refresh_rounded, size: 16, color: TMembershipColors.accentOrange),
-                      SizedBox(width: 4),
+                    children: [
+                      const Icon(Icons.refresh_rounded, size: 16, color: TMembershipColors.accentOrange),
+                      const SizedBox(width: 4),
                       Text(
-                        "초기화",
-                        style: TextStyle(
+                        L10n.s(lang, 'reset'),
+                        style: const TextStyle(
                           color: TMembershipColors.accentOrange,
                           fontWeight: FontWeight.w800,
                           fontSize: 12,
@@ -553,21 +554,21 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                       children: [
                         Column(
                           children: [
-                            const Text("총 보유 수량", style: TextStyle(color: Colors.white70, fontSize: 11)),
-                            const SizedBox(height: 2),
+                            Text(L10n.s(lang, 'total_qty'), style: const TextStyle(color: Colors.white70, fontSize: 11)),
+                            const SizedBox(height: 4),
                             Text(
-                              "${totalQty.toStringAsFixed(0)} 주",
+                              "${totalQty.toStringAsFixed(0)} ${L10n.s(lang, 'unit_share')}",
                               style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14),
                             ),
                           ],
                         ),
-                        const SizedBox(width: 16),
-                        Container(height: 20, width: 1, color: Colors.white24),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: 18),
+                        Container(height: 22, width: 1, color: Colors.white24),
+                        const SizedBox(width: 18),
                         Column(
                           children: [
-                            const Text("총 투자 원금", style: TextStyle(color: Colors.white70, fontSize: 11)),
-                            const SizedBox(height: 2),
+                            Text(L10n.s(lang, 'total_investment'), style: const TextStyle(color: Colors.white70, fontSize: 11)),
+                            const SizedBox(height: 4),
                             Text(
                               _currencyFormat.format(totalInvested),
                               style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14),
@@ -575,13 +576,13 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                           ],
                         ),
                         if (_isCompareMode && _resultB != null) ...[
-                          const SizedBox(width: 16),
-                          Container(height: 20, width: 1, color: Colors.white24),
-                          const SizedBox(width: 16),
+                          const SizedBox(width: 18),
+                          Container(height: 22, width: 1, color: Colors.white24),
+                          const SizedBox(width: 18),
                           Column(
                             children: [
-                              const Text("시나리오 B", style: TextStyle(color: Color(0xFFFFB74D), fontSize: 11, fontWeight: FontWeight.bold)),
-                              const SizedBox(height: 2),
+                              Text(lang == LanguageType.ko ? "시나리오 B" : "Scenario B", style: const TextStyle(color: Color(0xFFFFB74D), fontSize: 11, fontWeight: FontWeight.bold)),
+                              const SizedBox(height: 4),
                               Text(
                                 _currencyFormat.format(_resultB!.averagePrice),
                                 style: const TextStyle(color: Color(0xFFFFB74D), fontWeight: FontWeight.w900, fontSize: 14),
@@ -618,7 +619,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
         children: [
           Expanded(
             child: _buildModeTab(
-              label: "추가 매수 계산",
+              label: L10n.s(lang, 'simulator'),
               isSelected: !_isTargetMode && !_isCompareMode,
               onTap: () => setState(() {
                 _isTargetMode = false;
@@ -629,7 +630,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
           ),
           Expanded(
             child: _buildModeTab(
-              label: "시나리오 비교",
+              label: L10n.s(lang, 'scenario_compare'),
               isSelected: _isCompareMode,
               onTap: () => setState(() {
                 _isCompareMode = !_isCompareMode;
@@ -640,7 +641,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
           ),
           Expanded(
             child: _buildModeTab(
-              label: "목표가 계산",
+              label: L10n.s(lang, 'target_price'),
               isSelected: _isTargetMode,
               onTap: () => setState(() {
                 _isTargetMode = !_isTargetMode;
@@ -686,6 +687,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
 
   /// Step 1: Currently Held Asset
   Widget _buildInitialStepCard(BuildContext context, bool isDark, LanguageType lang) {
+    final currency = ref.watch(currencyProvider);
     final cardBg = isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface;
     final cardBorder = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
     final titleColor = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
@@ -715,12 +717,18 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                 ),
               ),
               const SizedBox(width: 10),
-              Text(
-                "현재 보유 평단가 및 수량",
-                style: GoogleFonts.inter(
-                  color: titleColor,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 15,
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    L10n.s(lang, 'step_1_title'),
+                    style: GoogleFonts.inter(
+                      color: titleColor,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 15,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -731,20 +739,20 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
               Expanded(
                 child: _buildInputBox(
                   controller: _initialPriceController,
-                  label: "현재 평단가",
-                  unit: "원",
+                  label: L10n.s(lang, 'current_avg_label'),
+                  unit: currency.symbol,
                   icon: Icons.payments_outlined,
                   isDark: isDark,
                   onQuickMinus: () => _adjustPrice(_initialPriceController, -0.01),
                   onQuickPlus: () => _adjustPrice(_initialPriceController, 0.01),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 14),
               Expanded(
                 child: _buildInputBox(
                   controller: _initialQtyController,
-                  label: "현재 수량",
-                  unit: "주",
+                  label: L10n.s(lang, 'current_qty_label'),
+                  unit: L10n.s(lang, 'unit_share'),
                   icon: Icons.pin_outlined,
                   isDark: isDark,
                   onQuickMinus: () => _adjustQty(_initialQtyController, -10),
@@ -760,6 +768,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
 
   /// Step 2: Additional Buy Plan Card
   Widget _buildPurchasePlanCard(BuildContext context, bool isDark, LanguageType lang, bool isB) {
+    final currency = ref.watch(currencyProvider);
     final cardBg = isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface;
     final cardBorder = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
     final titleColor = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
@@ -782,38 +791,53 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    width: 26,
-                    height: 26,
-                    decoration: BoxDecoration(
-                      color: planColor,
-                      shape: BoxShape.circle,
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(
+                      width: 26,
+                      height: 26,
+                      decoration: BoxDecoration(
+                        color: planColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Text(isB ? "B" : "2", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 13)),
+                      ),
                     ),
-                    child: Center(
-                      child: Text(isB ? "B" : "2", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 13)),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          isB ? (lang == LanguageType.ko ? "비교 시나리오 B" : "Scenario B") : L10n.s(lang, 'step_2_title'),
+                          style: GoogleFonts.inter(
+                            color: titleColor,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    isB ? "비교 시나리오 B" : "추가 매수 계획",
-                    style: GoogleFonts.inter(
-                      color: titleColor,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 15,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              TextButton.icon(
-                onPressed: () => _addBatch(isB),
-                icon: const Icon(Icons.add_rounded, size: 16, color: Colors.white),
-                label: const Text("차수 추가", style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12)),
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  backgroundColor: planColor,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              const SizedBox(width: 8),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: TextButton.icon(
+                  onPressed: () => _addBatch(isB),
+                  icon: const Icon(Icons.add_rounded, size: 14, color: Colors.white),
+                  label: Text(
+                    L10n.s(lang, 'add_batch'),
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 11),
+                  ),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                    backgroundColor: planColor,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
                 ),
               ),
             ],
@@ -831,20 +855,20 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                   Expanded(
                     child: _buildInputBox(
                       controller: prices[index],
-                      label: "${index + 1}차 매수가",
-                      unit: "원",
+                      label: "${index + 1} • ${L10n.s(lang, 'batch_price_label')}",
+                      unit: currency.symbol,
                       icon: Icons.add_shopping_cart_rounded,
                       isDark: isDark,
                       onQuickMinus: () => _adjustPrice(prices[index], -0.01),
                       onQuickPlus: () => _adjustPrice(prices[index], 0.01),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 14),
                   Expanded(
                     child: _buildInputBox(
                       controller: qtys[index],
-                      label: "${index + 1}차 수량",
-                      unit: "주",
+                      label: "${index + 1} • ${L10n.s(lang, 'batch_qty_label')}",
+                      unit: L10n.s(lang, 'unit_share'),
                       icon: Icons.numbers_rounded,
                       isDark: isDark,
                       onQuickMinus: () => _adjustQty(qtys[index], -10),
@@ -871,6 +895,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
 
   /// Target Price Mode Card
   Widget _buildTargetCalculatorCard(BuildContext context, bool isDark, LanguageType lang) {
+    final currency = ref.watch(currencyProvider);
     final cardBg = isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface;
     final cardBorder = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
     final titleColor = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
@@ -900,12 +925,18 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                 ),
               ),
               const SizedBox(width: 10),
-              Text(
-                "목표 평단가 맞추기",
-                style: GoogleFonts.inter(
-                  color: titleColor,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 15,
+              Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    L10n.s(lang, 'step_3_title'),
+                    style: GoogleFonts.inter(
+                      color: titleColor,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 15,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -916,18 +947,18 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
               Expanded(
                 child: _buildInputBox(
                   controller: _targetPriceController,
-                  label: "희망 목표 평단가",
-                  unit: "원",
+                  label: L10n.s(lang, 'target_goal_price'),
+                  unit: currency.symbol,
                   icon: Icons.flag_rounded,
                   isDark: isDark,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 14),
               Expanded(
                 child: _buildInputBox(
                   controller: _purchasePriceController,
-                  label: "추가 매수가격",
-                  unit: "원",
+                  label: L10n.s(lang, 'target_buy_price'),
+                  unit: currency.symbol,
                   icon: Icons.shopping_bag_outlined,
                   isDark: isDark,
                 ),
@@ -947,10 +978,10 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("필요 매수 수량", style: TextStyle(color: TMembershipColors.accentMagenta, fontWeight: FontWeight.bold, fontSize: 12)),
+                  Text(L10n.s(lang, 'required_qty'), style: const TextStyle(color: TMembershipColors.accentMagenta, fontWeight: FontWeight.bold, fontSize: 12)),
                   const SizedBox(height: 4),
                   Text(
-                    "${_currencyFormat.format(_requiredQty)} 주",
+                    "${_currencyFormat.format(_requiredQty)} ${L10n.s(lang, 'unit_share')}",
                     style: GoogleFonts.inter(
                       fontSize: 24,
                       fontWeight: FontWeight.w900,

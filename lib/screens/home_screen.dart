@@ -466,7 +466,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              currency == CurrencyType.krw ? 'KRW (\u20a9)' : 'USD (\$)',
+                              currency.label,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w800,
@@ -492,10 +492,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 const SizedBox(height: 4),
                 FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
                   child: Text(
                     NumberFormat.currency(
-                      symbol: currency == CurrencyType.krw ? '\u20a9' : '\$',
-                      decimalDigits: 0,
+                      symbol: currency.symbol,
+                      decimalDigits: currency.decimalDigits,
                     ).format(totalInvested),
                     style: GoogleFonts.inter(
                       color: Colors.white,
@@ -506,7 +508,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Bottom stats strip & barcode imitation
+                // Bottom stats strip
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
@@ -517,67 +519,67 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
                     child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "보유 자산 종목",
-                            style: TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w500),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            "${assets.length}개 종목",
-                            style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w900),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 16),
-                      Container(height: 24, width: 1, color: Colors.white24),
-                      const SizedBox(width: 16),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            L10n.s(lang, 'pnl'),
-                            style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w500),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            "${pnl >= 0 ? '+' : ''}${pnlPercent.toStringAsFixed(1)}%",
-                            style: const TextStyle(
-                              color: Color(0xFF69F0AE),
-                              fontSize: 15,
-                              fontWeight: FontWeight.w900,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              L10n.s(lang, 'my_assets'),
+                              style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w500),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 16),
-                      Container(height: 24, width: 1, color: Colors.white24),
-                      const SizedBox(width: 16),
-                      ElevatedButton(
-                        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SimulatorScreen())),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: TMembershipColors.primaryBlue,
-                          elevation: 0,
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                          minimumSize: Size.zero,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                        child: Row(
-                          children: const [
-                            Text("계산하기", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12)),
-                            SizedBox(width: 4),
-                            Icon(Icons.arrow_forward_rounded, size: 14),
+                            const SizedBox(height: 4),
+                            Text(
+                              "${assets.length} ${L10n.s(lang, 'asset_count_suffix')}",
+                              style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w900),
+                            ),
                           ],
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 18),
+                        Container(height: 26, width: 1, color: Colors.white24),
+                        const SizedBox(width: 18),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              L10n.s(lang, 'pnl'),
+                              style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              "${pnl >= 0 ? '+' : ''}${pnlPercent.toStringAsFixed(1)}%",
+                              style: const TextStyle(
+                                color: Color(0xFF69F0AE),
+                                fontSize: 15,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(width: 18),
+                        Container(height: 26, width: 1, color: Colors.white24),
+                        const SizedBox(width: 18),
+                        ElevatedButton(
+                          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SimulatorScreen())),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: TMembershipColors.primaryBlue,
+                            elevation: 0,
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            minimumSize: Size.zero,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: Row(
+                            children: [
+                              Text(L10n.s(lang, 'calculate_btn'), style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 12)),
+                              const SizedBox(width: 4),
+                              const Icon(Icons.arrow_forward_rounded, size: 14),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
                 ),
               ],
             ),
@@ -593,9 +595,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 10),
+          padding: const EdgeInsets.only(left: 4, bottom: 12),
           child: Text(
-            "자주 찾는 기능",
+            L10n.s(lang, 'quick_actions'),
             style: GoogleFonts.inter(
               fontWeight: FontWeight.w800,
               fontSize: 16,
@@ -608,20 +610,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Expanded(
               child: _buildActionTile(
                 context: context,
-                title: "물타기 시뮬레이터",
-                subtitle: "신규 평단가 & 수익 계산",
+                title: L10n.s(lang, 'simulator'),
+                subtitle: L10n.s(lang, 'sim_sub'),
                 icon: Icons.calculate_rounded,
                 gradient: TMembershipColors.actionPurpleGradient,
                 isDark: isDark,
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SimulatorScreen())),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 14),
             Expanded(
               child: _buildActionTile(
                 context: context,
-                title: "시나리오 기록",
-                subtitle: "과거 계산 내역 비교",
+                title: L10n.s(lang, 'scenario_history'),
+                subtitle: L10n.s(lang, 'scenario_sub'),
                 icon: Icons.history_toggle_off_rounded,
                 gradient: TMembershipColors.cardTealBlueGradient,
                 isDark: isDark,
@@ -630,26 +632,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 14),
         Row(
           children: [
             Expanded(
               child: _buildActionTile(
                 context: context,
-                title: "포트폴리오 리포트",
-                subtitle: "자산 비중 및 회복력 분석",
+                title: L10n.s(lang, 'portfolio_report'),
+                subtitle: L10n.s(lang, 'report_sub'),
                 icon: Icons.pie_chart_outline_rounded,
                 gradient: TMembershipColors.vipGoldGradient,
                 isDark: isDark,
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PortfolioReportScreen())),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 14),
             Expanded(
               child: _buildActionTile(
                 context: context,
-                title: "음성 비서 입력",
-                subtitle: "말 한마디로 자동 계산",
+                title: L10n.s(lang, 'voice_ai'),
+                subtitle: L10n.s(lang, 'voice_sub'),
                 icon: Icons.graphic_eq_rounded,
                 gradient: const LinearGradient(
                   colors: [Color(0xFFFF007F), Color(0xFFFF5252)],
@@ -756,7 +758,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "내 등록 자산",
+              L10n.s(lang, 'my_assets_header'),
               style: GoogleFonts.inter(
                 fontWeight: FontWeight.w800,
                 fontSize: 16,
@@ -765,7 +767,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             if (assets.isNotEmpty)
               Text(
-                "총 ${assets.length}개",
+                "${assets.length} ${L10n.s(lang, 'asset_count_suffix')}",
                 style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 13),
               ),
           ],
@@ -786,12 +788,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 Icon(Icons.inventory_2_outlined, color: subColor, size: 40),
                 const SizedBox(height: 12),
                 Text(
-                  "등록된 자산이 없습니다",
+                  L10n.s(lang, 'no_assets'),
                   style: TextStyle(color: titleColor, fontWeight: FontWeight.w700, fontSize: 14),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "시뮬레이터에서 계산 후 자산으로 저장해보세요.",
+                  lang == LanguageType.ko ? "시뮬레이터에서 계산 후 자산으로 저장해보세요." : "Calculate in simulator and save as assets.",
                   style: TextStyle(color: subColor, fontSize: 12),
                 ),
               ],

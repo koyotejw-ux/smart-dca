@@ -9,6 +9,7 @@ import '../providers/asset_provider.dart';
 import '../providers/scenario_provider.dart';
 import '../services/admob_service.dart';
 import '../services/event_service.dart';
+import '../utils/l10n.dart';
 import 'help_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -74,26 +75,25 @@ class SettingsScreen extends ConsumerWidget {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             children: [
-              _buildSectionHeader(lang == LanguageType.ko ? "일반 설정" : "General Settings", isDark),
+              _buildSectionHeader(L10n.s(lang, 'general_settings'), isDark),
               const SizedBox(height: 8),
               _buildSettingCard(
                 isDark: isDark,
                 children: [
                   _buildDropdownRow<CurrencyType>(
-                    title: lang == LanguageType.ko ? "기본 통화" : "Currency",
-                    subtitle: lang == LanguageType.ko ? "계산 및 포트폴리오 기준" : "Calculation & Portfolio",
+                    title: L10n.s(lang, 'base_currency'),
+                    subtitle: "${currency.label} • ${currency.symbol}",
                     icon: Icons.payments_rounded,
                     value: currency,
-                    items: [
-                      DropdownMenuItem(
-                        value: CurrencyType.krw,
-                        child: Text("KRW (₩)", style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 13)),
-                      ),
-                      DropdownMenuItem(
-                        value: CurrencyType.usd,
-                        child: Text("USD (\$)", style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 13)),
-                      ),
-                    ],
+                    items: CurrencyType.values.map((c) {
+                      return DropdownMenuItem(
+                        value: c,
+                        child: Text(
+                          c.label,
+                          style: const TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 13),
+                        ),
+                      );
+                    }).toList(),
                     onChanged: (val) {
                       if (val != null) ref.read(currencyProvider.notifier).setCurrency(val);
                     },
@@ -101,22 +101,24 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                   _buildDivider(isDark),
                   _buildDropdownRow<ThemeMode>(
-                    title: lang == LanguageType.ko ? "화면 모드" : "Appearance",
-                    subtitle: lang == LanguageType.ko ? "라이트 / 다크 테마" : "Light / Dark Theme",
+                    title: L10n.s(lang, 'screen_mode'),
+                    subtitle: themeMode == ThemeMode.system
+                        ? L10n.s(lang, 'system_mode')
+                        : (themeMode == ThemeMode.light ? L10n.s(lang, 'light_mode') : L10n.s(lang, 'dark_mode')),
                     icon: Icons.palette_outlined,
                     value: themeMode,
                     items: [
                       DropdownMenuItem(
                         value: ThemeMode.system,
-                        child: Text(lang == LanguageType.ko ? "시스템" : "System", style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 13)),
+                        child: Text(L10n.s(lang, 'system_mode'), style: const TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 13)),
                       ),
                       DropdownMenuItem(
                         value: ThemeMode.light,
-                        child: Text(lang == LanguageType.ko ? "라이트" : "Light", style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 13)),
+                        child: Text(L10n.s(lang, 'light_mode'), style: const TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 13)),
                       ),
                       DropdownMenuItem(
                         value: ThemeMode.dark,
-                        child: Text(lang == LanguageType.ko ? "다크" : "Dark", style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 13)),
+                        child: Text(L10n.s(lang, 'dark_mode'), style: const TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 13)),
                       ),
                     ],
                     onChanged: (val) {
@@ -126,20 +128,19 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                   _buildDivider(isDark),
                   _buildDropdownRow<LanguageType>(
-                    title: lang == LanguageType.ko ? "언어 설정" : "Language",
-                    subtitle: "한국어 / English",
+                    title: L10n.s(lang, 'language_setting'),
+                    subtitle: "${lang.flag} ${lang.displayName}",
                     icon: Icons.language_rounded,
                     value: lang,
-                    items: [
-                      DropdownMenuItem(
-                        value: LanguageType.ko,
-                        child: Text("한국어", style: TextStyle(color: TMembershipColors.accentMagenta, fontWeight: FontWeight.bold, fontSize: 13)),
-                      ),
-                      DropdownMenuItem(
-                        value: LanguageType.en,
-                        child: Text("English", style: TextStyle(color: TMembershipColors.accentMagenta, fontWeight: FontWeight.bold, fontSize: 13)),
-                      ),
-                    ],
+                    items: LanguageType.values.map((lt) {
+                      return DropdownMenuItem(
+                        value: lt,
+                        child: Text(
+                          "${lt.flag} ${lt.displayName}",
+                          style: const TextStyle(color: TMembershipColors.accentMagenta, fontWeight: FontWeight.bold, fontSize: 13),
+                        ),
+                      );
+                    }).toList(),
                     onChanged: (val) {
                       if (val != null) ref.read(languageProvider.notifier).setLanguage(val);
                     },
@@ -148,14 +149,14 @@ class SettingsScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 24),
-              _buildSectionHeader(lang == LanguageType.ko ? "자산 & 데이터 관리" : "Data Management", isDark),
+              _buildSectionHeader(L10n.s(lang, 'data_mgmt'), isDark),
               const SizedBox(height: 8),
               _buildSettingCard(
                 isDark: isDark,
                 children: [
                   _buildActionRow(
-                    title: lang == LanguageType.ko ? "계산 공식 및 가이드" : "Guide & Formula",
-                    subtitle: lang == LanguageType.ko ? "물타기 원리 및 목표가 계산 안내" : "Strategy Principles & Tips",
+                    title: L10n.s(lang, 'guide_menu'),
+                    subtitle: L10n.s(lang, 'guide_menu_sub'),
                     icon: Icons.menu_book_rounded,
                     trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey),
                     onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HelpScreen())),
@@ -163,25 +164,25 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                   _buildDivider(isDark),
                   _buildActionRow(
-                    title: lang == LanguageType.ko ? "데이터 초기화" : "Reset Data",
-                    subtitle: lang == LanguageType.ko ? "등록된 자산 및 저장된 계산 기록 삭제" : "Clear all assets & history",
+                    title: L10n.s(lang, 'data_reset_title'),
+                    subtitle: L10n.s(lang, 'data_reset_sub'),
                     icon: Icons.delete_outline_rounded,
                     iconColor: TMembershipColors.accentCoral,
-                    trailing: Text(lang == LanguageType.ko ? "초기화" : "Reset", style: const TextStyle(color: TMembershipColors.accentCoral, fontWeight: FontWeight.w800, fontSize: 13)),
+                    trailing: Text(L10n.s(lang, 'reset_btn'), style: const TextStyle(color: TMembershipColors.accentCoral, fontWeight: FontWeight.w800, fontSize: 13)),
                     onTap: () => _confirmDataReset(context, ref),
                     isDark: isDark,
                   ),
                 ],
               ),
               const SizedBox(height: 24),
-              _buildSectionHeader(lang == LanguageType.ko ? "이벤트 혜택 & 광고" : "VIP Events & Ads", isDark),
+              _buildSectionHeader(lang == LanguageType.ko ? "이벤트 혜택 & 광고" : (lang == LanguageType.ja ? "イベント特典＆広告" : "VIP Events & Ads"), isDark),
               const SizedBox(height: 8),
               _buildSettingCard(
                 isDark: isDark,
                 children: [
                   _buildActionRow(
-                    title: lang == LanguageType.ko ? "1달 광고 제거 혜택 확인" : "Ad-Free VIP Status",
-                    subtitle: lang == LanguageType.ko ? "100 다운로드 돌파 감사 무료 이벤트" : "Special Launch Benefit",
+                    title: L10n.s(lang, 'vip_menu'),
+                    subtitle: L10n.s(lang, 'vip_menu_sub'),
                     icon: Icons.stars_rounded,
                     iconColor: TMembershipColors.gold,
                     trailing: FutureBuilder<bool>(
@@ -195,7 +196,7 @@ class SettingsScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            active ? (lang == LanguageType.ko ? "적용 중 (VIP)" : "Active (VIP)") : (lang == LanguageType.ko ? "미적용" : "Inactive"),
+                            active ? L10n.s(lang, 'active_badge') : (lang == LanguageType.ko ? "미적용" : "Inactive"),
                             style: TextStyle(
                               color: active ? TMembershipColors.accentMint : Colors.grey,
                               fontWeight: FontWeight.w900,

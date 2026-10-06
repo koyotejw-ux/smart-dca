@@ -50,7 +50,7 @@ class HelpScreen extends ConsumerWidget {
           ),
         ),
         title: Text(
-          lang == LanguageType.ko ? "도움말 및 가이드" : "Help & Guide",
+          _getHelpTitle(lang),
           style: GoogleFonts.inter(
             color: titleColor,
             fontWeight: FontWeight.w900,
@@ -66,40 +66,32 @@ class HelpScreen extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
             children: [
               _buildGuideCard(
-                title: lang == LanguageType.ko ? "물타기(Average Down)란?" : "What is Average Down?",
-                content: lang == LanguageType.ko
-                    ? "보유한 주식/코인의 가격이 하락했을 때 추가로 분할 매수하여 평균 매수가격을 낮추는 투자 기법입니다. 이후 반등 시 빠르게 원금을 회복하고 수익권으로 전환할 수 있습니다."
-                    : "A strategy of buying additional shares as the price drops to lower your overall average purchase price, allowing faster break-even and profit recovery upon rebound.",
+                title: _getCard1Title(lang),
+                content: _getCard1Content(lang),
                 icon: Icons.trending_down_rounded,
                 color: TMembershipColors.primaryBlue,
                 isDark: isDark,
               ),
               const SizedBox(height: 16),
               _buildGuideCard(
-                title: lang == LanguageType.ko ? "스마트 시뮬레이터 사용법" : "How to Use Simulator",
-                content: lang == LanguageType.ko
-                    ? "1. 현재 보유 중인 평단가와 수량을 입력하세요.\n2. 추가 매수할 가격과 수량을 차수별로 계획합니다.\n3. 상단 대시보드에서 실시간으로 합산된 신규 평단가와 총 투자 원금을 확인하세요.\n4. '시나리오 저장'으로 나중에 언제든 다시 불러올 수 있습니다."
-                    : "1. Enter your current average price and quantity.\n2. Plan additional purchase batches (price and shares).\n3. Check real-time calculated average price & total capital on top.\n4. Save scenarios for comparison anytime.",
+                title: _getCard2Title(lang),
+                content: _getCard2Content(lang),
                 icon: Icons.calculate_rounded,
                 color: TMembershipColors.accentPurple,
                 isDark: isDark,
               ),
               const SizedBox(height: 16),
               _buildGuideCard(
-                title: lang == LanguageType.ko ? "목표가 역산 전략 (Target Mode)" : "Target Price Mode",
-                content: lang == LanguageType.ko
-                    ? "내가 원하는 목표 평단가(예: 본전 또는 특정 가격)를 입력하면, 현재 추가 매수가 기준으로 '정확히 몇 주를 사야 하는지' 역으로 계산해 줍니다. 과도한 무리수를 방지하고 계획적인 비중 관리가 가능합니다."
-                    : "Enter your desired target average price, and it automatically calculates exactly how many shares you need to buy at current price. Prevents over-investing and maintains systematic position sizing.",
+                title: _getCard3Title(lang),
+                content: _getCard3Content(lang),
                 icon: Icons.flag_rounded,
                 color: TMembershipColors.accentMagenta,
                 isDark: isDark,
               ),
               const SizedBox(height: 16),
               _buildGuideCard(
-                title: lang == LanguageType.ko ? "AI 음성 비서 사용법" : "Voice AI Assistant",
-                content: lang == LanguageType.ko
-                    ? "하단의 'AI 비서' 버튼을 누르고 예시 카드를 탭하거나 자연어로 입력하면, 종목명과 평단가, 수량을 자동으로 파싱하여 계산기에 채워 넣고 즉시 계산합니다."
-                    : "Tap the floating 'AI Assistant' button and speak or select sample prompts. It parses asset names, prices, and quantities automatically into the calculator.",
+                title: _getCard4Title(lang),
+                content: _getCard4Content(lang),
                 icon: Icons.mic_rounded,
                 color: TMembershipColors.accentMint,
                 isDark: isDark,
@@ -107,9 +99,7 @@ class HelpScreen extends ConsumerWidget {
               const SizedBox(height: 32),
               Center(
                 child: Text(
-                  lang == LanguageType.ko
-                      ? "스마트 물타기 계산기 v3.2\nSmart Clean Design System"
-                      : "Smart Average Down Calculator v3.2\nSmart Clean Design System",
+                  "Smart Average Down Calculator v3.2\nGlobal Multi-Language Engine Active",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: isDark ? TMembershipColors.darkTextTertiary : TMembershipColors.lightTextTertiary,
@@ -124,6 +114,142 @@ class HelpScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  String _getHelpTitle(LanguageType lang) {
+    switch (lang) {
+      case LanguageType.ko: return "도움말 및 가이드";
+      case LanguageType.ja: return "ヘルプ＆ガイド";
+      case LanguageType.zh: return "帮助与指南";
+      case LanguageType.es: return "Ayuda y Guía";
+      case LanguageType.vi: return "Hướng dẫn & Trợ giúp";
+      case LanguageType.id: return "Bantuan & Panduan";
+      case LanguageType.en: return "Help & Guide";
+    }
+  }
+
+  String _getCard1Title(LanguageType lang) {
+    switch (lang) {
+      case LanguageType.ko: return "물타기(Average Down)란?";
+      case LanguageType.ja: return "ナンピン（Average Down）とは？";
+      case LanguageType.zh: return "什么是补仓（DCA / 摊平）？";
+      case LanguageType.es: return "¿Qué es el Promedio a la Baja?";
+      case LanguageType.vi: return "Chiến lược DCA Trung bình giá là gì?";
+      case LanguageType.id: return "Apa itu Average Down (DCA)?";
+      case LanguageType.en: return "What is Average Down (DCA)?";
+    }
+  }
+
+  String _getCard1Content(LanguageType lang) {
+    switch (lang) {
+      case LanguageType.ko:
+        return "보유한 자산 가격이 하락했을 때 추가로 분할 매수하여 평균 매수가격을 낮추는 기법입니다. 이후 반등 시 빠르게 원금을 회복하고 수익으로 전환할 수 있습니다.";
+      case LanguageType.ja:
+        return "保有資産の価格が下落した際に追加買付を行い、平均取得単価を引き下げる投資手法です。反発時に素早く元本を回復し利益化を目指せます。";
+      case LanguageType.zh:
+        return "在持仓资产价格下跌时分批追加买入，以拉低整体平均持仓成本。价格反弹时可更快保本并转为盈利。";
+      case LanguageType.es:
+        return "Estrategia que consiste en comprar más acciones a medida que el precio cae para reducir el coste medio por acción, facilitando recuperar el capital y obtener ganancias ante un rebote.";
+      case LanguageType.vi:
+        return "Phương pháp mua thêm cổ phiếu khi giá giảm để hạ giá vốn trung bình, giúp nhanh chóng hòa vốn và sinh lời khi thị trường phục hồi.";
+      case LanguageType.id:
+        return "Strategi membeli aset tambahan saat harga turun guna menurunkan harga beli rata-rata, mempercepat pemulihan modal dan potensi cuan saat rebound.";
+      case LanguageType.en:
+        return "A strategy of buying additional shares as the price drops to lower your overall average purchase price, allowing faster break-even and profit recovery upon rebound.";
+    }
+  }
+
+  String _getCard2Title(LanguageType lang) {
+    switch (lang) {
+      case LanguageType.ko: return "스마트 시뮬레이터 사용법";
+      case LanguageType.ja: return "シミュレーターの使い方";
+      case LanguageType.zh: return "智能计算器使用方法";
+      case LanguageType.es: return "Cómo Usar el Simulador";
+      case LanguageType.vi: return "Cách dùng máy tính mô phỏng";
+      case LanguageType.id: return "Cara Menggunakan Simulator";
+      case LanguageType.en: return "How to Use Simulator";
+    }
+  }
+
+  String _getCard2Content(LanguageType lang) {
+    switch (lang) {
+      case LanguageType.ko:
+        return "1. 현재 보유 중인 평단가와 수량을 입력하세요.\n2. 추가 매수할 가격과 수량을 계획합니다.\n3. 상단 대시보드에서 실시간 신규 평단가를 확인하세요.";
+      case LanguageType.ja:
+        return "1. 現在の平均取得単価と保有数量を入力します。\n2. 追加買付予定の価格と数量を入力します。\n3. 上部のカードでリアルタイムの新平均単価を確認します。";
+      case LanguageType.zh:
+        return "1. 输入当前持仓均价与数量。\n2. 设定拟追加补仓的价格与数量。\n3. 在上方卡片中即时查看计算出的新持仓均价。";
+      case LanguageType.es:
+        return "1. Ingrese su precio promedio actual y cantidad.\n2. Planifique el precio y cantidad de la compra adicional.\n3. Observe el nuevo precio promedio resultante en tiempo real.";
+      case LanguageType.vi:
+        return "1. Nhập giá vốn trung bình và số lượng hiện tại.\n2. Lên kế hoạch giá mua và số lượng đợt tiếp theo.\n3. Xem giá vốn mới được tính toán ngay lập tức.";
+      case LanguageType.id:
+        return "1. Masukkan harga rata-rata dan jumlah aset saat ini.\n2. Rencanakan harga dan jumlah pembelian baru.\n3. Lihat hasil harga rata-rata baru secara real-time.";
+      case LanguageType.en:
+        return "1. Enter your current average price and quantity.\n2. Plan additional buy prices and shares.\n3. Check your real-time updated average price on top.";
+    }
+  }
+
+  String _getCard3Title(LanguageType lang) {
+    switch (lang) {
+      case LanguageType.ko: return "목표가 역산 전략 (Target Mode)";
+      case LanguageType.ja: return "目標平均単価の逆算 (Target Mode)";
+      case LanguageType.zh: return "目标均价逆向推算 (Target Mode)";
+      case LanguageType.es: return "Modo Precio Objetivo (Target Mode)";
+      case LanguageType.vi: return "Tính số lượng theo giá mục tiêu";
+      case LanguageType.id: return "Hitung Target Rata-rata";
+      case LanguageType.en: return "Target Price Goal Mode";
+    }
+  }
+
+  String _getCard3Content(LanguageType lang) {
+    switch (lang) {
+      case LanguageType.ko:
+        return "도달하고 싶은 목표 평단가를 입력하면, 현재 매수가 기준으로 필요한 추가 매수 수량을 자동으로 계산해 줍니다.";
+      case LanguageType.ja:
+        return "希望する目標の平均取得単価を入力すると、現在の買付価格で必要な購入数量を逆算して提示します。";
+      case LanguageType.zh:
+        return "设定期望的目标持仓均价，系统将依据当前补仓价格，自动精确逆向计算出所需买入的股数。";
+      case LanguageType.es:
+        return "Ingrese el precio promedio deseado y calcule automáticamente cuántas acciones exactas necesita comprar al precio actual.";
+      case LanguageType.vi:
+        return "Nhập giá vốn mong muốn, hệ thống sẽ tự động tính chính xác số lượng cổ phiếu cần mua thêm theo mức giá hiện tại.";
+      case LanguageType.id:
+        return "Tentukan target harga rata-rata yang diinginkan, sistem akan menghitung persis berapa jumlah aset yang perlu dibeli.";
+      case LanguageType.en:
+        return "Enter your desired target average price, and it automatically calculates exactly how many shares you need to buy at current price.";
+    }
+  }
+
+  String _getCard4Title(LanguageType lang) {
+    switch (lang) {
+      case LanguageType.ko: return "AI 음성 비서 입력";
+      case LanguageType.ja: return "AI音声アシスタント";
+      case LanguageType.zh: return "AI语音快速录入";
+      case LanguageType.es: return "Asistente de Voz AI";
+      case LanguageType.vi: return "Trợ lý giọng nói AI";
+      case LanguageType.id: return "Asisten Suara AI";
+      case LanguageType.en: return "Voice AI Assistant";
+    }
+  }
+
+  String _getCard4Content(LanguageType lang) {
+    switch (lang) {
+      case LanguageType.ko:
+        return "화면 우측 하단의 AI 비서 버튼을 눌러 음성이나 텍스트로 자연스럽게 입력하면 계산기에 즉시 반영됩니다.";
+      case LanguageType.ja:
+        return "右下のAIアシスタントボタンをタップして音声やテキストで入力すると、銘柄や単価が自動入力されます。";
+      case LanguageType.zh:
+        return "点击右下角AI助理按钮，通过语音或文字描述即可快速将价格和数量自动填充至计算器。";
+      case LanguageType.es:
+        return "Presione el botón AI para dictar o escribir libremente; los datos se completarán automáticamente en el simulador.";
+      case LanguageType.vi:
+        return "Nhấn nút Trợ lý AI ở góc dưới để nhập bằng giọng nói hoặc văn bản, dữ liệu sẽ tự động điền vào máy tính.";
+      case LanguageType.id:
+        return "Tekan tombol Asisten AI di kanan bawah untuk input via suara atau teks, data langsung terisi otomatis.";
+      case LanguageType.en:
+        return "Tap the floating AI Assistant button and speak or type to parse prices and quantities into the calculator.";
+    }
   }
 
   Widget _buildGuideCard({

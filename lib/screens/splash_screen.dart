@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../utils/l10n.dart';
 import '../providers/language_provider.dart';
 import '../services/storage_service.dart';
-import '../theme/t_membership_colors.dart';
 import 'onboarding_screen.dart';
 import 'home_screen.dart';
 import '../services/admob_service.dart';
