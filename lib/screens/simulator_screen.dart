@@ -1179,42 +1179,71 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
 
   /// Bottom Actions: Save Scenario, Save to Portfolio
   Widget _buildBottomActionButtons(BuildContext context, bool isDark, LanguageType lang) {
-    return Row(
-      children: [
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: _saveScenario,
-            icon: const Icon(Icons.bookmark_border_rounded, size: 18),
-            label: Text(L10n.s(lang, 'save_scenario_btn')),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: isDark ? TMembershipColors.darkSurface : Colors.white,
-              foregroundColor: TMembershipColors.primaryBlue,
-              elevation: 0,
-              minimumSize: const Size(double.infinity, 54),
-              side: BorderSide(
-                color: isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder,
-                width: 1.2,
-              ),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isNarrow = constraints.maxWidth < 340;
+        final saveBtn = ElevatedButton.icon(
+          onPressed: _saveScenario,
+          icon: const Icon(Icons.bookmark_border_rounded, size: 18),
+          label: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              L10n.s(lang, 'save_scenario_btn'),
+              maxLines: 1,
+              style: const TextStyle(fontWeight: FontWeight.w800),
             ),
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: _saveToPortfolio,
-            icon: const Icon(Icons.account_balance_wallet_outlined, size: 18),
-            label: Text(L10n.s(lang, 'save_to_portfolio_btn')),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: TMembershipColors.primaryBlue,
-              foregroundColor: Colors.white,
-              elevation: 0,
-              minimumSize: const Size(double.infinity, 54),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isDark ? TMembershipColors.darkSurface : Colors.white,
+            foregroundColor: TMembershipColors.primaryBlue,
+            elevation: 0,
+            minimumSize: const Size(double.infinity, 52),
+            side: BorderSide(
+              color: isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder,
+              width: 1.2,
+            ),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          ),
+        );
+
+        final portfolioBtn = ElevatedButton.icon(
+          onPressed: _saveToPortfolio,
+          icon: const Icon(Icons.account_balance_wallet_outlined, size: 18),
+          label: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              L10n.s(lang, 'save_to_portfolio_btn'),
+              maxLines: 1,
+              style: const TextStyle(fontWeight: FontWeight.w900),
             ),
           ),
-        ),
-      ],
+          style: ElevatedButton.styleFrom(
+            backgroundColor: TMembershipColors.primaryBlue,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            minimumSize: const Size(double.infinity, 52),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          ),
+        );
+
+        if (isNarrow) {
+          return Column(
+            children: [
+              portfolioBtn,
+              const SizedBox(height: 10),
+              saveBtn,
+            ],
+          );
+        }
+
+        return Row(
+          children: [
+            Expanded(child: saveBtn),
+            const SizedBox(width: 12),
+            Expanded(child: portfolioBtn),
+          ],
+        );
+      },
     );
   }
 }

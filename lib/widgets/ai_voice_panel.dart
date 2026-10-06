@@ -474,41 +474,64 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                   ),
                 ),
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      ),
-                      child: Text(L10n.s(lang, 'close_btn'), style: const TextStyle(fontWeight: FontWeight.bold)),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final isNarrow = constraints.maxWidth < 320;
+                  final closeBtn = OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      minimumSize: const Size(double.infinity, 48),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    flex: 2,
-                    child: ElevatedButton.icon(
-                      onPressed: _isParsed ? _applyToSimulator : null,
-                      icon: const Icon(Icons.calculate_rounded, color: Colors.white, size: 20),
-                      label: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          L10n.s(lang, 'apply_to_sim_btn'),
-                          style: const TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: TMembershipColors.primaryBlue,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                        elevation: 4,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        L10n.s(lang, 'close_btn'),
+                        maxLines: 1,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-                  ),
-                ],
+                  );
+
+                  final applyBtn = ElevatedButton.icon(
+                    onPressed: _isParsed ? _applyToSimulator : null,
+                    icon: const Icon(Icons.calculate_rounded, color: Colors.white, size: 20),
+                    label: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        L10n.s(lang, 'apply_to_sim_btn'),
+                        maxLines: 1,
+                        style: const TextStyle(fontWeight: FontWeight.w900, color: Colors.white),
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: TMembershipColors.primaryBlue,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      minimumSize: const Size(double.infinity, 48),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      elevation: 4,
+                    ),
+                  );
+
+                  if (isNarrow) {
+                    return Column(
+                      children: [
+                        applyBtn,
+                        const SizedBox(height: 10),
+                        closeBtn,
+                      ],
+                    );
+                  }
+
+                  return Row(
+                    children: [
+                      Expanded(flex: 1, child: closeBtn),
+                      const SizedBox(width: 12),
+                      Expanded(flex: 2, child: applyBtn),
+                    ],
+                  );
+                },
               ),
             ),
           ],
