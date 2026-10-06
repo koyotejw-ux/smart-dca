@@ -69,32 +69,57 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
                 Container(
                   width: 140,
                   height: 140,
-                  alignment: Alignment.center,
-                  child: Image.asset(
-                    'assets/app_icon.png',
-                    fit: BoxFit.contain,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(32),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF6C5CE7).withValues(alpha: 0.35),
+                        blurRadius: 36,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(32),
+                    child: Image.asset(
+                      'assets/app_icon.png',
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ).animate()
                   .scale(duration: 800.ms, curve: Curves.easeOutBack)
                   .shimmer(delay: 900.ms, duration: 1400.ms),
                 const SizedBox(height: 28),
-                Text(
-                  L10n.s(lang, 'app_title'),
-                  style: GoogleFonts.inter(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 26,
-                    color: Colors.white,
-                    letterSpacing: -0.5,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      L10n.s(lang, 'app_title'),
+                      style: GoogleFonts.inter(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 26,
+                        color: Colors.white,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
                   ),
                 ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.15, end: 0),
                 const SizedBox(height: 8),
-                Text(
-                  lang == LanguageType.ko ? "스마트 물타기 및 평단가 관리 비서" : "Smart DCA & Average Down Assistant",
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.85),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 13,
-                    letterSpacing: 0.2,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      L10n.s(lang, 'app_subtitle'),
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.85),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
                   ),
                 ).animate().fadeIn(delay: 450.ms),
               ],

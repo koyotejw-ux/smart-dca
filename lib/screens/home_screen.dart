@@ -91,7 +91,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         elevation: 6,
         icon: const Icon(Icons.mic_rounded, size: 22),
         label: Text(
-          "AI 비서",
+          L10n.s(lang, 'ai_assistant_btn'),
           style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 14),
         ),
       ),
@@ -124,7 +124,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               _buildQuickActions(context, lang, isDark)
                                   .animate().fadeIn(duration: 500.ms, delay: 100.ms).slideY(begin: 0.08, end: 0),
                               const SizedBox(height: 20),
-                              _buildSecurityNoticeCard(context, isDark),
+                              _buildSecurityNoticeCard(context, isDark, lang),
                             ],
                           ),
                         ),
@@ -171,7 +171,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               _buildAssetList(context, assets, lang, isDark)
                   .animate().fadeIn(duration: 600.ms, delay: 200.ms).slideY(begin: 0.08, end: 0),
               const SizedBox(height: 20),
-              _buildSecurityNoticeCard(context, isDark),
+              _buildSecurityNoticeCard(context, isDark, lang),
               const SizedBox(height: 80),
             ],
           );
@@ -226,25 +226,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "물타기 계산기",
+                      L10n.s(lang, 'app_title'),
                       style: GoogleFonts.inter(
                         color: textColor,
                         fontWeight: FontWeight.w900,
-                        fontSize: 20,
-                        letterSpacing: -0.5,
+                        fontSize: 19,
+                        letterSpacing: -0.4,
                       ),
                     ),
                   ),
+                  const SizedBox(height: 2),
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "SMART STRATEGY MANAGER",
+                      L10n.s(lang, 'app_subtitle').toUpperCase(),
                       style: GoogleFonts.inter(
                         color: TMembershipColors.primaryBlue,
                         fontWeight: FontWeight.w800,
-                        fontSize: 10,
-                        letterSpacing: 1.2,
+                        fontSize: 9.5,
+                        letterSpacing: 0.8,
                       ),
                     ),
                   ),
@@ -441,7 +442,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
-                            lang == LanguageType.ko ? "스마트 포트폴리오" : "PORTFOLIO",
+                            L10n.s(lang, 'smart_portfolio').toUpperCase(),
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w900,
@@ -528,7 +529,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               L10n.s(lang, 'my_assets'),
                               style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w500),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 6),
                             Text(
                               "${assets.length} ${L10n.s(lang, 'asset_count_suffix')}",
                               style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w900),
@@ -545,7 +546,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               L10n.s(lang, 'pnl'),
                               style: const TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w500),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 6),
                             Text(
                               "${pnl >= 0 ? '+' : ''}${pnlPercent.toStringAsFixed(1)}%",
                               style: const TextStyle(
@@ -723,7 +724,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: 6),
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,
@@ -849,7 +850,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 14, color: titleColor),
                                   ),
                                   Text(
-                                    "${asset.initialQuantity.toStringAsFixed(0)} 주 / 코인",
+                                    "${asset.initialQuantity.toStringAsFixed(0)} ${L10n.s(lang, 'asset_unit_share_coin')}",
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(color: subColor, fontSize: 12),
@@ -880,7 +881,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   /// Security Notice Card
-  Widget _buildSecurityNoticeCard(BuildContext context, bool isDark) {
+  Widget _buildSecurityNoticeCard(BuildContext context, bool isDark, LanguageType lang) {
     final cardBg = isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface;
     final cardBorder = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
     final titleColor = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
@@ -911,12 +912,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "100% 로컬 보안 보장",
+                  L10n.s(lang, 'security_title'),
                   style: GoogleFonts.inter(fontWeight: FontWeight.w800, fontSize: 13, color: titleColor),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 4),
                 Text(
-                  "외부 서버로 개인 자산 데이터를 절대 전송하지 않습니다.",
+                  L10n.s(lang, 'security_sub'),
                   style: TextStyle(color: subColor, fontSize: 11),
                 ),
               ],

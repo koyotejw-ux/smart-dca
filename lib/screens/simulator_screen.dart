@@ -747,7 +747,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                   onQuickPlus: () => _adjustPrice(_initialPriceController, 0.01),
                 ),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 16),
               Expanded(
                 child: _buildInputBox(
                   controller: _initialQtyController,
@@ -863,7 +863,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                       onQuickPlus: () => _adjustPrice(prices[index], 0.01),
                     ),
                   ),
-                  const SizedBox(width: 14),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: _buildInputBox(
                       controller: qtys[index],
@@ -953,7 +953,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                   isDark: isDark,
                 ),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 16),
               Expanded(
                 child: _buildInputBox(
                   controller: _purchasePriceController,
@@ -1043,9 +1043,9 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: TMembershipColors.primaryBlue.withOpacity(0.12),
+                          color: TMembershipColors.primaryBlue.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: TMembershipColors.primaryBlue.withOpacity(0.25), width: 1),
+                          border: Border.all(color: TMembershipColors.primaryBlue.withValues(alpha: 0.25), width: 1),
                         ),
                         child: const Text("-", style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.w900, fontSize: 13, height: 1)),
                       ),
@@ -1060,9 +1060,9 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: TMembershipColors.primaryBlue.withOpacity(0.12),
+                          color: TMembershipColors.primaryBlue.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: TMembershipColors.primaryBlue.withOpacity(0.25), width: 1),
+                          border: Border.all(color: TMembershipColors.primaryBlue.withValues(alpha: 0.25), width: 1),
                         ),
                         child: const Text("+", style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.w900, fontSize: 13, height: 1)),
                       ),
@@ -1072,7 +1072,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
               ),
           ],
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 9),
         Container(
           decoration: BoxDecoration(
             color: boxBg,
