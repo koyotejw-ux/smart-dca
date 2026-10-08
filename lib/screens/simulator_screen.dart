@@ -351,7 +351,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
               _buildSensitivityCard(context, isDark, lang),
               const SizedBox(height: 20),
               _buildBottomActionButtons(context, isDark, lang),
-              const SizedBox(height: 60),
+              SizedBox(height: 36 + MediaQuery.paddingOf(context).bottom),
             ],
           ),
         ),
