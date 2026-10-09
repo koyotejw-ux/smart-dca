@@ -830,6 +830,33 @@ class L10n {
       LanguageType.vi: 'Kịch bản',
       LanguageType.id: 'Skenario',
     },
+    'save_to_portfolio_success': {
+      LanguageType.ko: '내 자산으로 정상 등록되었습니다! (홈 화면에서 확인 가능)',
+      LanguageType.en: 'Added to portfolio successfully! View on Home.',
+      LanguageType.ja: '保有資産に登録されました！（ホームで確認可能）',
+      LanguageType.zh: '已成功添加到投资组合！（可在首页查看）',
+      LanguageType.es: '¡Añadido al portafolio con éxito! Ver en Inicio.',
+      LanguageType.vi: 'Đã thêm vào danh mục thành công! Xem tại Trang chủ.',
+      LanguageType.id: 'Berhasil ditambahkan ke portofolio! Lihat di Beranda.',
+    },
+    'input_required_msg': {
+      LanguageType.ko: '초기 평단가와 수량을 먼저 입력해 주세요.',
+      LanguageType.en: 'Please enter initial price and quantity first.',
+      LanguageType.ja: '初期取得単価と数量を先に入力してください。',
+      LanguageType.zh: '请先输入初始买入均价与持仓数量。',
+      LanguageType.es: 'Introduce primero el precio inicial y la cantidad.',
+      LanguageType.vi: 'Vui lòng nhập giá vốn và số lượng ban đầu trước.',
+      LanguageType.id: 'Harap masukkan harga awal dan jumlah terlebih dahulu.',
+    },
+    'reset_done_msg': {
+      LanguageType.ko: '모든 입력값이 초기화되었습니다.',
+      LanguageType.en: 'All inputs have been reset.',
+      LanguageType.ja: 'すべての入力値がリセットされました。',
+      LanguageType.zh: '所有输入项已重置。',
+      LanguageType.es: 'Todos los campos han sido restablecidos.',
+      LanguageType.vi: 'Đã đặt lại tất cả các trường nhập liệu.',
+      LanguageType.id: 'Semua input telah diatur ulang.',
+    },
   };
 
   static String s(LanguageType lang, String key) {

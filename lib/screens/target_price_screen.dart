@@ -51,6 +51,7 @@ class _TargetPriceScreenState extends ConsumerState<TargetPriceScreen> {
     final pp = double.tryParse(_purchasePriceController.text.replaceAll(',', '')) ?? 0;
 
     if (cp > 0 && cq > 0 && tp > 0 && pp > 0) {
+      HapticFeedback.heavyImpact();
       setState(() {
         _requiredQty = CalculatorService.calculateRequiredQuantity(
           currentPrice: cp,
@@ -60,7 +61,26 @@ class _TargetPriceScreenState extends ConsumerState<TargetPriceScreen> {
         );
       });
     } else {
+      HapticFeedback.mediumImpact();
       if (_requiredQty != 0) setState(() => _requiredQty = 0);
+      if (mounted) {
+        final lang = ref.read(languageProvider);
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.info_outline_rounded, color: Colors.white, size: 20),
+                const SizedBox(width: 10),
+                Expanded(child: Text(L10n.s(lang, 'input_required_msg'))),
+              ],
+            ),
+            backgroundColor: TMembershipColors.accentOrange,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        );
+      }
     }
   }
 

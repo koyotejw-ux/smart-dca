@@ -206,62 +206,6 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
     );
   }
 
-  Future<void> _saveToPortfolio() async {
-    final ip = double.tryParse(_initialPriceController.text) ?? 0;
-    final iq = double.tryParse(_initialQtyController.text) ?? 0;
-
-    if (ip > 0 && iq > 0) {
-      AdmobService.showInterstitial(
-        onDismissed: () async {
-          await ref.read(assetsProvider.notifier).addAsset(Asset(
-            name: _assetNameController.text,
-            symbol: _assetSymbolController.text,
-            initialPrice: ip,
-            initialQuantity: iq,
-            type: 'stock',
-          ));
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(L10n.s(ref.read(languageProvider), 'save_to_portfolio_success')),
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-          }
-        },
-      );
-    }
-  }
-
-  Future<void> _saveScenario() async {
-    if (_resultA == null) return;
-
-    final lang = ref.read(languageProvider);
-    final ip = _parseVal(_initialPriceController.text);
-    final iq = _parseVal(_initialQtyController.text);
-    final batches = _calcBatches(false);
-
-    final scenario = Scenario(
-      id: const Uuid().v4(),
-      name: "${L10n.s(lang, 'default_scenario_name')} ${DateFormat('MM.dd HH:mm').format(DateTime.now())}",
-      initialPrice: ip,
-      initialQuantity: iq,
-      batches: batches,
-      createdAt: DateTime.now(),
-    );
-
-    await ref.read(scenarioProvider.notifier).addScenario(scenario);
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(L10n.s(lang, 'scenario_saved_msg')),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
-  }
-
   List<PurchaseBatch> _calcBatches(bool isB) {
     final List<PurchaseBatch> batches = [];
     final prices = isB ? _priceControllersB : _priceControllersA;
@@ -276,7 +220,126 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
     return batches;
   }
 
+  Future<void> _saveToPortfolio() async {
+    HapticFeedback.mediumImpact();
+    final lang = ref.read(languageProvider);
+    final ip = _parseVal(_initialPriceController.text);
+    final iq = _parseVal(_initialQtyController.text);
+
+    if (ip <= 0 || iq <= 0) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.info_outline_rounded, color: Colors.white, size: 20),
+                const SizedBox(width: 10),
+                Expanded(child: Text(L10n.s(lang, 'input_required_msg'))),
+              ],
+            ),
+            backgroundColor: TMembershipColors.accentOrange,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        );
+      }
+      return;
+    }
+
+    AdmobService.showInterstitial(
+      onDismissed: () async {
+        await ref.read(assetsProvider.notifier).addAsset(Asset(
+          name: _assetNameController.text.trim().isEmpty ? 'Asset' : _assetNameController.text.trim(),
+          symbol: _assetSymbolController.text.trim().isEmpty ? 'STOCK' : _assetSymbolController.text.trim(),
+          initialPrice: ip,
+          initialQuantity: iq,
+          type: 'stock',
+        ));
+        if (mounted) {
+          HapticFeedback.heavyImpact();
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.check_circle_rounded, color: Colors.white, size: 20),
+                  const SizedBox(width: 10),
+                  Expanded(child: Text(L10n.s(lang, 'save_to_portfolio_success'))),
+                ],
+              ),
+              backgroundColor: TMembershipColors.primaryBlue,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Future<void> _saveScenario() async {
+    HapticFeedback.mediumImpact();
+    final lang = ref.read(languageProvider);
+    final ip = _parseVal(_initialPriceController.text);
+    final iq = _parseVal(_initialQtyController.text);
+
+    if (ip <= 0 || iq <= 0) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(Icons.info_outline_rounded, color: Colors.white, size: 20),
+                const SizedBox(width: 10),
+                Expanded(child: Text(L10n.s(lang, 'input_required_msg'))),
+              ],
+            ),
+            backgroundColor: TMembershipColors.accentOrange,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        );
+      }
+      return;
+    }
+
+    final batches = _calcBatches(false);
+    final scenario = Scenario(
+      id: const Uuid().v4(),
+      name: "${L10n.s(lang, 'default_scenario_name')} ${DateFormat('MM.dd HH:mm').format(DateTime.now())}",
+      initialPrice: ip,
+      initialQuantity: iq,
+      batches: batches,
+      createdAt: DateTime.now(),
+    );
+
+    await ref.read(scenarioProvider.notifier).addScenario(scenario);
+
+    if (mounted) {
+      HapticFeedback.heavyImpact();
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.bookmark_added_rounded, color: Colors.white, size: 20),
+              const SizedBox(width: 10),
+              Expanded(child: Text(L10n.s(lang, 'scenario_saved_msg'))),
+            ],
+          ),
+          backgroundColor: const Color(0xFF7928CA),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }
+  }
+
   void _resetInputs() {
+    HapticFeedback.mediumImpact();
+    final lang = ref.read(languageProvider);
     setState(() {
       _initialPriceController.clear();
       _initialQtyController.clear();
@@ -292,7 +355,25 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
       _resultB = null;
       _requiredQty = null;
     });
-    HapticFeedback.mediumImpact();
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.refresh_rounded, color: Colors.white, size: 20),
+              const SizedBox(width: 10),
+              Expanded(child: Text(L10n.s(lang, 'reset_done_msg'))),
+            ],
+          ),
+          backgroundColor: TMembershipColors.accentOrange,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+      );
+    }
   }
 
   @override
@@ -670,7 +751,10 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
 
   Widget _buildModeTab({required String label, required bool isSelected, required VoidCallback onTap}) {
     return InkWell(
-      onTap: onTap,
+      onTap: () {
+        HapticFeedback.selectionClick();
+        onTap();
+      },
       borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),

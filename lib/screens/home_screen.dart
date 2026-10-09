@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -561,7 +562,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         Container(height: 26, width: 1, color: Colors.white24),
                         const SizedBox(width: 18),
                         ElevatedButton(
-                          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SimulatorScreen())),
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const SimulatorScreen()));
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
                             foregroundColor: TMembershipColors.primaryBlue,
@@ -693,7 +697,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: onTap,
+          onTap: () {
+            HapticFeedback.lightImpact();
+            onTap();
+          },
           borderRadius: BorderRadius.circular(20),
           child: Padding(
             padding: const EdgeInsets.all(16),
