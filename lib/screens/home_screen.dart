@@ -13,6 +13,7 @@ import '../providers/language_provider.dart';
 import '../utils/l10n.dart';
 import '../models/asset_model.dart';
 import 'simulator_screen.dart';
+import 'target_price_screen.dart';
 import 'scenario_history_screen.dart';
 import 'portfolio_report_screen.dart';
 import 'help_screen.dart';
@@ -100,82 +101,57 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isWide = constraints.maxWidth > 768;
-          final padding = isWide ? 40.0 : 16.0;
+          final padding = isWide ? 32.0 : 16.0;
 
-          if (isWide) {
-            return Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 1080),
-                child: ListView(
-                  padding: EdgeInsets.symmetric(horizontal: padding, vertical: 12),
-                  children: [
-                    if (_isAdFree) ...[
-                      _buildAdFreeVipBadge(isDark, lang),
-                      const SizedBox(height: 16),
-                    ],
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 6,
-                          child: Column(
-                            children: [
-                              _buildMembershipCard(context, ref, assets, currency, currencyNotifier, lang, isDark)
-                                  .animate().fadeIn(duration: 400.ms).slideY(begin: 0.08, end: 0),
-                              const SizedBox(height: 20),
-                              _buildQuickActions(context, lang, isDark)
-                                  .animate().fadeIn(duration: 500.ms, delay: 100.ms).slideY(begin: 0.08, end: 0),
-                              const SizedBox(height: 20),
-                              _buildSecurityNoticeCard(context, isDark, lang),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 24),
-                        Expanded(
-                          flex: 5,
-                          child: Column(
-                            children: [
-                              if (!_isAdFree) ...[
-                                const AdmobNativeAdCard(),
-                                const SizedBox(height: 20),
-                              ],
-                              _buildAssetList(context, assets, currency, lang, isDark)
-                                  .animate().fadeIn(duration: 600.ms, delay: 200.ms).slideY(begin: 0.08, end: 0),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 48),
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 860),
+              child: ListView(
+                padding: EdgeInsets.symmetric(horizontal: padding, vertical: 12),
+                children: [
+                  // 1. VIP 혜택 적용 상태 배너 (활성화 시 상단 알림)
+                  if (_isAdFree) ...[
+                    _buildAdFreeVipBadge(isDark, lang),
+                    const SizedBox(height: 14),
                   ],
-                ),
-              ),
-            );
-          }
 
-          return ListView(
-            padding: EdgeInsets.symmetric(horizontal: padding, vertical: 8),
-            children: [
-              if (_isAdFree) ...[
-                _buildAdFreeVipBadge(isDark, lang),
-                const SizedBox(height: 14),
-              ],
-              _buildMembershipCard(context, ref, assets, currency, currencyNotifier, lang, isDark)
-                  .animate().fadeIn(duration: 400.ms).slideY(begin: 0.08, end: 0),
-              const SizedBox(height: 16),
-              if (!_isAdFree) ...[
-                const AdmobNativeAdCard(),
-                const SizedBox(height: 16),
-              ],
-              _buildQuickActions(context, lang, isDark)
-                  .animate().fadeIn(duration: 500.ms, delay: 100.ms).slideY(begin: 0.08, end: 0),
-              const SizedBox(height: 20),
-              _buildAssetList(context, assets, currency, lang, isDark)
-                  .animate().fadeIn(duration: 600.ms, delay: 200.ms).slideY(begin: 0.08, end: 0),
-              const SizedBox(height: 20),
-              _buildSecurityNoticeCard(context, isDark, lang),
-              const SizedBox(height: 80),
-            ],
+                  // 2. 스마트 포트폴리오 메인 카드
+                  _buildMembershipCard(context, ref, assets, currency, currencyNotifier, lang, isDark)
+                      .animate().fadeIn(duration: 400.ms).slideY(begin: 0.06, end: 0),
+                  const SizedBox(height: 14),
+
+                  // 3. 광고보고 VIP 24시간 광고제거 한줄 배너 (요청사항: 따로 한줄 배너)
+                  _buildWatchAdVipOneLineBanner(context, lang, isDark)
+                      .animate().fadeIn(duration: 450.ms, delay: 50.ms).slideY(begin: 0.06, end: 0),
+                  const SizedBox(height: 16),
+
+                  // 4. 물타기 시뮬레이터 긴 1줄 히어로 버튼 (요청사항: 길게 1줄로 빼기)
+                  _buildSimulatorHeroButton(context, lang, isDark)
+                      .animate().fadeIn(duration: 500.ms, delay: 100.ms).slideY(begin: 0.06, end: 0),
+                  const SizedBox(height: 20),
+
+                  // 5. 짝수(2x2=4개) 퀵 액션 그리드 (요청사항: 하단 버튼 그리드를 짝수로 맞춰줘)
+                  _buildQuickActions(context, lang, isDark)
+                      .animate().fadeIn(duration: 550.ms, delay: 150.ms).slideY(begin: 0.06, end: 0),
+                  const SizedBox(height: 20),
+
+                  // 6. 네이티브 광고 카드 (광고제거 아닐 때)
+                  if (!_isAdFree) ...[
+                    const AdmobNativeAdCard(),
+                    const SizedBox(height: 20),
+                  ],
+
+                  // 7. 내 등록 자산 리스트
+                  _buildAssetList(context, assets, currency, lang, isDark)
+                      .animate().fadeIn(duration: 600.ms, delay: 200.ms).slideY(begin: 0.06, end: 0),
+                  const SizedBox(height: 20),
+
+                  // 8. 100% 로컬 보안 보장 카드
+                  _buildSecurityNoticeCard(context, isDark, lang),
+                  const SizedBox(height: 80),
+                ],
+              ),
+            ),
           );
         },
       ),
@@ -590,7 +566,267 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  /// T-Membership Style Quick Action Grid
+  /// 광고보고 VIP 24시간 광고제거 단독 한줄 배너
+  Widget _buildWatchAdVipOneLineBanner(BuildContext context, LanguageType lang, bool isDark) {
+    final border = isDark ? const Color(0xFF5D4037) : const Color(0xFFFFD54F);
+    final isKo = lang == LanguageType.ko;
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: isDark
+              ? [const Color(0xFF2E1C0C), const Color(0xFF1E1E24)]
+              : [const Color(0xFFFFF8E1), const Color(0xFFFFF3E0)],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: border.withValues(alpha: 0.6), width: 1.2),
+        boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 10, dy: 3),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _showRewardedAdForVip(context, lang),
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Row(
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFF7971E), Color(0xFFFFD200)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(11),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFFFFD200).withValues(alpha: 0.4),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: const Center(
+                    child: Icon(Icons.stars_rounded, color: Colors.white, size: 20),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              isKo ? '광고 보고 VIP 24시간 광고 제거' : 'Watch Ad for 24h VIP Ad-Free',
+                              style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 13,
+                                color: isDark ? Colors.amber.shade200 : const Color(0xFFB78103),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFF9800).withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: const Text(
+                                'FREE',
+                                style: TextStyle(
+                                  color: Color(0xFFFF9800),
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 9,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          isKo ? '짧은 영상 1편 시청 시 24시간 동안 모든 광고 완전 제거' : 'Watch 1 short video to remove all ads for 24h',
+                          style: TextStyle(
+                            color: isDark ? Colors.white60 : Colors.black54,
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    gradient: TMembershipColors.vipGoldGradient,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        isKo ? '받기' : 'Claim',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 11,
+                        ),
+                      ),
+                      const SizedBox(width: 2),
+                      const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white, size: 9),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 물타기 시뮬레이터 긴 1줄 히어로 버튼
+  Widget _buildSimulatorHeroButton(BuildContext context, LanguageType lang, bool isDark) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: TMembershipColors.actionPurpleGradient,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF6B4226).withValues(alpha: 0.35),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            HapticFeedback.lightImpact();
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const SimulatorScreen()));
+          },
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Row(
+              children: [
+                Container(
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+                  ),
+                  child: const Center(
+                    child: Icon(Icons.calculate_rounded, color: Colors.white, size: 26),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              L10n.s(lang, 'simulator'),
+                              style: GoogleFonts.inter(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
+                                fontSize: 16,
+                                letterSpacing: -0.3,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.22),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: const Text(
+                                'CORE',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 9,
+                                  letterSpacing: 0.6,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          L10n.s(lang, 'sim_sub'),
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.85),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11.5,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.12),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: const Center(
+                    child: Icon(Icons.arrow_forward_rounded, color: Color(0xFF6B4226), size: 18),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// T-Membership Style Quick Action Grid (짝수 4개 구성)
   Widget _buildQuickActions(BuildContext context, LanguageType lang, bool isDark) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -611,18 +847,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Expanded(
               child: _buildActionTile(
                 context: context,
-                title: L10n.s(lang, 'simulator'),
-                subtitle: L10n.s(lang, 'sim_sub'),
-                icon: Icons.calculate_rounded,
-                gradient: TMembershipColors.actionPurpleGradient,
-                isDark: isDark,
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SimulatorScreen())),
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: _buildActionTile(
-                context: context,
                 title: L10n.s(lang, 'scenario_history'),
                 subtitle: L10n.s(lang, 'scenario_sub'),
                 icon: Icons.history_toggle_off_rounded,
@@ -631,11 +855,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ScenarioHistoryScreen())),
               ),
             ),
-          ],
-        ),
-        const SizedBox(height: 14),
-        Row(
-          children: [
+            const SizedBox(width: 14),
             Expanded(
               child: _buildActionTile(
                 context: context,
@@ -647,7 +867,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const PortfolioReportScreen())),
               ),
             ),
-            const SizedBox(width: 14),
+          ],
+        ),
+        const SizedBox(height: 14),
+        Row(
+          children: [
             Expanded(
               child: _buildActionTile(
                 context: context,
@@ -663,11 +887,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 onTap: () => _showAiPanel(context),
               ),
             ),
-          ],
-        ),
-        const SizedBox(height: 14),
-        Row(
-          children: [
+            const SizedBox(width: 14),
             Expanded(
               child: _buildActionTile(
                 context: context,
@@ -681,22 +901,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 isDark: isDark,
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HelpScreen())),
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: _buildActionTile(
-                context: context,
-                title: L10n.s(lang, 'watch_ad_bonus_title'),
-                subtitle: L10n.s(lang, 'watch_ad_bonus_desc'),
-                icon: Icons.card_giftcard_rounded,
-                gradient: const LinearGradient(
-                  colors: [Color(0xFFF7971E), Color(0xFFFFD200)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                isDark: isDark,
-                onTap: () => _showRewardedAdForVip(context, lang),
               ),
             ),
           ],

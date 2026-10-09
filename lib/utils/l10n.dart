@@ -218,6 +218,15 @@ class L10n {
       LanguageType.vi: 'Tính giá mục tiêu',
       LanguageType.id: 'Target Rata-rata',
     },
+    'target_sub': {
+      LanguageType.ko: '목표 평단 맞춤 매수량',
+      LanguageType.en: 'Required Qty for Target',
+      LanguageType.ja: '目標単価に必要な購入数',
+      LanguageType.zh: '达到目标均价所需买量',
+      LanguageType.es: 'Cantidad requerida objetivo',
+      LanguageType.vi: 'Số lượng cần mua theo giá mục tiêu',
+      LanguageType.id: 'Jumlah beli untuk target',
+    },
     'scenario_compare': {
       LanguageType.ko: '시나리오 비교',
       LanguageType.en: 'Compare Scenarios',
