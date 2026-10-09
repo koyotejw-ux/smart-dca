@@ -110,4 +110,35 @@ class EventService {
     }
     return maxDays;
   }
+
+  /// Gets the latest expiry DateTime for active ad-free benefit
+  static Future<DateTime?> getAdFreeExpiryDate() async {
+    final now = DateTime.now();
+    DateTime? latestExpiry;
+
+    final rewardedStored = await _storage.getSetting(_keyRewardedVipExpiry);
+    if (rewardedStored != null) {
+      try {
+        final exp = DateTime.parse(rewardedStored);
+        if (exp.isAfter(now)) {
+          latestExpiry = exp;
+        }
+      } catch (_) {}
+    }
+
+    final dateStr = await _storage.getSetting(_key100ClaimedDate);
+    if (dateStr != null) {
+      try {
+        final claimDate = DateTime.parse(dateStr);
+        final exp = claimDate.add(const Duration(days: 30));
+        if (exp.isAfter(now)) {
+          if (latestExpiry == null || exp.isAfter(latestExpiry)) {
+            latestExpiry = exp;
+          }
+        }
+      } catch (_) {}
+    }
+
+    return latestExpiry;
+  }
 }

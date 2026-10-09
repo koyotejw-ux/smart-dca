@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,25 +33,84 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isAdFree = false;
   int _remainingDays = 0;
+  DateTime? _adFreeExpiryDate;
+  Timer? _countdownTimer;
 
   @override
   void initState() {
     super.initState();
     _checkAdFreeStatus();
+    _startCountdownTimer();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkAndShow100EventModal();
       AdmobService.showAppOpenAd();
     });
   }
 
+  @override
+  void dispose() {
+    _countdownTimer?.cancel();
+    super.dispose();
+  }
+
+  void _startCountdownTimer() {
+    _countdownTimer?.cancel();
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_isAdFree && _adFreeExpiryDate != null) {
+        final now = DateTime.now();
+        if (now.isAfter(_adFreeExpiryDate!)) {
+          // 제거 시간이 만료되면 다시 광고제거 버튼이 나오도록 상태 갱신
+          _checkAdFreeStatus();
+        } else {
+          // 실시간 남은 시간 표시 업데이트
+          if (mounted) {
+            setState(() {});
+          }
+        }
+      }
+    });
+  }
+
   Future<void> _checkAdFreeStatus() async {
     final adFree = await EventService.isAdFreeActive();
     final remaining = await EventService.getRemainingAdFreeDays();
+    final expiry = await EventService.getAdFreeExpiryDate();
     if (mounted) {
       setState(() {
         _isAdFree = adFree;
         _remainingDays = remaining;
+        _adFreeExpiryDate = expiry;
       });
+    }
+  }
+
+  String _formatRemainingTime() {
+    if (_adFreeExpiryDate == null) {
+      return 'D-$_remainingDays';
+    }
+    final now = DateTime.now();
+    final diff = _adFreeExpiryDate!.difference(now);
+    if (diff.isNegative) {
+      return '만료됨';
+    }
+
+    if (diff.inDays >= 1) {
+      final days = diff.inDays;
+      final hours = diff.inHours % 24;
+      final minutes = diff.inMinutes % 60;
+      final seconds = diff.inSeconds % 60;
+      final h = hours.toString().padLeft(2, '0');
+      final m = minutes.toString().padLeft(2, '0');
+      final s = seconds.toString().padLeft(2, '0');
+      return 'D-$days $h:$m:$s';
+    } else {
+      final hours = diff.inHours;
+      final minutes = diff.inMinutes % 60;
+      final seconds = diff.inSeconds % 60;
+      final h = hours.toString().padLeft(2, '0');
+      final m = minutes.toString().padLeft(2, '0');
+      final s = seconds.toString().padLeft(2, '0');
+      return '$h:$m:$s';
     }
   }
 
@@ -120,10 +180,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       .animate().fadeIn(duration: 400.ms).slideY(begin: 0.06, end: 0),
                   const SizedBox(height: 14),
 
-                  // 3. 광고보고 VIP 24시간 광고제거 한줄 배너 (요청사항: 따로 한줄 배너)
-                  _buildWatchAdVipOneLineBanner(context, lang, isDark)
-                      .animate().fadeIn(duration: 450.ms, delay: 50.ms).slideY(begin: 0.06, end: 0),
-                  const SizedBox(height: 16),
+                  // 3. 광고보고 VIP 24시간 광고제거 한줄 배너 (광고 제거 중에는 숨겨지고, 만료되면 다시 표시)
+                  if (!_isAdFree) ...[
+                    _buildWatchAdVipOneLineBanner(context, lang, isDark)
+                        .animate().fadeIn(duration: 450.ms, delay: 50.ms).slideY(begin: 0.06, end: 0),
+                    const SizedBox(height: 16),
+                  ],
 
                   // 4. 물타기 시뮬레이터 긴 1줄 히어로 버튼 (요청사항: 길게 1줄로 빼기)
                   _buildSimulatorHeroButton(context, lang, isDark)
@@ -289,66 +351,94 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildAdFreeVipBadge(bool isDark, LanguageType lang) {
+    final isKo = lang == LanguageType.ko;
+    final remainingText = _formatRemainingTime();
+
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            TMembershipColors.gold.withOpacity(0.16),
-            TMembershipColors.accentOrange.withOpacity(0.16),
-          ],
+          colors: isDark
+              ? [
+                  TMembershipColors.gold.withValues(alpha: 0.16),
+                  TMembershipColors.accentOrange.withValues(alpha: 0.14),
+                ]
+              : [
+                  const Color(0xFFFFF9E6),
+                  const Color(0xFFFFF2D6),
+                ],
         ),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: TMembershipColors.gold.withOpacity(0.55),
+          color: TMembershipColors.gold.withValues(alpha: isDark ? 0.55 : 0.65),
           width: 1.2,
         ),
+        boxShadow: isDark ? [] : TMembershipColors.softShadow(color: TMembershipColors.gold, blur: 10, dy: 3),
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(4),
+            padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
-              color: TMembershipColors.gold.withOpacity(0.2),
+              gradient: const LinearGradient(
+                colors: [Color(0xFFF7971E), Color(0xFFFFD200)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.stars_rounded, color: TMembershipColors.gold, size: 18),
+            child: const Icon(Icons.stars_rounded, color: Colors.white, size: 16),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 9),
           Expanded(
             child: FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
               child: Text(
-                lang == LanguageType.ko ? 'VIP 혜택: 1달 광고 제거 적용 중' : 'VIP Benefit: Ad-Free Active',
+                isKo ? 'VIP 광고 제거 혜택 적용 중' : 'VIP Ad-Free Active',
                 style: TextStyle(
-                  color: isDark ? Colors.white : TMembershipColors.lightTextPrimary,
+                  color: isDark ? Colors.amber.shade200 : const Color(0xFF8D5B00),
                   fontWeight: FontWeight.w800,
-                  fontSize: 12,
+                  fontSize: 12.5,
                 ),
               ),
             ),
           ),
           const SizedBox(width: 8),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
             decoration: BoxDecoration(
               gradient: TMembershipColors.vipGoldGradient,
               borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFFFF9900).withValues(alpha: 0.3),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-            child: Text(
-              'D-$_remainingDays',
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w900,
-                fontSize: 11,
-              ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.timer_outlined, color: Colors.white, size: 11),
+                const SizedBox(width: 4),
+                Text(
+                  remainingText,
+                  style: GoogleFonts.robotoMono(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 11.5,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 400.ms).shimmer(delay: 600.ms, duration: 1500.ms);
+    );
   }
 
   /// 스마트 포트폴리오 메인 카드
