@@ -39,10 +39,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    EventService.resetOld100DownloadsEvent();
     _checkAdFreeStatus();
     _startCountdownTimer();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkAndShow100EventModal();
       AdmobService.showAppOpenAd();
     });
   }
@@ -111,18 +111,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       final m = minutes.toString().padLeft(2, '0');
       final s = seconds.toString().padLeft(2, '0');
       return '$h:$m:$s';
-    }
-  }
-
-  Future<void> _checkAndShow100EventModal() async {
-    final claimed = await EventService.is100DownloadsEventClaimed();
-    if (!claimed && mounted) {
-      await CelebrationModal.show(
-        context,
-        onClaimed: () async {
-          await _checkAdFreeStatus();
-        },
-      );
     }
   }
 

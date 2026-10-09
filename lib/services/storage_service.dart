@@ -85,6 +85,15 @@ class StorageService {
     );
   }
 
+  Future<void> removeSetting(String key) async {
+    final db = await database;
+    await db.delete(
+      'settings',
+      where: 'key = ?',
+      whereArgs: [key],
+    );
+  }
+
   Future<int> insertAsset(Asset asset) async {
     final db = await database;
     return await db.insert('assets', asset.toMap());

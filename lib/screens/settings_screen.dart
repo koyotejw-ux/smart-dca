@@ -212,14 +212,31 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       },
                     ),
                     onTap: () async {
-                      final days = await EventService.getRemainingAdFreeDays();
+                      final expiry = await EventService.getAdFreeExpiryDate();
                       if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("VIP: D-$days"),
-                            behavior: SnackBarBehavior.floating,
-                          ),
-                        );
+                        if (expiry != null) {
+                          final diff = expiry.difference(DateTime.now());
+                          final h = diff.inHours;
+                          final m = diff.inMinutes % 60;
+                          final s = diff.inSeconds % 60;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(lang == LanguageType.ko
+                                  ? "VIP 광고 제거 잔여 시간: ${h}시간 ${m}분 ${s}초"
+                                  : "VIP Ad-Free remaining: ${h}h ${m}m ${s}s"),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(lang == LanguageType.ko
+                                  ? "현재 적용 중인 광고 제거 혜택이 없습니다."
+                                  : "No active ad-free pass."),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        }
                       }
                     },
                     isDark: isDark,
