@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'theme/one_ui_theme.dart';
 import 'screens/splash_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/onboarding_screen.dart';
+import 'services/storage_service.dart';
 import 'providers/language_provider.dart';
 import 'providers/theme_provider.dart';
 import 'utils/l10n.dart';
@@ -19,6 +22,9 @@ void main() async {
     DeviceOrientation.landscapeRight,
   ]);
 
+  // Check onboarding status
+  final hasSeenOnboarding = await StorageService().hasSeenOnboarding();
+
   // Initialize Unity Ads
   await UnityAdService.init(testMode: true);
 
@@ -26,15 +32,15 @@ void main() async {
   await AdmobService.initialize();
   
   runApp(
-    const ProviderScope(
-      child: MyApp(),
+    ProviderScope(
+      child: MyApp(hasSeenOnboarding: hasSeenOnboarding),
     ),
   );
 }
 
-
 class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
+  final bool hasSeenOnboarding;
+  const MyApp({super.key, required this.hasSeenOnboarding});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,7 +53,8 @@ class MyApp extends ConsumerWidget {
       theme: OneUITheme.lightTheme,
       darkTheme: OneUITheme.darkTheme,
       themeMode: themeMode,
-      home: const CustomSplashScreen(),
+      home: hasSeenOnboarding ? const HomeScreen() : const OnboardingScreen(),
     );
   }
 }
+

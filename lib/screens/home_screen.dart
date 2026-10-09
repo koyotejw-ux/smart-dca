@@ -38,6 +38,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _checkAdFreeStatus();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkAndShow100EventModal();
+      AdmobService.showAppOpenAd();
     });
   }
 
