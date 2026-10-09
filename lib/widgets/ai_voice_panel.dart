@@ -74,7 +74,7 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
       case LanguageType.ko:
         return [
           "삼성전자 75,000원 100주, 68,000원에 50주 물타기",
-          "비트코인 95,000,000원 2개, 88,000,000원에 1개 추가",
+          "현대차 240,000원 20주, 210,000원에 10주 추가",
           "애플 180달러 30주, 165달러에 20주 매수",
           "카카오 52,000원 80주, 43,000원에 40주 물타기",
         ];
@@ -82,7 +82,7 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
         return [
           "ソニー 12,000円 100株、10,500円で50株 ナンピン",
           "トヨタ 2,800円 200株、2,400円で100株 買い増し",
-          "ビットコイン 9,500,000円 2枚、8,000,000円で1枚追加",
+          "任天堂 8,200円 50株、7,500円で20株 追加",
         ];
       case LanguageType.zh:
         return [

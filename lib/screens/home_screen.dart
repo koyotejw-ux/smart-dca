@@ -669,7 +669,86 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ],
         ),
+        const SizedBox(height: 14),
+        Row(
+          children: [
+            Expanded(
+              child: _buildActionTile(
+                context: context,
+                title: L10n.s(lang, 'how_to_use_guide'),
+                subtitle: L10n.s(lang, 'guide_sub'),
+                icon: Icons.menu_book_rounded,
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF00C6FF), Color(0xFF0072FF)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                isDark: isDark,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const HelpScreen())),
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: _buildActionTile(
+                context: context,
+                title: L10n.s(lang, 'watch_ad_bonus_title'),
+                subtitle: L10n.s(lang, 'watch_ad_bonus_desc'),
+                icon: Icons.card_giftcard_rounded,
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFF7971E), Color(0xFFFFD200)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                isDark: isDark,
+                onTap: () => _showRewardedAdForVip(context, lang),
+              ),
+            ),
+          ],
+        ),
       ],
+    );
+  }
+
+  void _showRewardedAdForVip(BuildContext context, LanguageType lang) {
+    HapticFeedback.mediumImpact();
+    AdmobService.showRewarded(
+      onUserEarnedReward: (reward) async {
+        await EventService.addAdFreeHours(24);
+        _checkAdFreeStatus();
+        if (context.mounted) {
+          HapticFeedback.heavyImpact();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.stars_rounded, color: Colors.amber, size: 24),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      L10n.s(lang, 'vip_reward_unlocked'),
+                      style: const TextStyle(fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                ],
+              ),
+              backgroundColor: const Color(0xFF1A1F2C),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            ),
+          );
+        }
+      },
+      onDismissed: () {},
+      onFailed: (err) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Ad loading failed. Please try again shortly."),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      },
     );
   }
 

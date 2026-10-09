@@ -4,6 +4,7 @@ import '../theme/t_membership_colors.dart';
 import '../utils/l10n.dart';
 import '../providers/language_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../services/admob_service.dart';
 
 class HelpScreen extends ConsumerWidget {
   const HelpScreen({super.key});
@@ -96,7 +97,22 @@ class HelpScreen extends ConsumerWidget {
                 color: TMembershipColors.accentMint,
                 isDark: isDark,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 16),
+              _buildGuideCard(
+                title: _getCard5Title(lang),
+                content: _getCard5Content(lang),
+                icon: Icons.domain_rounded,
+                color: TMembershipColors.accentOrange,
+                isDark: isDark,
+              ),
+              const SizedBox(height: 24),
+              const Center(
+                child: SizedBox(
+                  height: 50,
+                  child: AdmobBannerWidget(),
+                ),
+              ),
+              const SizedBox(height: 20),
               Center(
                 child: Text(
                   "Smart Average Down Calculator v3.2\nGlobal Multi-Language Engine Active",
@@ -249,6 +265,37 @@ class HelpScreen extends ConsumerWidget {
         return "Tekan tombol Asisten AI di kanan bawah untuk input via suara atau teks, data langsung terisi otomatis.";
       case LanguageType.en:
         return "Tap the floating AI Assistant button and speak or type to parse prices and quantities into the calculator.";
+    }
+  }
+
+  String _getCard5Title(LanguageType lang) {
+    switch (lang) {
+      case LanguageType.ko: return "주식 전용 계산기 (가상화폐/코인과의 차이점)";
+      case LanguageType.ja: return "株式特化型計算（暗号資産との違い）";
+      case LanguageType.zh: return "股票专业计算（与虚拟币的区别）";
+      case LanguageType.es: return "Cálculo Exclusivo de Acciones (vs Cripto)";
+      case LanguageType.vi: return "Công cụ chuyên biệt cho Cổ phiếu";
+      case LanguageType.id: return "Kalkulator Khusus Saham (Bukan Kripto)";
+      case LanguageType.en: return "Stock Dedicated Engine (vs Crypto)";
+    }
+  }
+
+  String _getCard5Content(LanguageType lang) {
+    switch (lang) {
+      case LanguageType.ko:
+        return "본 계산기는 비트코인 등 가상자산의 무한 분할 소수점 거래와 달리, 정수 주(Share) 단위 체결과 증권사 거래 수수료를 엄격히 감안하여 설계된 주식 투자자 전용 정밀 계산기입니다.";
+      case LanguageType.ja:
+        return "ビットコインなどの暗号資産（仮想通貨）の小数点取引とは異なり、1株単位の現物取引や証券会社の売買手数料を前提に設計された株式投資専用ツールです。";
+      case LanguageType.zh:
+        return "与比特币等虚拟货币支持无限小数位交易不同，本工具专为股票市场的整数股交易及券商佣金规则定制，精准可靠。";
+      case LanguageType.es:
+        return "Diseñado exclusivamente para el mercado de acciones tradicional (unidades enteras y comisiones de corretaje), diferenciándose de las fracciones de criptomonedas.";
+      case LanguageType.vi:
+        return "Được xây dựng chuẩn xác cho thị trường cổ phiếu với đơn vị cổ phiếu nguyên và phí giao dịch, không nhầm lẫn với tiền mã hoá.";
+      case LanguageType.id:
+        return "Dibuat khusus untuk pasar saham dengan satuan unit/lot riil serta memperhitungkan biaya broker, bukan untuk pecahan koin kripto.";
+      case LanguageType.en:
+        return "Specifically architected for stock equities with whole integer shares and broker fee structures, clearly differentiated from fractional crypto tokens.";
     }
   }
 

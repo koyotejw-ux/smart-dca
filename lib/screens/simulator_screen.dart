@@ -317,6 +317,11 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
 
     await ref.read(scenarioProvider.notifier).addScenario(scenario);
 
+    AdmobService.showInterstitial(
+      onDismissed: () {},
+      onFailed: (err) {},
+    );
+
     if (mounted) {
       HapticFeedback.heavyImpact();
       ScaffoldMessenger.of(context).hideCurrentSnackBar();

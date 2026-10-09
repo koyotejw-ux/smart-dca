@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../services/calculator_service.dart';
+import '../services/admob_service.dart';
 import '../providers/language_provider.dart';
 import '../providers/currency_provider.dart';
 import '../theme/t_membership_colors.dart';
@@ -44,6 +45,8 @@ class _TargetPriceScreenState extends ConsumerState<TargetPriceScreen> {
     super.dispose();
   }
 
+  static int _calcCounter = 0;
+
   void _calculate() {
     final cp = double.tryParse(_currentPriceController.text.replaceAll(',', '')) ?? 0;
     final cq = double.tryParse(_currentQtyController.text.replaceAll(',', '')) ?? 0;
@@ -60,6 +63,13 @@ class _TargetPriceScreenState extends ConsumerState<TargetPriceScreen> {
           purchasePrice: pp,
         );
       });
+      _calcCounter++;
+      if (_calcCounter % 2 == 0) {
+        AdmobService.showInterstitial(
+          onDismissed: () {},
+          onFailed: (err) {},
+        );
+      }
     } else {
       HapticFeedback.mediumImpact();
       if (_requiredQty != 0) setState(() => _requiredQty = 0);
@@ -308,6 +318,12 @@ class _TargetPriceScreenState extends ConsumerState<TargetPriceScreen> {
               const SizedBox(height: 36),
             ],
           ),
+        ),
+      ),
+      bottomNavigationBar: const SafeArea(
+        child: SizedBox(
+          height: 50,
+          child: AdmobBannerWidget(),
         ),
       ),
     );

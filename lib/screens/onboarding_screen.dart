@@ -39,6 +39,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       icon: Icons.auto_awesome_rounded,
       gradient: TMembershipColors.cardTealBlueGradient,
     ),
+    OnboardingData(
+      titleKey: 'onboarding_title_4',
+      descKey: 'onboarding_desc_4',
+      icon: Icons.show_chart_rounded,
+      gradient: TMembershipColors.vipGoldGradient,
+    ),
   ];
 
   void _onFinish() async {
@@ -75,18 +81,37 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        width: 140,
-                        height: 140,
-                        decoration: BoxDecoration(
-                          gradient: data.gradient,
-                          borderRadius: BorderRadius.circular(36),
-                          boxShadow: TMembershipColors.colorfulGlow(TMembershipColors.primaryBlue, opacity: 0.35),
-                        ),
-                        child: Center(
-                          child: Icon(data.icon, size: 70, color: Colors.white),
-                        ),
-                      ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
+                      index == 0
+                          ? Container(
+                              width: 140,
+                              height: 140,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(36),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: TMembershipColors.primaryBlue.withOpacity(0.4),
+                                    blurRadius: 28,
+                                    offset: const Offset(0, 10),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(36),
+                                child: Image.asset('assets/app_icon.png', fit: BoxFit.cover),
+                              ),
+                            ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack)
+                          : Container(
+                              width: 140,
+                              height: 140,
+                              decoration: BoxDecoration(
+                                gradient: data.gradient,
+                                borderRadius: BorderRadius.circular(36),
+                                boxShadow: TMembershipColors.colorfulGlow(TMembershipColors.primaryBlue, opacity: 0.35),
+                              ),
+                              child: Center(
+                                child: Icon(data.icon, size: 70, color: Colors.white),
+                              ),
+                            ).animate().scale(duration: 600.ms, curve: Curves.easeOutBack),
                       const SizedBox(height: 50),
                       Text(
                         L10n.s(lang, data.titleKey),

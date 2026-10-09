@@ -21,12 +21,43 @@ class EventService {
     _cachedIsAdFree = true;
   }
 
-  /// Check if 1-month ad-free period is currently active
-  static Future<bool> isAdFreeActive() async {
-    if (_cachedIsAdFree != null) {
-      return _cachedIsAdFree!;
+  static const String _keyRewardedVipExpiry = 'rewarded_vip_expiry_date';
+
+  /// Add ad-free hours earned from watching rewarded ads
+  static Future<void> addAdFreeHours(int hours) async {
+    final now = DateTime.now();
+    DateTime currentExpiry = now;
+    final stored = await _storage.getSetting(_keyRewardedVipExpiry);
+    if (stored != null) {
+      try {
+        final parsed = DateTime.parse(stored);
+        if (parsed.isAfter(now)) {
+          currentExpiry = parsed;
+        }
+      } catch (_) {}
     }
-    
+    final newExpiry = currentExpiry.add(Duration(hours: hours));
+    await _storage.setSetting(_keyRewardedVipExpiry, newExpiry.toIso8601String());
+    _cachedIsAdFree = true;
+  }
+
+  /// Check if ad-free period is currently active (Event or Rewarded Ad VIP)
+  static Future<bool> isAdFreeActive() async {
+    final now = DateTime.now();
+
+    // 1. Check rewarded VIP
+    final rewardedStored = await _storage.getSetting(_keyRewardedVipExpiry);
+    if (rewardedStored != null) {
+      try {
+        final exp = DateTime.parse(rewardedStored);
+        if (exp.isAfter(now)) {
+          _cachedIsAdFree = true;
+          return true;
+        }
+      } catch (_) {}
+    }
+
+    // 2. Check 100-download event
     final claimed = await is100DownloadsEventClaimed();
     if (!claimed) {
       _cachedIsAdFree = false;
@@ -42,7 +73,7 @@ class EventService {
     try {
       final claimDate = DateTime.parse(dateStr);
       final expiryDate = claimDate.add(const Duration(days: 30));
-      final isActive = DateTime.now().isBefore(expiryDate);
+      final isActive = now.isBefore(expiryDate);
       _cachedIsAdFree = isActive;
       return isActive;
     } catch (_) {
@@ -53,15 +84,30 @@ class EventService {
 
   /// Gets remaining ad-free days
   static Future<int> getRemainingAdFreeDays() async {
-    final dateStr = await _storage.getSetting(_key100ClaimedDate);
-    if (dateStr == null) return 0;
-    try {
-      final claimDate = DateTime.parse(dateStr);
-      final expiryDate = claimDate.add(const Duration(days: 30));
-      final diff = expiryDate.difference(DateTime.now()).inDays;
-      return diff < 0 ? 0 : diff + 1;
-    } catch (_) {
-      return 0;
+    final now = DateTime.now();
+    int maxDays = 0;
+
+    // Check rewarded VIP
+    final rewardedStored = await _storage.getSetting(_keyRewardedVipExpiry);
+    if (rewardedStored != null) {
+      try {
+        final exp = DateTime.parse(rewardedStored);
+        if (exp.isAfter(now)) {
+          final diff = exp.difference(now).inDays + 1;
+          if (diff > maxDays) maxDays = diff;
+        }
+      } catch (_) {}
     }
+
+    final dateStr = await _storage.getSetting(_key100ClaimedDate);
+    if (dateStr != null) {
+      try {
+        final claimDate = DateTime.parse(dateStr);
+        final expiryDate = claimDate.add(const Duration(days: 30));
+        final diff = expiryDate.difference(now).inDays + 1;
+        if (diff > maxDays) maxDays = diff;
+      } catch (_) {}
+    }
+    return maxDays;
   }
 }
