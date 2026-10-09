@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../providers/scenario_provider.dart';
 import '../providers/language_provider.dart';
+import '../providers/currency_provider.dart';
 import '../theme/t_membership_colors.dart';
 import 'simulator_screen.dart';
 
@@ -15,9 +16,13 @@ class ScenarioHistoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scenarios = ref.watch(scenarioProvider);
+    final currency = ref.watch(currencyProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final dateFormat = DateFormat('yyyy.MM.dd HH:mm');
-    final currencyFormat = NumberFormat.currency(symbol: '', decimalDigits: 0);
+    final currencyFormat = NumberFormat.currency(
+      symbol: currency.symbol,
+      decimalDigits: currency.decimalDigits,
+    );
 
     final bgColor = isDark ? TMembershipColors.darkBg : TMembershipColors.lightBg;
     final cardBg = isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface;

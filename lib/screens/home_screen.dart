@@ -917,83 +917,105 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ? (isKo ? '보유 종목' : 'Stock Asset')
                     : asset.name;
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: TMembershipColors.primaryBlue.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
+                return Dismissible(
+                  key: Key("home_asset_${asset.id ?? index}"),
+                  direction: DismissDirection.endToStart,
+                  background: Container(
+                    color: TMembershipColors.accentCoral,
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.only(right: 20),
+                    child: const Icon(Icons.delete_outline_rounded, color: Colors.white, size: 24),
+                  ),
+                  onDismissed: (_) {
+                    if (asset.id != null) {
+                      ref.read(assetsProvider.notifier).removeAsset(asset.id!);
+                      HapticFeedback.mediumImpact();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(isKo ? "$displayName이(가) 삭제되었습니다." : "$displayName deleted."),
+                          behavior: SnackBarBehavior.floating,
                         ),
-                        child: const Center(
-                          child: Icon(Icons.show_chart_rounded, color: TMembershipColors.primaryBlue, size: 22),
+                      );
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: TMembershipColors.primaryBlue.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Center(
+                            child: Icon(Icons.show_chart_rounded, color: TMembershipColors.primaryBlue, size: 22),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                displayName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.inter(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 14.5,
+                                  color: titleColor,
+                                  letterSpacing: -0.2,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "${asset.initialQuantity.toStringAsFixed(0)}${isKo ? '주' : ' shares'} • ${isKo ? '평단' : 'Avg'} ${formatter.format(asset.initialPrice)}",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: subColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text(
-                              displayName,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                              formatter.format(totalVal),
                               style: GoogleFonts.inter(
+                                color: titleColor,
                                 fontWeight: FontWeight.w800,
                                 fontSize: 14.5,
-                                color: titleColor,
-                                letterSpacing: -0.2,
+                                letterSpacing: -0.3,
                               ),
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              "${asset.initialQuantity.toStringAsFixed(0)}${isKo ? '주' : ' shares'} • ${isKo ? '평단' : 'Avg'} ${formatter.format(asset.initialPrice)}",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                color: subColor,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12,
+                            const SizedBox(height: 3),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: TMembershipColors.primaryBlue.withOpacity(0.08),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                isKo ? "보유 자산" : "Holding",
+                                style: const TextStyle(
+                                  color: TMembershipColors.primaryBlue,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 10,
+                                ),
                               ),
                             ),
                           ],
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            formatter.format(totalVal),
-                            style: GoogleFonts.inter(
-                              color: titleColor,
-                              fontWeight: FontWeight.w800,
-                              fontSize: 14.5,
-                              letterSpacing: -0.3,
-                            ),
-                          ),
-                          const SizedBox(height: 3),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: TMembershipColors.primaryBlue.withOpacity(0.08),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Text(
-                              isKo ? "보유 자산" : "Holding",
-                              style: const TextStyle(
-                                color: TMembershipColors.primaryBlue,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 10,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },

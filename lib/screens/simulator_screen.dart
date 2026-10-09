@@ -537,10 +537,16 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
 
   /// Top Highlight: Smart Vivid Result Card
   Widget _buildResultCard(BuildContext context, bool isDark, LanguageType lang) {
+    final currency = ref.watch(currencyProvider);
     final val = _resultA?.averagePrice ?? 0;
     final recovery = _resultA?.recoveryPercentage ?? 0;
     final totalInvested = _resultA?.totalInvestment ?? 0;
     final totalQty = _resultA?.totalQuantity ?? 0;
+
+    final currFormatter = NumberFormat.currency(
+      symbol: currency.symbol,
+      decimalDigits: currency.decimalDigits,
+    );
 
     return Container(
       width: double.infinity,
@@ -640,7 +646,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                 const SizedBox(height: 4),
                 FittedBox(
                   child: Text(
-                    val > 0 ? _currencyFormat.format(val) : "0",
+                    val > 0 ? currFormatter.format(val) : "${currency.symbol}0",
                     style: GoogleFonts.inter(
                       color: Colors.white,
                       fontWeight: FontWeight.w900,
@@ -680,7 +686,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                             Text(L10n.s(lang, 'total_investment'), style: const TextStyle(color: Colors.white70, fontSize: 11)),
                             const SizedBox(height: 4),
                             Text(
-                              _currencyFormat.format(totalInvested),
+                              currFormatter.format(totalInvested),
                               style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14),
                             ),
                           ],
@@ -694,7 +700,7 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                               Text(lang == LanguageType.ko ? "시나리오 B" : "Scenario B", style: const TextStyle(color: Color(0xFFFFB74D), fontSize: 11, fontWeight: FontWeight.bold)),
                               const SizedBox(height: 4),
                               Text(
-                                _currencyFormat.format(_resultB!.averagePrice),
+                                currFormatter.format(_resultB!.averagePrice),
                                 style: const TextStyle(color: Color(0xFFFFB74D), fontWeight: FontWeight.w900, fontSize: 14),
                               ),
                             ],

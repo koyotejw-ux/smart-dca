@@ -93,26 +93,26 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
       case LanguageType.es:
         return [
           "Apple 180 USD 100 acc., comprar 50 acc. a 150 USD",
-          "Bitcoin 65,000 USD 2 token, añadir 1 token a 58,000 USD",
+          "Santander 4.5 EUR 500 acc., añadir 200 acc. a 4.0 EUR",
           "Tesla 220 USD 50 acc., comprar 30 acc. a 190 USD",
         ];
       case LanguageType.vi:
         return [
           "Vinamilk 75,000 VND 100 cổ, mua 50 cổ giá 65,000",
           "FPT 120,000 VND 200 cổ, mua thêm 100 cổ giá 110,000",
-          "Bitcoin 65,000 USD 2 token, mua 1 token giá 58,000",
+          "Vietcombank 90,000 VND 100 cổ, mua 50 cổ giá 82,000",
         ];
       case LanguageType.id:
         return [
           "BBCA 9,500 IDR 100 lot, beli 50 lot di 8,500",
           "BBRI 5,200 IDR 200 lot, tambah 100 lot di 4,600",
-          "Bitcoin 65,000 USD 2 koin, beli 1 koin di 58,000",
+          "TLKM 3,800 IDR 150 lot, beli 50 lot di 3,400",
         ];
       case LanguageType.en:
         return [
           "Apple 180 USD 100 shares, buy 50 shares at 150 USD",
           "Tesla 240 USD 50 shares, buy 30 shares at 200 USD",
-          "Bitcoin 65,000 USD 2 tokens, add 1 token at 58,000 USD",
+          "NVIDIA 120 USD 40 shares, add 20 shares at 105 USD",
           "Microsoft 420 USD 40 shares, buy 20 shares at 380 USD",
         ];
     }

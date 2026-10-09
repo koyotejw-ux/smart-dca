@@ -27,8 +27,8 @@ class PortfolioReportScreen extends ConsumerWidget {
     final textSecondary = isDark ? TMembershipColors.darkTextSecondary : TMembershipColors.lightTextSecondary;
 
     final formatter = NumberFormat.currency(
-      symbol: currency == CurrencyType.krw ? '₩' : '\$',
-      decimalDigits: currency == CurrencyType.krw ? 0 : 2,
+      symbol: currency.symbol,
+      decimalDigits: currency.decimalDigits,
     );
 
     double totalInvested = 0;

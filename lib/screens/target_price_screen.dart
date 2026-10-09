@@ -25,7 +25,6 @@ class _TargetPriceScreenState extends ConsumerState<TargetPriceScreen> {
   final _purchasePriceController = TextEditingController();
 
   double _requiredQty = 0;
-  final _currencyFormat = NumberFormat.currency(symbol: '', decimalDigits: 0);
 
   @override
   void initState() {
@@ -105,7 +104,6 @@ class _TargetPriceScreenState extends ConsumerState<TargetPriceScreen> {
     final cardBorder = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
     final textPrimary = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
     final textSecondary = isDark ? TMembershipColors.darkTextSecondary : TMembershipColors.lightTextSecondary;
-    final currSymbol = currency == CurrencyType.krw ? '원' : '\$';
 
     final pp = double.tryParse(_purchasePriceController.text.replaceAll(',', '')) ?? 0;
     final totalCost = _requiredQty > 0 ? _requiredQty * pp : 0;
@@ -185,9 +183,9 @@ class _TargetPriceScreenState extends ConsumerState<TargetPriceScreen> {
                             ),
                           ),
                           const SizedBox(width: 6),
-                          const Text(
-                            "주 필요",
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+                          Text(
+                            lang == LanguageType.ko ? "주 필요" : " ${L10n.s(lang, 'unit_share')} needed",
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                           ),
                         ],
                       ),
@@ -202,7 +200,10 @@ class _TargetPriceScreenState extends ConsumerState<TargetPriceScreen> {
                             style: const TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600),
                           ),
                           Text(
-                            "${_currencyFormat.format(totalCost)}$currSymbol",
+                            NumberFormat.currency(
+                              symbol: currency.symbol,
+                              decimalDigits: currency.decimalDigits,
+                            ).format(totalCost),
                             style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
                           ),
                         ],
