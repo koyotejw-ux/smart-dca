@@ -26,8 +26,8 @@ class SimulatorScreen extends ConsumerStatefulWidget {
 }
 
 class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
-  final _assetNameController = TextEditingController(text: 'New Asset');
-  final _assetSymbolController = TextEditingController(text: 'BTC');
+  final _assetNameController = TextEditingController(text: '보유 종목');
+  final _assetSymbolController = TextEditingController(text: 'STOCK');
   final _initialPriceController = TextEditingController();
   final _initialQtyController = TextEditingController();
 

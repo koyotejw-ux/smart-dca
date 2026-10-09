@@ -92,6 +92,12 @@ class StorageService {
 
   Future<List<Asset>> getAssets() async {
     final db = await database;
+    // Auto-migrate legacy mock/crypto placeholder data
+    await db.rawUpdate('''
+      UPDATE assets 
+      SET name = '보유 종목', symbol = 'STOCK' 
+      WHERE (name = 'New Asset' OR symbol = 'BTC' OR symbol = 'BTCUSDT')
+    ''');
     final List<Map<String, dynamic>> maps = await db.query('assets');
     return List.generate(maps.length, (i) => Asset.fromMap(maps[i]));
   }

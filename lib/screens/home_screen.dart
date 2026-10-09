@@ -138,7 +138,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 const AdmobNativeAdCard(),
                                 const SizedBox(height: 20),
                               ],
-                              _buildAssetList(context, assets, lang, isDark)
+                              _buildAssetList(context, assets, currency, lang, isDark)
                                   .animate().fadeIn(duration: 600.ms, delay: 200.ms).slideY(begin: 0.08, end: 0),
                             ],
                           ),
@@ -169,7 +169,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               _buildQuickActions(context, lang, isDark)
                   .animate().fadeIn(duration: 500.ms, delay: 100.ms).slideY(begin: 0.08, end: 0),
               const SizedBox(height: 20),
-              _buildAssetList(context, assets, lang, isDark)
+              _buildAssetList(context, assets, currency, lang, isDark)
                   .animate().fadeIn(duration: 600.ms, delay: 200.ms).slideY(begin: 0.08, end: 0),
               const SizedBox(height: 20),
               _buildSecurityNoticeCard(context, isDark, lang),
@@ -827,11 +827,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   /// T-Membership clean asset list
-  Widget _buildAssetList(BuildContext context, List<Asset> assets, LanguageType lang, bool isDark) {
+  Widget _buildAssetList(
+    BuildContext context,
+    List<Asset> assets,
+    CurrencyType currency,
+    LanguageType lang,
+    bool isDark,
+  ) {
     final cardBg = isDark ? TMembershipColors.darkSurface : TMembershipColors.lightSurface;
     final cardBorder = isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder;
     final titleColor = isDark ? TMembershipColors.darkTextPrimary : TMembershipColors.lightTextPrimary;
     final subColor = isDark ? TMembershipColors.darkTextTertiary : TMembershipColors.lightTextTertiary;
+    final isKo = lang == LanguageType.ko;
+
+    final formatter = NumberFormat.currency(
+      symbol: currency.symbol,
+      decimalDigits: currency.decimalDigits,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -850,7 +862,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             if (assets.isNotEmpty)
               Text(
                 "${assets.length} ${L10n.s(lang, 'asset_count_suffix')}",
-                style: TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 13),
+                style: const TextStyle(color: TMembershipColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 13),
               ),
           ],
         ),
@@ -875,7 +887,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  lang == LanguageType.ko ? "시뮬레이터에서 계산 후 자산으로 저장해보세요." : "Calculate in simulator and save as assets.",
+                  isKo ? "시뮬레이터에서 계산 후 자산으로 저장해보세요." : "Calculate in simulator and save as assets.",
                   style: TextStyle(color: subColor, fontSize: 12),
                 ),
               ],
@@ -900,57 +912,86 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
               itemBuilder: (context, index) {
                 final asset = assets[index];
+                final totalVal = asset.initialPrice * asset.initialQuantity;
+                final displayName = (asset.name == 'New Asset' || asset.name.trim().isEmpty)
+                    ? (isKo ? '보유 종목' : 'Stock Asset')
+                    : asset.name;
+
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: TMembershipColors.primaryBlue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Center(
+                          child: Icon(Icons.show_chart_rounded, color: TMembershipColors.primaryBlue, size: 22),
+                        ),
+                      ),
+                      const SizedBox(width: 14),
                       Expanded(
-                        child: Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              width: 36,
-                              height: 36,
-                              decoration: BoxDecoration(
-                                color: TMembershipColors.primaryBlue.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: const Center(
-                                child: Icon(Icons.show_chart_rounded, color: TMembershipColors.primaryBlue, size: 20),
+                            Text(
+                              displayName,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.inter(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 14.5,
+                                color: titleColor,
+                                letterSpacing: -0.2,
                               ),
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    asset.name,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 14, color: titleColor),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    "${asset.initialQuantity.toStringAsFixed(0)} ${L10n.s(lang, 'asset_unit_share_coin')}",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(color: subColor, fontSize: 12),
-                                  ),
-                                ],
+                            const SizedBox(height: 4),
+                            Text(
+                              "${asset.initialQuantity.toStringAsFixed(0)}${isKo ? '주' : ' shares'} • ${isKo ? '평단' : 'Avg'} ${formatter.format(asset.initialPrice)}",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: subColor,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Text(
-                        NumberFormat.decimalPattern().format(asset.initialPrice),
-                        style: GoogleFonts.notoSansMono(
-                          color: titleColor,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 15,
-                        ),
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            formatter.format(totalVal),
+                            style: GoogleFonts.inter(
+                              color: titleColor,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 14.5,
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: TMembershipColors.primaryBlue.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Text(
+                              isKo ? "보유 자산" : "Holding",
+                              style: const TextStyle(
+                                color: TMembershipColors.primaryBlue,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
