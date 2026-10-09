@@ -25,7 +25,7 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
   }
 
   Future<void> _navigateToNext() async {
-    await Future.delayed(const Duration(milliseconds: 2400));
+    await Future.delayed(const Duration(milliseconds: 1200));
     final storage = StorageService();
     final hasSeenOnboarding = await storage.hasSeenOnboarding();
 
@@ -67,27 +67,16 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: 150,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(36),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF6C5CE7).withValues(alpha: 0.35),
-                        blurRadius: 40,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
+                  width: 140,
+                  height: 140,
+                  alignment: Alignment.center,
                   child: Image.asset(
                     'assets/app_icon.png',
                     fit: BoxFit.contain,
                   ),
                 ).animate()
-                  .scale(duration: 800.ms, curve: Curves.easeOutBack)
-                  .shimmer(delay: 900.ms, duration: 1400.ms),
-                const SizedBox(height: 32),
+                  .scale(duration: 600.ms, curve: Curves.easeOutBack),
+                const SizedBox(height: 28),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: FittedBox(
