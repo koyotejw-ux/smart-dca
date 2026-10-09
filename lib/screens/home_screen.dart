@@ -195,39 +195,43 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
               ),
               const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    L10n.s(lang, 'app_title'),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.inter(
-                      color: textColor,
-                      fontWeight: FontWeight.w900,
-                      fontSize: 18,
-                      letterSpacing: -0.4,
-                    ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          L10n.s(lang, 'app_title'),
+                          style: GoogleFonts.inter(
+                            color: textColor,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 18,
+                            letterSpacing: -0.4,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          L10n.s(lang, 'app_subtitle'),
+                          style: const TextStyle(
+                            color: TMembershipColors.primaryBlue,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 3),
-                  Text(
-                    L10n.s(lang, 'app_subtitle'),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: TMembershipColors.primaryBlue,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 11,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-        ),
+          ),
         const SizedBox(width: 12),
         Row(
           mainAxisSize: MainAxisSize.min,
@@ -629,7 +633,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              isKo ? '광고 보고 VIP 24시간 광고 제거' : 'Watch Ad for 24h VIP Ad-Free',
+                              isKo ? 'VIP 24시간 광고 제거' : '24h VIP Ad-Free Pass',
                               style: GoogleFonts.inter(
                                 fontWeight: FontWeight.w800,
                                 fontSize: 13,
@@ -661,7 +665,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          isKo ? '짧은 영상 1편 시청 시 24시간 동안 모든 광고 완전 제거' : 'Watch 1 short video to remove all ads for 24h',
+                          isKo ? '짧은 영상 1편 시청 시 24시간 광고 없음' : 'Watch 1 short video for 24h ad-free',
                           style: TextStyle(
                             color: isDark ? Colors.white60 : Colors.black54,
                             fontSize: 10.5,
@@ -703,20 +707,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  /// 물타기 시뮬레이터 긴 1줄 히어로 버튼
+  /// 물타기 시뮬레이터 긴 1줄 히어로 버튼 (상단 메인 카드와 조화를 이루는 프리미엄 서피스 디자인)
   Widget _buildSimulatorHeroButton(BuildContext context, LanguageType lang, bool isDark) {
+    final cardBg = isDark ? const Color(0xFF161E2E) : Colors.white;
+    final cardBorder = isDark ? const Color(0xFF2A364F) : const Color(0xFFDCE4F2);
+    final titleColor = isDark ? Colors.white : TMembershipColors.lightTextPrimary;
+    final subColor = isDark ? Colors.white70 : TMembershipColors.lightTextSecondary;
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        gradient: TMembershipColors.actionPurpleGradient,
+        color: cardBg,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF6B4226).withValues(alpha: 0.35),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        border: Border.all(color: cardBorder, width: 1.2),
+        boxShadow: isDark
+            ? [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 14,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : TMembershipColors.softShadow(blur: 16, dy: 5),
       ),
       child: Material(
         color: Colors.transparent,
@@ -727,19 +739,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           },
           borderRadius: BorderRadius.circular(20),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
             child: Row(
               children: [
                 Container(
-                  width: 46,
-                  height: 46,
+                  width: 44,
+                  height: 44,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.18),
+                    color: TMembershipColors.primaryBlue.withOpacity(isDark ? 0.2 : 0.1),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+                    border: Border.all(
+                      color: TMembershipColors.primaryBlue.withOpacity(isDark ? 0.4 : 0.2),
+                      width: 1,
+                    ),
                   ),
                   child: const Center(
-                    child: Icon(Icons.calculate_rounded, color: Colors.white, size: 26),
+                    child: Icon(
+                      Icons.calculate_rounded,
+                      color: TMembershipColors.primaryBlue,
+                      size: 24,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -757,23 +776,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             Text(
                               L10n.s(lang, 'simulator'),
                               style: GoogleFonts.inter(
-                                color: Colors.white,
+                                color: titleColor,
                                 fontWeight: FontWeight.w900,
-                                fontSize: 16,
+                                fontSize: 15.5,
                                 letterSpacing: -0.3,
                               ),
                             ),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: 7),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.22),
+                                color: TMembershipColors.primaryBlue.withOpacity(isDark ? 0.25 : 0.1),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: const Text(
                                 'CORE',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: TMembershipColors.primaryBlue,
                                   fontWeight: FontWeight.w900,
                                   fontSize: 9,
                                   letterSpacing: 0.6,
@@ -790,7 +809,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         child: Text(
                           L10n.s(lang, 'sim_sub'),
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.85),
+                            color: subColor,
                             fontWeight: FontWeight.w600,
                             fontSize: 11.5,
                           ),
@@ -801,21 +820,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 const SizedBox(width: 10),
                 Container(
-                  width: 36,
-                  height: 36,
+                  width: 34,
+                  height: 34,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark ? const Color(0xFF222B3D) : const Color(0xFFF0F4FA),
                     shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.12),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+                    border: Border.all(
+                      color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                      width: 1,
+                    ),
                   ),
-                  child: const Center(
-                    child: Icon(Icons.arrow_forward_rounded, color: Color(0xFF6B4226), size: 18),
+                  child: Center(
+                    child: Icon(
+                      Icons.arrow_forward_rounded,
+                      color: isDark ? Colors.white70 : TMembershipColors.lightTextPrimary,
+                      size: 16,
+                    ),
                   ),
                 ),
               ],
@@ -1175,14 +1195,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 ),
                               ),
                               const SizedBox(height: 4),
-                              Text(
-                                "${asset.initialQuantity.toStringAsFixed(0)}${isKo ? '주' : ' shares'} • ${isKo ? '평단' : 'Avg'} ${formatter.format(asset.initialPrice)}",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: subColor,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12,
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "${asset.initialQuantity.toStringAsFixed(0)}${isKo ? '주' : ' shares'} • ${isKo ? '평단' : 'Avg'} ${formatter.format(asset.initialPrice)}",
+                                  style: TextStyle(
+                                    color: subColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ),
                             ],
