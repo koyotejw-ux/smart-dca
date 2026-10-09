@@ -223,31 +223,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      L10n.s(lang, 'app_title'),
-                      style: GoogleFonts.inter(
-                        color: textColor,
-                        fontWeight: FontWeight.w900,
-                        fontSize: 19,
-                        letterSpacing: -0.4,
-                      ),
+                  Text(
+                    L10n.s(lang, 'app_title'),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.inter(
+                      color: textColor,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 18,
+                      letterSpacing: -0.4,
                     ),
                   ),
-                  const SizedBox(height: 5),
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      L10n.s(lang, 'app_subtitle').toUpperCase(),
-                      style: GoogleFonts.inter(
-                        color: TMembershipColors.primaryBlue,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 9.5,
-                        letterSpacing: 0.8,
-                      ),
+                  const SizedBox(height: 3),
+                  Text(
+                    L10n.s(lang, 'app_subtitle'),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: TMembershipColors.primaryBlue,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 11,
                     ),
                   ),
                 ],

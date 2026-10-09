@@ -596,20 +596,31 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
                       const SizedBox(width: 8),
                       Flexible(
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withOpacity(0.25),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
-                            child: Text(
-                              "${lang == LanguageType.ko ? '변화' : 'Diff'}: ${recovery >= 0 ? '+' : ''}${recovery.toStringAsFixed(1)}%",
-                              style: TextStyle(
-                                color: recovery <= 0 ? const Color(0xFF69F0AE) : const Color(0xFFFF8A80),
-                                fontWeight: FontWeight.w800,
-                                fontSize: 11,
-                              ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  recovery <= 0 ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
+                                  color: recovery <= 0 ? const Color(0xFF69F0AE) : const Color(0xFFFF8A80),
+                                  size: 13,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  "${lang == LanguageType.ko ? '평단가 ' : 'Cost '}${recovery.abs().toStringAsFixed(1)}% ${recovery <= 0 ? (lang == LanguageType.ko ? '낮춤' : 'Lowered') : (lang == LanguageType.ko ? '상승' : 'Raised')}",
+                                  style: TextStyle(
+                                    color: recovery <= 0 ? const Color(0xFF69F0AE) : const Color(0xFFFF8A80),
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

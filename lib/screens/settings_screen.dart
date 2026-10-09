@@ -12,11 +12,16 @@ import '../services/event_service.dart';
 import '../utils/l10n.dart';
 import 'help_screen.dart';
 
-class SettingsScreen extends ConsumerWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+  @override
+  Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final lang = ref.watch(languageProvider);
     final currency = ref.watch(currencyProvider);
@@ -221,7 +226,49 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                   _buildDivider(isDark),
                   _buildActionRow(
-                    title: lang == LanguageType.ko ? "광고 기능 테스트 (AdMob)" : "AdMob Function Test",
+                    title: lang == LanguageType.ko ? "광고 모드 설정 (테스트/실제광고)" : "Ad Mode Setting",
+                    subtitle: AdmobService.forceTestAds
+                        ? (lang == LanguageType.ko ? "현재: Google 테스트 광고 모드" : "Currently: Test Ad Mode")
+                        : (lang == LanguageType.ko ? "현재: 실 사용자 프로덕션 광고 모드" : "Currently: Real Production Ads"),
+                    icon: Icons.developer_mode_rounded,
+                    onTap: () async {
+                      final next = !AdmobService.forceTestAds;
+                      await AdmobService.setForceTestAds(next);
+                      if (context.mounted) {
+                        setState(() {});
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(next
+                                ? (lang == LanguageType.ko ? "테스트 광고 모드가 활성화되었습니다." : "Test Ad Mode Activated")
+                                : (lang == LanguageType.ko ? "실제 광고 모드가 활성화되었습니다." : "Real Production Ad Mode Activated")),
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      }
+                    },
+                    trailing: Switch.adaptive(
+                      value: AdmobService.forceTestAds,
+                      activeColor: TMembershipColors.primaryBlue,
+                      onChanged: (val) async {
+                        await AdmobService.setForceTestAds(val);
+                        if (context.mounted) {
+                          setState(() {});
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(val
+                                  ? (lang == LanguageType.ko ? "테스트 광고 모드가 활성화되었습니다." : "Test Ad Mode Activated")
+                                  : (lang == LanguageType.ko ? "실제 광고 모드가 활성화되었습니다." : "Real Production Ad Mode Activated")),
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                    isDark: isDark,
+                  ),
+                  _buildDivider(isDark),
+                  _buildActionRow(
+                    title: lang == LanguageType.ko ? "광고 송출 즉시 점검" : "Check Ad Serving",
                     subtitle: lang == LanguageType.ko ? "전면 광고 및 보상형 광고 점검" : "Check Interstitial & Reward ads",
                     icon: Icons.ads_click_rounded,
                     onTap: () {

@@ -4,8 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../theme/neon_colors.dart';
 import 'event_service.dart';
+import 'storage_service.dart';
 
 class AdmobService {
+  static final StorageService _storage = StorageService();
+
+  // Registered Test Device Hashed IDs for Google AdMob
+  // Test devices registered here will automatically receive test ads from Google,
+  // while all real users receive production revenue ads!
+  static final List<String> _testDeviceIds = [
+    // Add known test device IDs; Google AdMob also accepts test device registration via MobileAds.instance.updateRequestConfiguration
+  ];
+
+  static bool _forceTestAds = false;
+  static bool get forceTestAds => _forceTestAds;
+  static set forceTestAds(bool value) => _forceTestAds = value;
+
   // Real Ad Unit IDs provided by the user
   static const String _realNativeAdUnitId = 'ca-app-pub-1377047377548020/2845475559';
   static const String _realBannerAdUnitId = 'ca-app-pub-1377047377548020/9662165345';
@@ -14,48 +28,51 @@ class AdmobService {
   static const String _realAppOpenAdUnitId = 'ca-app-pub-1377047377548020/9213912211';
   static const String _realInterstitialAdUnitId = 'ca-app-pub-1377047377548020/3037047246';
 
-  // AdMob Standard Test Ad Unit IDs
+  // Standard Google AdMob Test Unit IDs (fallback when test mode is forced)
+  static const String _testBannerAndroid = 'ca-app-pub-3940256099942544/6300978111';
+  static const String _testBannerIos = 'ca-app-pub-3940256099942544/2934735716';
+  static const String _testInterstitialAndroid = 'ca-app-pub-3940256099942544/1033173712';
+  static const String _testInterstitialIos = 'ca-app-pub-3940256099942544/4411468910';
+  static const String _testRewardedAndroid = 'ca-app-pub-3940256099942544/5224354917';
+  static const String _testRewardedIos = 'ca-app-pub-3940256099942544/1712485313';
+  static const String _testAppOpenAndroid = 'ca-app-pub-3940256099942544/9257395921';
+  static const String _testAppOpenIos = 'ca-app-pub-3940256099942544/5575463023';
+  static const String _testNativeAndroid = 'ca-app-pub-3940256099942544/2247696110';
+  static const String _testNativeIos = 'ca-app-pub-3940256099942544/3986624511';
+
+  /// Returns Real Ad Unit ID so production users generate revenue.
+  /// When a device is added to testDeviceIds, AdMob automatically serves test ads for that device.
   static String get bannerAdUnitId {
-    if (kDebugMode) {
-      return Platform.isAndroid
-          ? 'ca-app-pub-3940256099942544/6300978111'
-          : 'ca-app-pub-3940256099942544/2934735716';
+    if (_forceTestAds) {
+      return Platform.isAndroid ? _testBannerAndroid : _testBannerIos;
     }
     return _realBannerAdUnitId;
   }
 
   static String get interstitialAdUnitId {
-    if (kDebugMode) {
-      return Platform.isAndroid
-          ? 'ca-app-pub-3940256099942544/1033173712'
-          : 'ca-app-pub-3940256099942544/4411468910';
+    if (_forceTestAds) {
+      return Platform.isAndroid ? _testInterstitialAndroid : _testInterstitialIos;
     }
     return _realInterstitialAdUnitId;
   }
 
   static String get rewardedAdUnitId {
-    if (kDebugMode) {
-      return Platform.isAndroid
-          ? 'ca-app-pub-3940256099942544/5224354917'
-          : 'ca-app-pub-3940256099942544/1712485313';
+    if (_forceTestAds) {
+      return Platform.isAndroid ? _testRewardedAndroid : _testRewardedIos;
     }
     return _realRewardedAdUnitId;
   }
 
   static String get appOpenAdUnitId {
-    if (kDebugMode) {
-      return Platform.isAndroid
-          ? 'ca-app-pub-3940256099942544/9257395921'
-          : 'ca-app-pub-3940256099942544/5575463023';
+    if (_forceTestAds) {
+      return Platform.isAndroid ? _testAppOpenAndroid : _testAppOpenIos;
     }
     return _realAppOpenAdUnitId;
   }
 
   static String get nativeAdUnitId {
-    if (kDebugMode) {
-      return Platform.isAndroid
-          ? 'ca-app-pub-3940256099942544/2247696110'
-          : 'ca-app-pub-3940256099942544/3986624511';
+    if (_forceTestAds) {
+      return Platform.isAndroid ? _testNativeAndroid : _testNativeIos;
     }
     return _realNativeAdUnitId;
   }
@@ -70,13 +87,31 @@ class AdmobService {
   static Future<void> initialize() async {
     if (kIsWeb) return;
     try {
+      // 1. Check if user toggled test mode in settings
+      final savedTestMode = await _storage.getSetting('admob_force_test_mode');
+      if (savedTestMode != null) {
+        _forceTestAds = savedTestMode == 'true';
+      }
+
       await MobileAds.instance.initialize();
       _isInitialized = true;
-      debugPrint("AdMob: Initialized Successfully");
+      debugPrint("AdMob: Initialized Successfully (forceTestAds: $_forceTestAds)");
+
+      // 2. Set test device configuration so registered devices automatically get test ads from Google!
+      final RequestConfiguration requestConfiguration = RequestConfiguration(
+        testDeviceIds: _testDeviceIds,
+      );
+      await MobileAds.instance.updateRequestConfiguration(requestConfiguration);
+
       loadAppOpenAd(); // Pre-load app open ad
     } catch (e) {
       debugPrint("AdMob Init Error: $e");
     }
+  }
+
+  static Future<void> setForceTestAds(bool enabled) async {
+    _forceTestAds = enabled;
+    await _storage.setSetting('admob_force_test_mode', enabled.toString());
   }
 
   /// Load App Open Ad
