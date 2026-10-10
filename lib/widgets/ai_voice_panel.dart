@@ -336,17 +336,48 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Handle bar
-            const SizedBox(height: 12),
-            Container(
-              width: 44,
-              height: 5,
-              decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(3),
+            // Top bar with Handle bar and Top-Right Close 'X' Button
+            Padding(
+              padding: const EdgeInsets.only(top: 10, left: 16, right: 16, bottom: 4),
+              child: Row(
+                children: [
+                  const SizedBox(width: 36), // Balance the close button
+                  Expanded(
+                    child: Center(
+                      child: Container(
+                        width: 44,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.35),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () => Navigator.pop(context),
+                      borderRadius: BorderRadius.circular(20),
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.05),
+                        ),
+                        child: Icon(
+                          Icons.close_rounded,
+                          size: 20,
+                          color: isDark ? Colors.white70 : TMembershipColors.lightTextPrimary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
 
             // Scrollable Content
             Flexible(
@@ -699,46 +730,39 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
               ),
               child: Row(
                 children: [
-                  OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    ),
-                    child: const Text("닫기", style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  const SizedBox(width: 8),
                   Expanded(
+                    flex: 1,
                     child: OutlinedButton.icon(
                       onPressed: _result.isValid ? _saveDirectlyToPortfolio : null,
-                      icon: const Icon(Icons.bookmark_add_rounded, size: 16),
+                      icon: const Icon(Icons.bookmark_add_rounded, size: 18),
                       label: const Text(
                         "자산 저장",
-                        style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13),
+                        style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 6),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 12),
                   Expanded(
+                    flex: 1,
                     child: ElevatedButton.icon(
                       onPressed: _result.isValid ? _applyToSimulator : null,
-                      icon: const Icon(Icons.calculate_rounded, color: Colors.white, size: 18),
+                      icon: const Icon(Icons.calculate_rounded, color: Colors.white, size: 20),
                       label: const Text(
                         "시뮬레이터 적용",
-                        style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 13),
+                        style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 14),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: TMembershipColors.primaryBlue,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 6),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
                         elevation: 4,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       ),

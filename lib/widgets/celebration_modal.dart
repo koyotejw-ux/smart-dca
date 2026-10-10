@@ -17,7 +17,7 @@ class CelebrationModal extends ConsumerWidget {
   static Future<void> show(BuildContext context, {required VoidCallback onClaimed}) async {
     return showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (context) => CelebrationModal(onClaimed: onClaimed),
     );
   }
@@ -30,26 +30,28 @@ class CelebrationModal extends ConsumerWidget {
       insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 440),
-        child: Container(
-          decoration: BoxDecoration(
-          color: const Color(0xFF161C24).withOpacity(0.95),
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(
-            color: NeonColors.cyan.withOpacity(0.4),
-            width: 1.5,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: NeonColors.cyan.withOpacity(0.25),
-              blurRadius: 30,
-              spreadRadius: 2,
-            ),
-          ],
-        ),
-        padding: const EdgeInsets.all(28),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        child: Stack(
           children: [
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF161C24).withOpacity(0.95),
+                borderRadius: BorderRadius.circular(28),
+                border: Border.all(
+                  color: NeonColors.cyan.withOpacity(0.4),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: NeonColors.cyan.withOpacity(0.25),
+                    blurRadius: 30,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(28),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
             // Floating Celebration Icon Badge
             Container(
               width: 80,
@@ -165,13 +167,40 @@ class CelebrationModal extends ConsumerWidget {
                   ),
                 ),
               ),
-            ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2, end: 0),
+                ],
+              ),
+            ),
+
+            // Top-right close 'X' button
+            Positioned(
+              top: 14,
+              right: 14,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withOpacity(0.08),
+                    ),
+                    child: const Icon(
+                      Icons.close_rounded,
+                      size: 20,
+                      color: Colors.white70,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildBenefitRow({
     required IconData icon,
