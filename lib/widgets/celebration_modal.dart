@@ -167,9 +167,11 @@ class CelebrationModal extends ConsumerWidget {
                   ),
                 ),
               ),
-                ],
-              ),
             ),
+          ],
+        ),
+      ),
+
 
             // Top-right close 'X' button
             Positioned(

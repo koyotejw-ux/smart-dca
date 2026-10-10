@@ -50,6 +50,8 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       title: L10n.s(lang, 'app_title'),
       debugShowCheckedModeBanner: false,
+      locale: Locale(lang.code),
+      supportedLocales: LanguageType.values.map((lt) => Locale(lt.code)),
       theme: OneUITheme.lightTheme,
       darkTheme: OneUITheme.darkTheme,
       themeMode: themeMode,
@@ -57,4 +59,5 @@ class MyApp extends ConsumerWidget {
     );
   }
 }
+
 

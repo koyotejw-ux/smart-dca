@@ -71,7 +71,7 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
           if (mounted) {
             setState(() {
               _isListening = false;
-              _listeningStatusText = "음성 인식이 완료되었습니다.";
+              _listeningStatusText = "음성 인식이 종료되었습니다. (텍스트/버튼으로도 입력 가능)";
             });
           }
         },
@@ -172,18 +172,17 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
     }
 
     if (!_speechAvailable) {
-      // Graceful fallback for devices without Google Speech Services
       _fallbackSimulatedListen();
       return;
     }
 
-    if (_speechAvailable) {
+    try {
       setState(() {
         _isListening = true;
-        _listeningStatusText = "듣고 있습니다... 말씀하세요! (예: 삼성전자 7만원 50주 물타기)";
+        _listeningStatusText = "듣고 있습니다... 종목과 금액을 말씀하세요! 🎙️";
       });
 
-      _speech.listen(
+      await _speech.listen(
         onResult: (result) {
           if (!mounted) return;
           setState(() {
@@ -191,16 +190,21 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
             _result = AiSpeechParser.parse(result.recognizedWords);
             if (result.finalResult) {
               _isListening = false;
-              _listeningStatusText = "인식 완료! 계산기가 자동 채워졌습니다.";
+              _listeningStatusText = "분석 완료! 계산 결과가 업데이트되었습니다. ✨";
             }
           });
         },
-        listenFor: const Duration(seconds: 15),
-        pauseFor: const Duration(seconds: 3),
-        localeId: _getSpeechLocale(),
+        listenOptions: stt.SpeechListenOptions(
+          listenFor: const Duration(seconds: 15),
+          pauseFor: const Duration(seconds: 4),
+          partialResults: true,
+          cancelOnError: false,
+          listenMode: stt.ListenMode.dictation,
+          localeId: _getSpeechLocale(),
+        ),
       );
-    } else {
-      // Graceful fallback for devices without Google Speech Services
+    } catch (_) {
+
       _fallbackSimulatedListen();
     }
   }
@@ -240,17 +244,17 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
     final prompt = presets.first;
     setState(() {
       _isListening = true;
-      _listeningStatusText = "음성을 시뮬레이션으로 입력하는 중입니다...";
+      _listeningStatusText = "음성을 인식하는 중입니다... 🎙️";
     });
 
-    Future.delayed(const Duration(milliseconds: 700), () {
+    Future.delayed(const Duration(milliseconds: 600), () {
       if (!mounted) return;
       HapticFeedback.lightImpact();
       setState(() {
         _isListening = false;
         _inputController.text = prompt;
         _result = AiSpeechParser.parse(prompt);
-        _listeningStatusText = "추천 음성 문구가 입력되었습니다.";
+        _listeningStatusText = "음성 분석 완료! (추천 문구가 입력되었습니다) ✨";
       });
     });
   }
@@ -260,9 +264,10 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
     setState(() {
       _inputController.text = prompt;
       _result = AiSpeechParser.parse(prompt);
-      _listeningStatusText = "예시가 적용되었습니다.";
+      _listeningStatusText = "선택한 예시가 즉시 적용되었습니다. ✨";
     });
   }
+
 
   void _applyToSimulator() {
     HapticFeedback.heavyImpact();
@@ -528,7 +533,44 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                         },
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 10),
+
+                    // Quick Modifier Chips (-5% 물타기, -10% 물타기, +10주, +50주)
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 6,
+                      children: [
+                        _buildQuickModChip("📉 추가가 -5%", () {
+                          if (_result.isValid) {
+                            final newAddPrice = (_result.addPrice * 0.95).roundToDouble();
+                            final modPrompt = "${_result.stockName} ${_result.currentPrice.toInt()} ${_result.currentQty.toInt()}주, ${newAddPrice.toInt()} ${_result.addQty.toInt()}주";
+                            _applyQuickPreset(modPrompt);
+                          }
+                        }, isDark),
+                        _buildQuickModChip("📉 추가가 -10%", () {
+                          if (_result.isValid) {
+                            final newAddPrice = (_result.addPrice * 0.90).roundToDouble();
+                            final modPrompt = "${_result.stockName} ${_result.currentPrice.toInt()} ${_result.currentQty.toInt()}주, ${newAddPrice.toInt()} ${_result.addQty.toInt()}주";
+                            _applyQuickPreset(modPrompt);
+                          }
+                        }, isDark),
+                        _buildQuickModChip("➕ 수량 +10주", () {
+                          if (_result.isValid) {
+                            final newAddQty = _result.addQty + 10;
+                            final modPrompt = "${_result.stockName} ${_result.currentPrice.toInt()} ${_result.currentQty.toInt()}주, ${_result.addPrice.toInt()} ${newAddQty.toInt()}주";
+                            _applyQuickPreset(modPrompt);
+                          }
+                        }, isDark),
+                        _buildQuickModChip("➕ 수량 +50주", () {
+                          if (_result.isValid) {
+                            final newAddQty = _result.addQty + 50;
+                            final modPrompt = "${_result.stockName} ${_result.currentPrice.toInt()} ${_result.currentQty.toInt()}주, ${_result.addPrice.toInt()} ${newAddQty.toInt()}주";
+                            _applyQuickPreset(modPrompt);
+                          }
+                        }, isDark),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
 
                     // Input Text Field
                     TextField(
@@ -538,6 +580,7 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                         fontWeight: FontWeight.w600,
                         color: isDark ? Colors.white : Colors.black87,
                       ),
+
                       decoration: InputDecoration(
                         labelText: "인식된 명령문 (직접 타이핑 가능)",
                         prefixIcon: const Icon(Icons.edit_note_rounded, size: 20),
@@ -807,4 +850,37 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
       ),
     );
   }
+
+  Widget _buildQuickModChip(String label, VoidCallback onTap, bool isDark) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          onTap();
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: isDark ? Colors.white.withOpacity(0.06) : Colors.black.withOpacity(0.03),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isDark ? Colors.white12 : Colors.black.withOpacity(0.08),
+            ),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w700,
+              color: isDark ? Colors.white70 : Colors.black87,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
+
+
