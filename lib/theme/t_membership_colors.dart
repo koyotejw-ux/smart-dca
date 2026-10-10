@@ -1,83 +1,48 @@
 import 'package:flutter/material.dart';
+import '../core/theme/app_colors.dart';
 
-/// SK Telecom T-Membership inspired color palette
-/// Bold, vibrant, yet clean, minimal, and modern.
+/// Legacy alias mapping to centralized AppColors
+/// Retained for smooth backward compatibility while delegating to AppColors.
 class TMembershipColors {
-  // Brand Signatures (T-Blue, Magenta/Purple, Electric Coral, Mint)
-  static const Color primaryBlue = Color(0xFF0051FF);      // Vibrant T Electric Blue
-  static const Color primaryBlueDark = Color(0xFF0038B8);
-  static const Color accentPurple = Color(0xFF7A22FF);     // Deep Purple / Violet
-  static const Color accentMagenta = Color(0xFFFF1493);    // Vibrant Magenta / Pink
-  static const Color accentCoral = Color(0xFFFF5252);      // Coral Red
-  static const Color accentCyan = Color(0xFF00D2FF);       // Bright Sky / Cyan
-  static const Color accentMint = Color(0xFF00E676);       // Fresh Gain Mint / Green
-  static const Color accentOrange = Color(0xFFFF6D00);     // Warning Orange
-  static const Color gold = Color(0xFFFFB300);             // VIP Gold
+  // Brand Signatures
+  static const Color primaryBlue = AppColors.primaryBlue;
+  static const Color primaryBlueDark = AppColors.primaryBlueDark;
+  static const Color accentPurple = AppColors.accentPurple;
+  static const Color accentMagenta = AppColors.accentMagenta;
+  static const Color accentCoral = AppColors.accentCoral;
+  static const Color accentCyan = AppColors.accentCyan;
+  static const Color accentMint = AppColors.accentMint;
+  static const Color accentOrange = AppColors.accentOrange;
+  static const Color gold = AppColors.gold;
 
-  // Membership Card Gradients
-  static const LinearGradient primaryGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [Color(0xFF0055FF), Color(0xFF7928CA), Color(0xFFFF0080)],
-    stops: [0.0, 0.55, 1.0],
-  );
+  // Gradients
+  static const LinearGradient primaryGradient = AppColors.primaryGradient;
+  static const LinearGradient cardTealBlueGradient = AppColors.cardTealBlueGradient;
+  static const LinearGradient vipGoldGradient = AppColors.vipGoldGradient;
+  static const LinearGradient actionPurpleGradient = AppColors.actionPurpleGradient;
 
-  static const LinearGradient cardTealBlueGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [Color(0xFF00C6FF), Color(0xFF0072FF)],
-  );
+  // Light Theme Colors
+  static const Color lightBg = AppColors.lightBg;
+  static const Color lightSurface = AppColors.lightSurface;
+  static const Color lightCardBorder = AppColors.lightCardBorder;
+  static const Color lightTextPrimary = AppColors.lightTextPrimary;
+  static const Color lightTextSecondary = AppColors.lightTextSecondary;
+  static const Color lightTextTertiary = AppColors.lightTextTertiary;
+  static const Color lightDivider = AppColors.lightDivider;
 
-  static const LinearGradient vipGoldGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [Color(0xFFFF9900), Color(0xFFFF5E62)],
-  );
+  // Dark Theme Colors
+  static const Color darkBg = AppColors.darkBg;
+  static const Color darkSurface = AppColors.darkSurface;
+  static const Color darkCardBorder = AppColors.darkCardBorder;
+  static const Color darkTextPrimary = AppColors.darkTextPrimary;
+  static const Color darkTextSecondary = AppColors.darkTextSecondary;
+  static const Color darkTextTertiary = AppColors.darkTextTertiary;
+  static const Color darkDivider = AppColors.darkDivider;
 
-  static const LinearGradient actionPurpleGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [Color(0xFF6A11CB), Color(0xFF2575FC)],
-  );
+  // Shadows
+  static List<BoxShadow> softShadow({Color? color, double blur = 16, double dy = 6}) =>
+      AppColors.softShadow(color: color, blur: blur, dy: dy);
 
-  // Light Theme Colors (SK style: clean white, soft gray cards, crisp shadows)
-  static const Color lightBg = Color(0xFFF6F8FC);
-  static const Color lightSurface = Colors.white;
-  static const Color lightCardBorder = Color(0xFFEEF2F8);
-  static const Color lightTextPrimary = Color(0xFF191F28);
-  static const Color lightTextSecondary = Color(0xFF4E5968);
-  static const Color lightTextTertiary = Color(0xFF8B95A1);
-  static const Color lightDivider = Color(0xFFF2F4F6);
-
-  // Dark Theme Colors (Deep Navy / Charcoal)
-  static const Color darkBg = Color(0xFF0F141C);
-  static const Color darkSurface = Color(0xFF1A212E);
-  static const Color darkCardBorder = Color(0xFF2B3648);
-  static const Color darkTextPrimary = Color(0xFFF9FAFB);
-  static const Color darkTextSecondary = Color(0xFFD1D6DB);
-  static const Color darkTextTertiary = Color(0xFF8B95A1);
-  static const Color darkDivider = Color(0xFF242C3A);
-
-  // Card Soft Shadow (T-Membership floating cards)
-  static List<BoxShadow> softShadow({Color? color, double blur = 16, double dy = 6}) {
-    return [
-      BoxShadow(
-        color: (color ?? const Color(0xFF0038B8)).withOpacity(0.08),
-        blurRadius: blur,
-        offset: Offset(0, dy),
-        spreadRadius: 0,
-      ),
-    ];
-  }
-
-  static List<BoxShadow> colorfulGlow(Color glowColor, {double opacity = 0.28}) {
-    return [
-      BoxShadow(
-        color: glowColor.withOpacity(opacity),
-        blurRadius: 20,
-        offset: const Offset(0, 8),
-        spreadRadius: -2,
-      ),
-    ];
-  }
+  static List<BoxShadow> colorfulGlow(Color glowColor, {double opacity = 0.28}) =>
+      AppColors.colorfulGlow(glowColor, opacity: opacity);
 }
