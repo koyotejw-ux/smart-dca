@@ -7,14 +7,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../widgets/ai_voice_panel.dart';
-import '../widgets/celebration_modal.dart';
 import '../providers/asset_provider.dart';
 import '../providers/currency_provider.dart';
 import '../providers/language_provider.dart';
 import '../utils/l10n.dart';
 import '../models/asset_model.dart';
 import 'simulator_screen.dart';
-import 'target_price_screen.dart';
 import 'scenario_history_screen.dart';
 import 'portfolio_report_screen.dart';
 import 'help_screen.dart';
@@ -1198,14 +1196,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           )
         else
           Container(
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               color: cardBg,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: cardBorder, width: 1.2),
-              boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 12, dy: 4),
+              boxShadow: isDark ? [] : TMembershipColors.softShadow(blur: 10, dy: 3),
             ),
             child: ListView.separated(
               shrinkWrap: true,
+              padding: EdgeInsets.zero,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: assets.take(5).length,
               separatorBuilder: (context, index) => Divider(
@@ -1242,24 +1242,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     }
                   },
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
                     child: Row(
                       children: [
                         Container(
-                          width: 40,
-                          height: 40,
+                          width: 38,
+                          height: 38,
                           decoration: BoxDecoration(
                             color: TMembershipColors.primaryBlue.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(11),
                           ),
                           child: const Center(
-                            child: Icon(Icons.show_chart_rounded, color: TMembershipColors.primaryBlue, size: 22),
+                            child: Icon(Icons.show_chart_rounded, color: TMembershipColors.primaryBlue, size: 20),
                           ),
                         ),
-                        const SizedBox(width: 14),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
                                 displayName,
@@ -1267,12 +1268,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 overflow: TextOverflow.ellipsis,
                                 style: GoogleFonts.inter(
                                   fontWeight: FontWeight.w800,
-                                  fontSize: 14.5,
+                                  fontSize: 14,
                                   color: titleColor,
                                   letterSpacing: -0.2,
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 3),
                               FittedBox(
                                 fit: BoxFit.scaleDown,
                                 alignment: Alignment.centerLeft,
@@ -1281,27 +1282,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   style: TextStyle(
                                     color: subColor,
                                     fontWeight: FontWeight.w600,
-                                    fontSize: 12,
+                                    fontSize: 11.5,
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 10),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               formatter.format(totalVal),
                               style: GoogleFonts.inter(
                                 color: titleColor,
                                 fontWeight: FontWeight.w800,
-                                fontSize: 14.5,
+                                fontSize: 14,
                                 letterSpacing: -0.3,
                               ),
                             ),
-                            const SizedBox(height: 3),
+                            const SizedBox(height: 2),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
