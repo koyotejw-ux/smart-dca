@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'theme/one_ui_theme.dart';
 import 'screens/splash_screen.dart';
@@ -52,6 +53,11 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       locale: Locale(lang.code),
       supportedLocales: LanguageType.values.map((lt) => Locale(lt.code)),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       theme: OneUITheme.lightTheme,
       darkTheme: OneUITheme.darkTheme,
       themeMode: themeMode,
