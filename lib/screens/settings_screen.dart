@@ -9,6 +9,7 @@ import '../providers/asset_provider.dart';
 import '../providers/scenario_provider.dart';
 import '../utils/l10n.dart';
 import 'help_screen.dart';
+import 'onboarding_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -157,6 +158,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               _buildSettingCard(
                 isDark: isDark,
                 children: [
+                  _buildActionRow(
+                    title: L10n.s(lang, 'onboarding_tutorial_menu'),
+                    subtitle: L10n.s(lang, 'onboarding_tutorial_menu_sub'),
+                    icon: Icons.lightbulb_rounded,
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const OnboardingScreen())),
+                    isDark: isDark,
+                  ),
+                  _buildDivider(isDark),
                   _buildActionRow(
                     title: L10n.s(lang, 'guide_menu'),
                     subtitle: L10n.s(lang, 'guide_menu_sub'),
