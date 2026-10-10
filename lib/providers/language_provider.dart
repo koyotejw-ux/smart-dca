@@ -126,7 +126,7 @@ class LanguageNotifier extends StateNotifier<LanguageType> {
           return LanguageType.en;
       }
     } catch (_) {
-      return LanguageType.ko;
+      return LanguageType.en;
     }
   }
 
