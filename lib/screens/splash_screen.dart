@@ -50,26 +50,45 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
     final lang = ref.watch(languageProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0F141C),
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Background Gradient Image
+          // Subtle soft ambient gradient background on white
           Positioned.fill(
-            child: Image.asset(
-              'assets/splash_bg.png',
-              fit: BoxFit.cover,
-            ).animate().fadeIn(duration: 800.ms),
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0xFFFFFFFF),
+                    Color(0xFFF8FAFC),
+                    Color(0xFFF1F5F9),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+            ),
           ),
 
-          // Central Floating Glass Logo & Branding
+          // Central Floating Logo & Branding
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: 140,
-                  height: 140,
+                  width: 130,
+                  height: 130,
                   alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(28),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF0055FF).withOpacity(0.18),
+                        blurRadius: 28,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
                   child: Image.asset(
                     'assets/app_icon.png',
                     fit: BoxFit.contain,
@@ -86,22 +105,22 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
                       style: GoogleFonts.inter(
                         fontWeight: FontWeight.w900,
                         fontSize: 27,
-                        color: Colors.white,
+                        color: const Color(0xFF0F172A),
                         letterSpacing: -0.5,
                       ),
                     ),
                   ),
                 ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.15, end: 0),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32),
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(
                       L10n.s(lang, 'app_subtitle'),
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.85),
-                        fontWeight: FontWeight.w600,
+                      style: const TextStyle(
+                        color: Color(0xFF64748B),
+                        fontWeight: FontWeight.w700,
                         fontSize: 13.5,
                         letterSpacing: 0.2,
                       ),
@@ -120,12 +139,12 @@ class _CustomSplashScreenState extends ConsumerState<CustomSplashScreen> {
             child: Center(
               child: Text(
                 'v3.2.0 • 100% On-Device Safe',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.4),
+                style: const TextStyle(
+                  color: Color(0xFF94A3B8),
                   fontSize: 11,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                 ),
-              ).animate().fadeIn(delay: 1000.ms),
+              ).animate().fadeIn(delay: 800.ms),
             ),
           ),
         ],

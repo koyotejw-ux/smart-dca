@@ -636,35 +636,40 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
 
                           if (_result.isValid) ...[
                             const Divider(height: 24),
-                            // Anticipated New Avg Price Highlight
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  "📉 예상 탈출 평단가",
-                                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
-                                ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      "${currency.symbol}${_result.newAvgPrice.toStringAsFixed(currency.decimalDigits)} ",
-                                      style: GoogleFonts.inter(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w900,
-                                        color: TMembershipColors.primaryBlue,
+                            // Anticipated New Avg Price Highlight (반응형 FittedBox 처리)
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    "📉 예상 탈출 평단가",
+                                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "${currency.symbol}${_result.newAvgPrice.toStringAsFixed(currency.decimalDigits)} ",
+                                        style: GoogleFonts.inter(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w900,
+                                          color: TMembershipColors.primaryBlue,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      "(${_result.priceDiffPercent.toStringAsFixed(1)}%)",
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w800,
-                                        color: TMembershipColors.accentMint,
+                                      Text(
+                                        "(${_result.priceDiffPercent.toStringAsFixed(1)}%)",
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w800,
+                                          color: TMembershipColors.accentMint,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ],
