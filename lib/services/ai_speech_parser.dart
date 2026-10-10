@@ -22,18 +22,39 @@ class AiInputResult {
   double get totalShares => currentQty + addQty;
   double get newAvgPrice => totalShares > 0 ? (totalCurrentAmount + totalAddAmount) / totalShares : 0;
   double get priceDiffPercent => currentPrice > 0 ? ((newAvgPrice - currentPrice) / currentPrice) * 100 : 0;
+
+  AiInputResult copyWith({
+    String? stockName,
+    double? currentPrice,
+    double? currentQty,
+    double? addPrice,
+    double? addQty,
+    bool? isValid,
+    String? summary,
+  }) {
+    final nextStock = stockName ?? this.stockName;
+    final nextCurP = currentPrice ?? this.currentPrice;
+    final nextCurQ = currentQty ?? this.currentQty;
+    final nextAddP = addPrice ?? this.addPrice;
+    final nextAddQ = addQty ?? this.addQty;
+    final nextValid = isValid ?? (nextCurP > 0 && nextCurQ > 0 && nextAddP > 0 && nextAddQ > 0);
+
+    return AiInputResult(
+      stockName: nextStock,
+      currentPrice: nextCurP,
+      currentQty: nextCurQ,
+      addPrice: nextAddP,
+      addQty: nextAddQ,
+      isValid: nextValid,
+      summary: summary ?? (nextValid
+          ? "$nextStock (보유: ${AiSpeechParser.formatNum(nextCurP)} × ${AiSpeechParser.formatNum(nextCurQ)} ➔ 추가: ${AiSpeechParser.formatNum(nextAddP)} × ${AiSpeechParser.formatNum(nextAddQ)})"
+          : "금액과 수량을 파악 중입니다."),
+    );
+  }
 }
 
 class AiSpeechParser {
   /// Parses natural language queries into structured stock DCA parameters.
-  /// Handles global multi-lingual patterns:
-  /// - Korean: "삼성전자 7만5천원 100주 6만8천원에 50주 물타기", "삼전 75000 100주"
-  /// - English: "Apple 180 USD 100 shares, buy 50 shares at 150 USD", "Tesla 240 50 shares 200 30"
-  /// - Japanese: "ソニー 12,000円 100株、10,500円で50株 ナンピン"
-  /// - Chinese: "腾讯控股 380元 100股，340元补仓 50股"
-  /// - Spanish: "Apple 180 USD 100 acc., 150 USD comprar 50 acc."
-  /// - Vietnamese: "Vinamilk 75,000 VND 100 cổ, 65,000 mua 50 cổ"
-  /// - Indonesian: "BBCA 9,500 IDR 100 lot, 8,500 beli 50 lot"
   static AiInputResult parse(String raw) {
     if (raw.trim().isEmpty) {
       return const AiInputResult(
@@ -47,15 +68,21 @@ class AiSpeechParser {
       );
     }
 
-    // 1. Normalize numbers (Korean man/cheon, Japanese man/oku, k/m suffixes, currency symbols)
-    String text = _normalizeQuantities(raw);
+    // 1. Normalize numbers & Korean verbal numbers
+    String text = _normalizeKoreanVerbalNumbers(raw);
+    text = _normalizeQuantities(text);
 
     // 2. Extract stock name candidate
     String stock = _extractStockName(text);
 
-    // 3. Extract numbers
-    final numbers = _extractNumbers(text);
+    // 3. Contextual Pattern Extraction
+    final contextualResult = _parseContextual(text, stock);
+    if (contextualResult != null) {
+      return contextualResult;
+    }
 
+    // 4. Fallback sequential number extraction
+    final numbers = _extractNumbers(text);
     double currentPrice = 0;
     double currentQty = 0;
     double addPrice = 0;
@@ -67,13 +94,11 @@ class AiSpeechParser {
       addPrice = numbers[2];
       addQty = numbers[3];
     } else if (numbers.length == 3) {
-      // e.g. "삼성전자 70000원 100주 60000원 추가" -> default addQty = currentQty / 2 or 10
       currentPrice = numbers[0];
       currentQty = numbers[1];
       addPrice = numbers[2];
       addQty = (currentQty > 0 ? (currentQty / 2).roundToDouble() : 10);
     } else if (numbers.length == 2) {
-      // e.g. "삼성전자 70000원 100주" -> default addPrice = -10%, addQty = currentQty
       currentPrice = numbers[0];
       currentQty = numbers[1];
       addPrice = (currentPrice * 0.9).roundToDouble();
@@ -87,7 +112,7 @@ class AiSpeechParser {
 
     final isValid = currentPrice > 0 && currentQty > 0 && addPrice > 0 && addQty > 0;
     final summary = isValid
-        ? "$stock (보유: ${_formatNum(currentPrice)} × ${_formatNum(currentQty)} ➔ 추가: ${_formatNum(addPrice)} × ${_formatNum(addQty)})"
+        ? "$stock (보유: ${formatNum(currentPrice)} × ${formatNum(currentQty)} ➔ 추가: ${formatNum(addPrice)} × ${formatNum(addQty)})"
         : "금액과 수량을 파악 중입니다. 예: '삼성전자 75,000원 100주, 68,000원 50주'";
 
     return AiInputResult(
@@ -101,11 +126,132 @@ class AiSpeechParser {
     );
   }
 
-  static String _formatNum(double v) {
+  static String formatNum(double v) {
     if (v == v.roundToDouble()) {
       return v.toInt().toString();
     }
     return v.toStringAsFixed(1);
+  }
+
+  /// Converts Korean verbal number phrases often returned by STT engines
+  /// e.g. "오만 이천원" -> "52000원", "십팔만원" -> "180000원", "백주" -> "100주"
+  static String _normalizeKoreanVerbalNumbers(String input) {
+    String str = input;
+
+    // Convert pure Korean verbal digit words when adjacent to units
+    const digitMap = {
+      '영': 0, '일': 1, '이': 2, '삼': 3, '사': 4,
+      '오': 5, '육': 6, '칠': 7, '팔': 8, '구': 9
+    };
+
+    // Regex to match Korean number expressions up to 억/만/천/백/십
+    // e.g. "칠만오천", "십팔만", "육만 팔천", "백주", "오십주"
+    final koreanNumberRegex = RegExp(r'([일이삼사오육칠팔구십백천만억\s]{2,10})\s*(원|달러|주|개)');
+    str = str.replaceAllMapped(koreanNumberRegex, (m) {
+      final phrase = m.group(1)?.replaceAll(' ', '') ?? '';
+      final unit = m.group(2) ?? '';
+
+      int parsed = _parseKoreanNumber(phrase);
+      if (parsed > 0) {
+        return " $parsed$unit ";
+      }
+      return m.group(0)!;
+    });
+
+    return str;
+  }
+
+  static int _parseKoreanNumber(String phrase) {
+    // Basic parser for pure Korean numbers like 칠만오천, 십팔만, 백, 오십
+    int total = 0;
+    int current = 0;
+
+    final digitValues = {
+      '일': 1, '이': 2, '삼': 3, '사': 4,
+      '오': 5, '육': 6, '칠': 7, '팔': 8, '구': 9
+    };
+
+    for (int i = 0; i < phrase.length; i++) {
+      final ch = phrase[i];
+      if (digitValues.containsKey(ch)) {
+        current = digitValues[ch]!;
+      } else if (ch == '십') {
+        total += (current == 0 ? 1 : current) * 10;
+        current = 0;
+      } else if (ch == '백') {
+        total += (current == 0 ? 1 : current) * 100;
+        current = 0;
+      } else if (ch == '천') {
+        total += (current == 0 ? 1 : current) * 1000;
+        current = 0;
+      } else if (ch == '만') {
+        total = (total + (current == 0 ? 1 : current)) * 10000;
+        current = 0;
+      } else if (ch == '억') {
+        total = (total + (current == 0 ? 1 : current)) * 100000000;
+        current = 0;
+      }
+    }
+    total += current;
+    return total;
+  }
+
+  /// Parses explicit clauses like "buy X shares at Y" or "추가 매수 X원 Y주"
+  static AiInputResult? _parseContextual(String text, String stock) {
+    // English Pattern: "buy 50 shares at 150 USD" or "buy 50 at 150"
+    final enBuyPattern = RegExp(
+      r'buy\s+(\d+(?:\.\d+)?)\s*(?:shares|acc|lot|cổ)?\s*at\s+(\d+(?:\.\d+)?)',
+      caseSensitive: false,
+    );
+    final enBuyMatch = enBuyPattern.firstMatch(text);
+
+    // English Pattern alternative: "at 150 buy 50"
+    final enAtBuyPattern = RegExp(
+      r'at\s+(\d+(?:\.\d+)?)\s*(?:usd|eur|\$)?\s*,?\s*buy\s+(\d+(?:\.\d+)?)',
+      caseSensitive: false,
+    );
+    final enAtBuyMatch = enAtBuyPattern.firstMatch(text);
+
+    // Korean Pattern: "(추가|물타기|매수) X원 Y주" or "X원에 Y주 (물타기|추가)"
+    final krAddPattern1 = RegExp(r'(\d+(?:\.\d+)?)\s*(?:원|달러)?\s*(?:에|으로)?\s*(\d+(?:\.\d+)?)\s*주\s*(?:추가|물타기|매수)?');
+    final krAddPattern2 = RegExp(r'(?:추가|물타기|매수)\s*(\d+(?:\.\d+)?)\s*(?:원|달러)?\s*(\d+(?:\.\d+)?)\s*주');
+
+    // If English explicit buy match found:
+    if (enBuyMatch != null || enAtBuyMatch != null) {
+      double addQty = 0;
+      double addPrice = 0;
+
+      if (enBuyMatch != null) {
+        addQty = double.tryParse(enBuyMatch.group(1)!) ?? 0;
+        addPrice = double.tryParse(enBuyMatch.group(2)!) ?? 0;
+      } else if (enAtBuyMatch != null) {
+        addPrice = double.tryParse(enAtBuyMatch.group(1)!) ?? 0;
+        addQty = double.tryParse(enAtBuyMatch.group(2)!) ?? 0;
+      }
+
+      // Remaining part for current price/qty
+      final cleanText = text
+          .replaceAll(enBuyPattern, ' ')
+          .replaceAll(enAtBuyPattern, ' ');
+      final remNumbers = _extractNumbers(cleanText);
+
+      double currentPrice = remNumbers.isNotEmpty ? remNumbers[0] : 0;
+      double currentQty = remNumbers.length > 1 ? remNumbers[1] : 0;
+
+      if (currentPrice > 0 && currentQty > 0 && addPrice > 0 && addQty > 0) {
+        return AiInputResult(
+          stockName: stock.isNotEmpty ? stock : "Stock",
+          currentPrice: currentPrice,
+          currentQty: currentQty,
+          addPrice: addPrice,
+          addQty: addQty,
+          isValid: true,
+          summary: "$stock (Hold: ${formatNum(currentPrice)} × ${formatNum(currentQty)} ➔ Add: ${formatNum(addPrice)} × ${formatNum(addQty)})",
+        );
+      }
+    }
+
+    return null;
   }
 
   static String _normalizeQuantities(String input) {
@@ -210,4 +356,3 @@ class AiSpeechParser {
     return list;
   }
 }
-
