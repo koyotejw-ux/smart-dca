@@ -24,7 +24,6 @@ class AdmobService {
   static const String _realNativeAdUnitId = 'ca-app-pub-1377047377548020/2845475559';
   static const String _realBannerAdUnitId = 'ca-app-pub-1377047377548020/9662165345';
   static const String _realRewardedAdUnitId = 'ca-app-pub-1377047377548020/6784720565';
-  static const String _realRewardedInterstitialAdUnitId = 'ca-app-pub-1377047377548020/9410883903';
   static const String _realAppOpenAdUnitId = 'ca-app-pub-1377047377548020/9213912211';
   static const String _realInterstitialAdUnitId = 'ca-app-pub-1377047377548020/3037047246';
 
@@ -87,11 +86,9 @@ class AdmobService {
   static Future<void> initialize() async {
     if (kIsWeb) return;
     try {
-      // 1. Check if user toggled test mode in settings
-      final savedTestMode = await _storage.getSetting('admob_force_test_mode');
-      if (savedTestMode != null) {
-        _forceTestAds = savedTestMode == 'true';
-      }
+      // By default, always use real production Ad Unit IDs.
+      // Registered test devices on Google AdMob console or in testDeviceIds will automatically receive test ads from Google!
+      _forceTestAds = false;
 
       await MobileAds.instance.initialize();
       _isInitialized = true;
