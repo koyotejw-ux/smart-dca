@@ -347,8 +347,14 @@ def render_ultra_screenshot(page_cfg, lang_code, device_name, size, frame_ratio,
         draw.text((sx, sub_y), sub_text, font=sub_font, fill=(195, 215, 245, 235))
         
     # 6. Real Screen Selection & Cropping
-    raw_key = page_cfg['raw_img_en'] if lang_code != 'ko' and 'raw_img_en' in page_cfg else page_cfg['raw_img']
-    raw_path = image_lookup.get(raw_key, image_lookup.get(page_cfg['raw_img']))
+    # Real Localized Screen selection:
+    # 1:1 matching raw screenshot captured on device for each specific language & currency
+    root_dir = r"d:\097.flutter_project\average_down_calculator"
+    raw_path = os.path.join(root_dir, "store", "raw_screens", lang_code, f"{page_cfg['id']}.png")
+    if not os.path.exists(raw_path):
+        # Fallback to general lookup if missing
+        raw_key = page_cfg['raw_img_en'] if lang_code != 'ko' and 'raw_img_en' in page_cfg else page_cfg['raw_img']
+        raw_path = image_lookup.get(raw_key, image_lookup.get(page_cfg['raw_img']))
     
     screen_img = Image.open(raw_path).convert('RGBA')
     

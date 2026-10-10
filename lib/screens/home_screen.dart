@@ -709,7 +709,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              isKo ? 'VIP 24시간 광고 제거' : '24h VIP Ad-Free Pass',
+                              L10n.s(lang, 'vip_banner_title'),
                               style: GoogleFonts.inter(
                                 fontWeight: FontWeight.w800,
                                 fontSize: 13,
@@ -741,7 +741,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          isKo ? '짧은 영상 1편 시청 시 24시간 광고 없음' : 'Watch 1 short video for 24h ad-free',
+                          L10n.s(lang, 'vip_banner_subtitle'),
                           style: TextStyle(
                             color: isDark ? Colors.white60 : Colors.black54,
                             fontSize: 10.5,
@@ -763,7 +763,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        isKo ? '받기' : 'Claim',
+                        L10n.s(lang, 'vip_banner_claim'),
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
