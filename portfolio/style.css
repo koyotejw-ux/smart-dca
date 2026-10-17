@@ -252,19 +252,22 @@ body {
 
 .mockup-thumb-wrap {
   width: 100%;
-  height: 540px;
-  background: #000;
-  border-radius: 16px;
+  height: 520px;
+  background: #0B0F19;
+  border-radius: 20px;
   border: 1.5px solid #222B3D;
   overflow: hidden;
   position: relative;
   box-shadow: 0 10px 24px rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mockup-thumb-wrap img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
 
@@ -298,19 +301,22 @@ body {
 }
 
 .duo-mockup-frame {
-  height: 600px;
-  background: #000;
-  border-radius: 20px;
+  height: 620px;
+  background: #0B0F19;
+  border-radius: 24px;
   border: 2px solid #28334A;
   overflow: hidden;
   box-shadow: 0 16px 40px rgba(0,0,0,0.7);
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .duo-mockup-frame img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .duo-tag {
