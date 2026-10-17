@@ -1,13 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap');
 
 :root {
-  --bg-deep: #06080F;
-  --bg-surface: #0C101C;
-  --bg-surface-elevated: #121829;
-  --bg-surface-glass: rgba(18, 24, 41, 0.7);
+  --bg-deep: #07090E;
+  --bg-surface: #0E131F;
+  --bg-surface-elevated: #141B2D;
   --border-subtle: #1C2438;
   --border-focus: #2E3B5B;
-  --border-glow: rgba(0, 81, 255, 0.35);
   --text-main: #FFFFFF;
   --text-muted: #94A3B8;
   --text-dim: #64748B;
@@ -35,11 +33,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 48px;
-  padding: 40px 0;
+  gap: 40px;
+  padding: 30px 0;
+  width: 100%;
 }
 
-/* Floating Controller */
+/* Floating Navigation Controller */
 .global-control-bar {
   position: fixed;
   bottom: 24px;
@@ -47,10 +46,10 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
-  background: rgba(12, 16, 28, 0.95);
+  background: rgba(14, 19, 31, 0.95);
   backdrop-filter: blur(20px);
   border: 1px solid var(--border-focus);
-  padding: 10px 22px;
+  padding: 10px 24px;
   border-radius: 9999px;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
   z-index: 9999;
@@ -76,63 +75,64 @@ body {
   box-shadow: 0 8px 24px rgba(0, 82, 255, 0.5);
 }
 
-/* 1920x1080 Zero-Margin Slide Container */
+/* Responsive 1920x1080 Aspect-Ratio Slide System */
 .slide {
   width: 1920px;
   height: 1080px;
+  max-width: 100vw;
   background: var(--bg-deep);
   border: 1px solid var(--border-subtle);
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding: 48px 64px 44px 64px;
+  padding: 44px 64px 36px 64px;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.85);
   page-break-after: always;
   break-after: page;
 }
 
-/* Dynamic Ambient Glow */
+/* Ambient Radial Glow Lighting */
 .ambient-glow-1 {
   position: absolute;
-  top: -100px;
+  top: -120px;
   right: -100px;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(0, 82, 255, 0.15) 0%, transparent 70%);
-  filter: blur(60px);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0, 82, 255, 0.16) 0%, transparent 70%);
+  filter: blur(80px);
   pointer-events: none;
 }
 
 .ambient-glow-2 {
   position: absolute;
   bottom: -150px;
-  left: 20%;
-  width: 600px;
-  height: 500px;
+  left: 15%;
+  width: 700px;
+  height: 600px;
   background: radial-gradient(circle, rgba(121, 40, 202, 0.12) 0%, transparent 70%);
-  filter: blur(80px);
+  filter: blur(90px);
   pointer-events: none;
 }
 
-/* Slide Header */
+/* Slide Header Hierarchy */
 .slide-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   border-bottom: 1px solid var(--border-subtle);
-  padding-bottom: 18px;
-  margin-bottom: 24px;
+  padding-bottom: 16px;
+  margin-bottom: 22px;
   position: relative;
   z-index: 2;
 }
 
 .slide-tag {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 800;
   color: var(--accent-cyan);
-  letter-spacing: 2px;
+  letter-spacing: 2.2px;
   text-transform: uppercase;
   margin-bottom: 4px;
 }
@@ -142,12 +142,13 @@ body {
   font-weight: 900;
   letter-spacing: -0.6px;
   color: var(--text-main);
+  line-height: 1.2;
 }
 
 .slide-subtitle {
-  font-size: 15px;
+  font-size: 14.5px;
   color: var(--text-muted);
-  margin-top: 3px;
+  margin-top: 4px;
   font-weight: 500;
 }
 
@@ -158,12 +159,12 @@ body {
   color: var(--text-dim);
 }
 
-/* Fill Layout Containers */
+/* Grid Layout Foundations */
 .fill-grid-6 {
   flex: 1;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 20px;
+  gap: 18px;
   align-items: stretch;
 }
 
@@ -171,7 +172,7 @@ body {
   flex: 1;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 22px;
+  gap: 20px;
   align-items: stretch;
 }
 
@@ -191,26 +192,31 @@ body {
   align-items: stretch;
 }
 
-/* Glass Card Component */
+/* Glass Panels & Typography Hierarchy */
 .glass-panel {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 14px;
-  padding: 24px;
+  border-radius: 12px;
+  padding: 20px 24px;
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: hidden;
 }
 
 .panel-header {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--text-main);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.panel-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
 }
 
 .badge {
@@ -227,32 +233,32 @@ body {
 .b-purple { background: rgba(121, 40, 202, 0.15); color: #C084FC; border: 1px solid rgba(121, 40, 202, 0.3); }
 .b-coral { background: rgba(255, 82, 82, 0.15); color: #FF8A80; border: 1px solid rgba(255, 82, 82, 0.3); }
 
-/* 6-Grid Screen Showcase Card */
+/* Clean UI Framed Screen Cards (6-Grid & Duo) */
 .screen-card-showcase {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   border-radius: 14px;
-  padding: 14px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   transition: all 0.2s ease;
 }
 
 .screen-card-showcase:hover {
   border-color: var(--accent-electric);
-  box-shadow: 0 8px 24px rgba(0, 82, 255, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 82, 255, 0.25);
 }
 
 .mockup-thumb-wrap {
   width: 100%;
-  height: 520px;
+  height: 540px;
   background: #000;
-  border-radius: 20px;
-  border: 2px solid #222B3D;
+  border-radius: 16px;
+  border: 1.5px solid #222B3D;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.6);
 }
 
 .mockup-thumb-wrap img {
@@ -269,7 +275,7 @@ body {
 }
 
 .screen-card-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 800;
   color: var(--text-main);
   display: flex;
@@ -278,12 +284,12 @@ body {
 }
 
 .screen-card-desc {
-  font-size: 12px;
+  font-size: 11.5px;
   line-height: 1.5;
   color: var(--text-muted);
 }
 
-/* Compare Duo Mockup (KO vs EN / Dark vs Light) */
+/* Duo Compare Frames (KO vs EN) */
 .duo-compare-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -292,10 +298,10 @@ body {
 }
 
 .duo-mockup-frame {
-  height: 560px;
+  height: 600px;
   background: #000;
-  border-radius: 26px;
-  border: 2.5px solid #28334A;
+  border-radius: 20px;
+  border: 2px solid #28334A;
   overflow: hidden;
   box-shadow: 0 16px 40px rgba(0,0,0,0.7);
   position: relative;
@@ -316,43 +322,22 @@ body {
   font-size: 11px;
   font-weight: 800;
   backdrop-filter: blur(10px);
+  z-index: 5;
 }
 
-.tag-ko { background: rgba(0, 82, 255, 0.85); color: #fff; }
-.tag-en { background: rgba(0, 230, 118, 0.85); color: #000; }
-.tag-ja { background: rgba(255, 179, 0, 0.85); color: #000; }
+.tag-ko { background: rgba(0, 82, 255, 0.9); color: #fff; }
+.tag-en { background: rgba(0, 230, 118, 0.9); color: #000; }
 
-/* Design System Token Grids */
-.token-chip {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--bg-surface-elevated);
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--border-subtle);
+/* Responsive Media Queries for Desktop Scaling */
+@media screen and (max-width: 1920px) {
+  .slide {
+    transform-origin: top center;
+    width: 1920px;
+    height: 1080px;
+  }
 }
 
-.token-swatch {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  flex-shrink: 0;
-}
-
-.token-info strong {
-  font-size: 13px;
-  color: var(--text-main);
-  display: block;
-}
-
-.token-info span {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--text-dim);
-}
-
-/* Print Rules */
+/* Print Rules: Zero-Margin High-Resolution PDF */
 @media print {
   @page {
     size: 1920px 1080px;
