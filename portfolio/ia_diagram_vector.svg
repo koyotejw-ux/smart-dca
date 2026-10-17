@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1780 620" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gradBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0052FF" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#00D2FF" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="gradMint" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00E676" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#00B0FF" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="gradPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7928CA" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#FF0080" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="gradGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFB300" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#FF5252" stop-opacity="0.1"/>
+    </linearGradient>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <style>
+    .title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px; font-weight: 800; fill: #FFFFFF; }
+    .tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; fill: #60A5FA; letter-spacing: 1.5px; }
+    .item-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 700; fill: #F1F5F9; }
+    .item-desc { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; fill: #94A3B8; }
+    .line { stroke: #26334D; stroke-width: 2; stroke-dasharray: 4 4; }
+    .conn-arrow { stroke: #00E676; stroke-width: 2.5; fill: none; }
+  </style>
+
+  <!-- COLUMN 1: Entry & Onboarding -->
+  <g transform="translate(40, 20)" filter="url(#shadow)">
+    <rect width="380" height="580" rx="16" fill="#0C101C" stroke="#1E283D" stroke-width="1.5"/>
+    <rect width="380" height="56" rx="16" fill="url(#gradBlue)"/>
+    <text x="24" y="26" class="tag">01. DISCOVERY &amp; INIT</text>
+    <text x="24" y="46" class="title">1.0 Entry &amp; Onboarding</text>
+    
+    <!-- Item 1.1 -->
+    <g transform="translate(20, 80)">
+      <rect width="340" height="100" rx="10" fill="#131929" stroke="#222E48"/>
+      <text x="16" y="30" class="item-title">1.1 Splash Screen Engine</text>
+      <text x="16" y="52" class="item-desc">로고 브랜드 스케일링 &amp; 앱 초기화</text>
+      <text x="16" y="72" class="item-desc">세션 토큰 및 로컬 설정 동기화</text>
+    </g>
+    <!-- Item 1.2 -->
+    <g transform="translate(20, 200)">
+      <rect width="340" height="120" rx="10" fill="#131929" stroke="#222E48"/>
+      <text x="16" y="30" class="item-title">1.2 Strategy Onboarding (4 Steps)</text>
+      <text x="16" y="52" class="item-desc">Step 1: 평단가 방어 메커니즘 가이드</text>
+      <text x="16" y="72" class="item-desc">Step 2: A/B 시나리오 대조 원리</text>
+      <text x="16" y="92" class="item-desc">Step 3: AI 음성 비서 발화 템플릿</text>
+    </g>
+    <!-- Item 1.3 -->
+    <g transform="translate(20, 340)">
+      <rect width="340" height="100" rx="10" fill="#131929" stroke="#222E48"/>
+      <text x="16" y="30" class="item-title">1.3 Locale &amp; Currency Auto-Detect</text>
+      <text x="16" y="52" class="item-desc">디바이스 국가 기반 자동 포맷팅</text>
+      <text x="16" y="72" class="item-desc">KRW(₩), USD($), JPY(¥), EUR(€)</text>
+    </g>
+  </g>
+
+  <!-- COLUMN 2: Home Dashboard -->
+  <g transform="translate(470, 20)" filter="url(#shadow)">
+    <rect width="380" height="580" rx="16" fill="#0C101C" stroke="#1E283D" stroke-width="1.5"/>
+    <rect width="380" height="56" rx="16" fill="url(#gradMint)"/>
+    <text x="24" y="26" class="tag" fill="#00E676">02. CORE DATA HUB</text>
+    <text x="24" y="46" class="title">2.0 Home Dashboard</text>
+
+    <!-- Item 2.1 -->
+    <g transform="translate(20, 80)">
+      <rect width="340" height="100" rx="10" fill="#131929" stroke="#222E48"/>
+      <text x="16" y="30" class="item-title">2.1 VIP 24h Monetization Pass</text>
+      <text x="16" y="52" class="item-desc">보상형 광고 시청 리워드 수명주기</text>
+      <text x="16" y="72" class="item-desc">1초 단위 D-Day 카운트다운 타이머</text>
+    </g>
+    <!-- Item 2.2 -->
+    <g transform="translate(20, 200)">
+      <rect width="340" height="120" rx="10" fill="#131929" stroke="#222E48"/>
+      <text x="16" y="30" class="item-title">2.2 AI Voice Ingestion Panel</text>
+      <text x="16" y="52" class="item-desc">STT 음성 실시간 수신 &amp; 자연어 파싱</text>
+      <text x="16" y="72" class="item-desc">종목명/단가/수량 1초 자동 추출</text>
+      <text x="16" y="92" class="item-desc">±5%, ±10% 원터치 프리셋 칩</text>
+    </g>
+    <!-- Item 2.3 -->
+    <g transform="translate(20, 340)">
+      <rect width="340" height="100" rx="10" fill="#131929" stroke="#222E48"/>
+      <text x="16" y="30" class="item-title">2.3 Asset Entity Persistence</text>
+      <text x="16" y="52" class="item-desc">오프라인 무결성 SQLite DB 관리</text>
+      <text x="16" y="72" class="item-desc">시뮬레이터 단가/수량 파라미터 주입</text>
+    </g>
+  </g>
+
+  <!-- COLUMN 3: Simulation Engine -->
+  <g transform="translate(900, 20)" filter="url(#shadow)">
+    <rect width="380" height="580" rx="16" fill="#0C101C" stroke="#1E283D" stroke-width="1.5"/>
+    <rect width="380" height="56" rx="16" fill="url(#gradPurple)"/>
+    <text x="24" y="26" class="tag" fill="#C084FC">03. ALGORITHMIC SIMULATION</text>
+    <text x="24" y="46" class="title">3.0 Simulation Engine</text>
+
+    <!-- Item 3.1 -->
+    <g transform="translate(20, 80)">
+      <rect width="340" height="100" rx="10" fill="#131929" stroke="#222E48"/>
+      <text x="16" y="30" class="item-title">3.1 Multi-Batch Buy Simulator</text>
+      <text x="16" y="52" class="item-desc">1차~N차 분할 매수 가중평균 연산</text>
+      <text x="16" y="72" class="item-desc">150ms 디바운스 실시간 평단/수익률</text>
+    </g>
+    <!-- Item 3.2 -->
+    <g transform="translate(20, 200)">
+      <rect width="340" height="100" rx="10" fill="#131929" stroke="#222E48"/>
+      <text x="16" y="30" class="item-title">3.2 A vs B Scenario Matrix</text>
+      <text x="16" y="52" class="item-desc">동일 원금 대비 전략 대조 검증</text>
+      <text x="16" y="72" class="item-desc">평단 방어율 극대화 전략 승리 배지</text>
+    </g>
+    <!-- Item 3.3 -->
+    <g transform="translate(20, 320)">
+      <rect width="340" height="110" rx="10" fill="#131929" stroke="#222E48"/>
+      <text x="16" y="30" class="item-title">3.3 Goal Seeking Calculator</text>
+      <text x="16" y="52" class="item-desc">탈출 목표 평단가 도달 역산식</text>
+      <text x="16" y="72" class="item-desc">필수 추가 매수 수량 실시간 산출</text>
+      <text x="16" y="92" class="item-desc">0 나누기 &amp; 도달 불가 예외 방어</text>
+    </g>
+  </g>
+
+  <!-- COLUMN 4: Analytics & Retention -->
+  <g transform="translate(1330, 20)" filter="url(#shadow)">
+    <rect width="380" height="580" rx="16" fill="#0C101C" stroke="#1E283D" stroke-width="1.5"/>
+    <rect width="380" height="56" rx="16" fill="url(#gradGold)"/>
+    <text x="24" y="26" class="tag" fill="#FBBF24">04. VALUE &amp; OUTCOME</text>
+    <text x="24" y="46" class="title">4.0 Analytics &amp; Retention</text>
+
+    <!-- Item 4.1 -->
+    <g transform="translate(20, 80)">
+      <rect width="340" height="100" rx="10" fill="#131929" stroke="#222E48"/>
+      <text x="16" y="30" class="item-title">4.1 Portfolio Wealth Overview</text>
+      <text x="16" y="52" class="item-desc">총 투자 원금 집계 &amp; 종목 수</text>
+      <text x="16" y="72" class="item-desc">종목별 자산 가중치 도넛 차트</text>
+    </g>
+    <!-- Item 4.2 -->
+    <g transform="translate(20, 200)">
+      <rect width="340" height="100" rx="10" fill="#131929" stroke="#222E48"/>
+      <text x="16" y="30" class="item-title">4.2 Risk Diagnostics Engine</text>
+      <text x="16" y="52" class="item-desc">40% 초과 종목 비중 편중 경고</text>
+      <text x="16" y="72" class="item-desc">-20% 괴리율 기반 물타기 시급도</text>
+    </g>
+    <!-- Item 4.3 -->
+    <g transform="translate(20, 320)">
+      <rect width="340" height="110" rx="10" fill="#131929" stroke="#222E48"/>
+      <text x="16" y="30" class="item-title">4.3 Artifact Export &amp; Settings</text>
+      <text x="16" y="52" class="item-desc">RepaintBoundary 고화질 캡처 공유</text>
+      <text x="16" y="72" class="item-desc">다크/라이트 테마 즉시 전환</text>
+      <text x="16" y="92" class="item-desc">글로벌 5개국어 런타임 스위칭</text>
+    </g>
+  </g>
+</svg>
