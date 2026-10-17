@@ -465,13 +465,20 @@ body {
 @media print {
   @page {
     size: 1920px 1080px;
-    margin: 0;
+    margin: 0 !important;
   }
   
-  body {
-    background: #000;
-    padding: 0;
-    gap: 0;
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html, body {
+    background-color: #07090E !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 0 !important;
+    width: 1920px !important;
   }
 
   .global-control-bar {
@@ -479,11 +486,17 @@ body {
   }
 
   .slide {
-    border: none;
-    box-shadow: none;
-    width: 1920px;
-    height: 1080px;
-    page-break-after: always;
-    break-after: page;
+    border: none !important;
+    box-shadow: none !important;
+    width: 1920px !important;
+    height: 1080px !important;
+    max-width: 1920px !important;
+    max-height: 1080px !important;
+    background-color: #07090E !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    overflow: hidden !important;
   }
 }
