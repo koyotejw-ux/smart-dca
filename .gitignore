@@ -43,3 +43,14 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/build/
+
+# Temporary captures and scratch files
+*.png
+!assets/**/*.png
+!portfolio/**/*.png
+*.txt
+*.db
+scratch/
+knocknock_sample/
+
