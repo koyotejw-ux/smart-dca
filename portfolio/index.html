@@ -2,82 +2,243 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=1920, initial-scale=1.0">
-  <title>Smart DCA Calculator - Behance Enterprise Case Study</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스마트 물타기 계산기 (Smart DCA Calculator) - Behance Enterprise Case Study</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Floating Print & PDF Control Bar -->
-  <aside class="global-control-bar" aria-label="PDF Export Controls">
-    <span class="deck-meta">Behance Senior UX Case Study (12 Full-Deck Slides · 1920 × 1080)</span>
-    <button class="btn-print" onclick="window.print()">
-      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-      </svg>
-      PDF로 원클릭 저장 (Print)
-    </button>
+  <!-- Floating Navigation & Master Control Dock -->
+  <aside class="global-control-bar" aria-label="Deck Controls">
+    <div class="dock-left">
+      <span class="live-status-pill">
+        <span class="status-dot"></span>
+        Google Play Store Production
+      </span>
+      <span class="deck-title">Smart DCA Calculator · Behance Case Study</span>
+    </div>
+
+    <div class="dock-center">
+      <button class="nav-arrow-btn" id="btn-prev" title="이전 슬라이드 (←, ↑)" aria-label="Previous Slide">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <span class="slide-counter" id="slide-counter">SLIDE <strong id="curr-num">01</strong> / 12</span>
+      <button class="nav-arrow-btn" id="btn-next" title="다음 슬라이드 (→, ↓, Space)" aria-label="Next Slide">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+    <div class="dock-right">
+      <button class="btn-icon" id="btn-fullscreen" title="전체화면 (F)" aria-label="Toggle Fullscreen">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      </button>
+      <button class="btn-print" onclick="window.print()" title="1920x1080 1:1 고해상도 PDF 내보내기">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+        </svg>
+        PDF 원클릭 저장
+      </button>
+    </div>
   </aside>
 
-  <!-- Slide 01: Hero Cover (Electric Indigo Gradient & Dual Mockup) -->
-  <section class="behance-slide-container" id="slide-1">
-    <img class="behance-slide-img" src="behance_slides/slide_01.png" alt="Slide 01: Hero Cover & Value Proposition">
-  </section>
+  <!-- Right Slide Dot Navigation Rail -->
+  <nav class="slide-nav-rail" id="nav-rail" aria-label="Slide Jump Dots">
+    <!-- Generated dynamically via JS -->
+  </nav>
 
-  <!-- Slide 02: Discovery & User Research (Pain Points & IDI Quantitative Data) -->
-  <section class="behance-slide-container" id="slide-2">
-    <img class="behance-slide-img" src="behance_slides/slide_02.png" alt="Slide 02: Discovery & User Research">
-  </section>
+  <!-- Keyboard Hint Floating Toast -->
+  <div class="key-hint-pill" id="key-hint">
+    <span>💡 키보드 방향키 <kbd>←</kbd> <kbd>→</kbd> 또는 <kbd>Space</kbd> 로 슬라이드를 탐색할 수 있습니다</span>
+  </div>
 
-  <!-- Slide 03: Benchmark Matrix & Dual Personas (MTS vs DCA & Personas A/B) -->
-  <section class="behance-slide-container" id="slide-3">
-    <img class="behance-slide-img" src="behance_slides/slide_03.png" alt="Slide 03: Competitive Benchmark & Target Personas">
-  </section>
+  <!-- Main Slide Deck Feed -->
+  <main class="deck-viewport" id="deck-viewport">
+    <!-- Slide 01: Hero Cover -->
+    <section class="behance-slide-container" id="slide-1" data-title="01. Hero Cover & Value Prop">
+      <img class="behance-slide-img" src="behance_slides/slide_01.png" alt="Slide 01: Hero Cover & Value Proposition" loading="eager">
+    </section>
 
-  <!-- Slide 04: Information Architecture (IA) & Customer Journey Map (CJM) -->
-  <section class="behance-slide-container" id="slide-4">
-    <img class="behance-slide-img" src="behance_slides/slide_04.png" alt="Slide 04: Information Architecture & Customer Journey Map">
-  </section>
+    <!-- Slide 02: Discovery & User Research -->
+    <section class="behance-slide-container" id="slide-2" data-title="02. Discovery & IDI Data">
+      <img class="behance-slide-img" src="behance_slides/slide_02.png" alt="Slide 02: Discovery & User Research" loading="lazy">
+    </section>
 
-  <!-- Slide 05: User Flowchart & Edge Case Logic Branch -->
-  <section class="behance-slide-container" id="slide-5">
-    <img class="behance-slide-img" src="behance_slides/slide_05.png" alt="Slide 05: User Flowchart & Logic Branch">
-  </section>
+    <!-- Slide 03: Benchmark Matrix & Personas -->
+    <section class="behance-slide-container" id="slide-3" data-title="03. Benchmark & Personas">
+      <img class="behance-slide-img" src="behance_slides/slide_03.png" alt="Slide 03: Competitive Benchmark & Target Personas" loading="lazy">
+    </section>
 
-  <!-- Slide 06: Low-Fi to Mid-Fi Wireframes (Structural Rationale) -->
-  <section class="behance-slide-container" id="slide-6">
-    <img class="behance-slide-img" src="behance_slides/slide_06.png" alt="Slide 06: Wireframe Blueprint & Functional Specs">
-  </section>
+    <!-- Slide 04: IA & CJM -->
+    <section class="behance-slide-container" id="slide-4" data-title="04. IA & Customer Journey">
+      <img class="behance-slide-img" src="behance_slides/slide_04.png" alt="Slide 04: Information Architecture & Customer Journey Map" loading="lazy">
+    </section>
 
-  <!-- Slide 07: Design System Foundations & Semantic Tokens -->
-  <section class="behance-slide-container" id="slide-7">
-    <img class="behance-slide-img" src="behance_slides/slide_07.png" alt="Slide 07: Design System Foundations & Semantic Tokens">
-  </section>
+    <!-- Slide 05: Flowchart & Logic Branch -->
+    <section class="behance-slide-container" id="slide-5" data-title="05. User Flow & Logic Branch">
+      <img class="behance-slide-img" src="behance_slides/slide_05.png" alt="Slide 05: User Flowchart & Logic Branch" loading="lazy">
+    </section>
 
-  <!-- Slide 08: Feature Spotlight 01 - Multimodal Voice Ingestion -->
-  <section class="behance-slide-container" id="slide-8">
-    <img class="behance-slide-img" src="behance_slides/slide_08.png" alt="Slide 08: Feature Spotlight 01 - Speech-To-Text Ingestion">
-  </section>
+    <!-- Slide 06: Wireframe Specs -->
+    <section class="behance-slide-container" id="slide-6" data-title="06. Wireframe Blueprint">
+      <img class="behance-slide-img" src="behance_slides/slide_06.png" alt="Slide 06: Wireframe Blueprint & Functional Specs" loading="lazy">
+    </section>
 
-  <!-- Slide 09: Feature Spotlight 02 - Goal-Seeking Math Logic & Reverse Calculator -->
-  <section class="behance-slide-container" id="slide-9">
-    <img class="behance-slide-img" src="behance_slides/slide_09.png" alt="Slide 09: Feature Spotlight 02 - Goal-Seeking Math Logic">
-  </section>
+    <!-- Slide 07: Design System & Tokens -->
+    <section class="behance-slide-container" id="slide-7" data-title="07. Design System & Tokens">
+      <img class="behance-slide-img" src="behance_slides/slide_07.png" alt="Slide 07: Design System Foundations & Semantic Tokens" loading="lazy">
+    </section>
 
-  <!-- Slide 10: High-Fidelity UI Screens & Interactive Prototype Flow -->
-  <section class="behance-slide-container" id="slide-10">
-    <img class="behance-slide-img" src="behance_slides/slide_10.png" alt="Slide 10: High-Fidelity UI Screens & Interaction Prototype">
-  </section>
+    <!-- Slide 08: Feature Spotlight 01 - STT Engine -->
+    <section class="behance-slide-container" id="slide-8" data-title="08. 0.2s STT Voice Engine">
+      <img class="behance-slide-img" src="behance_slides/slide_08.png" alt="Slide 08: Feature Spotlight 01 - Speech-To-Text Ingestion" loading="lazy">
+    </section>
 
-  <!-- Slide 11: OLED Deep Dark Theme & Accessibility -->
-  <section class="behance-slide-container" id="slide-11">
-    <img class="behance-slide-img" src="behance_slides/slide_11.png" alt="Slide 11: OLED Deep Dark Theme & Accessibility">
-  </section>
+    <!-- Slide 09: Feature Spotlight 02 - Goal-Seeking Math -->
+    <section class="behance-slide-container" id="slide-9" data-title="09. Goal-Seeking Math Logic">
+      <img class="behance-slide-img" src="behance_slides/slide_09.png" alt="Slide 09: Feature Spotlight 02 - Goal-Seeking Math Logic" loading="lazy">
+    </section>
 
-  <!-- Slide 12: Quantitative Impact & STAR Retrospective -->
-  <section class="behance-slide-container" id="slide-12">
-    <img class="behance-slide-img" src="behance_slides/slide_12.png" alt="Slide 12: Quantitative Impact & STAR Retrospective">
-  </section>
+    <!-- Slide 10: High-Fidelity 6 Screens -->
+    <section class="behance-slide-container" id="slide-10" data-title="10. High-Fi Screens Prototype">
+      <img class="behance-slide-img" src="behance_slides/slide_10.png" alt="Slide 10: High-Fidelity UI Screens & Interaction Prototype" loading="lazy">
+    </section>
 
+    <!-- Slide 11: OLED Deep Dark Theme -->
+    <section class="behance-slide-container" id="slide-11" data-title="11. OLED Dark & Accessibility">
+      <img class="behance-slide-img" src="behance_slides/slide_11.png" alt="Slide 11: OLED Deep Dark Theme & Accessibility" loading="lazy">
+    </section>
+
+    <!-- Slide 12: Business Impact & STAR Retrospective -->
+    <section class="behance-slide-container" id="slide-12" data-title="12. Impact & STAR Retrospective">
+      <img class="behance-slide-img" src="behance_slides/slide_12.png" alt="Slide 12: Quantitative Impact & STAR Retrospective" loading="lazy">
+    </section>
+  </main>
+
+  <script>
+    // Slide Navigation & State Management
+    (function() {
+      const slides = Array.from(document.querySelectorAll('.behance-slide-container'));
+      const totalSlides = slides.length;
+      const currNumEl = document.getElementById('curr-num');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+      const btnFullscreen = document.getElementById('btn-fullscreen');
+      const navRail = document.getElementById('nav-rail');
+      const keyHint = document.getElementById('key-hint');
+      let currentIndex = 0;
+
+      // 1. Build Dot Navigation Rail
+      slides.forEach((slide, idx) => {
+        const dotItem = document.createElement('div');
+        dotItem.className = 'rail-item' + (idx === 0 ? ' active' : '');
+        dotItem.setAttribute('data-index', idx);
+        dotItem.setAttribute('role', 'button');
+        dotItem.setAttribute('aria-label', `Slide ${idx + 1}`);
+
+        const dot = document.createElement('div');
+        dot.className = 'rail-dot';
+
+        const tooltip = document.createElement('div');
+        tooltip.className = 'rail-tooltip';
+        tooltip.textContent = slide.getAttribute('data-title') || `Slide ${idx + 1}`;
+
+        dotItem.appendChild(tooltip);
+        dotItem.appendChild(dot);
+
+        dotItem.addEventListener('click', () => {
+          scrollToSlide(idx);
+        });
+
+        navRail.appendChild(dotItem);
+      });
+
+      const railDots = Array.from(document.querySelectorAll('.rail-item'));
+
+      function updateActiveState(idx) {
+        if (idx === currentIndex) return;
+        currentIndex = idx;
+        const formatted = String(currentIndex + 1).padStart(2, '0');
+        currNumEl.textContent = formatted;
+
+        railDots.forEach((dot, i) => {
+          if (i === currentIndex) {
+            dot.classList.add('active');
+          } else {
+            dot.classList.remove('active');
+          }
+        });
+      }
+
+      function scrollToSlide(idx) {
+        if (idx < 0 || idx >= totalSlides) return;
+        slides[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      // 2. IntersectionObserver for Seamless Active Tracking
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            const index = slides.indexOf(entry.target);
+            if (index !== -1) {
+              updateActiveState(index);
+            }
+          }
+        });
+      }, {
+        root: null,
+        threshold: 0.5
+      });
+
+      slides.forEach(slide => observer.observe(slide));
+
+      // 3. Button Controls
+      btnPrev.addEventListener('click', () => {
+        if (currentIndex > 0) scrollToSlide(currentIndex - 1);
+      });
+
+      btnNext.addEventListener('click', () => {
+        if (currentIndex < totalSlides - 1) scrollToSlide(currentIndex + 1);
+      });
+
+      // 4. Keyboard Navigation
+      window.addEventListener('keydown', (e) => {
+        // Prevent default only for presentation navigation keys
+        if (['ArrowDown', 'ArrowRight', 'PageDown', ' '].includes(e.key)) {
+          e.preventDefault();
+          if (currentIndex < totalSlides - 1) scrollToSlide(currentIndex + 1);
+        } else if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key)) {
+          e.preventDefault();
+          if (currentIndex > 0) scrollToSlide(currentIndex - 1);
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          scrollToSlide(0);
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          scrollToSlide(totalSlides - 1);
+        } else if (e.key === 'f' || e.key === 'F') {
+          if (!e.metaKey && !e.ctrlKey) {
+            toggleFullscreen();
+          }
+        }
+      });
+
+      // 5. Fullscreen Toggle
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+      btnFullscreen.addEventListener('click', toggleFullscreen);
+
+      // 6. Dismiss key hint after 6s
+      setTimeout(() => {
+        keyHint.style.opacity = '0';
+        setTimeout(() => keyHint.remove(), 600);
+      }, 5500);
+
+    })();
+  </script>
 </body>
 </html>
