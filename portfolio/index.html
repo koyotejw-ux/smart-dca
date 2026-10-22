@@ -30,6 +30,13 @@
     </div>
 
     <div class="dock-right">
+      <button class="btn-icon" id="btn-fitscreen" title="화면 높이 맞춤 토글 (W)" aria-label="Toggle Fit Window">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+          <line x1="8" y1="21" x2="16" y2="21"/>
+          <line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+      </button>
       <button class="btn-icon" id="btn-fullscreen" title="전체화면 (F)" aria-label="Toggle Fullscreen">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
       </button>
@@ -49,7 +56,7 @@
 
   <!-- Keyboard Hint Floating Toast -->
   <div class="key-hint-pill" id="key-hint">
-    <span>💡 키보드 방향키 <kbd>←</kbd> <kbd>→</kbd> 또는 <kbd>Space</kbd> 로 슬라이드를 탐색할 수 있습니다</span>
+    <span>💡 방향키 <kbd>←</kbd> <kbd>→</kbd> 슬라이드 이동 · <kbd>W</kbd> 화면 높이 맞춤 · <kbd>F</kbd> 전체화면</span>
   </div>
 
   <!-- Main Slide Deck Feed -->
@@ -123,10 +130,24 @@
       const currNumEl = document.getElementById('curr-num');
       const btnPrev = document.getElementById('btn-prev');
       const btnNext = document.getElementById('btn-next');
+      const btnFitscreen = document.getElementById('btn-fitscreen');
       const btnFullscreen = document.getElementById('btn-fullscreen');
       const navRail = document.getElementById('nav-rail');
       const keyHint = document.getElementById('key-hint');
       let currentIndex = 0;
+
+      // Fit Screen Toggle Function
+      function toggleFitScreen() {
+        const isFit = document.body.classList.toggle('fit-window');
+        if (btnFitscreen) {
+          btnFitscreen.classList.toggle('active', isFit);
+        }
+        // Re-scroll current slide into view
+        setTimeout(() => scrollToSlide(currentIndex), 100);
+      }
+      if (btnFitscreen) {
+        btnFitscreen.addEventListener('click', toggleFitScreen);
+      }
 
       // 1. Build Dot Navigation Rail
       slides.forEach((slide, idx) => {
@@ -219,6 +240,10 @@
         } else if (e.key === 'f' || e.key === 'F') {
           if (!e.metaKey && !e.ctrlKey) {
             toggleFullscreen();
+          }
+        } else if (e.key === 'w' || e.key === 'W') {
+          if (!e.metaKey && !e.ctrlKey) {
+            toggleFitScreen();
           }
         }
       });

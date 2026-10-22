@@ -97,26 +97,26 @@ def make_slide_01():
     grad = Image.alpha_composite(grad, glow)
     base.paste(grad, (0, 0), mask)
     
-    # Dual Flagship Mockups
+    # Dual Flagship Mockups (100% Uniform Native Aspect Ratio)
     phone_back = Image.open('portfolio/mockup_ko_02_sim.png').convert('RGBA')
-    pb_w = 385
+    pb_w = 370
     pb_h = int(phone_back.height * (pb_w / phone_back.width))
     phone_back = phone_back.resize((pb_w, pb_h), Image.Resampling.LANCZOS)
     
     phone_front = Image.open('portfolio/mockup_ko_01_home.png').convert('RGBA')
-    pf_w = 415
+    pf_w = 400
     pf_h = int(phone_front.height * (pf_w / phone_front.width))
     phone_front = phone_front.resize((pf_w, pf_h), Image.Resampling.LANCZOS)
     
     sh = Image.new('RGBA', (W, H), (0,0,0,0))
     shd = ImageDraw.Draw(sh)
-    shd.ellipse([1270, 880, 1680, 995], fill=(0, 0, 0, 190))
-    shd.ellipse([1000, 890, 1450, 1015], fill=(0, 0, 0, 240))
+    shd.ellipse([1270, 960, 1660, 1050], fill=(0, 0, 0, 190))
+    shd.ellipse([990, 990, 1410, 1080], fill=(0, 0, 0, 240))
     sh = sh.filter(ImageFilter.GaussianBlur(35))
     base = Image.alpha_composite(base, sh)
     
-    base.paste(phone_back, (1270, 135), phone_back)
-    base.paste(phone_front, (1000, 85), phone_front)
+    base.paste(phone_back, (1270, 80), phone_back)
+    base.paste(phone_front, (990, 45), phone_front)
     
     # 3D Squircle Icon with Ambient Lighting
     icon = Image.open('assets/app_icon_clean_squircle.png').convert('RGBA')
@@ -339,77 +339,98 @@ def make_slide_04():
     base, mask = create_card_canvas((15, 23, 42, 255))
     draw = ImageDraw.Draw(base)
     
-    draw.text((140, 95), "03  /  INFORMATION ARCHITECTURE & USER JOURNEY", font=get_font(14, 'semibold'), fill=(0, 210, 255))
-    draw.text((140, 130), "4단계 모듈형 정보 구조 설계 (IA) & CJM", font=get_font(46, 'black'), fill=(255, 255, 255))
-    draw.text((140, 196), "진입 온보딩부터 실시간 연산, 포트폴리오 리포트 영속화까지 끊김 없는 4대 도메인 트리 구조", font=get_font(19, 'regular'), fill=(148, 163, 184))
+    # Header
+    draw.text((140, 95), "03  /  INFORMATION ARCHITECTURE & CUSTOMER JOURNEY (CJM)", font=get_font(14, 'semibold'), fill=(0, 210, 255))
+    draw.text((140, 130), "5대 핵심 도메인 정보 구조(IA) & 고객 여정 지도", font=get_font(46, 'black'), fill=(255, 255, 255))
+    draw.text((140, 196), "급락 인지부터 0.2초 음성 인제스천, 알고리즘 시뮬레이션, 포트폴리오 안전 진단 및 로컬 영속화까지의 완결형 아키텍처", font=get_font(18, 'regular'), fill=(148, 163, 184))
     
-    stages = [
-        ("Phase 1. 급락 인지", "종목 급락 (-10%) 발생\n손실 공포 & 뇌동매매 충동", (0, 114, 255)),
-        ("Phase 2. 탐색 & 인제스천", "앱 실행 후 0.2초 음성 입력\n원터치 프리셋 칩 즉시 주입", (0, 210, 255)),
-        ("Phase 3. 알고리즘 시뮬레이션", "A vs B 분할 시나리오 대조\n목표 평단가 도달 수량 역산", (139, 92, 246)),
-        ("Phase 4. 확신 & 의사결정", "최적 매수 수량 및 일정 확정\n로컬 DB 저장 및 심리적 안정", (16, 185, 129))
+    # Top: 5-Stage Customer Journey Map (CJM)
+    cjm_stages = [
+        ("Phase 1. 급락 인지", "Crisis Awareness", "보유 종목 급락 (-10%)\n손실 공포 & 뇌동매매 충동", "냉정 회복 & 원클릭 실행", (0, 114, 255)),
+        ("Phase 2. 초신속 인제스천", "Zero-Friction Ingest", "호가 급변 중 타이핑 지연\n매수 골든타임 상실 위기", "0.2s 음성 STT & 호가 칩", (0, 210, 255)),
+        ("Phase 3. 알고리즘 시뮬", "Algorithmic Sim", "추가 매수 시 평단 방어율 &\n필요 자금 불확실성", "가중평균 + A/B + 역산", (139, 92, 246)),
+        ("Phase 4. 포트폴리오 진단", "Portfolio Diagnostics", "특정 종목 과매수로 인한\n계좌 잠식 & 비중 왜곡", "3단계 시급도 & 도넛 차트", (245, 158, 11)),
+        ("Phase 5. 확신 영속화", "Persistence & Execute", "과거 시뮬레이션 소실 &\n실매매 집행 불안감", "Local DB 암호화 & 진단 공유", (16, 185, 129))
     ]
+    
     jx = 140
-    jw = 390
-    jgap = 26
-    for stitle, sdesc, scolor in stages:
-        draw.rounded_rectangle([jx, 260, jx + jw, 355], radius=16, fill=(24, 32, 48), outline=(scolor[0], scolor[1], scolor[2], 120), width=2)
-        draw.rounded_rectangle([jx + 16, 276, jx + 22, 338], radius=3, fill=scolor)
-        draw.text((jx + 32, 276), stitle, font=get_font(16, 'bold'), fill=scolor)
-        draw.text((jx + 32, 306), sdesc, font=get_font(13.5, 'regular'), fill=(203, 213, 225), spacing=4)
+    jw = 310
+    jgap = 22
+    for p_title, p_sub, p_desc, p_sol, p_col in cjm_stages:
+        draw.rounded_rectangle([jx, 252, jx + jw, 360], radius=16, fill=(24, 32, 48), outline=(p_col[0], p_col[1], p_col[2], 120), width=2)
+        draw.rounded_rectangle([jx + 14, 266, jx + 19, 346], radius=2, fill=p_col)
+        draw.text((jx + 28, 264), p_title, font=get_font(15, 'bold'), fill=p_col)
+        draw.text((jx + 28, 285), p_sub, font=get_font(11.5, 'semibold'), fill=(148, 163, 184))
+        draw.text((jx + 28, 305), p_desc, font=get_font(12, 'regular'), fill=(203, 213, 225), spacing=2)
+        
+        # Pill solution
+        draw.rounded_rectangle([jx + 28, 335, jx + jw - 14, 353], radius=6, fill=(p_col[0], p_col[1], p_col[2], 40))
+        draw.text((jx + 34, 338), "SOL: " + p_sol, font=get_font(11, 'bold'), fill=p_col)
         jx += jw + jgap
         
-    cols = [
-        ("01. DISCOVERY & INIT", "1.0 Entry & Onboarding", [
-            ("1.1 Splash Screen Engine", "로고 스케일링 & 비전 초점 집중"),
-            ("1.2 Strategy Onboarding (4 Steps)", "분할 매수 수학적 메커니즘 학습"),
-            ("1.3 Locale & Currency Auto Detect", "디바이스 국가 기반 통화/L10n 연동"),
-            ("1.4 VIP Ad-Free Token Activation", "24시간 무광고 라이프사이클 구축")
+    # Bottom: 5-Domain Hierarchical IA Tree
+    domains = [
+        ("01. ENTRY & INIT", "온보딩 및 초기화", [
+            ("1.1 Splash Engine", "로고 모션 & 24h VIP 토큰 즉시 검증"),
+            ("1.2 4-Step Guide", "분할 매수 메커니즘 & 역산 원리 학습"),
+            ("1.3 Local DB Engine", "SQLite & Hive NoSQL 로컬 암호화"),
+            ("1.4 Auto L10n Engine", "디바이스 언어(7국) 및 통화(4종) 연동")
         ], (0, 114, 255)),
         
-        ("02. CORE DASHBOARD", "2.0 Home & Ingestion", [
-            ("2.1 Multimodal Voice Panel", "Google STT 온디바이스 실시간 파싱"),
-            ("2.2 Quick Action Preset Chips", "±5%, ±10%, -20% 호가 즉각 주입"),
-            ("2.3 Asset Portfolio Carousel", "보유 자산 실시간 평단/수량 요약"),
-            ("2.4 Quick Dock Router", "자산 추가 / 시뮬레이터 / 리포트 진입")
+        ("02. SMART DASHBOARD", "홈 대시보드", [
+            ("2.1 Portfolio Hero", "총 평가액, 평균 수익률, 위험도 시각화"),
+            ("2.2 24h VIP Banner", "보상형 광고 시청 잔여시간 카운트다운"),
+            ("2.3 Multimodal Dock", "Google STT 온디바이스 마이크 & 호가 칩"),
+            ("2.4 Quick 2x2 Grid", "새 계산 / A-B 비교 / 목표 역산 / 리포트")
         ], (0, 210, 255)),
         
-        ("03. ALGORITHM CORE", "3.0 Simulation Engine", [
-            ("3.1 Multi-Batch Simulator", "1~N차 가중평균 Closed Form 연산"),
-            ("3.2 A/B Scenario Comparator", "전략별 평단 방어 효율 동시 대조"),
-            ("3.3 Goal Seeking Calculator", "희망 평단가 도달 필수 매수량 역산"),
-            ("3.4 Interactive Capital Slider", "예산 제약 내 실시간 최적 평단 피드백")
+        ("03. SIMULATION CORE", "시뮬레이션 엔진", [
+            ("3.1 Multi-Batch DCA", "1~N차 가중평균 Closed Form 연산"),
+            ("3.2 A/B Comparator", "공격적 vs 보수적 전략 방어율 동시 대조"),
+            ("3.3 Goal Seeking Calc", "희망 평단 도달 필수 추가 매수량 역산"),
+            ("3.4 Interactive Slider", "가용 예수금 제약 내 실시간 최적 평단")
+        ], (139, 92, 246)),
+        
+        ("04. PORTFOLIO DIAGNOSTICS", "정밀 진단 & 리포트", [
+            ("4.1 Asset Donut Chart", "종목별 투자 원금 및 계좌 편중 비중"),
+            ("4.2 3-Tier Urgency", "안전 / 주의 / 위험 3단계 시급도"),
+            ("4.3 Scenario Manager", "저장된 시뮬레이션 기록 로드/편집/CSV"),
+            ("4.4 Diagnostic Export", "PNG 리포트 카드 원클릭 클립보드 공유")
         ], (245, 158, 11)),
         
-        ("04. PERSISTENCE & UTILITY", "4.0 Analytics & Settings", [
-            ("4.1 Local-First SQLite & Hive", "100% 로컬 암호화 오프라인 저장"),
-            ("4.2 Diagnostic Report Export", "PNG/텍스트 시나리오 진단 카드 공유"),
-            ("4.3 WCAG 2.1 AAA Dark System", "야간 장세 트레이더 고대비 토큰"),
-            ("4.4 Compliance & Help Guide", "GDPR/개인정보 처리 및 주식 FAQ")
-        ], (139, 92, 246))
+        ("05. GLOBAL GOVERNANCE", "글로벌 설정 & 규정", [
+            ("5.1 7-Language L10n", "한국어, 영어, 일본어, 중국어, 스페인어 등"),
+            ("5.2 4-Currency System", "KRW(₩), USD($), JPY(¥), EUR(€) 환산"),
+            ("5.3 OLED Dark System", "야간 트레이더 고대비 WCAG AAA 토큰"),
+            ("5.4 Compliance & FAQ", "GDPR 준수 로컬 암호화 & 금융 가이드")
+        ], (16, 185, 129))
     ]
     
     cx = 140
-    cw = 390
-    cgap = 26
-    for tag, ctitle, items, ccolor in cols:
-        draw.rounded_rectangle([cx, 385, cx + cw, 940], radius=20, fill=(24, 32, 48), outline=(ccolor[0], ccolor[1], ccolor[2], 120), width=2)
-        draw.rounded_rectangle([cx + 20, 405, cx + cw - 20, 455], radius=12, fill=(15, 23, 42), outline=(ccolor[0], ccolor[1], ccolor[2], 80), width=1)
-        draw.text((cx + 35, 413), tag, font=get_font(12, 'bold'), fill=ccolor)
-        draw.text((cx + 35, 431), ctitle, font=get_font(15, 'bold'), fill=(255, 255, 255))
+    cw = 310
+    cgap = 22
+    for d_code, d_name, items, d_col in domains:
+        draw.rounded_rectangle([cx, 380, cx + cw, 940], radius=18, fill=(24, 32, 48), outline=(d_col[0], d_col[1], d_col[2], 120), width=2)
         
-        iy = 475
+        # Domain Header Card
+        draw.rounded_rectangle([cx + 14, 396, cx + cw - 14, 452], radius=12, fill=(15, 23, 42), outline=(d_col[0], d_col[1], d_col[2], 80), width=1)
+        draw.text((cx + 26, 404), d_code, font=get_font(11.5, 'bold'), fill=d_col)
+        draw.text((cx + 26, 424), d_name, font=get_font(15, 'bold'), fill=(255, 255, 255))
+        
+        iy = 468
         for ititle, idesc in items:
-            draw.rounded_rectangle([cx + 20, iy, cx + cw - 20, iy + 92], radius=14, fill=(15, 23, 42), outline=(51, 65, 85), width=1)
-            draw.ellipse([cx + 36, iy + 22, cx + 44, iy + 30], fill=ccolor)
-            draw.text((cx + 54, iy + 16), ititle, font=get_font(14, 'bold'), fill=(255, 255, 255))
-            draw.text((cx + 54, iy + 45), idesc, font=get_font(12.5, 'regular'), fill=(148, 163, 184))
-            iy += 110
+            draw.rounded_rectangle([cx + 14, iy, cx + cw - 14, iy + 104], radius=12, fill=(15, 23, 42), outline=(51, 65, 85), width=1)
+            draw.ellipse([cx + 28, iy + 20, cx + 36, iy + 28], fill=d_col)
+            draw.text((cx + 44, iy + 14), ititle, font=get_font(13.5, 'bold'), fill=(255, 255, 255))
+            draw.text((cx + 26, iy + 44), idesc, font=get_font(12, 'regular'), fill=(148, 163, 184))
+            iy += 114
             
         cx += cw + cgap
         
     base.save('portfolio/behance_slides/slide_04.png')
     print("SAVED slide_04.png")
+
+
 
 # ==============================================================
 # SLIDE 05: User Flowchart & Edge Case Logic Branch
@@ -418,83 +439,161 @@ def make_slide_05():
     base, mask = create_card_canvas((248, 250, 254, 255))
     draw = ImageDraw.Draw(base)
     
+    # Header
     draw.text((140, 95), "04  /  USER FLOWCHART & LOGIC BRANCH", font=get_font(14, 'semibold'), fill=(0, 87, 255))
-    draw.text((140, 130), "사용자 행동 및 예외 처리 로직 플로우차트", font=get_font(46, 'black'), fill=(15, 23, 42))
-    draw.text((140, 196), "앱 실행부터 STT 권한 거부, 역산 불가 엣지 케이스, VIP 무광고 분기까지의 정밀한 상태 전이", font=get_font(19, 'regular'), fill=(100, 116, 139))
+    draw.text((140, 130), "사용자 의사결정 경로 및 예외 방어 로직 플로우차트", font=get_font(46, 'black'), fill=(15, 23, 42))
+    draw.text((140, 196), "앱 진입부터 STT 권한 거부, 역산 불가 엣지 케이스, VIP 광고 바이패스까지 실서비스 상태 전이 100% 매핑", font=get_font(18, 'regular'), fill=(100, 116, 139))
     
+    # Main Canvas Card
     bx = 140
-    by = 265
+    by = 252
     bw = 1640
-    bh = 660
-    draw.rounded_rectangle([bx, by, bx + bw, by + bh], radius=20, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    bh = 698
+    draw.rounded_rectangle([bx, by, bx + bw, by + bh], radius=24, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     
-    cols = [
-        ("STAGE 1 : Launch & Init", [
-            ("Launch App", "Splash Screen 로드", False),
-            ("Check First Run?", "최초 실행 여부 분기", True),
-            ("4-Step Onboarding", "원리 가이드 완료", False)
+    stages = [
+        ("STAGE 1 : 진입 & 분기", "Entry & Init", [
+            ("Process", "앱 실행 (Splash Launch)", "앱 로고 모션 & 로컬 캐시 초기화", (0, 87, 255), False),
+            ("Decision", "최초 실행 여부?", "First Run Check 분기", (217, 119, 6), True, [
+                ("YES", "4단계 온보딩 가이드"),
+                ("NO", "24h VIP 토큰 검사")
+            ]),
+            ("Process", "VIP 광고 바이패스", "무광고 시 전면/오픈 광고 100% 스킵", (16, 185, 129), False),
         ]),
-        ("STAGE 2 : VIP & Dashboard", [
-            ("VIP Active Check", "24h 무광고 토큰 검사", True),
-            ("Pass (Skip Ad)", "광고 생략 후 즉시 진입", False),
-            ("Main Dashboard", "자산 요약 & 퀵 로드", False)
+        
+        ("STAGE 2 : 멀티모달 인제스천", "Multimodal Ingest", [
+            ("Process", "스마트 대시보드 진입", "포트폴리오 카드 & 2x2 액션 도크", (0, 87, 255), False),
+            ("Decision", "입력 방식 선택?", "음성 STT vs 수동 키패드", (217, 119, 6), True, [
+                ("STT", "마이크 탭 (Waveform 활성)"),
+                ("Manual", "키패드 / 최근 자산 로드")
+            ]),
+            ("Process", "자연어 파싱 완료", "0.2s 단가·수량 분리 (실패 시 호가 칩)", (16, 185, 129), False),
         ]),
-        ("STAGE 3 : Input Multimodal", [
-            ("Tap Voice Mic", "STT 마이크 스트림 활성", False),
-            ("STT Success?", "자연어 파싱 성공 분기", True),
-            ("Fallback Preset Chip", "±5%, ±10% 칩 수동 선택", False)
+        
+        ("STAGE 3 : 알고리즘 코어", "Simulation Core", [
+            ("Process", "시뮬레이터 코어 화면", "단일 DCA / A-B 비교 / 목표 역산", (122, 34, 255), False),
+            ("Decision", "목표가 유효성 검증?", "P_add < Target < P_0 여부 판정", (217, 119, 6), True, [
+                ("불일치", "경고 토스트 & 달성가능 평단 추천"),
+                ("정상", "Closed-Form Q_add 산출")
+            ]),
+            ("Process", "실시간 수식 연산", "가중평균 & 하락률 방어폭 계산", (16, 185, 129), False),
         ]),
-        ("STAGE 4 : Algorithm Engine", [
-            ("Select Mode", "단일 / A-B / 목표 역산", True),
-            ("Goal Seeking Calc", "Closed-Form 역산 수행", False),
-            ("Target >= Current?", "엣지 케이스 역산 오류 방어", True)
+        
+        ("STAGE 4 : 포트폴리오 진단", "Portfolio Diagnostics", [
+            ("Process", "실시간 결과 요약 카드", "신규 평단, 평단 인하폭, 필요 총자금", (0, 87, 255), False),
+            ("Decision", "특정 종목 비중 > 50%?", "포트폴리오 편중 위험 진단", (217, 119, 6), True, [
+                ("YES", "위험 배지 표시 & 분산 권고"),
+                ("NO", "안전 포트폴리오 판정")
+            ]),
+            ("Process", "진단 리포트 생성", "도넛 차트 & 시나리오 분석 매트릭스", (16, 185, 129), False),
         ]),
-        ("STAGE 5 : Output & Save", [
-            ("Show Result Card", "평단가 및 필요 수량 출력", False),
-            ("Save to SQLite", "로컬 DB 스냅샷 저장", False),
-            ("Share Report", "진단 이미지 외부 공유", False)
+        
+        ("STAGE 5 : 영속화 & 완결", "Persistence & Decision", [
+            ("Process", "진단 리포트 데이터 수신", "포트폴리오 및 시뮬레이션 완료 수치", (0, 87, 255), False),
+            ("Decision", "시나리오 로컬 저장?", "Local-First NoSQL 영속화", (217, 119, 6), True, [
+                ("저장", "SQLite / Hive 암호화 저장"),
+                ("공유", "1-Click 진단 이미지 공유")
+            ]),
+            ("Complete", "의사결정 완결 & 24h VIP", "뇌동매매 방어 완료 & VIP 타이머 가동", (16, 185, 129), False),
         ])
     ]
     
-    cx = bx + 40
-    col_w = 275
-    cgap = 42
+    col_w = 295
+    col_gap = 36
+    cx = bx + 22
     
-    for stitle, steps in cols:
-        draw.text((cx, by + 35), stitle, font=get_font(13.5, 'bold'), fill=(0, 87, 255))
-        draw.line([(cx, by + 65), (cx + col_w, by + 65)], fill=(226, 232, 240), width=1)
-        
-        sy = by + 90
-        for step_idx, (title, desc, is_cond) in enumerate(steps):
-            if is_cond:
-                draw.rounded_rectangle([cx, sy, cx + col_w, sy + 86], radius=14, fill=(255, 247, 237), outline=(249, 115, 22), width=2)
-                draw.text((cx + 18, sy + 18), "◆ " + title, font=get_font(14.5, 'bold'), fill=(194, 65, 12))
-                draw.text((cx + 18, sy + 48), desc, font=get_font(12.5, 'regular'), fill=(154, 52, 18))
-            else:
-                draw.rounded_rectangle([cx, sy, cx + col_w, sy + 86], radius=14, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-                draw.text((cx + 18, sy + 18), "■ " + title, font=get_font(14.5, 'bold'), fill=(15, 23, 42))
-                draw.text((cx + 18, sy + 48), desc, font=get_font(12.5, 'regular'), fill=(100, 116, 139))
-            
-            if step_idx < len(steps) - 1:
-                draw.line([(cx + col_w // 2, sy + 86), (cx + col_w // 2, sy + 115)], fill=(148, 163, 184), width=2)
-                draw.polygon([(cx + col_w // 2 - 4, sy + 110), (cx + col_w // 2 + 4, sy + 110), (cx + col_w // 2, sy + 116)], fill=(148, 163, 184))
-            sy += 142
-            
-        draw.line([(cx + col_w, by + 300), (cx + col_w + cgap, by + 300)], fill=(0, 87, 255), width=2)
-        draw.polygon([(cx + col_w + cgap - 6, by + 296), (cx + col_w + cgap - 6, by + 304), (cx + col_w + cgap, by + 300)], fill=(0, 87, 255))
-        cx += col_w + cgap
-        
-    draw.rounded_rectangle([bx + 40, by + bh - 72, bx + bw - 40, by + bh - 20], radius=12, fill=(240, 246, 255))
-    draw.rounded_rectangle([bx + 55, by + bh - 60, bx + 165, by + bh - 32], radius=6, fill=(0, 87, 255))
-    draw.text((bx + 63, by + bh - 55), "EDGE DEFENSE", font=get_font(11, 'bold'), fill=(255, 255, 255))
-    draw.text((bx + 178, by + bh - 54), "목표 평단가가 현재가보다 낮은 불가능 수치 입력 시 즉시 경고 토스트 팝업 및 가용 예수금 내 달성 가능 수치 자동 추천", font=get_font(13.5, 'semibold'), fill=(15, 23, 42))
+    # Coordinates:
+    # Row 1 (Process): y = by + 74, height = 92
+    # Arrow 1: y = by + 166 to by + 186
+    # Row 2 (Decision Diamond): y = by + 188, height = 138
+    # Arrow 2: y = by + 326 to by + 346
+    # Row 3 (Resolution): y = by + 348, height = 92
     
+    for s_idx, (s_title, s_sub, steps) in enumerate(stages):
+        # Stage Header (Clean 2-line title)
+        draw.rounded_rectangle([cx, by + 14, cx + col_w, by + 60], radius=10, fill=(241, 245, 249), outline=(226, 232, 240), width=1)
+        draw.text((cx + 14, by + 20), s_sub.upper(), font=get_font(11, 'bold'), fill=(0, 87, 255))
+        draw.text((cx + 14, by + 37), s_title.split(' : ')[-1], font=get_font(13.5, 'bold'), fill=(15, 23, 42))
+        
+        # Row 1: Process
+        step1 = steps[0]
+        y1 = by + 74
+        h1 = 92
+        draw.rounded_rectangle([cx, y1, cx + col_w, y1 + h1], radius=14, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        draw.rounded_rectangle([cx + 14, y1 + 14, cx + 20, y1 + h1 - 14], radius=3, fill=step1[3])
+        draw.text((cx + 30, y1 + 16), step1[1], font=get_font(14, 'bold'), fill=(15, 23, 42))
+        draw.text((cx + 30, y1 + 44), step1[2], font=get_font(12, 'regular'), fill=(100, 116, 139))
+        
+        # Vertical Arrow 1
+        draw.line([(cx + col_w // 2, y1 + h1), (cx + col_w // 2, y1 + h1 + 20)], fill=(148, 163, 184), width=2)
+        draw.polygon([(cx + col_w // 2 - 4, y1 + h1 + 16), (cx + col_w // 2 + 4, y1 + h1 + 16), (cx + col_w // 2, y1 + h1 + 22)], fill=(148, 163, 184))
+        
+        # Row 2: Decision Diamond Card
+        step2 = steps[1]
+        y2 = y1 + h1 + 22
+        h2 = 142
+        draw.rounded_rectangle([cx, y2, cx + col_w, y2 + h2], radius=16, fill=(255, 251, 235), outline=(245, 158, 11), width=2)
+        draw.rounded_rectangle([cx + 14, y2 + 14, cx + 80, y2 + 38], radius=6, fill=(254, 243, 199))
+        draw.text((cx + 22, y2 + 18), "◆ DECIDE", font=get_font(10.5, 'bold'), fill=(180, 83, 9))
+        draw.text((cx + 90, y2 + 17), step2[1], font=get_font(13, 'bold'), fill=(15, 23, 42))
+        
+        branches = step2[5]
+        # Branch 1
+        b1_tag, b1_txt = branches[0]
+        draw.rounded_rectangle([cx + 14, y2 + 48, cx + col_w - 14, y2 + 86], radius=8, fill=(255, 255, 255), outline=(253, 230, 138), width=1)
+        draw.rounded_rectangle([cx + 20, y2 + 54, cx + 58, y2 + 80], radius=4, fill=(254, 226, 226) if '불일치' in b1_tag or '위험' in b1_txt or 'YES' in b1_tag else (219, 234, 254))
+        draw.text((cx + 24, y2 + 59), b1_tag, font=get_font(10.5, 'bold'), fill=(220, 38, 38) if '불일치' in b1_tag or '위험' in b1_txt or 'YES' in b1_tag else (29, 78, 216))
+        draw.text((cx + 66, y2 + 59), b1_txt, font=get_font(11.5, 'semibold'), fill=(30, 41, 59))
+        
+        # Branch 2
+        b2_tag, b2_txt = branches[1]
+        draw.rounded_rectangle([cx + 14, y2 + 94, cx + col_w - 14, y2 + 132], radius=8, fill=(255, 255, 255), outline=(253, 230, 138), width=1)
+        draw.rounded_rectangle([cx + 20, y2 + 100, cx + 58, y2 + 126], radius=4, fill=(220, 252, 231))
+        draw.text((cx + 24, y2 + 105), b2_tag, font=get_font(10.5, 'bold'), fill=(21, 128, 61))
+        draw.text((cx + 66, y2 + 105), b2_txt, font=get_font(11.5, 'semibold'), fill=(30, 41, 59))
+        
+        # Vertical Arrow 2
+        draw.line([(cx + col_w // 2, y2 + h2), (cx + col_w // 2, y2 + h2 + 20)], fill=(148, 163, 184), width=2)
+        draw.polygon([(cx + col_w // 2 - 4, y2 + h2 + 16), (cx + col_w // 2 + 4, y2 + h2 + 16), (cx + col_w // 2, y2 + h2 + 22)], fill=(148, 163, 184))
+        
+        # Row 3: Resolution
+        step3 = steps[2]
+        y3 = y2 + h2 + 22
+        h3 = 92
+        draw.rounded_rectangle([cx, y3, cx + col_w, y3 + h3], radius=14, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        draw.rounded_rectangle([cx + 14, y3 + 14, cx + 20, y3 + h3 - 14], radius=3, fill=step3[3])
+        draw.text((cx + 30, y3 + 16), step3[1], font=get_font(14, 'bold'), fill=(15, 23, 42))
+        draw.text((cx + 30, y3 + 44), step3[2], font=get_font(12, 'regular'), fill=(100, 116, 139))
+        
+        # Horizontal Connecting Arrow across Row 2 (Decisions)
+        if s_idx < len(stages) - 1:
+            ax = cx + col_w + 4
+            ay = y2 + h2 // 2
+            draw.line([(ax, ay), (ax + col_gap - 8, ay)], fill=(0, 87, 255), width=2)
+            draw.polygon([(ax + col_gap - 10, ay - 4), (ax + col_gap - 10, ay + 4), (ax + col_gap - 4, ay)], fill=(0, 87, 255))
+            
+        cx += col_w + col_gap
+        
+    # Bottom Edge Defense Spec Bar
+    draw.rounded_rectangle([bx + 20, by + bh - 94, bx + bw - 20, by + bh - 18], radius=14, fill=(240, 246, 255), outline=(186, 215, 255), width=1)
+    draw.rounded_rectangle([bx + 34, by + bh - 82, bx + 165, by + bh - 54], radius=6, fill=(0, 87, 255))
+    draw.text((bx + 44, by + bh - 76), "EDGE DEFENSE", font=get_font(11, 'bold'), fill=(255, 255, 255))
+    
+    defenses = [
+        "1. STT 음성 예외 방어: 권한 거부 / 잡음 시 0초 딜레이로 원터치 호가 프리셋 칩(±5%, ±10%) 즉시 대체",
+        "2. 수학적 오차 방어: 도달 불가 목표가(P_target <= P_add 또는 >= P_0) 입력 시 즉시 경고 토스트 & 달성 가능 목표 평단 자동 추천",
+        "3. Local-First 영속화: 음영 지역 오프라인 환경에서도 Hive NoSQL 0ms 캐싱을 통해 시나리오 및 포트폴리오 데이터 유실 0% 보장"
+    ]
+    dy = by + bh - 78
+    for df in defenses:
+        draw.text((bx + 180, dy), "• " + df, font=get_font(12, 'semibold'), fill=(30, 41, 59))
+        dy += 22
+        
     base.save('portfolio/behance_slides/slide_05.png')
     print("SAVED slide_05.png")
 
-# ==============================================================
-# SLIDE 06: Wireframe Blueprint & Functional Specs
-# ==============================================================
+
+
 def make_slide_06():
     base, mask = create_card_canvas((248, 250, 254, 255))
     draw = ImageDraw.Draw(base)
@@ -665,16 +764,16 @@ def make_slide_08():
     
     # Center Phone Mockup
     phone = Image.open('portfolio/mockup_ko_08_voice.png').convert('RGBA')
-    pw = 410
+    pw = 375
     ph = int(phone.height * (pw / phone.width))
     phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)
     
     sh = Image.new('RGBA', (W, H), (0,0,0,0))
     shd = ImageDraw.Draw(sh)
-    shd.ellipse([755, 910, 755 + pw, 1020], fill=(0, 0, 0, 240))
+    shd.ellipse([772, 985, 772 + pw, 1060], fill=(0, 0, 0, 240))
     sh = sh.filter(ImageFilter.GaussianBlur(35))
     base = Image.alpha_composite(base, sh)
-    base.paste(phone, (755, 110), phone)
+    base.paste(phone, (772, 70), phone)
     
     cards_l = [
         ("음성 파형 감지 & 실시간 파싱", "\"삼성전자 7만 원에 50주\"\n발화 즉시 0.2초 안에 단가/수량 분리"),
@@ -764,16 +863,16 @@ def make_slide_09():
         cy += 150
         
     phone = Image.open('portfolio/mockup_ko_03_target_filled.png').convert('RGBA')
-    pw = 410
+    pw = 375
     ph = int(phone.height * (pw / phone.width))
     phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)
     
     sh = Image.new('RGBA', (W, H), (0,0,0,0))
     shd = ImageDraw.Draw(sh)
-    shd.ellipse([1180, 910, 1180 + pw, 1020], fill=(0, 0, 0, 240))
+    shd.ellipse([1195, 985, 1195 + pw, 1060], fill=(0, 0, 0, 240))
     sh = sh.filter(ImageFilter.GaussianBlur(35))
     base = Image.alpha_composite(base, sh)
-    base.paste(phone, (1180, 110), phone)
+    base.paste(phone, (1195, 70), phone)
     
     draw = ImageDraw.Draw(base)
     draw.rounded_rectangle([1020, 660, 1480, 810], radius=20, fill=(10, 28, 36, 250), outline=(0, 230, 180, 230), width=2)
@@ -793,7 +892,7 @@ def make_slide_10():
     
     draw.text((140, 95), "09  /  HIGH-FIDELITY SCREENS & PROTOTYPE FLOW", font=get_font(14, 'semibold'), fill=(0, 87, 255))
     draw.text((140, 130), "6개 핵심 모바일 인터페이스 쇼케이스 및 상호작용 연결", font=get_font(46, 'black'), fill=(15, 23, 42))
-    draw.text((140, 196), "홈 대시보드 ➔ 시뮬레이터 ➔ 목표 역산 ➔ 진단 리포트 ➔ OLED 다크모드 ➔ 환경설정 유기적 흐름", font=get_font(19, 'regular'), fill=(100, 116, 139))
+    draw.text((140, 196), "홈 대시보드  ·  시뮬레이터  ·  목표 역산  ·  진단 리포트  ·  OLED 다크모드  ·  환경설정 유기적 흐름", font=get_font(18, 'regular'), fill=(100, 116, 139))
     
     mockup_files = [
         ('portfolio/mockup_ko_01_home.png', '01. 홈 대시보드'),
@@ -804,38 +903,38 @@ def make_slide_10():
         ('portfolio/mockup_dark_settings_perfect.png', '06. 글로벌 환경설정')
     ]
     
-    px = 120
-    pw = 255
-    pgap = 24
+    px = 140
+    pw = 236
+    pgap = 45
+    phone_y = 250
     
     for img_path, ctitle in mockup_files:
         phone = Image.open(img_path).convert('RGBA')
-        ph = int(phone.height * (pw / phone.width))
+        ph = int(round(phone.height * (pw / phone.width)))
         phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)
         
+        # Soft Drop Shadow directly under phone chin
         sh = Image.new('RGBA', (W, H), (0,0,0,0))
         shd = ImageDraw.Draw(sh)
-        shd.ellipse([px, 860, px + pw, 915], fill=(0, 0, 0, 140))
-        sh = sh.filter(ImageFilter.GaussianBlur(18))
+        shd.ellipse([px - 4, phone_y + ph - 16, px + pw + 4, phone_y + ph + 24], fill=(0, 0, 0, 140))
+        sh = sh.filter(ImageFilter.GaussianBlur(16))
         base = Image.alpha_composite(base, sh)
         
-        base.paste(phone, (px, 240), phone)
+        base.paste(phone, (px, phone_y), phone)
         
         draw = ImageDraw.Draw(base)
-        tw = draw.textlength(ctitle, font=get_font(13.5, 'bold'))
-        pill_w = int(tw + 36)
+        tw = draw.textlength(ctitle, font=get_font(12.5, 'bold'))
+        pill_w = int(tw + 32)
         pill_x = px + (pw - pill_w) // 2
-        draw.rounded_rectangle([pill_x, 935, pill_x + pill_w, 972], radius=12, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-        draw.text((pill_x + 18, 945), ctitle, font=get_font(13.5, 'bold'), fill=(15, 23, 42))
+        pill_y = phone_y + ph + 28
+        draw.rounded_rectangle([pill_x, pill_y, pill_x + pill_w, pill_y + 36], radius=10, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+        draw.text((pill_x + 16, pill_y + 9), ctitle, font=get_font(12.5, 'bold'), fill=(15, 23, 42))
         
         px += pw + pgap
         
     base.save('portfolio/behance_slides/slide_10.png')
     print("SAVED slide_10.png")
 
-# ==============================================================
-# SLIDE 11: OLED Deep Dark Theme & Accessibility (Samsung Galaxy Mode)
-# ==============================================================
 def make_slide_11():
     base, mask = create_card_canvas((8, 12, 18, 255))
     
@@ -857,23 +956,21 @@ def make_slide_11():
     base.paste(grad, (0, 0), mask)
     
     phone = Image.open('portfolio/mockup_dark_home_flawless.png').convert('RGBA')
-    pw = 450
-    ph = int(phone.height * (pw / phone.width))
+    pw = 375
+    ph = int(round(phone.height * (pw / phone.width)))
     phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)
     
-    crop_bottom = 200
-    phone = phone.crop((0, 0, phone.width, phone.height - crop_bottom))
-    
+    # Complete Phone Mockup (Zero bottom crop)
     sh = Image.new('RGBA', (W, H), (0,0,0,0))
     shd = ImageDraw.Draw(sh)
-    shd.ellipse([240, 930, 240 + pw, 1040], fill=(0, 0, 0, 255))
-    sh = sh.filter(ImageFilter.GaussianBlur(40))
+    shd.ellipse([220, 985, 220 + pw, 1060], fill=(0, 0, 0, 255))
+    sh = sh.filter(ImageFilter.GaussianBlur(38))
     base = Image.alpha_composite(base, sh)
-    base.paste(phone, (240, 110), phone)
+    base.paste(phone, (220, 70), phone)
     
     draw = ImageDraw.Draw(base)
     
-    tx = 860
+    tx = 840
     draw.text((tx, 165), "10  /  OLED DEEP DARK & ACCESSIBILITY", font=get_font(14, 'semibold'), fill=(0, 210, 255))
     draw.text((tx, 210), "야간 장세 트레이더를 위한\n고대비 다크 테마 시스템", font=get_font(48, 'black'), fill=(255, 255, 255), spacing=16)
     draw.text((tx, 365), "Designed for night trading volatility\n7:1 이상의 WCAG 2.1 AAA 명도 대비를 엄격히 준수하여\n급박한 야간 해외주식·가상자산 장세에서도 오독 없는 수치 가독성 보장.", font=get_font(20, 'regular'), fill=(180, 198, 220), spacing=10)
@@ -885,7 +982,7 @@ def make_slide_11():
     ]
     sy = 540
     for title, desc, ac_col in specs:
-        draw.rounded_rectangle([tx, sy, tx + 920, sy + 104], radius=18, fill=(24, 32, 48, 240), outline=(ac_col[0], ac_col[1], ac_col[2], 120), width=2)
+        draw.rounded_rectangle([tx, sy, tx + 940, sy + 104], radius=18, fill=(24, 32, 48, 240), outline=(ac_col[0], ac_col[1], ac_col[2], 120), width=2)
         draw.rounded_rectangle([tx, sy + 18, tx + 6, sy + 86], radius=3, fill=ac_col)
         draw.text((tx + 32, sy + 24), title, font=get_font(18, 'bold'), fill=(255, 255, 255))
         draw.text((tx + 32, sy + 58), desc, font=get_font(14, 'regular'), fill=(148, 163, 184))
@@ -894,9 +991,6 @@ def make_slide_11():
     base.save('portfolio/behance_slides/slide_11.png')
     print("SAVED slide_11.png")
 
-# ==============================================================
-# SLIDE 12: Quantitative Impact & STAR Retrospective
-# ==============================================================
 def make_slide_12():
     base, mask = create_card_canvas((15, 23, 42, 255))
     
