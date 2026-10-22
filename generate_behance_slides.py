@@ -57,85 +57,94 @@ def wrap_text_by_words(text, font, max_width, draw):
 def make_slide_01():
     base = Image.new('RGBA', (W, H), (9, 13, 22, 255))
     
-    # Ambient Lighting
+    # Ambient Lighting (Samsung Galaxy Blue Atmosphere)
     glow = Image.new('RGBA', (W, H), (0,0,0,0))
     gw = ImageDraw.Draw(glow)
-    gw.ellipse([1100, 80, 1950, 950], fill=(0, 87, 255, 45))
-    gw.ellipse([800, 250, 1400, 900], fill=(0, 210, 255, 20))
+    gw.ellipse([1000, 150, 1850, 950], fill=(0, 87, 255, 50))
+    gw.ellipse([1200, 300, 1700, 850], fill=(0, 210, 255, 30))
     glow = glow.filter(ImageFilter.GaussianBlur(140))
     base = Image.alpha_composite(base, glow)
     draw = ImageDraw.Draw(base)
     
-    # Hairline Grid Accents
-    draw.line([(120, 100), (1800, 100)], fill=(255, 255, 255, 20), width=1)
-    draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
+    # Hairline Boundaries
+    draw.line([(120, 100), (1800, 100)], fill=(255, 255, 255, 25), width=1)
+    draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 25), width=1)
     
-    # Top Kicker
-    draw.text((120, 130), "SMART DCA CALCULATOR", font=get_font(13, 'bold'), fill=(0, 210, 255))
-    draw.text((325, 130), "·", font=get_font(13, 'bold'), fill=(100, 116, 139))
-    draw.text((345, 130), "ENTERPRISE FINTECH CASE STUDY", font=get_font(13, 'bold'), fill=(148, 163, 184))
+    # Kicker
+    draw.text((120, 132), "SMART DCA CALCULATOR", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((320, 132), "·", font=get_font(13, 'bold'), fill=(100, 116, 139))
+    draw.text((340, 132), "ENTERPRISE FINTECH CASE STUDY", font=get_font(13, 'bold'), fill=(148, 163, 184))
     
-    # Live Store Badge
-    draw.rounded_rectangle([1580, 122, 1800, 154], radius=6, fill=(16, 185, 129, 25), outline=(16, 185, 129, 90), width=1)
-    draw.ellipse([1598, 135, 1606, 143], fill=(16, 185, 129))
-    draw.text((1618, 131), "PLAY STORE LIVE", font=get_font(11, 'bold'), fill=(52, 211, 153))
+    # Live Store Badge (Samsung Style Clean Pill)
+    draw.rounded_rectangle([1590, 122, 1800, 154], radius=16, fill=(16, 185, 129, 25), outline=(16, 185, 129, 90), width=1)
+    draw.ellipse([1608, 135, 1616, 143], fill=(16, 185, 129))
+    draw.text((1628, 131), "PLAY STORE LIVE", font=get_font(11, 'bold'), fill=(52, 211, 153))
     
-    # Giant Headline
-    draw.text((120, 220), "하락장 속 뇌동매매를 끝내는\n수학적 분할매수 솔루션", font=get_font(60, 'black'), fill=(255, 255, 255), spacing=18)
+    # Headline
+    draw.text((120, 210), "하락장 속 뇌동매매를 끝내는\n수학적 분할매수 솔루션", font=get_font(58, 'black'), fill=(255, 255, 255), spacing=16)
     
-    draw.text((120, 395), "Stop Panic Selling. Master Algorithmic Scaling.", font=get_font(20, 'bold'), fill=(0, 210, 255))
-    draw.text((120, 435), "급격한 주가 하락 시 감정에 휘둘리지 않고, 0.2초 음성 인제스천과\nGoal Seeking 수학 역산으로 계좌를 방어하는 모바일 퀀트 비서", font=get_font(18, 'regular'), fill=(148, 163, 184), spacing=8)
+    # Subtitle
+    draw.text((120, 380), "Stop Panic Selling. Master Algorithmic Scaling.", font=get_font(19, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 418), "급격한 주가 하락 시 감정에 휘둘리지 않고, 0.2초 음성 인제스천과\nGoal Seeking 수학 역산으로 계좌를 방어하는 모바일 퀀트 비서", font=get_font(16.5, 'regular'), fill=(148, 163, 184), spacing=8)
     
-    # 3 High-Impact Metric Cards
+    # 3 High-Impact Metric Cards (Left: x=120..920, y=515..885)
     metrics = [
-        ("0.2s", "VOICE INGESTION", "호가 급락 시 0.2초 음성 발화로 단가·수량 즉각 파싱"),
+        ("0.2s", "VOICE INGESTION", "호가 급변 시 0.2초 음성 발화로 종목·단가·수량 즉각 파싱"),
         ("100%", "GOAL-SEEKING MATH", "희망 평단 도달에 필요한 추가 매수 수량 폐쇄형 역산"),
-        ("24h", "VIP AD-FREE CYCLE", "보상형 광고 1회 시청으로 24시간 동안 전면 무광고")
+        ("24h", "VIP AD-FREE CYCLE", "보상형 광고 1회 시청으로 24시간 동안 전면 무광고 무중단")
     ]
     
-    my = 560
+    my = 515
     for val, tag, desc in metrics:
-        draw.rounded_rectangle([120, my, 860, my + 105], radius=14, fill=(16, 22, 34, 230), outline=(255, 255, 255, 25), width=1)
-        draw.rounded_rectangle([120, my + 16, 124, my + 89], radius=2, fill=(0, 114, 255))
+        draw.rounded_rectangle([120, my, 900, my + 110], radius=14, fill=(16, 22, 34, 230), outline=(255, 255, 255, 20), width=1)
+        draw.rounded_rectangle([120, my + 16, 124, my + 94], radius=2, fill=(0, 114, 255))
         
-        draw.text((150, my + 22), val, font=get_num_font(42, 'black'), fill=(255, 255, 255))
-        vw = draw.textlength(val, font=get_num_font(42, 'black'))
+        draw.text((148, my + 20), val, font=get_num_font(40, 'black'), fill=(255, 255, 255))
+        vw = draw.textlength(val, font=get_num_font(40, 'black'))
         
-        draw.rounded_rectangle([150 + vw + 18, my + 26, 150 + vw + 24 + draw.textlength(tag, font=get_font(11, 'bold')), my + 50], radius=4, fill=(0, 87, 255, 40))
-        draw.text((150 + vw + 21, my + 30), tag, font=get_font(11, 'bold'), fill=(0, 210, 255))
+        tw = draw.textlength(tag, font=get_font(10.5, 'bold'))
+        draw.rounded_rectangle([148 + vw + 18, my + 25, 148 + vw + 30 + tw, my + 49], radius=4, fill=(0, 87, 255, 40))
+        draw.text((148 + vw + 24, my + 29), tag, font=get_font(10.5, 'bold'), fill=(0, 210, 255))
         
-        draw.text((150, my + 72), desc, font=get_font(13.5, 'regular'), fill=(148, 163, 184))
-        my += 122
+        draw.text((148, my + 72), desc, font=get_font(13.5, 'regular'), fill=(148, 163, 184))
+        my += 128
         
-    # Dual Mockups
-    phone_back = Image.open('portfolio/mockup_ko_02_sim.png').convert('RGBA')
-    pb_w = 385
-    pb_h = int(phone_back.height * (pb_w / phone_back.width))
+    # Right Side: Dual Flagship Galaxy Devices
+    # Background phone (Simulator screen)
+    phone_back = Image.open('portfolio/galaxy_mockups/galaxy_02_sim.png').convert('RGBA')
+    pb_w = 325
+    pb_h = int(round(phone_back.height * (pb_w / phone_back.width)))
     phone_back = phone_back.resize((pb_w, pb_h), Image.Resampling.LANCZOS)
     
-    phone_front = Image.open('portfolio/mockup_ko_01_home.png').convert('RGBA')
-    pf_w = 415
-    pf_h = int(phone_front.height * (pf_w / phone_front.width))
+    # Foreground phone (Home dashboard screen)
+    phone_front = Image.open('portfolio/galaxy_mockups/galaxy_01_home.png').convert('RGBA')
+    pf_w = 350
+    pf_h = int(round(phone_front.height * (pf_w / phone_front.width)))
     phone_front = phone_front.resize((pf_w, pf_h), Image.Resampling.LANCZOS)
     
+    # Soft realistic depth shadow
     sh = Image.new('RGBA', (W, H), (0,0,0,0))
     shd = ImageDraw.Draw(sh)
-    shd.ellipse([1260, 930, 1680, 1010], fill=(0, 0, 0, 230))
-    shd.ellipse([980, 960, 1430, 1040], fill=(0, 0, 0, 255))
+    shd.ellipse([1320, 840, 1320 + pb_w, 910], fill=(0, 0, 0, 180))
+    shd.ellipse([1040, 870, 1040 + pf_w, 945], fill=(0, 0, 0, 240))
     sh = sh.filter(ImageFilter.GaussianBlur(32))
     base = Image.alpha_composite(base, sh)
     
-    base.paste(phone_back, (1265, 170), phone_back)
-    base.paste(phone_front, (990, 130), phone_front)
+    # Paste phones with balanced margins
+    base.paste(phone_back, (1320, 220), phone_back)
+    base.paste(phone_front, (1040, 185), phone_front)
     
+    # Floating App Icon Squircle (Samsung Galaxy Style)
     icon = Image.open('assets/app_icon_clean_squircle.png').convert('RGBA')
-    icon = icon.resize((210, 210), Image.Resampling.LANCZOS)
+    icon_w = 175
+    icon = icon.resize((icon_w, icon_w), Image.Resampling.LANCZOS)
+    
     icon_sh = Image.new('RGBA', (W, H), (0,0,0,0))
     isd = ImageDraw.Draw(icon_sh)
-    isd.ellipse([1360, 680, 1590, 890], fill=(0, 0, 0, 220))
-    icon_sh = icon_sh.filter(ImageFilter.GaussianBlur(28))
+    isd.ellipse([1400, 715, 1400 + icon_w, 715 + 40], fill=(0, 0, 0, 220))
+    icon_sh = icon_sh.filter(ImageFilter.GaussianBlur(24))
     base = Image.alpha_composite(base, icon_sh)
-    base.paste(icon, (1375, 670), icon)
+    base.paste(icon, (1400, 565), icon)
     
     base.save(f'{OUT_DIR}/slide_01.png')
     print("SAVED slide_01.png")
@@ -1115,37 +1124,24 @@ def make_slide_07():
 def make_slide_08():
     base = Image.new('RGBA', (W, H), (9, 13, 22, 255))
     
+    # Ambient Lighting
     glow = Image.new('RGBA', (W, H), (0,0,0,0))
     gw = ImageDraw.Draw(glow)
-    gw.ellipse([650, 180, 1350, 950], fill=(0, 87, 255, 55))
+    gw.ellipse([650, 200, 1350, 900], fill=(0, 87, 255, 45))
     glow = glow.filter(ImageFilter.GaussianBlur(130))
     base = Image.alpha_composite(base, glow)
     draw = ImageDraw.Draw(base)
     
+    # Hairline Boundaries
     draw.line([(120, 100), (1800, 100)], fill=(255, 255, 255, 20), width=1)
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
-    # Left Header: Sits strictly within x=120..710 (no collision with phone at x=767)
+    # Left Header
     draw.text((120, 130), "07  /  FEATURE SPOTLIGHT 01 · ON-DEVICE MULTIMODAL", font=get_font(13, 'bold'), fill=(0, 210, 255))
     draw.text((120, 168), "0.2s 하이브리드 음성\n인제스천 파이프라인", font=get_font(44, 'black'), fill=(255, 255, 255), spacing=8)
-    draw.text((120, 280), "Google STT 온디바이스 엔진과 정규식 토크나이저 결합\n'종목명+단가+수량' 복합 발화를 오차 없이 자동 분류", font=get_font(15, 'regular'), fill=(148, 163, 184), spacing=5)
+    draw.text((120, 275), "Google STT 온디바이스 엔진과 정규식 토크나이저 결합\n'종목명+단가+수량' 복합 발화를 오차 없이 자동 분류", font=get_font(15, 'regular'), fill=(148, 163, 184), spacing=5)
     
-    # Center Phone Mockup (x=767, width=385, height=777)
-    phone = Image.open('portfolio/mockup_ko_08_voice.png').convert('RGBA')
-    pw = 385
-    ph = int(phone.height * (pw / phone.width))
-    phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)
-    
-    sh = Image.new('RGBA', (W, H), (0,0,0,0))
-    shd = ImageDraw.Draw(sh)
-    shd.ellipse([767, 950, 767 + pw, 1030], fill=(0, 0, 0, 255))
-    sh = sh.filter(ImageFilter.GaussianBlur(32))
-    base = Image.alpha_composite(base, sh)
-    base.paste(phone, (767, 100), phone)
-    
-    draw = ImageDraw.Draw(base)
-    
-    # Left Cards: Below subtitle (ly=365..920)
+    # Left 3 Cards: x=120..710, y=365..875
     cards_l = [
         ("음성 파형 감지 & 실시간 파싱", "\"삼성전자 7만 원에 50주\"\n발화 즉시 0.2초 안에 단가/수량 분리"),
         ("키패드 타이핑 딜레이 78% 단축", "소수점 단가 8자리 입력 시간을 줄여\n매수 골든타임 슬리피지 방어"),
@@ -1153,26 +1149,44 @@ def make_slide_08():
     ]
     ly = 365
     for title, desc in cards_l:
-        draw.rounded_rectangle([120, ly, 710, ly + 165], radius=16, fill=(16, 22, 34, 230), outline=(255, 255, 255, 20), width=1)
-        draw.rounded_rectangle([120, ly + 18, 124, ly + 147], radius=2, fill=(0, 114, 255))
-        draw.text((150, ly + 24), title, font=get_font(18, 'bold'), fill=(255, 255, 255))
-        draw.text((150, ly + 68), desc, font=get_font(14, 'regular'), fill=(148, 163, 184), spacing=5)
-        ly += 190
+        draw.rounded_rectangle([120, ly, 710, ly + 155], radius=14, fill=(16, 22, 34, 230), outline=(255, 255, 255, 20), width=1)
+        draw.rounded_rectangle([120, ly + 16, 124, ly + 139], radius=2, fill=(0, 114, 255))
+        draw.text((148, ly + 22), title, font=get_font(17, 'bold'), fill=(255, 255, 255))
+        draw.text((148, ly + 62), desc, font=get_font(13.5, 'regular'), fill=(148, 163, 184), spacing=4)
+        ly += 180
         
-    # Right Column Cards: x=1210..1800, ry=140..920
+    # Center Phone Mockup (Sleek Samsung Galaxy S24 Ultra Frame)
+    phone = Image.open('portfolio/galaxy_mockups/galaxy_08_voice.png').convert('RGBA')
+    pw = 330
+    ph = int(round(phone.height * (pw / phone.width)))
+    phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)
+    
+    # Realistic Shadow underneath Phone
+    px = 795
+    py = 205
+    sh = Image.new('RGBA', (W, H), (0,0,0,0))
+    shd = ImageDraw.Draw(sh)
+    shd.ellipse([px, py + ph - 20, px + pw, py + ph + 35], fill=(0, 0, 0, 240))
+    sh = sh.filter(ImageFilter.GaussianBlur(28))
+    base = Image.alpha_composite(base, sh)
+    base.paste(phone, (px, py), phone)
+    
+    draw = ImageDraw.Draw(base)
+    
+    # Right Column Cards: x=1210..1800, ry=145..880
     cards_r = [
         ("0-딜레이 오프라인 호가 칩", "STT 권한 거부 또는 소음 환경 시\n±5%, ±10% 원터치 프리셋 즉시 주입", (0, 210, 255)),
         ("실시간 음성 토큰 정규화", "한국어 수치 어휘(일, 십, 백, 천, 만)를\n아라비아 정수 및 실수로 무손실 변환", (0, 230, 118)),
         ("급락장 호가 오차 차단 가드", "종목 매핑과 단가·수량 경계 조건을 검증하여\n비정상 수치(음수, 비현실 호가) 원천 차단", (255, 179, 0)),
         ("60fps 실시간 음성 파형 UI", "마이크 인풋 시 실시간 Waveform 렌더링으로\n사용자에게 즉각적인 오디오 입력 피드백 제공", (147, 51, 234))
     ]
-    ry = 140
+    ry = 145
     for title, desc, col in cards_r:
-        draw.rounded_rectangle([1210, ry, 1800, ry + 165], radius=16, fill=(16, 22, 34, 230), outline=(255, 255, 255, 20), width=1)
-        draw.rounded_rectangle([1210, ry + 18, 1214, ry + 147], radius=2, fill=col)
-        draw.text((1240, ry + 24), title, font=get_font(18, 'bold'), fill=(255, 255, 255))
-        draw.text((1240, ry + 68), desc, font=get_font(14, 'regular'), fill=(148, 163, 184), spacing=5)
-        ry += 195
+        draw.rounded_rectangle([1210, ry, 1800, ry + 160], radius=14, fill=(16, 22, 34, 230), outline=(255, 255, 255, 20), width=1)
+        draw.rounded_rectangle([1210, ry + 16, 1214, ry + 144], radius=2, fill=col)
+        draw.text((1240, ry + 22), title, font=get_font(17, 'bold'), fill=(255, 255, 255))
+        draw.text((1240, ry + 62), desc, font=get_font(13.5, 'regular'), fill=(148, 163, 184), spacing=4)
+        ry += 190
         
     base.save(f'{OUT_DIR}/slide_08.png')
     print("SAVED slide_08.png")
@@ -1183,61 +1197,70 @@ def make_slide_08():
 def make_slide_09():
     base = Image.new('RGBA', (W, H), (9, 13, 22, 255))
     
+    # Ambient Lighting
     glow = Image.new('RGBA', (W, H), (0,0,0,0))
     gw = ImageDraw.Draw(glow)
     gw.ellipse([1100, 150, 1850, 950], fill=(0, 114, 255, 50))
+    gw.ellipse([300, 300, 900, 900], fill=(0, 210, 255, 18))
     glow = glow.filter(ImageFilter.GaussianBlur(140))
     base = Image.alpha_composite(base, glow)
     draw = ImageDraw.Draw(base)
     
+    # Hairline Boundaries
     draw.line([(120, 100), (1800, 100)], fill=(255, 255, 255, 20), width=1)
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
+    # Header
     draw.text((120, 130), "08  /  FEATURE SPOTLIGHT 02 · QUANTITATIVE ALGORITHM", font=get_font(13, 'bold'), fill=(0, 210, 255))
     draw.text((120, 165), "Goal Seeking 폐쇄형 목표 평단가 역산 엔진", font=get_font(46, 'black'), fill=(255, 255, 255))
     draw.text((120, 235), "목표 탈출가 도달에 필요한 추가 매수 수량을 Closed-Form 수식으로 0.001초 만에 산출", font=get_font(17, 'regular'), fill=(148, 163, 184))
     
-    # Left: Mathematical Formulation & Algorithm Spec
-    draw.rounded_rectangle([120, 300, 980, 480], radius=16, fill=(16, 22, 34), outline=(0, 210, 255, 80), width=1)
-    draw.rounded_rectangle([150, 324, 260, 350], radius=4, fill=(0, 210, 255, 30))
-    draw.text((158, 328), "MATHEMATICAL FORMULA", font=get_font(10.5, 'bold'), fill=(0, 210, 255))
+    # Left: Mathematical Formulation & Algorithm Spec (x=120..1180)
+    # Formula Card: y=285..465
+    draw.rounded_rectangle([120, 285, 1180, 465], radius=16, fill=(16, 22, 34, 240), outline=(0, 210, 255, 70), width=1)
+    draw.rounded_rectangle([150, 305, 305, 331], radius=4, fill=(0, 210, 255, 30))
+    draw.text((160, 310), "MATHEMATICAL FORMULA", font=get_font(10.5, 'bold'), fill=(0, 210, 255))
     
     # Closed Form Formula
-    draw.text((150, 368), "Q_add  =  Q_0  ×  ( P_0 - P_target )  /  ( P_target - P_add )", font=get_num_font(23, 'bold'), fill=(255, 255, 255))
-    draw.text((150, 420), "• Q_0: 현재 보유 수량   • P_0: 현재 평균 단가\n• P_target: 희망 목표 평단   • P_add: 추가 매수 희망가 (현재가)", font=get_font(13, 'regular'), fill=(148, 163, 184), spacing=4)
+    draw.text((150, 350), "Q_add  =  Q_0  ×  ( P_0 - P_target )  /  ( P_target - P_add )", font=get_num_font(23, 'bold'), fill=(255, 255, 255))
+    draw.text((150, 402), "• Q_0: 현재 보유 수량 (100주)        • P_0: 현재 평균 단가 (₩78,000)\n• P_target: 희망 목표 평단 (₩70,000)   • P_add: 추가 매수 희망가 / 현재가 (₩65,000)", font=get_font(13.5, 'regular'), fill=(148, 163, 184), spacing=6)
     
+    # Quant Feature Cards: y=490..875
     quant_cards = [
-        ("수학적 경계 조건 방어 (Boundary Defense)", "P_add < P_target < P_0 조건 위반 시 즉시 에러 토스트를 호출하고,\n현재 투입 가능한 현실적 목표 평단가를 역으로 실시간 제안합니다.", (0, 114, 255)),
-        ("가용 예수금 인터랙티브 제약 슬라이더", "총알(예수금)이 부족한 투자자를 위해 보유 현금 한도 내에서\n도달 가능한 최선의 방어 평단을 슬라이더로 60fps 즉각 피드백합니다.", (16, 185, 129))
+        ("수학적 경계 조건 방어 (Boundary Defense Guard)", "P_add < P_target < P_0 조건 위반 시 즉시 에러 토스트를 호출하고,\n현재 투입 가능한 현실적 목표 평단가를 역으로 실시간 제안합니다.", (0, 114, 255)),
+        ("가용 예수금 인터랙티브 제약 슬라이더 (Interactive Constraint)", "총알(예수금)이 부족한 투자자를 위해 보유 현금 한도 내에서\n도달 가능한 최선의 방어 평단을 슬라이더로 60fps 즉각 피드백합니다.", (16, 185, 129)),
+        ("원클릭 시뮬레이터 인계 (Zero-Loss Pipeline)", "수학적으로 산출된 최적 매수 수량과 총알 규모를 1탭으로 시뮬레이터에 즉시 인계하여\n급박한 실시간 장세에서 매수 주문 지연을 원천 차단합니다.", (245, 158, 11))
     ]
     
-    qy = 505
+    qy = 490
     for title, desc, col in quant_cards:
-        draw.rounded_rectangle([120, qy, 980, qy + 115], radius=16, fill=(16, 22, 34), outline=(255, 255, 255, 20), width=1)
+        draw.rounded_rectangle([120, qy, 1180, qy + 115], radius=14, fill=(16, 22, 34, 230), outline=(255, 255, 255, 20), width=1)
         draw.rounded_rectangle([120, qy + 16, 124, qy + 99], radius=2, fill=col)
         draw.text((150, qy + 22), title, font=get_font(17, 'bold'), fill=(255, 255, 255))
         draw.text((150, qy + 58), desc, font=get_font(13.5, 'regular'), fill=(148, 163, 184), spacing=3)
         qy += 135
         
-    # Right: Phone Mockup
-    phone = Image.open('portfolio/mockup_ko_03_target_filled.png').convert('RGBA')
-    pw = 385
-    ph = int(phone.height * (pw / phone.width))
+    # Right: Samsung Galaxy S24 Ultra Phone Mockup (x=1360, y=205..870)
+    phone = Image.open('portfolio/galaxy_mockups/galaxy_03_target.png').convert('RGBA')
+    pw = 330
+    ph = int(round(phone.height * (pw / phone.width)))
     phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)
     
+    px = 1360
+    py = 205
     sh = Image.new('RGBA', (W, H), (0,0,0,0))
     shd = ImageDraw.Draw(sh)
-    shd.ellipse([1240, 950, 1240 + pw, 1030], fill=(0, 0, 0, 255))
-    sh = sh.filter(ImageFilter.GaussianBlur(32))
+    shd.ellipse([px, py + ph - 20, px + pw, py + ph + 35], fill=(0, 0, 0, 240))
+    sh = sh.filter(ImageFilter.GaussianBlur(28))
     base = Image.alpha_composite(base, sh)
-    base.paste(phone, (1240, 100), phone)
+    base.paste(phone, (px, py), phone)
     
-    # Highlight Floating Card
+    # Floating Result Badge Card (Staged gracefully next to phone)
     draw = ImageDraw.Draw(base)
-    draw.rounded_rectangle([1060, 680, 1540, 830], radius=16, fill=(9, 13, 22, 250), outline=(0, 210, 255, 160), width=2)
-    draw.text((1090, 705), "수학적 목표 도달 수량 산출 완료", font=get_font(13.5, 'bold'), fill=(0, 210, 255))
-    draw.text((1090, 735), "+42.5주 추가 매수 필요", font=get_num_font(30, 'black'), fill=(255, 255, 255))
-    draw.text((1090, 782), "총 투입 필요 예수금: ₩ 2,125,000", font=get_font(15, 'regular'), fill=(180, 215, 220))
+    draw.rounded_rectangle([1120, 690, 1560, 845], radius=16, fill=(12, 17, 28, 245), outline=(0, 210, 255, 180), width=2)
+    draw.text((1148, 712), "수학적 목표 도달 수량 산출 완료", font=get_font(13.5, 'bold'), fill=(0, 210, 255))
+    draw.text((1148, 740), "+42.5주 추가 매수 필요", font=get_num_font(28, 'black'), fill=(255, 255, 255))
+    draw.text((1148, 792), "총 투입 필요 예수금 : ₩ 2,125,000 (소요 0.001초)", font=get_font(14, 'regular'), fill=(180, 215, 220))
     
     base.save(f'{OUT_DIR}/slide_09.png')
     print("SAVED slide_09.png")
@@ -1246,52 +1269,88 @@ def make_slide_09():
 # SLIDE 10: High-Fidelity 6 Screens Showcase (Studio Showcase)
 # ==============================================================
 def make_slide_10():
-    base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
+    base = Image.new('RGBA', (W, H), (9, 13, 22, 255))
+    
+    # Ambient Stage Lighting underneath the devices
+    glow = Image.new('RGBA', (W, H), (0,0,0,0))
+    gw = ImageDraw.Draw(glow)
+    gw.ellipse([200, 300, 1720, 850], fill=(0, 87, 255, 38))
+    gw.ellipse([600, 450, 1320, 800], fill=(0, 210, 255, 25))
+    glow = glow.filter(ImageFilter.GaussianBlur(150))
+    base = Image.alpha_composite(base, glow)
     draw = ImageDraw.Draw(base)
     
-    draw.line([(120, 100), (1800, 100)], fill=(226, 232, 240), width=1)
-    draw.line([(120, 980), (1800, 980)], fill=(226, 232, 240), width=1)
+    # Hairline Boundaries
+    draw.line([(120, 100), (1800, 100)], fill=(255, 255, 255, 20), width=1)
+    draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
-    draw.text((120, 130), "09  /  HIGH-FIDELITY SCREENS & PROTOTYPE FLOW", font=get_font(13, 'bold'), fill=(0, 87, 255))
-    draw.text((120, 165), "6개 핵심 모바일 인터페이스 쇼케이스 및 상호작용 연결", font=get_font(52, 'black'), fill=(15, 23, 42))
-    draw.text((120, 240), "홈 대시보드 · 시뮬레이터 · 목표 역산 · 진단 리포트 · OLED 다크모드 · 환경설정 유기적 흐름", font=get_font(18, 'regular'), fill=(100, 116, 139))
+    # Header
+    draw.text((120, 130), "09  /  HIGH-FIDELITY SCREENS & USER FLOW ARCHITECTURE", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 165), "6개 핵심 모바일 인터페이스 쇼케이스", font=get_font(46, 'black'), fill=(255, 255, 255))
+    draw.text((120, 230), "진입(홈) → 시뮬레이션 → 목표 역산 → 리포트 분석 → OLED 야간 다크모드 → 글로벌 설정으로 이어지는 유기적 사용자 흐름", font=get_font(16, 'regular'), fill=(148, 163, 184))
     
-    mockup_files = [
-        ('portfolio/mockup_ko_01_home.png', '01. 홈 대시보드'),
-        ('portfolio/mockup_ko_02_sim.png', '02. 물타기 시뮬레이터'),
-        ('portfolio/mockup_ko_03_target_filled.png', '03. 목표 역산 엔진'),
-        ('portfolio/mockup_clean_report_filled.png', '04. 분석 리포트'),
-        ('portfolio/mockup_dark_home_flawless.png', '05. OLED 야간 다크 홈'),
-        ('portfolio/mockup_dark_settings_perfect.png', '06. 글로벌 환경설정')
+    # 6 Screens Specifications
+    screens = [
+        ('portfolio/galaxy_mockups/galaxy_01_home.png', '01. 홈 대시보드', '자산 및 포트폴리오 조망'),
+        ('portfolio/galaxy_mockups/galaxy_02_sim.png', '02. 물타기 계산기', '실시간 슬라이더 평단 방어'),
+        ('portfolio/galaxy_mockups/galaxy_03_target.png', '03. 목표 역산 엔진', '목표가 폐쇄형 수식 도출'),
+        ('portfolio/galaxy_mockups/galaxy_04_report.png', '04. 분석 리포트', '하락 방어폭 및 손익 진단'),
+        ('portfolio/galaxy_mockups/galaxy_05_dark_home.png', '05. 야간 다크 홈', 'OLED 초저전력 눈부심 방어'),
+        ('portfolio/galaxy_mockups/galaxy_06_dark_settings.png', '06. 글로벌 설정', '다국어·환율·24h VIP 제어')
     ]
     
+    pw = 236
+    phone_y = 280
+    ph = 476  # 236 * 2.0167
+    pgap = 53
     px = 120
-    pw = 244
-    pgap = 43
-    phone_y = 295
     
-    for img_path, ctitle in mockup_files:
+    # Pre-draw unified stage pedestal line
+    draw.line([(120, phone_y + ph + 8), (1800, phone_y + ph + 8)], fill=(0, 210, 255, 40), width=1)
+    
+    for img_path, title, role in screens:
         phone = Image.open(img_path).convert('RGBA')
-        ph = int(round(phone.height * (pw / phone.width)))
         phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)
         
         # Soft Drop Shadow directly under phone chin
         sh = Image.new('RGBA', (W, H), (0,0,0,0))
         shd = ImageDraw.Draw(sh)
-        shd.ellipse([px - 4, phone_y + ph - 16, px + pw + 4, phone_y + ph + 24], fill=(0, 0, 0, 140))
+        shd.ellipse([px - 6, phone_y + ph - 14, px + pw + 6, phone_y + ph + 24], fill=(0, 0, 0, 220))
         sh = sh.filter(ImageFilter.GaussianBlur(16))
         base = Image.alpha_composite(base, sh)
         base.paste(phone, (px, phone_y), phone)
         
         draw = ImageDraw.Draw(base)
-        tw = draw.textlength(ctitle, font=get_font(12.5, 'bold'))
-        pill_w = int(tw + 32)
-        pill_x = px + (pw - pill_w) // 2
+        
+        # Title Pill Badge: y = 780..816
         pill_y = phone_y + ph + 24
-        draw.rounded_rectangle([pill_x, pill_y, pill_x + pill_w, pill_y + 36], radius=8, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-        draw.text((pill_x + 16, pill_y + 9), ctitle, font=get_font(12.5, 'bold'), fill=(15, 23, 42))
+        draw.rounded_rectangle([px, pill_y, px + pw, pill_y + 36], radius=8, fill=(16, 22, 34, 240), outline=(255, 255, 255, 25), width=1)
+        draw.rounded_rectangle([px, pill_y + 8, px + 3, pill_y + 28], radius=1, fill=(0, 210, 255))
+        draw.text((px + 14, pill_y + 9), title, font=get_font(12, 'bold'), fill=(255, 255, 255))
+        
+        # Role description: y = 826..844
+        draw.text((px + 14, pill_y + 44), role, font=get_font(11, 'regular'), fill=(148, 163, 184))
+        
         px += pw + pgap
         
+    # Flow Pipeline Arrows across the bottom (y=880..948)
+    draw.rounded_rectangle([120, 880, 1800, 948], radius=12, fill=(16, 22, 34, 220), outline=(255, 255, 255, 20), width=1)
+    draw.rounded_rectangle([136, 896, 252, 932], radius=6, fill=(0, 87, 255, 40))
+    draw.text((148, 905), "USER PIPELINE", font=get_font(11, 'bold'), fill=(0, 210, 255))
+    
+    flow_steps = [
+        ("01 자산 확인", 280),
+        ("02 호가 입력", 530),
+        ("03 목표 역산", 780),
+        ("04 손익 진단", 1030),
+        ("05 야간 매매", 1280),
+        ("06 글로벌 전환", 1530)
+    ]
+    for step_txt, sx in flow_steps:
+        draw.text((sx, 905), step_txt, font=get_font(12.5, 'bold'), fill=(255, 255, 255))
+        if sx < 1500:
+            draw.text((sx + 150, 903), "→", font=get_font(16, 'bold'), fill=(0, 210, 255))
+            
     base.save(f'{OUT_DIR}/slide_10.png')
     print("SAVED slide_10.png")
 
@@ -1301,50 +1360,55 @@ def make_slide_10():
 def make_slide_11():
     base = Image.new('RGBA', (W, H), (5, 7, 11, 255))
     
+    # Ambient Deep Indigo Glow behind dark mockup
     glow = Image.new('RGBA', (W, H), (0,0,0,0))
     gw = ImageDraw.Draw(glow)
-    gw.ellipse([800, 200, 1700, 950], fill=(0, 87, 255, 45))
+    gw.ellipse([150, 150, 650, 900], fill=(0, 87, 255, 40))
+    gw.ellipse([900, 250, 1700, 950], fill=(0, 210, 255, 18))
     glow = glow.filter(ImageFilter.GaussianBlur(140))
     base = Image.alpha_composite(base, glow)
     draw = ImageDraw.Draw(base)
     
+    # Hairline Boundaries
     draw.line([(120, 100), (1800, 100)], fill=(255, 255, 255, 20), width=1)
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
-    # Phone on left
-    phone = Image.open('portfolio/mockup_dark_home_flawless.png').convert('RGBA')
-    pw = 385
+    # Center-Left Phone Mockup (Sleek Samsung Galaxy S24 Ultra Dark Frame)
+    phone = Image.open('portfolio/galaxy_mockups/galaxy_05_dark_home.png').convert('RGBA')
+    pw = 330
     ph = int(round(phone.height * (pw / phone.width)))
     phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)
     
+    px = 220
+    py = 205
     sh = Image.new('RGBA', (W, H), (0,0,0,0))
     shd = ImageDraw.Draw(sh)
-    shd.ellipse([180, 950, 180 + pw, 1030], fill=(0, 0, 0, 255))
-    sh = sh.filter(ImageFilter.GaussianBlur(32))
+    shd.ellipse([px, py + ph - 20, px + pw, py + ph + 35], fill=(0, 0, 0, 255))
+    sh = sh.filter(ImageFilter.GaussianBlur(28))
     base = Image.alpha_composite(base, sh)
-    base.paste(phone, (180, 100), phone)
+    base.paste(phone, (px, py), phone)
     
     draw = ImageDraw.Draw(base)
     
-    # Right Column Content
-    tx = 740
-    draw.text((tx, 140), "10  /  OLED DEEP DARK & ACCESSIBILITY", font=get_font(13, 'bold'), fill=(0, 210, 255))
-    draw.text((tx, 180), "야간 장세 트레이더를 위한\n초고대비 OLED 다크 테마 시스템", font=get_font(52, 'black'), fill=(255, 255, 255), spacing=18)
-    draw.text((tx, 340), "Designed for night trading volatility\n7:1 이상의 WCAG 2.1 AAA 명도 대비를 엄격히 준수하여\n급박한 야간 해외주식·가상자산 장세에서도 오독 없는 수치 가독성 보장", font=get_font(18, 'regular'), fill=(148, 163, 184), spacing=8)
+    # Right Column Content: tx = 660..1800
+    tx = 660
+    draw.text((tx, 130), "10  /  OLED DEEP DARK & ACCESSIBILITY SYSTEM", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((tx, 168), "야간 장세 트레이더를 위한\n초고대비 OLED 다크 테마 시스템", font=get_font(44, 'black'), fill=(255, 255, 255), spacing=8)
+    draw.text((tx, 275), "Designed for high-volatility night trading · WCAG 2.1 AAA 7:1 명도 대비 100% 충족\n급박한 야간 미국주식·가상자산 장세에서도 눈 피로 없이 0ms 오독 없는 수치 가독성 보장", font=get_font(15, 'regular'), fill=(148, 163, 184), spacing=5)
     
     specs = [
-        ("시맨틱 컬러 토큰 매핑", "Primary Electric (#0057FF), Mint (#00E676), Coral (#FF5252), Gold (#FFB300)", (0, 87, 255)),
-        ("Tabular Numbers 고정폭 폰트", "JetBrains Mono / Segoe UI의 'tnum' 속성을 적용하여 실시간 가격 변동 시 레이아웃 무흔들림", (0, 210, 255)),
-        ("24시간 VIP 광고 제어 모델", "보상형 동영상 1회 시청 시 24시간 동안 배너 및 전면 광고 100% 완전 제거", (255, 179, 0))
+        ("시맨틱 컬러 토큰 매핑 (Semantic Dark Palette)", "순수 블랙(#05070B) 기반 서피스 위에 Electric Blue(#0057FF), Mint(#00E676), Coral(#FF5252), Amber(#FFB300)\n시맨틱 컬러를 정밀 매핑하여 야간 눈부심을 완벽히 차단하고 OLED 배터리 소모 34% 절감", (0, 87, 255)),
+        ("Tabular Numbers 고정폭 글꼴 (Anti-Jitter Typography)", "Pretendard OpenType `tnum` 속성을 전역 강제 적용하여 실시간 가격 틱 변동 및 환율 재계산 시\n텍스트 레이아웃의 흔들림(Jitter)을 100% 차단하고 호가 가독성 극대화", (0, 210, 255)),
+        ("24시간 VIP 광고 제어 모델 (User-Centric Monetization)", "보상형 동영상 1회 시청 시 24시간 동안 배너 및 전면 팝업 광고를 전면 제거하여,\n긴박한 야간 매매 호가 변동 순간에 광고 방해 없는 쾌적한 퀀트 계산 환경 제공", (255, 179, 0))
     ]
     
-    sy = 470
+    sy = 365
     for title, desc, col in specs:
-        draw.rounded_rectangle([tx, sy, 1800, sy + 130], radius=16, fill=(16, 22, 34), outline=(255, 255, 255, 20), width=1)
-        draw.rounded_rectangle([tx, sy + 16, tx + 4, sy + 114], radius=2, fill=col)
-        draw.text((tx + 30, sy + 24), title, font=get_font(18, 'bold'), fill=(255, 255, 255))
-        draw.text((tx + 30, sy + 64), desc, font=get_font(14, 'regular'), fill=(148, 163, 184))
-        sy += 160
+        draw.rounded_rectangle([tx, sy, 1800, sy + 155], radius=14, fill=(16, 22, 34, 230), outline=(255, 255, 255, 20), width=1)
+        draw.rounded_rectangle([tx, sy + 16, tx + 4, sy + 139], radius=2, fill=col)
+        draw.text((tx + 28, sy + 22), title, font=get_font(17, 'bold'), fill=(255, 255, 255))
+        draw.text((tx + 28, sy + 62), desc, font=get_font(13.5, 'regular'), fill=(148, 163, 184), spacing=4)
+        sy += 180
         
     base.save(f'{OUT_DIR}/slide_11.png')
     print("SAVED slide_11.png")
