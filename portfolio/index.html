@@ -181,17 +181,26 @@
         <div class="proto-device-column">
           <div class="proto-mobile-chassis" id="mobile-chassis">
             
-            <!-- Mobile Top Bezel: Status Bar & Punch Hole -->
-            <div class="chassis-notch">
-              <span class="notch-time">09:41</span>
-              <div class="notch-speaker-cam">
-                <div class="speaker-slit"></div>
-                <div class="cam-dot"></div>
+            <!-- iPhone Top Bezel: iOS Status Bar & Dynamic Island -->
+            <div class="chassis-notch iphone-notch">
+              <span class="notch-time">9:41</span>
+              <div class="dynamic-island">
+                <div class="island-sensor"></div>
+                <div class="island-cam"></div>
               </div>
-              <div class="notch-icons">
-                <span>5G</span>
-                <span>●●●</span>
-                <span>100%</span>
+              <div class="notch-icons ios-icons">
+                <svg class="ios-signal" width="16" height="11" viewBox="0 0 16 12" fill="currentColor">
+                  <rect x="0" y="9" width="2.5" height="3" rx="0.5"/>
+                  <rect x="4.2" y="6" width="2.5" height="6" rx="0.5"/>
+                  <rect x="8.4" y="3" width="2.5" height="9" rx="0.5"/>
+                  <rect x="12.6" y="0" width="2.5" height="12" rx="0.5"/>
+                </svg>
+                <span class="ios-net">5G</span>
+                <svg class="ios-battery" width="22" height="11" viewBox="0 0 24 12" fill="none" stroke="currentColor">
+                  <rect x="1" y="1" width="19" height="10" rx="3" stroke-width="1.5"/>
+                  <rect x="3" y="3" width="13" height="6" rx="1.5" fill="currentColor"/>
+                  <path d="M22 4.5v3" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
               </div>
             </div>
 
@@ -724,150 +733,9 @@
       }, 5500);
 
       // ==============================================================
-      // 7. LIVE INTERACTIVE QUANT CALCULATOR ENGINE
+      // 7. LIVE INTERACTIVE QUANT PROTOTYPE ENGINE (AUTHENTIC IPHONE FLOW)
       // ==============================================================
-      const inputP0 = document.getElementById('input-p0');
-      const inputQ0 = document.getElementById('input-q0');
-      const inputPt = document.getElementById('input-pt');
-      const inputPadd = document.getElementById('input-padd');
-      const inputBudget = document.getElementById('input-budget');
-      const budgetDisplay = document.getElementById('budget-display');
-      
-      const invBanner = document.getElementById('invariant-banner');
-      const invIcon = document.getElementById('inv-icon');
-      const invTitle = document.getElementById('inv-title');
-      const invFormula = document.getElementById('inv-formula');
-      
-      const theoryQ = document.getElementById('theory-q');
-      const theoryCash = document.getElementById('theory-cash');
-      const actualQ = document.getElementById('actual-q');
-      const actualAvg = document.getElementById('actual-avg');
-      const actualDefense = document.getElementById('actual-defense');
-      
-      const btnHandoff = document.getElementById('btn-handoff');
-      const btnCopyReport = document.getElementById('btn-copy-report');
-      const toastNotify = document.getElementById('toast-notify');
-      const presetChips = Array.from(document.querySelectorAll('.preset-chip'));
 
-      function formatWon(num) {
-        return '₩ ' + Math.round(num).toLocaleString('ko-KR');
-      }
-
-      function updateCalculator() {
-        const p0 = parseFloat(inputP0.value) || 0;
-        const q0 = parseFloat(inputQ0.value) || 0;
-        const pt = parseFloat(inputPt.value) || 0;
-        const padd = parseFloat(inputPadd.value) || 0;
-        const budget = parseFloat(inputBudget.value) || 0;
-
-        budgetDisplay.textContent = formatWon(budget);
-
-        // Mathematical Invariant Check: P_add < P_target < P_0
-        const isValid = padd < pt && pt < p0;
-
-        if (isValid) {
-          invBanner.className = 'invariant-banner valid';
-          invIcon.textContent = '✓';
-          invTitle.textContent = '수학적 경계 불변식 만족 (Valid Invariant)';
-          invFormula.textContent = `P_add (${formatWon(padd)}) < P_target (${formatWon(pt)}) < P_0 (${formatWon(p0)}) [정상 폐쇄형 역산 가능]`;
-          btnHandoff.disabled = false;
-        } else {
-          invBanner.className = 'invariant-banner invalid';
-          invIcon.textContent = '✕';
-          invTitle.textContent = '수학적 경계 불변식 위반 (Boundary Violation)';
-          if (pt >= p0) {
-            invFormula.textContent = `목표 평단가(${formatWon(pt)})는 현재 평단가(${formatWon(p0)})보다 낮아야 합니다 (하락장 평단 낮추기 불변식).`;
-          } else if (pt <= padd) {
-            invFormula.textContent = `목표 평단가(${formatWon(pt)})는 추가 매수가(${formatWon(padd)})보다 높아야 합니다 (도달 불가 목표가).`;
-          } else {
-            invFormula.textContent = `추가 매수가 < 목표 평단가 < 현재 평단가 조건을 만족해야 합니다.`;
-          }
-          btnHandoff.disabled = true;
-          theoryQ.innerHTML = '<strong>계산 불가</strong>';
-          theoryCash.textContent = '불변식 위반';
-          actualQ.innerHTML = '<strong>계산 불가</strong>';
-          actualAvg.textContent = '불변식 위반';
-          actualDefense.textContent = '유효한 파라미터를 입력해주세요.';
-          return;
-        }
-
-        // 1. Theoretical Closed-Form Inversion: Q_add = Q_0 * (P_0 - P_t) / (P_t - P_add)
-        const qNeed = q0 * (p0 - pt) / (pt - padd);
-        const cashNeed = qNeed * padd;
-
-        theoryQ.innerHTML = `<strong>+${qNeed.toFixed(1)}</strong> 주`;
-        theoryCash.textContent = formatWon(cashNeed);
-
-        // 2. Budget Constrained Execution: Q_exec = floor(Budget / P_add)
-        const maxExecutableQ = Math.floor(budget / padd);
-        const actualCost = maxExecutableQ * padd;
-        const newTotalQ = q0 + maxExecutableQ;
-        const newAvg = (p0 * q0 + actualCost) / (newTotalQ > 0 ? newTotalQ : 1);
-
-        actualQ.innerHTML = `<strong>+${maxExecutableQ}</strong> 주 (${formatWon(actualCost)})`;
-        actualAvg.textContent = formatWon(newAvg);
-
-        // Defense Ratio: Compare loss at current price P_add
-        const initLoss = ((padd - p0) / p0) * 100;
-        const newLoss = ((padd - newAvg) / newAvg) * 100;
-        const defenseDelta = newLoss - initLoss;
-
-        actualDefense.textContent = `${initLoss.toFixed(1)}% → ${newLoss.toFixed(1)}% (+${defenseDelta.toFixed(1)}%p 방어)`;
-      }
-
-      // Event Listeners for Live Reactive Updates (60fps on slider input)
-      [inputP0, inputQ0, inputPt, inputPadd].forEach(el => el.addEventListener('input', updateCalculator));
-      inputBudget.addEventListener('input', updateCalculator);
-
-      // Preset Chips
-      presetChips.forEach(chip => {
-        chip.addEventListener('click', () => {
-          presetChips.forEach(c => c.classList.remove('active'));
-          chip.classList.add('active');
-
-          inputP0.value = chip.dataset.p0;
-          inputQ0.value = chip.dataset.q0;
-          inputPt.value = chip.dataset.pt;
-          inputPadd.value = chip.dataset.padd;
-          inputBudget.value = chip.dataset.budget;
-
-          updateCalculator();
-        });
-      });
-
-      // Show Toast Notification
-      function showToast(msg) {
-        if (!toastNotify) return;
-        toastNotify.querySelector('.toast-msg').textContent = msg;
-        toastNotify.classList.add('show');
-        setTimeout(() => toastNotify.classList.remove('show'), 3000);
-      }
-
-      // 1-Tap Handoff Button
-      btnHandoff.addEventListener('click', () => {
-        btnHandoff.classList.add('pulse');
-        setTimeout(() => btnHandoff.classList.remove('pulse'), 400);
-
-        const summary = `[Smart DCA Handoff] P_0: ${formatWon(inputP0.value)}, Q_0: ${inputQ0.value}주, P_target: ${formatWon(inputPt.value)}, P_add: ${formatWon(inputPadd.value)}, 가용예수금: ${formatWon(inputBudget.value)} => 최적집행: ${actualQ.textContent.trim()}, 방어평단: ${actualAvg.textContent.trim()}`;
-        navigator.clipboard.writeText(summary).catch(() => {});
-        showToast('✓ 4개 퀀트 파라미터가 시뮬레이터로 0ms 무손실 인계되었습니다!');
-      });
-
-      // Copy Report Button
-      btnCopyReport.addEventListener('click', () => {
-        const report = `[Smart DCA 퀀트 진단 리포트]\n- 현재 평단: ${formatWon(inputP0.value)} (${inputQ0.value}주)\n- 목표 평단: ${formatWon(inputPt.value)}\n- 추가 매수가: ${formatWon(inputPadd.value)}\n- 가용 예수금: ${formatWon(inputBudget.value)}\n- 이론적 필요 주수: ${theoryQ.textContent.trim()} (${theoryCash.textContent.trim()})\n- 예수금 제약 실행: ${actualQ.textContent.trim()}\n- 최종 방어 평단: ${actualAvg.textContent.trim()}\n- 방어 효과: ${actualDefense.textContent.trim()}`;
-        navigator.clipboard.writeText(report).then(() => {
-          showToast('✓ 퀀트 진단 리포트가 클립보드에 복사되었습니다.');
-        }).catch(() => {});
-      });
-
-      // Initial Calculation
-      updateCalculator();
-
-    })();
-  </script>
-</body>
-</html>// 4-B. Live Interactive Quant Prototype Engine with Authentic Mobile Frame Flow
       let currentFlowStep = 0;
       const totalFlowSteps = 3;
       const mobileTrack = document.getElementById('mobile-track');

@@ -226,8 +226,8 @@ def make_slide_01():
     # ==============================================================
     # RIGHT SIDE: Dual 3D Flagship Phones in Studio Perspective
     # ==============================================================
-    dev_sim = Image.open('portfolio/galaxy_mockups/galaxy_02_sim.png').convert('RGBA')
-    dev_home = Image.open('portfolio/galaxy_mockups/galaxy_01_home.png').convert('RGBA')
+    dev_sim = Image.open('portfolio/iphone_mockups/iphone_02_sim.png').convert('RGBA')
+    dev_home = Image.open('portfolio/iphone_mockups/iphone_01_home.png').convert('RGBA')
     
     # 3D Soft Floor Contact Shadows
     sh = Image.new('RGBA', (W, H), (0,0,0,0))
@@ -449,7 +449,7 @@ def make_slide_03():
 
 # ==============================================================
 # ==============================================================
-# SLIDE 04: True Hierarchical Information Architecture (IA Tree)
+# SLIDE 04: Service Planning Information Architecture (IA Tree)
 # ==============================================================
 def make_slide_04():
     base = Image.new('RGBA', (W, H), (9, 13, 22, 255))
@@ -468,17 +468,17 @@ def make_slide_04():
     draw.line([(120, 100), (1800, 100)], fill=(255, 255, 255, 20), width=1)
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
-    # Header
-    draw.text((120, 130), "03  /  DOMAIN-DRIVEN INFORMATION ARCHITECTURE (IA TREE)", font=get_font(13, 'bold'), fill=(0, 210, 255))
-    draw.text((120, 165), "도메인 주도 설계(DDD) 기반 계층적 정보 구조(IA) 트리", font=get_font(46, 'black'), fill=(255, 255, 255))
-    draw.text((120, 230), "시스템 루트(L0)부터 핵심 5대 도메인(L1), 화면 컨테이너(L2), 원자 데이터 토큰 및 인터랙션 액션(L3)까지의 계층적 구조 설계", font=get_font(16, 'regular'), fill=(148, 163, 184))
+    # Header - Pure Service Planning / UX Architect Perspective
+    draw.text((120, 130), "03  /  SERVICE PLANNING INFORMATION ARCHITECTURE (IA TREE)", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 165), "서비스 기획 관점 계층적 정보 구조(Information Architecture) 설계", font=get_font(44, 'black'), fill=(255, 255, 255))
+    draw.text((120, 230), "사용자 의사결정 과업(JTBD) 및 탐색 동선 중심 5대 핵심 도메인 정보 위계 & 화면 기능 상세 정의", font=get_font(16, 'regular'), fill=(148, 163, 184))
     
     # IA Level Legend (Top-Right)
     legends = [
-        ("L0: 루트 허브 (Root Hub)", (0, 210, 255)),
-        ("L1: 핵심 도메인 (Core Domain)", (0, 114, 255)),
-        ("L2: 화면/기능 컨테이너 (Container)", (139, 92, 246)),
-        ("L3: 원자 토큰 & 액션 (Atomic)", (100, 116, 139))
+        ("L0: 서비스 허브 (Service Hub)", (0, 210, 255)),
+        ("L1: 핵심 기능 도메인 (Core Domain)", (0, 114, 255)),
+        ("L2: 화면 단위 컨테이너 (Screen Module)", (139, 92, 246)),
+        ("L3: 기획 명세 & 액션 (Spec & Action)", (100, 116, 139))
     ]
     leg_x = 940
     for l_txt, l_col in legends:
@@ -487,75 +487,72 @@ def make_slide_04():
         leg_x += draw.textlength(l_txt, font=get_font(11.5, 'bold')) + 24
         
     # ---------------------------------------------------------
-    # LEVEL 0: ROOT NODE (System Master Hub)
+    # LEVEL 0: ROOT NODE (Service Master Hub)
     # ---------------------------------------------------------
-    root_x1, root_y1, root_x2, root_y2 = 710, 260, 1210, 316
+    root_x1, root_y1, root_x2, root_y2 = 700, 260, 1220, 316
     draw.rounded_rectangle([root_x1, root_y1, root_x2, root_y2], radius=14, fill=(16, 22, 34), outline=(0, 210, 255, 180), width=2)
     
     # L0 Badge
-    draw.rounded_rectangle([root_x1 + 16, root_y1 + 14, root_x1 + 84, root_y1 + 42], radius=6, fill=(0, 210, 255, 40), outline=(0, 210, 255, 120), width=1)
-    draw.text((root_x1 + 25, root_y1 + 19), "L0 ROOT", font=get_font(11, 'bold'), fill=(0, 210, 255))
+    draw.rounded_rectangle([root_x1 + 16, root_y1 + 14, root_x1 + 94, root_y1 + 42], radius=6, fill=(0, 210, 255, 40), outline=(0, 210, 255, 120), width=1)
+    draw.text((root_x1 + 23, root_y1 + 19), "L0 HUB", font=get_font(11, 'bold'), fill=(0, 210, 255))
     
-    draw.text((root_x1 + 96, root_y1 + 14), "SMART DCA QUANT PLATFORM", font=get_font(14.5, 'bold'), fill=(255, 255, 255))
-    draw.text((root_x1 + 96, root_y1 + 34), "Client-Side DDD Monorepo Architecture", font=get_font(11.5, 'regular'), fill=(148, 163, 184))
+    draw.text((root_x1 + 106, root_y1 + 14), "SMART DCA SERVICE ARCHITECTURE", font=get_font(14, 'bold'), fill=(255, 255, 255))
+    draw.text((root_x1 + 106, root_y1 + 34), "User-Centric Mental Model & Information Hierarchy", font=get_font(11.5, 'regular'), fill=(148, 163, 184))
     
     # ---------------------------------------------------------
     # ORTHOGONAL TREE CONNECTOR BUS
     # ---------------------------------------------------------
-    # Vertical trunk from L0
     draw.line([(960, root_y2), (960, 350)], fill=(0, 210, 255, 180), width=2)
-    draw.ellipse([956, 346, 964, 354], fill=(0, 210, 255)) # Trunk junction
+    draw.ellipse([956, 346, 964, 354], fill=(0, 210, 255))
     
-    # Horizontal master bus across all 5 columns (from 280 to 1640)
     col_centers = [280, 620, 960, 1300, 1640]
     draw.line([(col_centers[0], 350), (col_centers[-1], 350)], fill=(0, 210, 255, 120), width=2)
     
-    # 5 Drop branches into L1 domains
     for cx in col_centers:
-        draw.ellipse([cx - 4, 350 - 4, cx + 4, 350 + 4], fill=(0, 210, 255)) # Bus junction
+        draw.ellipse([cx - 4, 350 - 4, cx + 4, 350 + 4], fill=(0, 210, 255))
         draw_arrow(draw, (cx, 350), (cx, 382), col=(0, 210, 255, 180), width=2, arrow_size=5)
         
     # ---------------------------------------------------------
-    # LEVEL 1 & 2 & 3: 5 DOMAIN PILLARS
+    # LEVEL 1 & 2 & 3: 5 SERVICE PLANNING DOMAINS
     # ---------------------------------------------------------
     cw = 320
     cgap = 20
     cols_x = [120 + i * (cw + cgap) for i in range(5)]
     
     domains_data = [
-        ("01. BOOT & KERNEL", "시스템 부팅 & 세션 거버넌스", (0, 114, 255), [
-            ("L2.1 Cold Boot Orchestrator", "비동기 부팅 & SQLite/Hive 캐시 복원", "$kernel_init · $async_boot_timer · $l10n_bind"),
-            ("L2.2 24h VIP Ad-Free Token", "보상형 광고 1회 기반 전면 무광고 세션 제어", "$reward_token · $expire_timestamp · $bypass_flag"),
-            ("L2.3 Local ACID Storage Engine", "SQLite & Hive NoSQL 100% 온디바이스 암호화", "$sqlite_cipher · $hive_nosql_box · $schema_v3"),
-            ("L2.4 Interactive Onboarding Guide", "DCA 수식 및 역산 알고리즘 튜토리얼", "$step_index · $bep_formula_card · $touch_hint")
+        ("01. PORTFOLIO DASHBOARD", "포트폴리오 대시보드 (홈)", (0, 210, 255), [
+            ("L2.1 계좌 자산 종합 요약", "총 투자금, 평가손익률, 실시간 자산 총람", "[표시] 총 평가액, 손익률 · [액션] 통화 전환, 계산 진입"),
+            ("L2.2 보유 종목 포지션 카드", "종목별 평단가, 보유 수량, 손실률 게이지 진단", "[표시] 평단가, 보유주수 · [규칙] 손실 포지션 상단 자동배치"),
+            ("L2.3 AI 음성 & 호가 프리셋 도크", "자연어 음성 인식 및 ±5%, ±10% 호가 퀵 입력", "[기능] 음성 STT 파싱 · [액션] 호가 프리셋 1탭 주입, 리셋"),
+            ("L2.4 4대 퀵 내비게이션 바", "엄지 조작(Fitts' Law) 최적화 핵심 메뉴 이동", "[이동] 계산기, 목표 역산, 리스크 리포트, 설정 직행")
         ]),
         
-        ("02. ASSET TELEMETRY", "포트폴리오 대시보드 도메인", (0, 210, 255), [
-            ("L2.1 Portfolio Telemetry Card", "총 평가액, 실시간 손익률, 종합 위험도 조망", "$total_asset · $unrealized_pnl · $gain_ratio"),
-            ("L2.2 Multimodal AI Voice Ingestion", "Google STT 마이크 '종목+단가+수량' 파싱", "$stt_stream · $ast_regex_token · $waveform_fps"),
-            ("L2.3 One-Touch Orderbook Presets", "±5%, ±10% 호가 칩으로 키패드 피로도 78% 절감", "$preset_chip_p5 · $preset_chip_p10 · $clear_btn"),
-            ("L2.4 2x2 Quick Action Dock", "Fitts' Law 기반 엄지 영역 원클릭 내비게이션", "$route_sim · $route_target · $route_report")
+        ("02. DCA SIMULATOR", "물타기 계산기 (시뮬레이터)", (0, 114, 255), [
+            ("L2.1 다회차 분할매수 플래너", "1차~N차 단계별 매수가/수량 분할 시뮬레이션", "[입력] 차수별 희망 매수가, 주수 · [액션] 행 추가/삭제, 증감"),
+            ("L2.2 실시간 평단 방어율 피드백", "추가 매수 즉시 도달 신규 평단 및 계좌 방어율", "[표시] 예상 평단가, 계좌 방어율(+%p) · [로직] 무지연 연동"),
+            ("L2.3 전략 비교 매트릭스", "공격적 일괄 매수 vs 단계별 분할 매수 대조", "[비교] 전략 A/B 평단 도달선, 손익분기점 소요 기간, 현금 소진율"),
+            ("L2.4 시나리오 보관 및 인계", "검토된 계산 결과 저장 및 목표가 역산기로 전달", "[액션] 시나리오 스냅샷 저장, 목표 역산기 0ms 자동 주입")
         ]),
         
-        ("03. QUANT DCA CORE", "퀀트 시뮬레이션 알고리즘 코어", (139, 92, 246), [
-            ("L2.1 Multi-Batch DCA Calculator", "1~N차 분할매수 가중평균 Closed-Form 연산", "$P_0 · $Q_0 · $P_add_1..N · $Q_add_1..N"),
-            ("L2.2 Dual-Scenario Comparator", "공격적 vs 보수적 전략 하락률 방어 동시 대조", "$scenario_A_curve · $scenario_B_curve · $bep_gap"),
-            ("L2.3 Dynamic Stepper Control", "소프트 키보드 가림 없는 양방향 미세 증감", "$stepper_plus · $stepper_minus · $haptic_tick"),
-            ("L2.4 Zero-Latency Feedback Card", "입력 즉시 0ms 신규 평단 및 방어율 렌더링", "$new_avg_price · $drop_defense · $req_cash")
+        ("03. GOAL-SEEKING INVERTER", "목표 평단가 역산기 (골시킹)", (245, 158, 11), [
+            ("L2.1 손익분기점(BEP) 역산 패널", "희망 탈출 평단 도달에 요구되는 정확한 주수 산출", "[입력] 탈출 희망 목표가, 추가매수가 · [출력] 필요 주수, 자금"),
+            ("L2.2 수학적 도달 검증 가드", "비현실적 목표가 입력 시 실시간 오류 방어", "[검증] P_add < P_target < P_0 · [안내] 실시간 적정 목표 권장"),
+            ("L2.3 가용 예수금 제약 슬라이더", "실제 보유 현금 내 실행 가능한 최적 현실 평단 탐색", "[조작] 60fps 반응형 예수금 슬라이더 · [피드백] 한도 내 최대 주수"),
+            ("L2.4 실행 플랜 확정 및 공유", "도출된 최적 매수 플랜 텍스트 요약 및 주문 준비", "[액션] 주문 요약 클립보드 복사, 분할 매수 알림 설정")
         ]),
         
-        ("04. GOAL-SEEKING INVERSION", "목표단가 역산 & 예수금 최적화", (245, 158, 11), [
-            ("L2.1 Closed-Form Inversion Engine", "손익분기점(BEP) 도달 필요 주수 폐쇄형 역산", "$calc_Q_add = Q_0(P_0-P_t)/(P_t-P_add)"),
-            ("L2.2 Mathematical Invariant Guard", "P_add < P_target < P_0 불변식 위반 실시간 방어", "$invariant_check · $toast_err · $bep_fallback"),
-            ("L2.3 Interactive Capital Slider (60fps)", "가용 예수금 제약 한도 내 최적 평단 실시간 도출", "$cash_budget_slider · $achievable_target_bep"),
-            ("L2.4 Zero-Loss Parameter Handoff", "도출된 최적 주수를 1탭으로 시뮬레이터 자동 주입", "$handoff_cta · $auto_inject_payload")
+        ("04. RISK AUDIT LAB", "계좌 리스크 진단실 (감사)", (16, 185, 129), [
+            ("L2.1 포트폴리오 비중 분석 도넛", "물타기 후 특정 종목 편중 및 쏠림 현황 가시화", "[시각화] 종목별 자산 비중 도넛 차트 · [지표] 집중도 HHI 지수"),
+            ("L2.2 3단계 위험도 판정 경보", "계좌 건전성(안전 / 주의 / 위험) 3단계 판정 가이드", "[판정] 단일 비중 65% 초과 과밀 경보, 예수금 고갈 경고"),
+            ("L2.3 하락장 스트레스 시뮬레이션", "시장 추가 급락(-10%, -20%) 시 계좌 충격도 점검", "[예측] 시나리오별 최대 낙폭(MDD), 추가 평가손실액 사전 방어"),
+            ("L2.4 종합 진단 리포트 내보내기", "퀀트 진단 요약 카드 이미지 생성 및 공유", "[출력] 리포트 카드 이미지 저장, 진단 결과 텍스트 복사")
         ]),
         
-        ("05. RISK AUDIT & GOVERNANCE", "리스크 진단 & 글로벌 규격", (16, 185, 129), [
-            ("L2.1 Portfolio Allocation Donut", "종목별 자산 비중 및 단일 종목 집중도 가시화", "$donut_chart · $hhi_concentration · $weight_pct"),
-            ("L2.2 3-Tier Volatility Matrix", "안전 / 주의 / 위험 3단계 정밀 리스크 판정", "$safe_badge · $warning_badge · $critical_badge"),
-            ("L2.3 Dynamic Locale & FX Currency", "7개국어 L10n 및 KRW/USD/JPY/EUR 통화 체계", "$l10n_7langs · $fx_currency_KRW_USD_JPY_EUR"),
-            ("L2.4 Diagnostic Report Export", "종합 진단 리포트 카드 원클릭 클립보드 공유", "$export_png · $clipboard_share · $audit_log")
+        ("05. PERSONALIZATION & SETTINGS", "사용자 환경 & 데이터 거버넌스", (139, 92, 246), [
+            ("L2.1 글로벌 통화 및 소수점 환경", "KRW(₩), USD($), JPY(¥), EUR(€) 및 해외주식 소수점", "[설정] 7개국어 다국어 지원, 기준 통화 선택, 소수점 자릿수"),
+            ("L2.2 거래 수수료 & 제세금 반영", "증권사 매매 수수료율 및 거래세 자동 감안 계산", "[설정] 매수/매도 수수료율(%) 직접 지정, 증권거래세 On/Off"),
+            ("L2.3 24시간 VIP 무광고 세션", "보상형 리워드 1회 시청 시 24시간 전면 무광고", "[혜택] 24h 광고 차단 타이머 활성화, 프리미엄 퀀트 무제한"),
+            ("L2.4 로컬 프라이버시 & 데이터 백업", "개인 금융 데이터 100% 온디바이스 암호화 저장", "[보안] 외부 서버 전송 없는 로컬 보안, JSON 데이터 백업/복원")
         ])
     ]
     
@@ -569,16 +566,16 @@ def make_slide_04():
         draw.rounded_rectangle([cx + 10, 395, cx + cw - 10, 460], radius=10, fill=(9, 13, 22), outline=(d_col[0], d_col[1], d_col[2], 120), width=1)
         draw.rounded_rectangle([cx + 18, 405, cx + 80, 427], radius=4, fill=(d_col[0], d_col[1], d_col[2], 40))
         draw.text((cx + 25, 409), "L1 DOMAIN", font=get_font(9.5, 'bold'), fill=d_col)
-        draw.text((cx + 88, 408), d_code.split('. ')[-1], font=get_font(12, 'bold'), fill=(255, 255, 255))
+        draw.text((cx + 88, 408), d_code.split('. ')[-1], font=get_font(11.5, 'bold'), fill=(255, 255, 255))
         draw.text((cx + 18, 435), d_name, font=get_font(13.5, 'bold'), fill=(255, 255, 255))
         
         # Tree branch vertical line within pillar
         tree_x = cx + 24
         draw.line([(tree_x, 460), (tree_x, 930)], fill=(d_col[0], d_col[1], d_col[2], 80), width=2)
         
-        # 4 L2 Containers with L3 Tokens
+        # 4 L2 Containers with L3 Specifications
         cy = 475
-        for l2_title, l2_desc, l3_tokens in containers:
+        for l2_title, l2_desc, l3_spec in containers:
             # Sub-branch connector from tree vertical line to container card
             draw.line([(tree_x, cy + 24), (cx + 36, cy + 24)], fill=(d_col[0], d_col[1], d_col[2], 120), width=2)
             draw.ellipse([tree_x - 3, cy + 24 - 3, tree_x + 3, cy + 24 + 3], fill=d_col)
@@ -592,15 +589,16 @@ def make_slide_04():
             draw.text((card_x + 12, cy + 10), l2_title, font=get_font(12.5, 'bold'), fill=(255, 255, 255))
             draw.text((card_x + 12, cy + 32), l2_desc, font=get_font(11, 'regular'), fill=(148, 163, 184))
             
-            # L3 Atomic Token Box
+            # L3 Planner Spec & Action Box
             draw.rounded_rectangle([card_x + 10, cy + 62, card_x + card_w - 10, cy + 95], radius=6, fill=(16, 22, 34), outline=(d_col[0], d_col[1], d_col[2], 50), width=1)
-            draw.text((card_x + 16, cy + 68), "• L3 TOKENS:", font=get_font(9.5, 'bold'), fill=d_col)
-            draw.text((card_x + 16, cy + 81), l3_tokens, font=get_font(9.5, 'regular'), fill=(148, 163, 184))
+            draw.text((card_x + 16, cy + 68), "• 기획 명세 & 사용자 액션:", font=get_font(9.5, 'bold'), fill=d_col)
+            draw.text((card_x + 16, cy + 81), l3_spec, font=get_font(9.5, 'regular'), fill=(148, 163, 184))
             
             cy += 118
             
     base.save(f'{OUT_DIR}/slide_04.png')
-    print("SAVED slide_04.png (True Hierarchical IA Tree Architecture)")
+    print("SAVED slide_04.png (Service Planning IA Tree Architecture)")
+
 
 
 # ==============================================================
@@ -1299,7 +1297,7 @@ def make_slide_08():
         draw.text((148, ly + 62), desc, font=get_font(13.5, 'regular'), fill=(148, 163, 184), spacing=4)
         ly += 180
         
-    phone = Image.open('portfolio/galaxy_mockups/galaxy_08_voice.png').convert('RGBA')
+    phone = Image.open('portfolio/iphone_mockups/iphone_08_voice.png').convert('RGBA')
     pw = 310
     ph = int(round(phone.height * (pw / phone.width)))
     phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)
@@ -1369,7 +1367,7 @@ def make_slide_09():
         draw.text((150, qy + 58), desc, font=get_font(13.5, 'regular'), fill=(148, 163, 184), spacing=3)
         qy += 135
         
-    phone = Image.open('portfolio/galaxy_mockups/galaxy_03_target.png').convert('RGBA')
+    phone = Image.open('portfolio/iphone_mockups/iphone_03_target.png').convert('RGBA')
     pw = 310
     ph = int(round(phone.height * (pw / phone.width)))
     phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)
@@ -1411,12 +1409,12 @@ def make_slide_10():
     draw.text((120, 228), "진입(홈) → 시뮬레이션 → 목표 역산 → 리포트 분석 → OLED 야간 다크모드 → 글로벌 설정으로 이어지는 유기적 사용자 흐름", font=get_font(16, 'regular'), fill=(148, 163, 184))
     
     screens = [
-        ('portfolio/galaxy_mockups/galaxy_01_home.png', '01. 홈 대시보드', '자산 텔레메트리 & 음성 도크'),
-        ('portfolio/galaxy_mockups/galaxy_02_sim.png', '02. 퀀트 계산기', '가중평균 & A/B 전략 대조'),
-        ('portfolio/galaxy_mockups/galaxy_03_target.png', '03. 목표 역산 엔진', '손익분기점(BEP) 폐쇄형 역산'),
-        ('portfolio/galaxy_mockups/galaxy_04_report.png', '04. 리스크 감사 리포트', '비중 왜곡 진단 & 3단계 시급도'),
-        ('portfolio/galaxy_mockups/galaxy_05_dark_home.png', '05. OLED 다크 테마', '야간 트레이더 WCAG AAA 고대비'),
-        ('portfolio/galaxy_mockups/galaxy_06_dark_settings.png', '06. 글로벌 거버넌스', '7개국 L10n & 24h VIP 제어')
+        ('portfolio/iphone_mockups/iphone_01_home.png', '01. 홈 대시보드', '자산 텔레메트리 & 음성 도크'),
+        ('portfolio/iphone_mockups/iphone_02_sim.png', '02. 퀀트 계산기', '가중평균 & A/B 전략 대조'),
+        ('portfolio/iphone_mockups/iphone_03_target.png', '03. 목표 역산 엔진', '손익분기점(BEP) 폐쇄형 역산'),
+        ('portfolio/iphone_mockups/iphone_04_report.png', '04. 리스크 감사 리포트', '비중 왜곡 진단 & 3단계 시급도'),
+        ('portfolio/iphone_mockups/iphone_05_dark_home.png', '05. OLED 다크 테마', '야간 트레이더 WCAG AAA 고대비'),
+        ('portfolio/iphone_mockups/iphone_06_dark_settings.png', '06. 글로벌 거버넌스', '7개국 L10n & 24h VIP 제어')
     ]
     
     pw = 210
@@ -1486,7 +1484,7 @@ def make_slide_11():
     draw.line([(120, 100), (1800, 100)], fill=(255, 255, 255, 20), width=1)
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
-    phone = Image.open('portfolio/galaxy_mockups/galaxy_05_dark_home.png').convert('RGBA')
+    phone = Image.open('portfolio/iphone_mockups/iphone_05_dark_home.png').convert('RGBA')
     pw = 310
     ph = int(round(phone.height * (pw / phone.width)))
     phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)

@@ -691,9 +691,9 @@ body.fit-window .behance-slide-img {
   width: 380px;
   height: 790px;
   background: #090D16;
-  border: 11px solid #1E2433;
-  border-radius: 46px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 87, 255, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  border: 11px solid #1E232E;
+  border-radius: 54px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.95), 0 0 0 1px #323A4B, 0 0 35px rgba(0, 87, 255, 0.25), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -701,58 +701,99 @@ body.fit-window .behance-slide-img {
   user-select: none;
 }
 
-/* Phone Top Bezel Details */
+/* Authentic iPhone Side Buttons */
+.proto-mobile-chassis::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 110px;
+  width: 3px;
+  height: 24px;
+  background: #2D3748;
+  border-radius: 2px 0 0 2px;
+  box-shadow: 0 42px 0 #2D3748, 0 88px 0 #2D3748; /* Action Button + Volume Up + Volume Down */
+}
+
+.proto-mobile-chassis::after {
+  content: '';
+  position: absolute;
+  right: -14px;
+  top: 150px;
+  width: 3px;
+  height: 48px;
+  background: #2D3748;
+  border-radius: 0 2px 2px 0; /* Side Power Button */
+}
+
+/* iPhone Top Bezel & iOS Status Bar */
 .chassis-notch {
   width: 100%;
-  height: 32px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 22px 0;
+  padding: 10px 24px 0;
   box-sizing: border-box;
-  background: #090D16;
-  z-index: 20;
+  background: #FFFFFF;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  z-index: 30;
+  position: relative;
 }
 
 .notch-time {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Pretendard', sans-serif;
+  font-size: 13px;
   font-weight: 700;
-  color: #FFFFFF;
+  color: #0F172A;
+  letter-spacing: -0.2px;
 }
 
-.notch-speaker-cam {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+/* Dynamic Island Capsule */
+.dynamic-island {
   position: absolute;
   left: 50%;
-  top: 10px;
+  top: 7px;
   transform: translateX(-50%);
-}
-
-.cam-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  width: 108px;
+  height: 26px;
   background: #000000;
-  border: 1px solid #2A364F;
-  box-shadow: inset 0 0 2px #00D2FF;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  z-index: 50;
 }
 
-.speaker-slit {
-  width: 36px;
-  height: 3px;
-  background: #2A364F;
-  border-radius: 2px;
+.island-sensor {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #111827;
 }
 
-.notch-icons {
+.island-cam {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #091220;
+  border: 1px solid #1E293B;
+  box-shadow: inset 0 0 2px rgba(0, 210, 255, 0.8);
+}
+
+.notch-icons.ios-icons {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
-  color: #FFFFFF;
+  color: #0F172A;
+}
+
+.ios-net {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
 }
 
 /* Mobile Screen Viewport & Animated Track */
@@ -1366,19 +1407,20 @@ body.fit-window .behance-slide-img {
 /* Phone Bottom Bar */
 .chassis-home-bar {
   width: 100%;
-  height: 20px;
-  background: #090D16;
+  height: 22px;
+  background: #F8FAFC;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 20;
+  border-top: 1px solid #E2E8F0;
 }
 
 .home-indicator-pill {
-  width: 120px;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 2px;
+  width: 135px;
+  height: 4.5px;
+  background: #0F172A;
+  border-radius: 100px;
 }
 
 /* Phone Flow Controller Buttons */
