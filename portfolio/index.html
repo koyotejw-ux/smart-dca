@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>스마트 물타기 계산기 (Smart DCA Calculator) - Behance Enterprise Case Study</title>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20261023_v6">
 </head>
 <body>
 
@@ -30,6 +30,10 @@
     </div>
 
     <div class="dock-right">
+      <button class="btn-live-proto" id="btn-goto-proto" title="핵심 플로우 라이브 인터랙티브 계산기 직접 체험">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        라이브 체험
+      </button>
       <button class="btn-icon" id="btn-fitscreen" title="화면 높이 맞춤 토글 (W)" aria-label="Toggle Fit Window">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
@@ -59,66 +63,224 @@
     <span>💡 방향키 <kbd>←</kbd> <kbd>→</kbd> 슬라이드 이동 · <kbd>W</kbd> 화면 높이 맞춤 · <kbd>F</kbd> 전체화면</span>
   </div>
 
+  <!-- Live Handoff Toast Notification -->
+  <div class="toast-notification" id="toast-notify" role="alert">
+    <div class="toast-icon">✓</div>
+    <div class="toast-msg">4개 퀀트 파라미터가 시뮬레이터로 0ms 무손실 인계되었습니다.</div>
+  </div>
+
   <!-- Main Slide Deck Feed -->
   <main class="deck-viewport" id="deck-viewport">
     <!-- Slide 01: Hero Cover -->
     <section class="behance-slide-container" id="slide-1" data-title="01. Hero Cover & Value Prop">
-      <img class="behance-slide-img" src="behance_slides/slide_01.png?v=20261023_fintech_lead_v5" alt="Slide 01: Hero Cover & Value Proposition" loading="eager">
+      <img class="behance-slide-img" src="behance_slides/slide_01.png?v=20261023_fintech_v6" alt="Slide 01: Hero Cover & Value Proposition" loading="eager">
     </section>
 
     <!-- Slide 02: Discovery & User Research -->
     <section class="behance-slide-container" id="slide-2" data-title="02. Discovery & IDI Data">
-      <img class="behance-slide-img" src="behance_slides/slide_02.png?v=20261023_fintech_lead_v5" alt="Slide 02: Discovery & User Research" loading="lazy">
+      <img class="behance-slide-img" src="behance_slides/slide_02.png?v=20261023_fintech_v6" alt="Slide 02: Discovery & User Research" loading="lazy">
     </section>
 
     <!-- Slide 03: Benchmark Matrix & Personas -->
     <section class="behance-slide-container" id="slide-3" data-title="03. Benchmark & Personas">
-      <img class="behance-slide-img" src="behance_slides/slide_03.png?v=20261023_fintech_lead_v5" alt="Slide 03: Competitive Benchmark & Target Personas" loading="lazy">
+      <img class="behance-slide-img" src="behance_slides/slide_03.png?v=20261023_fintech_v6" alt="Slide 03: Competitive Benchmark & Target Personas" loading="lazy">
     </section>
 
-    <!-- Slide 04: IA & CJM -->
-    <section class="behance-slide-container" id="slide-4" data-title="04. IA & Customer Journey">
-      <img class="behance-slide-img" src="behance_slides/slide_04.png?v=20261023_fintech_lead_v5" alt="Slide 04: Information Architecture & Customer Journey Map" loading="lazy">
+    <!-- Slide 04: Hierarchical IA Tree Architecture -->
+    <section class="behance-slide-container" id="slide-4" data-title="04. IA Hierarchical Tree">
+      <img class="behance-slide-img" src="behance_slides/slide_04.png?v=20261023_fintech_v6" alt="Slide 04: Domain-Driven Information Architecture Tree" loading="lazy">
     </section>
 
-    <!-- Slide 05: Flowchart & Logic Branch -->
-    <section class="behance-slide-container" id="slide-5" data-title="05. User Flow & Logic Branch">
-      <img class="behance-slide-img" src="behance_slides/slide_05.png?v=20261023_fintech_lead_v5" alt="Slide 05: User Flowchart & Logic Branch" loading="lazy">
+    <!-- Slide 05: True UX User Flowchart & Decision Branch -->
+    <section class="behance-slide-container" id="slide-5" data-title="05. UX User Flowchart">
+      <img class="behance-slide-img" src="behance_slides/slide_05.png?v=20261023_fintech_v6" alt="Slide 05: End-to-End User Journey & Decision Flowchart" loading="lazy">
     </section>
 
     <!-- Slide 06: Wireframe Specs -->
     <section class="behance-slide-container" id="slide-6" data-title="06. Wireframe Blueprint">
-      <img class="behance-slide-img" src="behance_slides/slide_06.png?v=20261023_fintech_lead_v5" alt="Slide 06: Wireframe Blueprint & Functional Specs" loading="lazy">
+      <img class="behance-slide-img" src="behance_slides/slide_06.png?v=20261023_fintech_v6" alt="Slide 06: Wireframe Blueprint & Functional Specs" loading="lazy">
     </section>
 
     <!-- Slide 07: Design System & Tokens -->
     <section class="behance-slide-container" id="slide-7" data-title="07. Design System & Tokens">
-      <img class="behance-slide-img" src="behance_slides/slide_07.png?v=20261023_fintech_lead_v5" alt="Slide 07: Design System Foundations & Semantic Tokens" loading="lazy">
+      <img class="behance-slide-img" src="behance_slides/slide_07.png?v=20261023_fintech_v6" alt="Slide 07: Design System Foundations & Semantic Tokens" loading="lazy">
     </section>
 
     <!-- Slide 08: Feature Spotlight 01 - STT Engine -->
     <section class="behance-slide-container" id="slide-8" data-title="08. 0.2s STT Voice Engine">
-      <img class="behance-slide-img" src="behance_slides/slide_08.png?v=20261023_fintech_lead_v5" alt="Slide 08: Feature Spotlight 01 - Speech-To-Text Ingestion" loading="lazy">
+      <img class="behance-slide-img" src="behance_slides/slide_08.png?v=20261023_fintech_v6" alt="Slide 08: Feature Spotlight 01 - Speech-To-Text Ingestion" loading="lazy">
     </section>
 
     <!-- Slide 09: Feature Spotlight 02 - Goal-Seeking Math -->
     <section class="behance-slide-container" id="slide-9" data-title="09. Goal-Seeking Math Logic">
-      <img class="behance-slide-img" src="behance_slides/slide_09.png?v=20261023_fintech_lead_v5" alt="Slide 09: Feature Spotlight 02 - Goal-Seeking Math Logic" loading="lazy">
+      <img class="behance-slide-img" src="behance_slides/slide_09.png?v=20261023_fintech_v6" alt="Slide 09: Feature Spotlight 02 - Goal-Seeking Math Logic" loading="lazy">
     </section>
 
     <!-- Slide 10: High-Fidelity 6 Screens -->
-    <section class="behance-slide-container" id="slide-10" data-title="10. High-Fi Screens Prototype">
-      <img class="behance-slide-img" src="behance_slides/slide_10.png?v=20261023_fintech_lead_v5" alt="Slide 10: High-Fidelity UI Screens & Interaction Prototype" loading="lazy">
+    <section class="behance-slide-container" id="slide-10" data-title="10. High-Fi 6 Screens">
+      <img class="behance-slide-img" src="behance_slides/slide_10.png?v=20261023_fintech_v6" alt="Slide 10: High-Fidelity UI Screens & Interaction Prototype" loading="lazy">
     </section>
 
-    <!-- Slide 11: OLED Deep Dark Theme -->
-    <section class="behance-slide-container" id="slide-11" data-title="11. OLED Dark & Accessibility">
-      <img class="behance-slide-img" src="behance_slides/slide_11.png?v=20261023_fintech_lead_v5" alt="Slide 11: OLED Deep Dark Theme & Accessibility" loading="lazy">
+    <!-- Slide 11: Core Flow Interactive Prototype Walkthrough -->
+    <section class="behance-slide-container" id="slide-11" data-title="11. Core Flow Prototype">
+      <img class="behance-slide-img" src="behance_slides/slide_11.png?v=20261023_fintech_v6" alt="Slide 11: Core User Flow Interactive Prototype Walkthrough" loading="lazy">
+    </section>
+
+    <!-- LIVE HANDS-ON INTERACTIVE QUANT PROTOTYPE -->
+    <section class="interactive-prototype-container" id="live-prototype">
+      <div class="proto-header">
+        <div class="proto-kicker">
+          <span class="proto-badge">⚡ LIVE HANDS-ON PROTOTYPE</span>
+          <span class="proto-subtext">CORE USER FLOW : CLOSED-FORM GOAL INVERSION & 60FPS CAPITAL SLIDER</span>
+        </div>
+        <h2 class="proto-title">핵심 사용자 플로우: 손익분기점(BEP) 역산 & 가용 예수금 실시간 최적화</h2>
+        <p class="proto-desc">수학적 경계 불변식(Invariant Guard) 검증 및 60fps 가용 예수금 슬라이더를 웹에서 직접 조작하여 실시간 방어 평단과 필요 매수 수량을 산출해 보세요.</p>
+        
+        <!-- Preset Quick Chips -->
+        <div class="proto-presets" aria-label="Preset Stocks">
+          <span class="presets-label">실전 시나리오 프리셋:</span>
+          <button class="preset-chip active" data-name="삼성전자" data-p0="78000" data-q0="100" data-pt="70000" data-padd="65000" data-budget="2500000">삼성전자 (-16.7%)</button>
+          <button class="preset-chip" data-name="SK하이닉스" data-p0="192000" data-q0="50" data-pt="175000" data-padd="160000" data-budget="4000000">SK하이닉스 (-16.7%)</button>
+          <button class="preset-chip" data-name="테슬라" data-p0="245000" data-q0="40" data-pt="215000" data-padd="190000" data-budget="3000000">테슬라 (-22.4%)</button>
+        </div>
+      </div>
+
+      <!-- Invariant Guard Alert Banner -->
+      <div class="invariant-banner valid" id="invariant-banner">
+        <div class="invariant-icon" id="inv-icon">✓</div>
+        <div class="invariant-body">
+          <span class="invariant-title" id="inv-title">수학적 경계 불변식 만족 (Valid Invariant)</span>
+          <span class="invariant-formula" id="inv-formula">P_add (₩65,000) &lt; P_target (₩70,000) &lt; P_0 (₩78,000) [정상 폐쇄형 역산 가능]</span>
+        </div>
+      </div>
+
+      <!-- Main Interactive Workbench (2 Columns) -->
+      <div class="proto-workbench">
+        <!-- Left: Input & Constraint Controls -->
+        <div class="proto-card proto-controls">
+          <div class="card-heading">
+            <span class="step-num">01</span>
+            <h3>포지션 및 목표 파라미터 입력</h3>
+          </div>
+
+          <div class="input-grid">
+            <div class="input-field">
+              <label for="input-p0">현재 보유 평단가 (P<sub>0</sub>)</label>
+              <div class="input-wrapper">
+                <span class="input-unit">₩</span>
+                <input type="number" id="input-p0" value="78000" step="500">
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label for="input-q0">현재 보유 수량 (Q<sub>0</sub>)</label>
+              <div class="input-wrapper">
+                <input type="number" id="input-q0" value="100" step="1">
+                <span class="input-unit-right">주</span>
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label for="input-pt">희망 탈출 평단가 (P<sub>target</sub>)</label>
+              <div class="input-wrapper highlight-cyan">
+                <span class="input-unit">₩</span>
+                <input type="number" id="input-pt" value="70000" step="500">
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label for="input-padd">추가 매수 희망단가 (P<sub>add</sub>)</label>
+              <div class="input-wrapper">
+                <span class="input-unit">₩</span>
+                <input type="number" id="input-padd" value="65000" step="500">
+              </div>
+            </div>
+          </div>
+
+          <!-- 60fps Interactive Slider Section -->
+          <div class="slider-block">
+            <div class="slider-header">
+              <label for="input-budget">
+                <span class="slider-title">가용 예수금 제약 한도 (Capital Budget)</span>
+                <span class="slider-badge">60fps Live Slider</span>
+              </label>
+              <span class="slider-val" id="budget-display">₩ 2,500,000</span>
+            </div>
+            <input type="range" id="input-budget" min="500000" max="10000000" step="100000" value="2500000" class="proto-slider">
+            <div class="slider-ticks">
+              <span>₩ 50만</span>
+              <span>₩ 250만</span>
+              <span>₩ 500만</span>
+              <span>₩ 750만</span>
+              <span>₩ 1,000만</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Quant Computed Telemetry -->
+        <div class="proto-card proto-results">
+          <div class="card-heading">
+            <span class="step-num">02</span>
+            <h3>폐쇄형 역산 & 실시간 방어율 산출</h3>
+          </div>
+
+          <!-- Theoretical Goal Result -->
+          <div class="result-tile theory-tile">
+            <div class="tile-header">
+              <span class="tile-tag">THEORETICAL GOAL</span>
+              <span class="tile-formula">Q_add = Q_0 × (P_0 - P_t) / (P_t - P_add)</span>
+            </div>
+            <div class="tile-metrics">
+              <div class="metric-item">
+                <span class="m-label">목표 평단 도달 필요 주수</span>
+                <span class="m-val highlight" id="theory-q"><strong>+160.0</strong> 주</span>
+              </div>
+              <div class="metric-item">
+                <span class="m-label">필요 총 소요 자금</span>
+                <span class="m-val" id="theory-cash">₩ 10,400,000</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Real Execution under Capital Constraint -->
+          <div class="result-tile actual-tile">
+            <div class="tile-header">
+              <span class="tile-tag active-tag">CAPITAL CONSTRAINED EXECUTION</span>
+              <span class="tile-note">예수금 한도 내 최적 실행</span>
+            </div>
+            <div class="tile-metrics">
+              <div class="metric-item">
+                <span class="m-label">실제 매수 집행 수량</span>
+                <span class="m-val accent-green" id="actual-q"><strong>+38</strong> 주 (₩2,470,000)</span>
+              </div>
+              <div class="metric-item">
+                <span class="m-label">도달 가능 최적 방어 평단</span>
+                <span class="m-val accent-cyan" id="actual-avg">₩ 74,420</span>
+              </div>
+              <div class="metric-item">
+                <span class="m-label">하락률 방어 효과</span>
+                <span class="m-val accent-emerald" id="actual-defense">-16.7% → -12.7% (+4.0%p 방어)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 1-Tap Handoff Action -->
+          <div class="proto-actions">
+            <button class="btn-handoff" id="btn-handoff">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              1-Tap 파라미터 시뮬레이터 인계
+            </button>
+            <button class="btn-copy-report" id="btn-copy-report">
+              클립보드 리포트 복사
+            </button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Slide 12: Business Impact & STAR Retrospective -->
     <section class="behance-slide-container" id="slide-12" data-title="12. Impact & STAR Retrospective">
-      <img class="behance-slide-img" src="behance_slides/slide_12.png?v=20261023_fintech_lead_v5" alt="Slide 12: Quantitative Impact & STAR Retrospective" loading="lazy">
+      <img class="behance-slide-img" src="behance_slides/slide_12.png?v=20261023_fintech_v6" alt="Slide 12: Quantitative Impact & STAR Retrospective" loading="lazy">
     </section>
   </main>
 
@@ -132,8 +294,10 @@
       const btnNext = document.getElementById('btn-next');
       const btnFitscreen = document.getElementById('btn-fitscreen');
       const btnFullscreen = document.getElementById('btn-fullscreen');
+      const btnGotoProto = document.getElementById('btn-goto-proto');
       const navRail = document.getElementById('nav-rail');
       const keyHint = document.getElementById('key-hint');
+      const liveProtoSec = document.getElementById('live-prototype');
       let currentIndex = 0;
 
       // Fit Screen Toggle Function
@@ -142,11 +306,17 @@
         if (btnFitscreen) {
           btnFitscreen.classList.toggle('active', isFit);
         }
-        // Re-scroll current slide into view
         setTimeout(() => scrollToSlide(currentIndex), 100);
       }
       if (btnFitscreen) {
         btnFitscreen.addEventListener('click', toggleFitScreen);
+      }
+
+      // Goto Prototype Button
+      if (btnGotoProto && liveProtoSec) {
+        btnGotoProto.addEventListener('click', () => {
+          liveProtoSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
       }
 
       // 1. Build Dot Navigation Rail
@@ -224,7 +394,7 @@
 
       // 4. Keyboard Navigation
       window.addEventListener('keydown', (e) => {
-        // Prevent default only for presentation navigation keys
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
         if (['ArrowDown', 'ArrowRight', 'PageDown', ' '].includes(e.key)) {
           e.preventDefault();
           if (currentIndex < totalSlides - 1) scrollToSlide(currentIndex + 1);
@@ -258,11 +428,152 @@
       }
       btnFullscreen.addEventListener('click', toggleFullscreen);
 
-      // 6. Dismiss key hint after 6s
+      // 6. Dismiss key hint after 5.5s
       setTimeout(() => {
         keyHint.style.opacity = '0';
         setTimeout(() => keyHint.remove(), 600);
       }, 5500);
+
+      // ==============================================================
+      // 7. LIVE INTERACTIVE QUANT CALCULATOR ENGINE
+      // ==============================================================
+      const inputP0 = document.getElementById('input-p0');
+      const inputQ0 = document.getElementById('input-q0');
+      const inputPt = document.getElementById('input-pt');
+      const inputPadd = document.getElementById('input-padd');
+      const inputBudget = document.getElementById('input-budget');
+      const budgetDisplay = document.getElementById('budget-display');
+      
+      const invBanner = document.getElementById('invariant-banner');
+      const invIcon = document.getElementById('inv-icon');
+      const invTitle = document.getElementById('inv-title');
+      const invFormula = document.getElementById('inv-formula');
+      
+      const theoryQ = document.getElementById('theory-q');
+      const theoryCash = document.getElementById('theory-cash');
+      const actualQ = document.getElementById('actual-q');
+      const actualAvg = document.getElementById('actual-avg');
+      const actualDefense = document.getElementById('actual-defense');
+      
+      const btnHandoff = document.getElementById('btn-handoff');
+      const btnCopyReport = document.getElementById('btn-copy-report');
+      const toastNotify = document.getElementById('toast-notify');
+      const presetChips = Array.from(document.querySelectorAll('.preset-chip'));
+
+      function formatWon(num) {
+        return '₩ ' + Math.round(num).toLocaleString('ko-KR');
+      }
+
+      function updateCalculator() {
+        const p0 = parseFloat(inputP0.value) || 0;
+        const q0 = parseFloat(inputQ0.value) || 0;
+        const pt = parseFloat(inputPt.value) || 0;
+        const padd = parseFloat(inputPadd.value) || 0;
+        const budget = parseFloat(inputBudget.value) || 0;
+
+        budgetDisplay.textContent = formatWon(budget);
+
+        // Mathematical Invariant Check: P_add < P_target < P_0
+        const isValid = padd < pt && pt < p0;
+
+        if (isValid) {
+          invBanner.className = 'invariant-banner valid';
+          invIcon.textContent = '✓';
+          invTitle.textContent = '수학적 경계 불변식 만족 (Valid Invariant)';
+          invFormula.textContent = `P_add (${formatWon(padd)}) < P_target (${formatWon(pt)}) < P_0 (${formatWon(p0)}) [정상 폐쇄형 역산 가능]`;
+          btnHandoff.disabled = false;
+        } else {
+          invBanner.className = 'invariant-banner invalid';
+          invIcon.textContent = '✕';
+          invTitle.textContent = '수학적 경계 불변식 위반 (Boundary Violation)';
+          if (pt >= p0) {
+            invFormula.textContent = `목표 평단가(${formatWon(pt)})는 현재 평단가(${formatWon(p0)})보다 낮아야 합니다 (하락장 평단 낮추기 불변식).`;
+          } else if (pt <= padd) {
+            invFormula.textContent = `목표 평단가(${formatWon(pt)})는 추가 매수가(${formatWon(padd)})보다 높아야 합니다 (도달 불가 목표가).`;
+          } else {
+            invFormula.textContent = `추가 매수가 < 목표 평단가 < 현재 평단가 조건을 만족해야 합니다.`;
+          }
+          btnHandoff.disabled = true;
+          theoryQ.innerHTML = '<strong>계산 불가</strong>';
+          theoryCash.textContent = '불변식 위반';
+          actualQ.innerHTML = '<strong>계산 불가</strong>';
+          actualAvg.textContent = '불변식 위반';
+          actualDefense.textContent = '유효한 파라미터를 입력해주세요.';
+          return;
+        }
+
+        // 1. Theoretical Closed-Form Inversion: Q_add = Q_0 * (P_0 - P_t) / (P_t - P_add)
+        const qNeed = q0 * (p0 - pt) / (pt - padd);
+        const cashNeed = qNeed * padd;
+
+        theoryQ.innerHTML = `<strong>+${qNeed.toFixed(1)}</strong> 주`;
+        theoryCash.textContent = formatWon(cashNeed);
+
+        // 2. Budget Constrained Execution: Q_exec = floor(Budget / P_add)
+        const maxExecutableQ = Math.floor(budget / padd);
+        const actualCost = maxExecutableQ * padd;
+        const newTotalQ = q0 + maxExecutableQ;
+        const newAvg = (p0 * q0 + actualCost) / (newTotalQ > 0 ? newTotalQ : 1);
+
+        actualQ.innerHTML = `<strong>+${maxExecutableQ}</strong> 주 (${formatWon(actualCost)})`;
+        actualAvg.textContent = formatWon(newAvg);
+
+        // Defense Ratio: Compare loss at current price P_add
+        const initLoss = ((padd - p0) / p0) * 100;
+        const newLoss = ((padd - newAvg) / newAvg) * 100;
+        const defenseDelta = newLoss - initLoss;
+
+        actualDefense.textContent = `${initLoss.toFixed(1)}% → ${newLoss.toFixed(1)}% (+${defenseDelta.toFixed(1)}%p 방어)`;
+      }
+
+      // Event Listeners for Live Reactive Updates (60fps on slider input)
+      [inputP0, inputQ0, inputPt, inputPadd].forEach(el => el.addEventListener('input', updateCalculator));
+      inputBudget.addEventListener('input', updateCalculator);
+
+      // Preset Chips
+      presetChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          presetChips.forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+
+          inputP0.value = chip.dataset.p0;
+          inputQ0.value = chip.dataset.q0;
+          inputPt.value = chip.dataset.pt;
+          inputPadd.value = chip.dataset.padd;
+          inputBudget.value = chip.dataset.budget;
+
+          updateCalculator();
+        });
+      });
+
+      // Show Toast Notification
+      function showToast(msg) {
+        if (!toastNotify) return;
+        toastNotify.querySelector('.toast-msg').textContent = msg;
+        toastNotify.classList.add('show');
+        setTimeout(() => toastNotify.classList.remove('show'), 3000);
+      }
+
+      // 1-Tap Handoff Button
+      btnHandoff.addEventListener('click', () => {
+        btnHandoff.classList.add('pulse');
+        setTimeout(() => btnHandoff.classList.remove('pulse'), 400);
+
+        const summary = `[Smart DCA Handoff] P_0: ${formatWon(inputP0.value)}, Q_0: ${inputQ0.value}주, P_target: ${formatWon(inputPt.value)}, P_add: ${formatWon(inputPadd.value)}, 가용예수금: ${formatWon(inputBudget.value)} => 최적집행: ${actualQ.textContent.trim()}, 방어평단: ${actualAvg.textContent.trim()}`;
+        navigator.clipboard.writeText(summary).catch(() => {});
+        showToast('✓ 4개 퀀트 파라미터가 시뮬레이터로 0ms 무손실 인계되었습니다!');
+      });
+
+      // Copy Report Button
+      btnCopyReport.addEventListener('click', () => {
+        const report = `[Smart DCA 퀀트 진단 리포트]\n- 현재 평단: ${formatWon(inputP0.value)} (${inputQ0.value}주)\n- 목표 평단: ${formatWon(inputPt.value)}\n- 추가 매수가: ${formatWon(inputPadd.value)}\n- 가용 예수금: ${formatWon(inputBudget.value)}\n- 이론적 필요 주수: ${theoryQ.textContent.trim()} (${theoryCash.textContent.trim()})\n- 예수금 제약 실행: ${actualQ.textContent.trim()}\n- 최종 방어 평단: ${actualAvg.textContent.trim()}\n- 방어 효과: ${actualDefense.textContent.trim()}`;
+        navigator.clipboard.writeText(report).then(() => {
+          showToast('✓ 퀀트 진단 리포트가 클립보드에 복사되었습니다.');
+        }).catch(() => {});
+      });
+
+      // Initial Calculation
+      updateCalculator();
 
     })();
   </script>
