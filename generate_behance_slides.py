@@ -96,16 +96,88 @@ def draw_l_arrow(draw, corner, p2, col=(100, 116, 139), width=2, arrow_size=6):
             draw.polygon([(x2 + arrow_size * 1.5, y2 - arrow_size), (x2 + arrow_size * 1.5, y2 + arrow_size), (x2, y2)], fill=col)
 
 
+def draw_pill_badge(draw, cx=None, cy=0, text="", font=None, theme='blue', has_dot=True, dark_mode=True, pad_x=14, height=30, left_x=None):
+    """
+    Renders a mathematically centered, high-contrast, beautiful pill badge with pixel-perfect alignment.
+    Supports themes: 'blue', 'green', 'red', 'amber', 'purple', 'cyan', 'slate', 'dark'.
+    Can be positioned by center (cx, cy) or aligned by left edge (left_x, cy).
+    """
+    if font is None:
+        font = get_font(10.5, 'bold')
+        
+    color_schemes_dark = {
+        'blue':   {'bg': (16, 42, 86, 255),  'border': (0, 140, 255, 255),  'text': (0, 215, 255, 255),  'dot': (0, 215, 255, 255)},
+        'cyan':   {'bg': (8, 48, 64, 255),   'border': (0, 210, 255, 255),  'text': (0, 230, 255, 255),  'dot': (0, 230, 255, 255)},
+        'green':  {'bg': (12, 48, 36, 255),  'border': (16, 185, 129, 255), 'text': (52, 211, 153, 255), 'dot': (16, 185, 129, 255)},
+        'red':    {'bg': (58, 20, 24, 255),  'border': (239, 68, 68, 255),  'text': (255, 140, 140, 255),'dot': (239, 68, 68, 255)},
+        'amber':  {'bg': (54, 38, 12, 255),  'border': (245, 158, 11, 255), 'text': (251, 191, 36, 255), 'dot': (245, 158, 11, 255)},
+        'purple': {'bg': (42, 22, 70, 255),  'border': (168, 85, 247, 255), 'text': (216, 180, 254, 255),'dot': (168, 85, 247, 255)},
+        'slate':  {'bg': (30, 41, 59, 255),  'border': (100, 116, 139, 255),'text': (226, 232, 240, 255),'dot': (148, 163, 184, 255)},
+        'dark':   {'bg': (15, 23, 42, 255),  'border': (51, 65, 85, 255),   'text': (255, 255, 255, 255),'dot': (0, 215, 255, 255)},
+    }
+    color_schemes_light = {
+        'blue':   {'bg': (239, 246, 255, 255), 'border': (147, 197, 253, 255), 'text': (29, 78, 216, 255),  'dot': (37, 99, 235, 255)},
+        'cyan':   {'bg': (236, 254, 255, 255), 'border': (103, 232, 249, 255), 'text': (14, 116, 144, 255), 'dot': (6, 182, 212, 255)},
+        'green':  {'bg': (236, 253, 245, 255), 'border': (110, 231, 183, 255), 'text': (6, 95, 70, 255),    'dot': (16, 185, 129, 255)},
+        'red':    {'bg': (254, 242, 242, 255), 'border': (252, 165, 165, 255), 'text': (153, 27, 27, 255),  'dot': (220, 38, 38, 255)},
+        'amber':  {'bg': (254, 243, 199, 255), 'border': (252, 211, 77, 255),  'text': (146, 64, 14, 255),  'dot': (217, 119, 6, 255)},
+        'purple': {'bg': (245, 243, 255, 255), 'border': (216, 180, 254, 255), 'text': (109, 40, 217, 255), 'dot': (147, 51, 234, 255)},
+        'slate':  {'bg': (241, 245, 249, 255), 'border': (203, 213, 225, 255), 'text': (51, 65, 85, 255),   'dot': (100, 116, 139, 255)},
+        'dark':   {'bg': (15, 23, 42, 255),    'border': (15, 23, 42, 255),     'text': (255, 255, 255, 255),'dot': (0, 210, 255, 255)},
+    }
+    
+    scheme = color_schemes_dark.get(theme, color_schemes_dark['blue']) if dark_mode else color_schemes_light.get(theme, color_schemes_light['blue'])
+    
+    bbox = draw.textbbox((0, 0), text, font=font)
+    tw = bbox[2] - bbox[0]
+    th = bbox[3] - bbox[1]
+    
+    dot_diameter = 7
+    dot_gap = 8
+    
+    if has_dot:
+        content_w = dot_diameter + dot_gap + tw
+    else:
+        content_w = tw
+        
+    bw = int(content_w + pad_x * 2)
+    bh = int(height)
+    radius = bh // 2
+    
+    if left_x is not None:
+        bx1 = int(round(left_x))
+        bx2 = bx1 + bw
+        cx = (bx1 + bx2) / 2.0
+    else:
+        bx1 = int(round(cx - bw / 2.0))
+        bx2 = bx1 + bw
+        
+    by1 = int(round(cy - bh / 2.0))
+    by2 = by1 + bh
+    
+    # Draw pill container
+    draw.rounded_rectangle([bx1, by1, bx2, by2], radius=radius, fill=scheme['bg'], outline=scheme['border'], width=1)
+    
+    # Calculate exact vertical text position using bbox center
+    ty = int(round(cy - (bbox[1] + bbox[3]) / 2.0))
+    
+    if has_dot:
+        content_x1 = cx - content_w / 2.0
+        dot_cx = content_x1 + dot_diameter / 2.0
+        dot_cy = cy
+        r = dot_diameter / 2.0
+        draw.ellipse([int(round(dot_cx - r)), int(round(dot_cy - r)), int(round(dot_cx + r)), int(round(dot_cy + r))], fill=scheme['dot'])
+        
+        tx = int(round(content_x1 + dot_diameter + dot_gap - bbox[0]))
+    else:
+        tx = int(round(cx - (bbox[0] + bbox[2]) / 2.0))
+        
+    draw.text((tx, ty), text, font=font, fill=scheme['text'])
+    return bx1, by1, bx2, by2
+
 def draw_branch_badge(draw, cx, cy, text, is_yes=True):
     """Draws a clean, high-contrast, solid badge for YES / NO branches positioned with clear margins."""
-    bg_col = (236, 253, 245) if is_yes else (254, 242, 242)
-    border_col = (22, 163, 74) if is_yes else (220, 38, 38)
-    txt_col = (21, 128, 61) if is_yes else (185, 28, 28)
-    
-    bw, bh = 42, 22
-    draw.rounded_rectangle([cx - bw // 2, cy - bh // 2, cx + bw // 2, cy + bh // 2], radius=6, fill=bg_col, outline=border_col, width=1)
-    tw = draw.textlength(text, font=get_font(10.5, 'bold'))
-    draw.text((cx - tw // 2, cy - 7), text, font=get_font(10.5, 'bold'), fill=txt_col)
+    return draw_pill_badge(draw, cx, cy, text, theme='green' if is_yes else 'red', has_dot=False, dark_mode=False, pad_x=10, height=22)
 
 def find_perspective_coeffs(source_coords, target_coords):
     """Computes homography coefficients for PIL inverse perspective transform."""
@@ -190,35 +262,31 @@ def make_slide_01():
     draw.text((365, 132), "·", font=get_font(13, 'bold'), fill=(100, 116, 139))
     draw.text((385, 132), "ALGORITHMIC QUANT DCA SOLUTION", font=get_font(13, 'bold'), fill=(148, 163, 184))
     
-    # Live Store Badge
-    draw.rounded_rectangle([1590, 122, 1800, 154], radius=16, fill=(16, 185, 129, 25), outline=(16, 185, 129, 90), width=1)
-    draw.ellipse([1608, 135, 1616, 143], fill=(16, 185, 129))
-    draw.text((1628, 131), "PLAY STORE LIVE", font=get_font(11, 'bold'), fill=(52, 211, 153))
+    # Live Store Badge (100% Mathematically Centered Pill Badge)
+    draw_pill_badge(draw, 1695, 138, "PLAY STORE LIVE", theme='green', has_dot=True, dark_mode=True, height=32)
     
     # Headline
     draw.text((120, 205), "하락장 인지 편향을 극복하는\n정량적 분할매수(DCA) 퀀트 솔루션", font=get_font(52, 'black'), fill=(255, 255, 255), spacing=16)
     
-    # Subtitle
+    # Subtitle - Senior Service / UX Planning Perspective
     draw.text((120, 365), "Overcoming Panic Selling with Algorithmic Position Sizing & Real-time Goal-Seeking", font=get_font(17, 'bold'), fill=(0, 210, 255))
-    draw.text((120, 402), "극단적 변동성 장세에서 휴리스틱 오류와 뇌동매매를 차단하고, 0.2초 온디바이스 음성 멀티모달 파서와\nClosed-Form 역산 엔진으로 계좌 방어율을 극대화하는 모바일 퀀트 코어", font=get_font(15.5, 'regular'), fill=(148, 163, 184), spacing=7)
+    draw.text((120, 402), "시장 급락 시 발생하는 뇌동매매와 인지 과부하를 원천 차단하고, 0.2초 음성 즉시 입력과\n목표 탈출가 역산 알고리즘으로 냉철한 의사결정을 돕는 스마트 자산 방어 솔루션", font=get_font(15.5, 'regular'), fill=(148, 163, 184), spacing=7)
     
     # 3 High-Impact Metric Cards (Left: x=120..880, y=505..875)
     metrics = [
-        ("0.2s", "MULTIMODAL INGESTION", "호가 급변 시 0.2초 음성 발화로 정규식 AST 토크나이저 즉각 파싱"),
-        ("100%", "GOAL-SEEKING INVERSION", "손익분기점(BEP) 도달에 필요한 추가 매수 수량 폐쇄형 역산"),
-        ("24h", "VIP AD-FREE CYCLE", "보상형 광고 1회 시청 기반 24시간 전면 무광고 세션 라이프사이클")
+        ("0.2s", "VOICE QUICK INPUT", "호가 폭락 시 키패드 오타 없이 말 한마디로 종목/수량 즉각 반영", "cyan"),
+        ("100%", "GOAL-SEEKING UX", "원금 회복 및 손익분기점 도달에 필요한 최적 분할 매수량 자동 역산", "blue"),
+        ("24h", "CLEAN AD-FREE SESSION", "금융 의사결정 방해 요소를 배제하는 24시간 안심 무광고 리워드 세션", "green")
     ]
     my = 505
-    for val, tag, desc in metrics:
+    for val, tag, desc, theme in metrics:
         draw.rounded_rectangle([120, my, 880, my + 110], radius=14, fill=(16, 22, 34, 230), outline=(255, 255, 255, 20), width=1)
         draw.rounded_rectangle([120, my + 16, 124, my + 94], radius=2, fill=(0, 114, 255))
         
         draw.text((148, my + 20), val, font=get_num_font(40, 'black'), fill=(255, 255, 255))
-        vw = draw.textlength(val, font=get_num_font(40, 'black'))
         
-        tw = draw.textlength(tag, font=get_font(10.5, 'bold'))
-        draw.rounded_rectangle([148 + vw + 18, my + 25, 148 + vw + 30 + tw, my + 49], radius=4, fill=(0, 87, 255, 40))
-        draw.text((148 + vw + 24, my + 29), tag, font=get_font(10.5, 'bold'), fill=(0, 210, 255))
+        # Pill Badge aligned on a clean vertical axis (x=310) with perfect centering and high contrast
+        draw_pill_badge(draw, cy=my + 38, text=tag, font=get_font(10, 'bold'), theme=theme, has_dot=False, dark_mode=True, pad_x=10, height=24, left_x=310)
         
         draw.text((148, my + 72), desc, font=get_font(13.5, 'regular'), fill=(148, 163, 184))
         my += 128
@@ -285,16 +353,16 @@ def make_slide_02():
     draw.line([(120, 100), (1800, 100)], fill=(226, 232, 240), width=1)
     draw.line([(120, 980), (1800, 980)], fill=(226, 232, 240), width=1)
     
-    # Header
-    draw.text((120, 130), "01  /  BEHAVIORAL FINANCE RESEARCH & HEURISTIC DISCOVERY", font=get_font(13, 'bold'), fill=(0, 87, 255))
-    draw.text((120, 165), "행동재무학적 투자 실패 패턴 분석과 3대 인지 병목", font=get_font(50, 'black'), fill=(15, 23, 42))
-    draw.text((120, 240), "리테일 트레이더 428명 정량 설문 및 12명 심층 인터뷰(IDI)를 통해 규명한 하락장 손실 증폭 메커니즘", font=get_font(18, 'regular'), fill=(100, 116, 139))
+    # Header - Senior Service Planning Perspective
+    draw.text((120, 130), "01  /  BEHAVIORAL FINANCE RESEARCH & USER DISCOVERY", font=get_font(13, 'bold'), fill=(0, 87, 255))
+    draw.text((120, 165), "하락장 투자자의 3대 인지 병목과 서비스 기획 배경", font=get_font(50, 'black'), fill=(15, 23, 42))
+    draw.text((120, 240), "리테일 트레이더 428명 정량 설문 및 12명 심층 인터뷰(IDI)를 통해 규명한 급락장 행동 편향과 UI 개선 기회", font=get_font(18, 'regular'), fill=(100, 116, 139))
     
     # Left Column: 3 Massive Stat Cards (Architectural & Masculine)
     stats = [
         ("82.6%", "손실 회피 및 처분 효과 (Disposition Bias)", "수학적 출구 전략 부재로 인한 비이성적 물타기 집행", (220, 38, 38)),
-        ("240s→4.2s", "호가 급변 시 입력 레이턴시 (Slip Risk)", "8자리 소수점 키패드 타이핑 중 호가 이탈 및 슬리피지 발생", (217, 119, 6)),
-        ("0 / 14개", "주요 증권사 MTS 목표 역산 기능 부재", "단순 사후 평단 합산에 국한되어 목표가 역산 경로 전무", (0, 87, 255))
+        ("240s→4.2s", "호가 급변 시 입력 지연 (Input Friction)", "8자리 소수점 키패드 타이핑 중 호가 이탈 및 슬리피지 발생", (217, 119, 6)),
+        ("0 / 14개", "주요 증권사 MTS 목표 역산 부재", "단순 사후 평단 합산에 국한되어 목표가 역산 경로 전무", (0, 87, 255))
     ]
     
     sy = 300
@@ -313,24 +381,25 @@ def make_slide_02():
     cards = [
         ("01", "Allocation Drift : 포트폴리오 비중 잠식 & 한계효용 체감",
          "\"단가를 낮추려 4차까지 추가 매수했지만, 예수금 78%가 단일 종목에 고착되고 평단 방어율은 1.8%에 불과했습니다.\"\n— 3년 차 스윙 투자자 IDI (심층 인터뷰)",
-         "포트폴리오 비중 왜곡(Allocation Drift) 경보 & 차수별 방어 한계효용(Marginal Utility) 실시간 가시화", (220, 38, 38)),
+         "포트폴리오 비중 왜곡(Allocation Drift) 경보 & 차수별 방어 한계효용 실시간 가시화", (220, 38, 38)),
          
-        ("02", "Execution Friction : UI 조작 부하로 인한 슬리피지(Slippage) 손실",
-         "\"초 단위로 호가가 무너지는 패닉셀 장세에서 키보드로 단가와 수량을 치다 지지선을 놓쳐 -6.4% 추가 슬리피지가 발생했습니다.\"\n— 크립토 / 모멘텀 단타 트레이더 IDI (심층 인터뷰)",
-         "0.2s 온디바이스 STT 멀티모달 파서 & ±5%·±10% 호가 칩 즉시 주입으로 타이핑 레이턴시 98% 제거", (217, 119, 6)),
+        ("02", "Execution Friction : UI 조작 부하로 인한 슬리피지 손실",
+         "\"초 단위로 호가가 무너지는 패닉셀 장세에서 키보드로 단가와 수량을 치다 지지선을 놓쳐 -6.4% 추가 손실이 발생했습니다.\"\n— 크립토 / 모멘텀 단타 트레이더 IDI (심층 인터뷰)",
+         "0.2s 음성 퀵 입력 & ±5%, ±10% 호가 칩 즉시 주입으로 타이핑 피로 98% 제거", (217, 119, 6)),
          
         ("03", "No Exit Strategy : 목표 탈출 단가 도달 필요 수량의 불확실성",
          "\"희망 매도가(예: -3% 손실권)로 탈출하기 위해 정확히 몇 주를 얼마에 사야 하는지 계산할 수 없어 맹목적으로 매수했습니다.\"\n— 5년 차 퀀트 투자자 IDI (심층 인터뷰)",
-         "Goal Seeking Closed-Form 수식을 통한 필요 예수금 및 수량의 폐쇄형 역산 알고리즘 탑재", (0, 87, 255))
+         "Closed-Form 목표 평단가 역산 수식으로 필요 예수금 및 수량 즉각 제시", (0, 87, 255))
     ]
     
     ry = 300
     for num, ptitle, pquote, psol, pcol in cards:
         draw.rounded_rectangle([660, ry, 1800, ry + 195], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
         
-        # Number badge
+        # Number badge (Perfect Mathematical Centering)
         draw.rounded_rectangle([695, ry + 24, 735, ry + 56], radius=6, fill=(15, 23, 42))
-        draw.text((702, ry + 29), num, font=get_num_font(15, 'bold'), fill=(255, 255, 255))
+        n_bbox = draw.textbbox((0, 0), num, font=get_num_font(15, 'bold'))
+        draw.text((715 - (n_bbox[0] + n_bbox[2]) / 2, ry + 40 - (n_bbox[1] + n_bbox[3]) / 2), num, font=get_num_font(15, 'bold'), fill=(255, 255, 255))
         draw.text((750, ry + 28), ptitle, font=get_font(17.5, 'bold'), fill=(15, 23, 42))
         
         # Quote Card
@@ -341,10 +410,11 @@ def make_slide_02():
             draw.text((715, qy), line, font=get_font(13.5, 'regular'), fill=(71, 85, 105))
             qy += 22
             
-        # Solution Tag
-        draw.rounded_rectangle([695, ry + 144, 760, ry + 172], radius=4, fill=(0, 87, 255, 20))
-        draw.text((703, ry + 148), "SOL", font=get_font(11, 'bold'), fill=(0, 87, 255))
-        draw.text((775, ry + 147), psol, font=get_font(13.5, 'semibold'), fill=(30, 41, 59))
+        # Solution Tag (High-Contrast Pill Badge)
+        _, _, bx2, _ = draw_pill_badge(draw, 735, ry + 158, "UX SOL", font=get_font(10.5, 'bold'), theme='blue', has_dot=False, dark_mode=False, pad_x=10, height=24)
+        psol_bbox = draw.textbbox((0, 0), psol, font=get_font(13.5, 'semibold'))
+        psol_ty = int(round(ry + 158 - (psol_bbox[1] + psol_bbox[3]) / 2.0))
+        draw.text((bx2 + 14, psol_ty), psol, font=get_font(13.5, 'semibold'), fill=(30, 41, 59))
         
         ry += 225
         
@@ -411,9 +481,11 @@ def make_slide_03():
     
     # Persona A
     draw.rounded_rectangle([px, py, px + pw, py + 308], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-    draw.rounded_rectangle([px + 28, py + 22, px + 170, py + 50], radius=6, fill=(240, 246, 255))
-    draw.text((px + 36, py + 27), "JTBD ARCHETYPE A", font=get_font(10.5, 'bold'), fill=(0, 87, 255))
-    draw.text((px + 185, py + 25), "김투자 (34세, 적립식 퀀트 / 직장인 스윙)", font=get_font(17, 'bold'), fill=(15, 23, 42))
+    _, _, bx2_a, _ = draw_pill_badge(draw, cy=py + 36, text="JTBD ARCHETYPE A", font=get_font(10, 'bold'), theme='blue', has_dot=True, dark_mode=False, pad_x=10, height=26, left_x=px + 28)
+    name_a = "김투자 (34세, 적립식 퀀트 / 직장인 스윙)"
+    bbox_a = draw.textbbox((0, 0), name_a, font=get_font(17, 'bold'))
+    ty_a = int(round(py + 36 - (bbox_a[1] + bbox_a[3]) / 2.0))
+    draw.text((bx2_a + 16, ty_a), name_a, font=get_font(17, 'bold'), fill=(15, 23, 42))
     
     draw.text((px + 28, py + 66), "\"예수금 고갈 없이 6개월 내 손익분기점(BEP)을 탈출할 분할 매수 비율을 원합니다.\"", font=get_font(14, 'bold'), fill=(0, 87, 255))
     desc_a = [
@@ -429,15 +501,17 @@ def make_slide_03():
     # Persona B
     py += 337
     draw.rounded_rectangle([px, py, px + pw, py + 308], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-    draw.rounded_rectangle([px + 28, py + 22, px + 170, py + 50], radius=6, fill=(254, 243, 199))
-    draw.text((px + 36, py + 27), "JTBD ARCHETYPE B", font=get_font(10.5, 'bold'), fill=(217, 119, 6))
-    draw.text((px + 185, py + 25), "박스캘퍼 (28세, 모멘텀 단타 / 크립토 트레이더)", font=get_font(17, 'bold'), fill=(15, 23, 42))
+    _, _, bx2_b, _ = draw_pill_badge(draw, cy=py + 36, text="JTBD ARCHETYPE B", font=get_font(10, 'bold'), theme='amber', has_dot=True, dark_mode=False, pad_x=10, height=26, left_x=px + 28)
+    name_b = "박스캘퍼 (28세, 모멘텀 단타 / 크립토 트레이더)"
+    bbox_b = draw.textbbox((0, 0), name_b, font=get_font(17, 'bold'))
+    ty_b = int(round(py + 36 - (bbox_b[1] + bbox_b[3]) / 2.0))
+    draw.text((bx2_b + 16, ty_b), name_b, font=get_font(17, 'bold'), fill=(15, 23, 42))
     
     draw.text((px + 28, py + 66), "\"초단위 급락 빔이 쏟아질 때 키패드 입력 없이 지지선 평단을 0.2초 안에 뽑아야 합니다.\"", font=get_font(14, 'bold'), fill=(217, 119, 6))
     desc_b = [
         "• 멘탈 모델 : 1초 이내 호가 체결이 생명이며 감정적 패닉셀에 휩쓸리지 않는 자동화 도구 필요",
         "• 인지 고통 : 8자리 소수점 단가 타이핑 중 호가 이탈로 인한 지연 슬리피지(Slippage) 발생",
-        "• 핵심 OKR : 0.2s 음성 STT 인제스천 및 목표 탈출가 도달 필요 매수량 폐쇄형 역산 주입"
+        "• 핵심 OKR : 0.2s 음성 퀵 입력 및 목표 탈출가 도달 필요 매수량 폐쇄형 역산 주입"
     ]
     dy = py + 106
     for d in desc_b:
@@ -492,9 +566,8 @@ def make_slide_04():
     root_x1, root_y1, root_x2, root_y2 = 700, 260, 1220, 316
     draw.rounded_rectangle([root_x1, root_y1, root_x2, root_y2], radius=14, fill=(16, 22, 34), outline=(0, 210, 255, 180), width=2)
     
-    # L0 Badge
-    draw.rounded_rectangle([root_x1 + 16, root_y1 + 14, root_x1 + 94, root_y1 + 42], radius=6, fill=(0, 210, 255, 40), outline=(0, 210, 255, 120), width=1)
-    draw.text((root_x1 + 23, root_y1 + 19), "L0 HUB", font=get_font(11, 'bold'), fill=(0, 210, 255))
+    # L0 Badge (100% Mathematically Centered Pill Badge)
+    draw_pill_badge(draw, root_x1 + 55, root_y1 + 28, "L0 HUB", font=get_font(10.5, 'bold'), theme='cyan', has_dot=False, dark_mode=True, pad_x=8, height=24)
     
     draw.text((root_x1 + 106, root_y1 + 14), "SMART DCA SERVICE ARCHITECTURE", font=get_font(14, 'bold'), fill=(255, 255, 255))
     draw.text((root_x1 + 106, root_y1 + 34), "User-Centric Mental Model & Information Hierarchy", font=get_font(11.5, 'regular'), fill=(148, 163, 184))
@@ -520,35 +593,35 @@ def make_slide_04():
     cols_x = [120 + i * (cw + cgap) for i in range(5)]
     
     domains_data = [
-        ("01. PORTFOLIO DASHBOARD", "포트폴리오 대시보드 (홈)", (0, 210, 255), [
+        ("01. PORTFOLIO DASHBOARD", "포트폴리오 대시보드 (홈)", (0, 210, 255), "cyan", [
             ("L2.1 계좌 자산 종합 요약", "총 투자금, 평가손익률, 실시간 자산 총람", "[표시] 총 평가액, 손익률 · [액션] 통화 전환, 계산 진입"),
             ("L2.2 보유 종목 포지션 카드", "종목별 평단가, 보유 수량, 손실률 게이지 진단", "[표시] 평단가, 보유주수 · [규칙] 손실 포지션 상단 자동배치"),
             ("L2.3 AI 음성 & 호가 프리셋 도크", "자연어 음성 인식 및 ±5%, ±10% 호가 퀵 입력", "[기능] 음성 STT 파싱 · [액션] 호가 프리셋 1탭 주입, 리셋"),
             ("L2.4 4대 퀵 내비게이션 바", "엄지 조작(Fitts' Law) 최적화 핵심 메뉴 이동", "[이동] 계산기, 목표 역산, 리스크 리포트, 설정 직행")
         ]),
         
-        ("02. DCA SIMULATOR", "물타기 계산기 (시뮬레이터)", (0, 114, 255), [
+        ("02. DCA SIMULATOR", "물타기 계산기 (시뮬레이터)", (0, 114, 255), "blue", [
             ("L2.1 다회차 분할매수 플래너", "1차~N차 단계별 매수가/수량 분할 시뮬레이션", "[입력] 차수별 희망 매수가, 주수 · [액션] 행 추가/삭제, 증감"),
             ("L2.2 실시간 평단 방어율 피드백", "추가 매수 즉시 도달 신규 평단 및 계좌 방어율", "[표시] 예상 평단가, 계좌 방어율(+%p) · [로직] 무지연 연동"),
             ("L2.3 전략 비교 매트릭스", "공격적 일괄 매수 vs 단계별 분할 매수 대조", "[비교] 전략 A/B 평단 도달선, 손익분기점 소요 기간, 현금 소진율"),
             ("L2.4 시나리오 보관 및 인계", "검토된 계산 결과 저장 및 목표가 역산기로 전달", "[액션] 시나리오 스냅샷 저장, 목표 역산기 0ms 자동 주입")
         ]),
         
-        ("03. GOAL-SEEKING INVERTER", "목표 평단가 역산기 (골시킹)", (245, 158, 11), [
+        ("03. GOAL-SEEKING INVERTER", "목표 평단가 역산기 (골시킹)", (245, 158, 11), "amber", [
             ("L2.1 손익분기점(BEP) 역산 패널", "희망 탈출 평단 도달에 요구되는 정확한 주수 산출", "[입력] 탈출 희망 목표가, 추가매수가 · [출력] 필요 주수, 자금"),
             ("L2.2 수학적 도달 검증 가드", "비현실적 목표가 입력 시 실시간 오류 방어", "[검증] P_add < P_target < P_0 · [안내] 실시간 적정 목표 권장"),
             ("L2.3 가용 예수금 제약 슬라이더", "실제 보유 현금 내 실행 가능한 최적 현실 평단 탐색", "[조작] 60fps 반응형 예수금 슬라이더 · [피드백] 한도 내 최대 주수"),
             ("L2.4 실행 플랜 확정 및 공유", "도출된 최적 매수 플랜 텍스트 요약 및 주문 준비", "[액션] 주문 요약 클립보드 복사, 분할 매수 알림 설정")
         ]),
         
-        ("04. RISK AUDIT LAB", "계좌 리스크 진단실 (감사)", (16, 185, 129), [
+        ("04. RISK AUDIT LAB", "계좌 리스크 진단실 (감사)", (16, 185, 129), "green", [
             ("L2.1 포트폴리오 비중 분석 도넛", "물타기 후 특정 종목 편중 및 쏠림 현황 가시화", "[시각화] 종목별 자산 비중 도넛 차트 · [지표] 집중도 HHI 지수"),
             ("L2.2 3단계 위험도 판정 경보", "계좌 건전성(안전 / 주의 / 위험) 3단계 판정 가이드", "[판정] 단일 비중 65% 초과 과밀 경보, 예수금 고갈 경고"),
             ("L2.3 하락장 스트레스 시뮬레이션", "시장 추가 급락(-10%, -20%) 시 계좌 충격도 점검", "[예측] 시나리오별 최대 낙폭(MDD), 추가 평가손실액 사전 방어"),
             ("L2.4 종합 진단 리포트 내보내기", "퀀트 진단 요약 카드 이미지 생성 및 공유", "[출력] 리포트 카드 이미지 저장, 진단 결과 텍스트 복사")
         ]),
         
-        ("05. PERSONALIZATION & SETTINGS", "사용자 환경 & 데이터 거버넌스", (139, 92, 246), [
+        ("05. PERSONALIZATION & SETTINGS", "사용자 환경 & 데이터 거버넌스", (139, 92, 246), "purple", [
             ("L2.1 글로벌 통화 및 소수점 환경", "KRW(₩), USD($), JPY(¥), EUR(€) 및 해외주식 소수점", "[설정] 7개국어 다국어 지원, 기준 통화 선택, 소수점 자릿수"),
             ("L2.2 거래 수수료 & 제세금 반영", "증권사 매매 수수료율 및 거래세 자동 감안 계산", "[설정] 매수/매도 수수료율(%) 직접 지정, 증권거래세 On/Off"),
             ("L2.3 24시간 VIP 무광고 세션", "보상형 리워드 1회 시청 시 24시간 전면 무광고", "[혜택] 24h 광고 차단 타이머 활성화, 프리미엄 퀀트 무제한"),
@@ -556,7 +629,7 @@ def make_slide_04():
         ])
     ]
     
-    for i, (d_code, d_name, d_col, containers) in enumerate(domains_data):
+    for i, (d_code, d_name, d_col, d_theme, containers) in enumerate(domains_data):
         cx = cols_x[i]
         
         # Pillar Outer Card
@@ -564,9 +637,8 @@ def make_slide_04():
         
         # L1 Domain Header Box
         draw.rounded_rectangle([cx + 10, 395, cx + cw - 10, 460], radius=10, fill=(9, 13, 22), outline=(d_col[0], d_col[1], d_col[2], 120), width=1)
-        draw.rounded_rectangle([cx + 18, 405, cx + 80, 427], radius=4, fill=(d_col[0], d_col[1], d_col[2], 40))
-        draw.text((cx + 25, 409), "L1 DOMAIN", font=get_font(9.5, 'bold'), fill=d_col)
-        draw.text((cx + 88, 408), d_code.split('. ')[-1], font=get_font(11.5, 'bold'), fill=(255, 255, 255))
+        draw_pill_badge(draw, cx + 50, 416, "L1 DOMAIN", font=get_font(9.5, 'bold'), theme=d_theme, has_dot=False, dark_mode=True, pad_x=8, height=22)
+        draw.text((cx + 92, 408), d_code.split('. ')[-1], font=get_font(11.5, 'bold'), fill=(255, 255, 255))
         draw.text((cx + 18, 435), d_name, font=get_font(13.5, 'bold'), fill=(255, 255, 255))
         
         # Tree branch vertical line within pillar
@@ -602,283 +674,166 @@ def make_slide_04():
 
 
 # ==============================================================
-# SLIDE 05: True UX User Flow & Decision Flowchart
+# SLIDE 05: Core UX User Journey & Interactive UI Flow
 # ==============================================================
 def make_slide_05():
-    base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
+    """
+    SLIDE 05: Core UX User Journey & Interactive UI Flow
+    Showcases the critical 4-step user decision journey with real flagship mobile mockups:
+      STEP 01: [위기 감지 & 안전 진단] (iphone_01_home.png)
+      STEP 02: [출구 전략 수립 & 목표가 역산] (iphone_03_target.png)
+      STEP 03: [실행 조건 최적화 & 예수금 제약] (iphone_02_sim.png)
+      STEP 04: [리스크 감사 & 매수 확정] (iphone_04_report.png)
+    Connected by directional flow arrows, user action pills, and UX rationale cards.
+    """
+    base = Image.new('RGBA', (W, H), (9, 13, 22, 255))
+    glow = Image.new('RGBA', (W, H), (0,0,0,0))
+    gw = ImageDraw.Draw(glow)
+    gw.ellipse([200, 200, 900, 750], fill=(0, 87, 255, 30))
+    gw.ellipse([1100, 250, 1750, 800], fill=(0, 210, 255, 20))
+    glow = glow.filter(ImageFilter.GaussianBlur(130))
+    base = Image.alpha_composite(base, glow)
     draw = ImageDraw.Draw(base)
     
-    # Hairline Top/Bottom Boundaries
-    draw.line([(120, 100), (1800, 100)], fill=(226, 232, 240), width=1)
-    draw.line([(120, 980), (1800, 980)], fill=(226, 232, 240), width=1)
+    # Hairline Boundaries
+    draw.line([(120, 100), (1800, 100)], fill=(255, 255, 255, 20), width=1)
+    draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
-    # Header
-    draw.text((120, 130), "04  /  END-TO-END USER JOURNEY & DECISION FLOWCHART", font=get_font(13, 'bold'), fill=(0, 87, 255))
-    draw.text((120, 165), "사용자 핵심 여정 및 정량적 의사결정 플로우차트", font=get_font(46, 'black'), fill=(15, 23, 42))
-    draw.text((120, 230), "위기 감지부터 음성 인제스천, 수학적 불변식 가드, 실시간 슬라이더 최적화 및 영속화까지의 정밀 플로우차트", font=get_font(16, 'regular'), fill=(100, 116, 139))
+    # Header - Senior Service Planning & UI Flow Perspective
+    draw.text((120, 130), "04  /  CORE UX USER JOURNEY & INTERACTIVE UI FLOW", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 165), "핵심 사용자 여정 및 UI 플로우 (UI Flow) 아키텍처", font=get_font(44, 'black'), fill=(255, 255, 255))
+    draw.text((120, 228), "위기 감지(홈) → 목표 역산(골시킹) → 조건 최적화(시뮬레이터) → 리스크 감사(리포트)로 이어지는 4단계 핵심 의사결정 UI 연계 흐름", font=get_font(16, 'regular'), fill=(148, 163, 184))
     
-    # Flowchart Legend (Top-Right)
-    legends = [
-        ("● 시작/종료 (Terminal)", (16, 185, 129)),
-        ("■ 화면 상태 (Screen)", (0, 87, 255)),
-        ("▬ 사용자 액션 (Action)", (122, 34, 255)),
-        ("◆ 조건 분기 (Decision)", (217, 119, 6)),
-        ("▱ 시스템/DB (ACID)", (71, 85, 105))
+    # Flow Steps Definition: (Mockup, Step No, Title, Context, Rationale, Trigger, Action Badge, Theme)
+    steps = [
+        (
+            'portfolio/iphone_mockups/iphone_01_home.png',
+            'STEP 01', '위기 감지 & 즉시 진단',
+            '시장 급락 포지션(-16.7%) 감지',
+            '총자산 손익률 1초 조망 & 0.2s 음성 도크로 인지 부하 0% 진입',
+            '[물타기 계산기] 1-Tap 터치',
+            '1-Tap [계산 진입]',
+            'cyan'
+        ),
+        (
+            'portfolio/iphone_mockups/iphone_03_target.png',
+            'STEP 02', '출구 전략 수립 (역산)',
+            '희망 손익분기점 탈출 고민',
+            '희망 평단(₩70,000) 입력 즉시 Closed-Form 필요 주수(+42.5주) 산출',
+            '시뮬레이터로 파라미터 인계',
+            'Closed-Form 역산 도출',
+            'amber'
+        ),
+        (
+            'portfolio/iphone_mockups/iphone_02_sim.png',
+            'STEP 03', '실행 조건 최적화',
+            '가용 예수금(250만 원) 제약 점검',
+            '60fps 슬라이더로 과매수를 차단하고 한도 내 최적 방어 평단 탐색',
+            '[리스크 감사 리포트] 확인',
+            '예수금 최적화 확정',
+            'blue'
+        ),
+        (
+            'portfolio/iphone_mockups/iphone_04_report.png',
+            'STEP 04', '리스크 감사 & 매수 확정',
+            '특정 종목 쏠림 및 계좌 건전성 감사',
+            '비중 도넛 및 3단계 위험도 판정 후 1-Tap 복사로 HTS 주문 연계',
+            '원금 회복 경로 확정',
+            '',
+            'green'
+        )
     ]
-    leg_x = 980
-    for l_txt, l_col in legends:
-        draw.ellipse([leg_x, 134, leg_x + 10, 144], fill=l_col)
-        draw.text((leg_x + 16, 131), l_txt, font=get_font(11, 'bold'), fill=(71, 85, 105))
-        leg_x += draw.textlength(l_txt, font=get_font(11, 'bold')) + 20
+    
+    pw = 250
+    ph = int(round(pw * (1754.0 / 860.0))) # 510px
+    py = 258
+    
+    # Coordinates for 4 columns:
+    cols_x = [120, 596, 1073, 1550]
+    
+    # 1. First, Draw Inter-Screen Flow Connectors and Action Badges
+    for i in range(3):
+        x_from = cols_x[i] + pw + 8
+        x_to = cols_x[i+1] - 8
+        mid_x = (x_from + x_to) // 2
+        mid_y = py + ph // 2 - 20
         
-    # 4 Chronological Lanes
-    lw = 390
-    lgap = 40
-    cols_x = [120 + i * (lw + lgap) for i in range(4)]
+        # Glowing connector line
+        draw.line([(x_from, mid_y), (x_to, mid_y)], fill=(0, 210, 255, 120), width=2)
+        # Arrowhead pointing right
+        draw.polygon([(x_to, mid_y), (x_to - 10, mid_y - 6), (x_to - 10, mid_y + 6)], fill=(0, 210, 255, 230))
+        
+        # Action Pill Badge floating in the gap
+        action_text = steps[i][6]
+        action_theme = steps[i][7]
+        draw_pill_badge(draw, mid_x, mid_y - 32, action_text, font=get_font(10, 'bold'), theme=action_theme, has_dot=True, dark_mode=True, pad_x=10, height=28)
+        
+    # 2. Draw 4 iPhone Mockups with Soft Floor Contact Shadows
+    for i, (mockup_path, step_tag, title, ctx, rat, trig, action, theme) in enumerate(steps):
+        px = cols_x[i]
+        
+        # Floor contact shadow
+        sh = Image.new('RGBA', (W, H), (0,0,0,0))
+        shd = ImageDraw.Draw(sh)
+        shd.ellipse([px - 4, py + ph - 16, px + pw + 4, py + ph + 22], fill=(0, 0, 0, 230))
+        sh = sh.filter(ImageFilter.GaussianBlur(18))
+        base = Image.alpha_composite(base, sh)
+        
+        # Paste Phone Mockup
+        phone = Image.open(mockup_path).convert('RGBA')
+        phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)
+        base.paste(phone, (px, py), phone)
+        
+    draw = ImageDraw.Draw(base)
     
-    lane_headers = [
-        ("PHASE 01 : 위기 감지 & 음성 인제스천", "INGESTION PIPELINE", (0, 87, 255)),
-        ("PHASE 02 : 퀀트 시뮬레이션 & 역산 진입", "QUANT DCA ENGINE", (0, 160, 255)),
-        ("PHASE 03 : 예수금 슬라이더 최적화", "CAPITAL CONSTRAINT", (245, 158, 11)),
-        ("PHASE 04 : 리스크 감사 & ACID 영속화", "AUDIT & PERSISTENCE", (16, 185, 129))
-    ]
+    # 3. Draw 4 Dedicated UX Planning Annotation Cards below each phone
+    card_y = py + ph + 18 # 786
+    card_h = 170
+    card_w = pw
     
-    for i, (l_title, l_sub, l_col) in enumerate(lane_headers):
+    for i, (mockup_path, step_tag, title, ctx, rat, trig, action, theme) in enumerate(steps):
         cx = cols_x[i]
-        draw.rounded_rectangle([cx, 275, cx + lw, 318], radius=8, fill=(241, 245, 249), outline=(226, 232, 240), width=1)
-        draw.text((cx + 14, 283), l_sub, font=get_font(10, 'bold'), fill=l_col)
-        draw.text((cx + 14, 298), l_title, font=get_font(12.5, 'bold'), fill=(15, 23, 42))
         
-    # =============================================================
-    # LANE 1: Phase 01 - Ingestion Pipeline
-    # =============================================================
-    c0 = cols_x[0]
-    mid0 = c0 + lw // 2
-    
-    # 1.1 Start Pill: y = 335..375
-    draw.rounded_rectangle([mid0 - 130, 335, mid0 + 130, 375], radius=20, fill=(236, 253, 245), outline=(16, 185, 129), width=2)
-    draw.ellipse([mid0 - 115, 350, mid0 - 105, 360], fill=(16, 185, 129))
-    draw.text((mid0 - 95, 346), "시장 급락(-23%) 포착 / 앱 실행", font=get_font(12, 'bold'), fill=(6, 95, 70))
-    
-    draw_arrow(draw, (mid0, 375), (mid0, 400), col=(0, 87, 255))
-    
-    # 1.2 Screen 01: Home Dashboard: y = 400..472
-    draw.rounded_rectangle([c0 + 16, 400, c0 + lw - 16, 472], radius=10, fill=(255, 255, 255), outline=(0, 87, 255), width=2)
-    draw.rounded_rectangle([c0 + 16, 400, c0 + lw - 16, 425], radius=10, fill=(0, 87, 255))
-    draw.text((c0 + 28, 406), "Screen 01. 홈 대시보드 (HomeScreen)", font=get_font(11.5, 'bold'), fill=(255, 255, 255))
-    draw.text((c0 + 26, 432), "• 총 평가액 & 실시간 손익률 텔레메트리 조망\n• 24h VIP 세션 유효성 자동 검증 (광고 프리)", font=get_font(11, 'regular'), fill=(51, 65, 85), spacing=3)
-    
-    draw_arrow(draw, (mid0, 472), (mid0, 495), col=(122, 34, 255))
-    
-    # 1.3 User Action: Mic Tap: y = 495..545
-    draw.rounded_rectangle([c0 + 24, 495, c0 + lw - 24, 545], radius=10, fill=(245, 243, 255), outline=(122, 34, 255), width=1)
-    draw.text((c0 + 36, 503), "▱ User Action: AI 음성 마이크 탭 (STT)", font=get_font(11.5, 'bold'), fill=(109, 40, 217))
-    draw.text((c0 + 36, 523), "\"삼성전자 7만 원에 50주\" 복합 자연어 발화", font=get_font(10.5, 'regular'), fill=(71, 85, 105))
-    
-    draw_arrow(draw, (mid0, 545), (mid0, 570), col=(217, 119, 6))
-    
-    # 1.4 Decision Diamond 1: STT Parsed? cy = 615, h = 85
-    dia1_cy = 615
-    draw_diamond(draw, mid0, dia1_cy, 260, 85, fill=(255, 251, 235), outline=(245, 158, 11), width=2)
-    draw.text((mid0 - 68, dia1_cy - 16), "자연어 STT 파싱 성공?", font=get_font(12, 'bold'), fill=(180, 83, 9))
-    draw.text((mid0 - 60, dia1_cy + 4), "[isSTTParsed == true]", font=get_font(10, 'bold'), fill=(146, 64, 14))
-    
-    # Diamond 1 - YES Branch (Straight Down to 1.5):
-    draw_arrow(draw, (mid0, dia1_cy + 43), (mid0, 705), col=(21, 128, 61))
-    draw_branch_badge(draw, mid0 + 32, dia1_cy + 64, "YES", is_yes=True)
-    
-    # 1.5 System AST Tokenizer: y = 705..775
-    draw.rounded_rectangle([c0 + 16, 705, c0 + lw - 16, 775], radius=10, fill=(240, 253, 244), outline=(34, 197, 94), width=1)
-    draw.text((c0 + 26, 714), "✓ 0.2s AST 토크나이저 파싱 성공", font=get_font(12, 'bold'), fill=(21, 128, 61))
-    draw.text((c0 + 26, 736), "정규식 매칭: [종목: 삼성전자, 단가: 70000, 수량: 50]\n타입 캐스팅 완료 후 시뮬레이터로 즉각 주입", font=get_font(10.5, 'regular'), fill=(22, 101, 52), spacing=2)
-    
-    # Diamond 1 - NO Branch (Right to Bottom Fallback Node 1.6):
-    draw.line([(mid0 + 130, dia1_cy), (c0 + lw - 8, dia1_cy)], fill=(220, 38, 38), width=2)
-    draw.line([(c0 + lw - 8, dia1_cy), (c0 + lw - 8, 835)], fill=(220, 38, 38), width=2)
-    draw_arrow(draw, (c0 + lw - 8, 835), (c0 + lw - 16, 835), col=(220, 38, 38))
-    draw_branch_badge(draw, mid0 + 148, dia1_cy - 16, "NO", is_yes=False)
-    
-    # 1.6 Fallback Node: y = 805..875
-    draw.rounded_rectangle([c0 + 16, 805, c0 + lw - 16, 875], radius=10, fill=(254, 242, 242), outline=(239, 68, 68), width=1)
-    draw.text((c0 + 26, 814), "✕ STT 실패 / 권한 거부 시 오프라인 폴백", font=get_font(11.5, 'bold'), fill=(185, 28, 28))
-    draw.text((c0 + 26, 836), "±5%, ±10% 호가 프리셋 칩 즉시 대체 노출\n소프트 키패드 수동 입력 모드로 안전 전환", font=get_font(10.5, 'regular'), fill=(153, 27, 27), spacing=2)
-    
-    # Connector Arrow from Lane 1 (1.5) to Lane 2:
-    draw.line([(c0 + lw - 16, 740), (cols_x[1] - 12, 740)], fill=(0, 87, 255), width=2)
-    draw.line([(cols_x[1] - 12, 740), (cols_x[1] - 12, 375)], fill=(0, 87, 255), width=2)
-    draw_arrow(draw, (cols_x[1] - 12, 375), (cols_x[1] + 16, 375), col=(0, 87, 255))
-    
-    # =============================================================
-    # LANE 2: Phase 02 - Quant DCA Engine
-    # =============================================================
-    c1 = cols_x[1]
-    mid1 = c1 + lw // 2
-    
-    # 2.1 Screen 02: Simulator: y = 335..415
-    draw.rounded_rectangle([c1 + 16, 335, c1 + lw - 16, 415], radius=10, fill=(255, 255, 255), outline=(0, 87, 255), width=2)
-    draw.rounded_rectangle([c1 + 16, 335, c1 + lw - 16, 360], radius=10, fill=(0, 87, 255))
-    draw.text((c1 + 28, 341), "Screen 02. 시뮬레이터 (SimulatorScreen)", font=get_font(11.5, 'bold'), fill=(255, 255, 255))
-    draw.text((c1 + 26, 368), "• 3대 세그먼트: 단일 물타기 / 시나리오 A-B / 목표 역산\n• 주입된 현재 포지션(P_0: 78,000원, Q_0: 100주) 로드", font=get_font(11, 'regular'), fill=(51, 65, 85), spacing=3)
-    
-    draw_arrow(draw, (mid1, 415), (mid1, 438), col=(122, 34, 255))
-    
-    # 2.2 User Action: Select Goal-Seeking: y = 438..488
-    draw.rounded_rectangle([c1 + 24, 438, c1 + lw - 24, 488], radius=10, fill=(245, 243, 255), outline=(122, 34, 255), width=1)
-    draw.text((c1 + 36, 446), "▱ User Action: '목표 평단가 역산' 모드 선택", font=get_font(11.5, 'bold'), fill=(109, 40, 217))
-    draw.text((c1 + 36, 466), "손익분기점(BEP) 탈출 희망 평단 설정 모드 진입", font=get_font(10.5, 'regular'), fill=(71, 85, 105))
-    
-    draw_arrow(draw, (mid1, 488), (mid1, 510), col=(0, 87, 255))
-    
-    # 2.3 Input State: y = 510..565
-    draw.rounded_rectangle([c1 + 20, 510, c1 + lw - 20, 565], radius=8, fill=(248, 250, 252), outline=(203, 213, 225), width=1)
-    draw.text((c1 + 30, 517), "파라미터 입력 바인딩:", font=get_font(11, 'bold'), fill=(15, 23, 42))
-    draw.text((c1 + 30, 536), "• 희망 목표 평단가 (P_target) : ₩ 70,000\n• 추가 매수 희망가 (P_add) : ₩ 65,000", font=get_font(10.5, 'regular'), fill=(51, 65, 85), spacing=2)
-    
-    draw_arrow(draw, (mid1, 565), (mid1, 588), col=(217, 119, 6))
-    
-    # 2.4 Decision Diamond 2: Invariant Check: cy = 630, h = 84
-    dia2_cy = 630
-    draw_diamond(draw, mid1, dia2_cy, 270, 84, fill=(255, 251, 235), outline=(245, 158, 11), width=2)
-    draw.text((mid1 - 80, dia2_cy - 16), "수학적 경계 불변식 만족?", font=get_font(12, 'bold'), fill=(180, 83, 9))
-    draw.text((mid1 - 72, dia2_cy + 4), "[P_add < P_target < P_0]", font=get_font(10, 'bold'), fill=(146, 64, 14))
-    
-    # Diamond 2 - YES Branch (HAPPY PATH: Straight Down to 2.6):
-    draw_arrow(draw, (mid1, dia2_cy + 42), (mid1, 715), col=(21, 128, 61))
-    draw_branch_badge(draw, mid1 + 32, dia2_cy + 62, "YES", is_yes=True)
-    
-    # 2.6 Closed-Form Formula Engine (Happy Path Node): y = 715..815
-    draw.rounded_rectangle([c1 + 16, 715, c1 + lw - 16, 815], radius=10, fill=(240, 246, 255), outline=(0, 87, 255), width=2)
-    draw.text((c1 + 26, 724), "Closed-Form 역산 연산 엔진 가동", font=get_font(12, 'bold'), fill=(0, 87, 255))
-    draw.text((c1 + 26, 746), "Q_add = Q_0 × (P_0 - P_t) / (P_t - P_add)", font=get_num_font(11.5, 'bold'), fill=(15, 23, 42))
-    draw.text((c1 + 26, 772), "• 필요 추가 매수 주수 : +42.5 주 (정밀 소수점)\n• 총 소요 자금 : ₩ 2,125,000 (0.001초 산출)", font=get_font(10.5, 'regular'), fill=(51, 65, 85), spacing=2)
-    
-    # Diamond 2 - NO Branch (Leaves LEFT tip of diamond, goes around outside to Node 2.5):
-    draw.line([(mid1 - 135, dia2_cy), (c1 + 8, dia2_cy)], fill=(220, 38, 38), width=2)
-    draw.line([(c1 + 8, dia2_cy), (c1 + 8, 860)], fill=(220, 38, 38), width=2)
-    draw_arrow(draw, (c1 + 8, 860), (c1 + 16, 860), col=(220, 38, 38))
-    draw_branch_badge(draw, mid1 - 150, dia2_cy - 16, "NO", is_yes=False)
-    
-    # 2.5 Error Guard Node (NO Branch): y = 835..905
-    draw.rounded_rectangle([c1 + 16, 835, c1 + lw - 16, 905], radius=8, fill=(254, 242, 242), outline=(239, 68, 68), width=1)
-    draw.text((c1 + 26, 844), "⚠️ 경계 불변식 위반 (도달 불가 목표가)", font=get_font(11.5, 'bold'), fill=(185, 28, 28))
-    draw.text((c1 + 26, 866), "에러 가이드 토스트 호출 & 입력 버튼 비활성화\n현재 투입 가능 현실적 목표가 실시간 역추천", font=get_font(10.5, 'regular'), fill=(153, 27, 27), spacing=2)
-    
-    # Connector Arrow from Lane 2 (2.6) to Lane 3:
-    draw.line([(c1 + lw - 16, 765), (cols_x[2] - 12, 765)], fill=(0, 87, 255), width=2)
-    draw.line([(cols_x[2] - 12, 765), (cols_x[2] - 12, 375)], fill=(0, 87, 255), width=2)
-    draw_arrow(draw, (cols_x[2] - 12, 375), (cols_x[2] + 16, 375), col=(0, 87, 255))
-    
-    # =============================================================
-    # LANE 3: Phase 03 - Capital Constraint
-    # =============================================================
-    c2 = cols_x[2]
-    mid2 = c2 + lw // 2
-    
-    # 3.1 Result Card: y = 335..415
-    draw.rounded_rectangle([c2 + 16, 335, c2 + lw - 16, 415], radius=10, fill=(255, 255, 255), outline=(0, 87, 255), width=2)
-    draw.rounded_rectangle([c2 + 16, 335, c2 + lw - 16, 360], radius=10, fill=(0, 87, 255))
-    draw.text((c2 + 28, 341), "State: 역산 산출 결과 피드백 카드", font=get_font(11.5, 'bold'), fill=(255, 255, 255))
-    draw.text((c2 + 26, 368), "• 산출 목표: ₩70,000 도달 (+42.5주 추가 매수 필요)\n• 총 필요 자금: ₩ 2,125,000 도출 완료", font=get_font(11, 'regular'), fill=(51, 65, 85), spacing=3)
-    
-    draw_arrow(draw, (mid2, 415), (mid2, 438), col=(122, 34, 255))
-    
-    # 3.2 User Action: Slider Drag: y = 438..498
-    draw.rounded_rectangle([c2 + 24, 438, c2 + lw - 24, 498], radius=10, fill=(245, 243, 255), outline=(122, 34, 255), width=1)
-    draw.text((c2 + 36, 446), "▱ User Action: 가용 예수금 슬라이더 조절", font=get_font(11.5, 'bold'), fill=(109, 40, 217))
-    draw.text((c2 + 36, 466), "Capital Constraint Optimizer (60fps 실시간)\n현재 계좌 가용 현금(₩1,500,000) 한도 드래그", font=get_font(10.5, 'regular'), fill=(71, 85, 105), spacing=2)
-    
-    draw_arrow(draw, (mid2, 498), (mid2, 520), col=(217, 119, 6))
-    
-    # 3.3 Decision Diamond 3: Budget Limit? cy = 565, h = 84
-    dia3_cy = 565
-    draw_diamond(draw, mid2, dia3_cy, 270, 84, fill=(255, 251, 235), outline=(245, 158, 11), width=2)
-    draw.text((mid2 - 78, dia3_cy - 16), "필요 자금 <= 가용 예수금?", font=get_font(12, 'bold'), fill=(180, 83, 9))
-    draw.text((mid2 - 70, dia3_cy + 4), "[Total_Cash <= Budget]", font=get_font(10, 'bold'), fill=(146, 64, 14))
-    
-    # Diamond 3 - YES Branch (HAPPY PATH: Straight Down to 3.5):
-    draw_arrow(draw, (mid2, dia3_cy + 42), (mid2, 650), col=(21, 128, 61))
-    draw_branch_badge(draw, mid2 + 32, dia3_cy + 62, "YES", is_yes=True)
-    
-    # 3.5 Execution Confirmation Plan (Happy Path Node): y = 650..730
-    draw.rounded_rectangle([c2 + 16, 650, c2 + lw - 16, 730], radius=10, fill=(240, 253, 244), outline=(34, 197, 94), width=1)
-    draw.text((c2 + 26, 659), "✓ 최적 분할매수 계획 확정", font=get_font(12, 'bold'), fill=(21, 128, 61))
-    draw.text((c2 + 26, 681), "• 확정 매수: +42.5주 (소요 ₩2,125,000)\n• 신규 방어 평단: ₩70,000 (하락률 방어 +11.4%p)", font=get_font(10.5, 'regular'), fill=(22, 101, 52), spacing=2)
-    
-    draw_arrow(draw, (mid2, 730), (mid2, 755), col=(0, 87, 255))
-    
-    # 3.6 User Action: Handoff: y = 755..815
-    draw.rounded_rectangle([c2 + 20, 755, c2 + lw - 20, 815], radius=10, fill=(0, 87, 255), outline=(0, 87, 255), width=1)
-    draw.text((c2 + 32, 766), "▱ 1-Tap 시뮬레이터 파라미터 인계", font=get_font(12, 'bold'), fill=(255, 255, 255))
-    draw.text((c2 + 32, 788), "산출 결과를 1초 내 시뮬레이터로 자동 주입", font=get_font(10.5, 'regular'), fill=(220, 235, 255))
-    
-    # Diamond 3 - NO Branch (Constraint Exceeded -> routes around right to 3.4):
-    draw.line([(mid2 + 135, dia3_cy), (c2 + lw - 8, dia3_cy)], fill=(217, 119, 6), width=2)
-    draw.line([(c2 + lw - 8, dia3_cy), (c2 + lw - 8, 860)], fill=(217, 119, 6), width=2)
-    draw_arrow(draw, (c2 + lw - 8, 860), (c2 + lw - 16, 860), col=(217, 119, 6))
-    draw_branch_badge(draw, mid2 + 148, dia3_cy - 16, "NO", is_yes=False)
-    
-    # 3.4 Constraint Adjustment Node (NO Branch): y = 835..905
-    draw.rounded_rectangle([c2 + 16, 835, c2 + lw - 16, 905], radius=8, fill=(255, 251, 235), outline=(245, 158, 11), width=1)
-    draw.text((c2 + 26, 844), "예수금 한도 내 매수 가능 주수 피드백", font=get_font(11.5, 'bold'), fill=(180, 83, 9))
-    draw.text((c2 + 26, 866), "150만 원 한도 내 최대 매수: +23주 (₩1,495,000)\n도달 가능 최적 조정 평단: ₩72,439 실시간 제안", font=get_font(10.5, 'regular'), fill=(146, 64, 14), spacing=2)
-    
-    # Connector Arrow from Lane 3 (3.6) to Lane 4:
-    draw.line([(c2 + lw - 20, 785), (cols_x[3] - 12, 785)], fill=(0, 87, 255), width=2)
-    draw.line([(cols_x[3] - 12, 785), (cols_x[3] - 12, 375)], fill=(0, 87, 255), width=2)
-    draw_arrow(draw, (cols_x[3] - 12, 375), (cols_x[3] + 16, 375), col=(0, 87, 255))
-    
-    # =============================================================
-    # LANE 4: Phase 04 - Audit & Persistence
-    # =============================================================
-    c3 = cols_x[3]
-    mid3 = c3 + lw // 2
-    
-    # 4.1 Screen 03: Risk Report: y = 335..415
-    draw.rounded_rectangle([c3 + 16, 335, c3 + lw - 16, 415], radius=10, fill=(255, 255, 255), outline=(0, 87, 255), width=2)
-    draw.rounded_rectangle([c3 + 16, 335, c3 + lw - 16, 360], radius=10, fill=(0, 87, 255))
-    draw.text((c3 + 28, 341), "Screen 03. 리스크 감사 (RiskReportScreen)", font=get_font(11.5, 'bold'), fill=(255, 255, 255))
-    draw.text((c3 + 26, 368), "• 종목별 자산 비중 도넛 차트 실시간 가시화\n• 단일 종목 집중도(HHI) 및 포트폴리오 왜곡 진단", font=get_font(11, 'regular'), fill=(51, 65, 85), spacing=3)
-    
-    draw_arrow(draw, (mid3, 415), (mid3, 440), col=(217, 119, 6))
-    
-    # 4.2 Decision Diamond 4: Concentration Risk? cy = 480, h = 80
-    dia4_cy = 480
-    draw_diamond(draw, mid3, dia4_cy, 270, 80, fill=(255, 251, 235), outline=(245, 158, 11), width=2)
-    draw.text((mid3 - 78, dia4_cy - 15), "단일 종목 과밀 편중 위험?", font=get_font(12, 'bold'), fill=(180, 83, 9))
-    draw.text((mid3 - 70, dia4_cy + 5), "[Asset_Weight > 40%]", font=get_font(10, 'bold'), fill=(146, 64, 14))
-    
-    # Diamond 4 - YES (Concentration Alert Node 4.3):
-    draw_arrow(draw, (mid3, dia4_cy + 40), (mid3, 560), col=(217, 119, 6))
-    draw_branch_badge(draw, mid3 + 32, dia4_cy + 60, "YES", is_yes=True)
-    
-    # 4.3 Warning Badge Node: y = 560..620
-    draw.rounded_rectangle([c3 + 16, 560, c3 + lw - 16, 620], radius=8, fill=(254, 243, 199), outline=(245, 158, 11), width=1)
-    draw.text((c3 + 26, 568), "⚠️ 3-Tier 위험 판정: 단일 종목 65% 편중 경고", font=get_font(11, 'bold'), fill=(180, 83, 9))
-    draw.text((c3 + 26, 588), "물타기 집행 후 집중도 과밀 방지 분산 권고 배지 노출", font=get_font(10, 'regular'), fill=(146, 64, 14))
-    
-    draw_arrow(draw, (mid3, 620), (mid3, 650), col=(71, 85, 105))
-    
-    # 4.4 Local ACID Storage Engine Node: y = 650..740
-    draw.rounded_rectangle([c3 + 16, 650, c3 + lw - 16, 740], radius=10, fill=(241, 245, 249), outline=(71, 85, 105), width=2)
-    draw.text((c3 + 26, 659), "▱ 로컬 SQLite & Hive ACID 영속화", font=get_font(12, 'bold'), fill=(30, 41, 59))
-    draw.text((c3 + 26, 681), "• 온디바이스 암호화 DB 트랜잭션 0ms 커밋\n• 네트워크 오프라인 상태에서도 100% 무손실 보존\n• 시나리오 히스토리 장부 자동 기록 완료", font=get_font(10.5, 'regular'), fill=(71, 85, 105), spacing=2)
-    
-    draw_arrow(draw, (mid3, 740), (mid3, 770), col=(16, 185, 129))
-    
-    # 4.5 End Terminal Capsule: y = 770..820
-    draw.rounded_rectangle([mid3 - 135, 770, mid3 + 135, 820], radius=24, fill=(236, 253, 245), outline=(16, 185, 129), width=2)
-    draw.ellipse([mid3 - 120, 789, mid3 - 110, 799], fill=(16, 185, 129))
-    draw.text((mid3 - 98, 787), "최적 분할매수 확정 & 계좌 방어 완료", font=get_font(12, 'bold'), fill=(6, 95, 70))
-    
-    draw_arrow(draw, (mid3, 820), (mid3, 850), col=(0, 87, 255))
-    
-    # 4.6 Share / Export Action: y = 850..910
-    draw.rounded_rectangle([c3 + 24, 850, c3 + lw - 24, 910], radius=10, fill=(255, 255, 255), outline=(0, 87, 255), width=1)
-    draw.text((c3 + 36, 861), "진단 리포트 PNG 원클릭 클립보드 공유", font=get_font(11.5, 'bold'), fill=(0, 87, 255))
-    draw.text((c3 + 36, 883), "고화질 요약 카드 이미지 갤러리 저장 및 공유", font=get_font(10.5, 'regular'), fill=(71, 85, 105))
-    
+        # Outer Card
+        draw.rounded_rectangle([cx, card_y, cx + card_w, card_y + card_h], radius=14, fill=(16, 22, 34, 240), outline=(255, 255, 255, 25), width=1)
+        
+        # Step Badge (Pill)
+        _, _, bx2_step, _ = draw_pill_badge(draw, cy=card_y + 22, text=step_tag, font=get_font(10, 'bold'), theme=theme, has_dot=False, dark_mode=True, pad_x=10, height=24, left_x=cx + 14)
+        
+        # Step Title (Mathematically Centered with Badge Baseline)
+        t_bbox = draw.textbbox((0, 0), title, font=get_font(13.5, 'bold'))
+        t_ty = int(round(card_y + 22 - (t_bbox[1] + t_bbox[3]) / 2.0))
+        draw.text((bx2_step + 12, t_ty), title, font=get_font(13.5, 'bold'), fill=(255, 255, 255))
+        
+        # Divider hairline
+        draw.line([(cx + 12, card_y + 42), (cx + card_w - 12, card_y + 42)], fill=(255, 255, 255, 15), width=1)
+        
+        # UX Spec Rows (Word wrapped)
+        ty = card_y + 50
+        
+        # User Context
+        draw.text((cx + 14, ty), "• 맥락: ", font=get_font(10.5, 'bold'), fill=(0, 210, 255))
+        c_lines = wrap_text_by_words(ctx, get_font(10, 'regular'), card_w - 58, draw)
+        draw.text((cx + 52, ty), c_lines[0] if c_lines else "", font=get_font(10, 'regular'), fill=(203, 213, 225))
+        ty += 22
+        
+        # UX Planning Rationale
+        draw.text((cx + 14, ty), "• 기획: ", font=get_font(10.5, 'bold'), fill=(251, 191, 36))
+        r_lines = wrap_text_by_words(rat, get_font(10, 'regular'), card_w - 58, draw)
+        for r_line in r_lines[:2]:
+            draw.text((cx + 52, ty), r_line, font=get_font(10, 'regular'), fill=(148, 163, 184))
+            ty += 20
+            
+        # Action Trigger
+        ty = card_y + card_h - 30
+        draw.rounded_rectangle([cx + 12, ty, cx + card_w - 12, ty + 22], radius=6, fill=(9, 13, 22), outline=(52, 211, 153, 90), width=1)
+        trig_str = f"▶ {trig}"
+        trig_bbox = draw.textbbox((0, 0), trig_str, font=get_font(9.5, 'bold'))
+        trig_ty = int(round((ty + 11) - (trig_bbox[1] + trig_bbox[3]) / 2.0))
+        draw.text((cx + 18, trig_ty), trig_str, font=get_font(9.5, 'bold'), fill=(52, 211, 153))
+        
     base.save(f'{OUT_DIR}/slide_05.png')
-    print("SAVED slide_05.png (100% Zero Collision & Clean Margins)")
+    print("SAVED slide_05.png (Core UX Journey & Interactive UI Flow)")
 
 # SLIDE 06: 3 Real Mobile Wireframe CAD Blueprints
 # ==============================================================
@@ -907,13 +862,13 @@ def make_slide_06():
             ("① Segmented Control", "단일 계산 / 시나리오 A vs B / 목표 역산 탭을 상단에 두어 0초 모드 전환"),
             ("② 양방향 스텝퍼 컨트롤", "소프트 키보드 가림 현상을 방지하는 +/- 스텝퍼 증감 인터랙션 지원"),
             ("③ Zero-Latency 피드백", "입력 즉시 신규 평단가와 하락률 방어폭을 하단 결과 카드에 0ms 렌더링"),
-            ("④ ACID 로컬 영속화 CTA", "시뮬레이션 완료 결과를 로컬 DB에 영구 저장하고 리포트로 1초 인계")
+            ("④ 시나리오 즉시 보관 CTA", "검토 완료된 계산 결과를 로컬에 안전하게 보관하고 리포트로 1초 인계")
         ]),
         ("Screen 03. 목표 역산 엔진 골격", 1240, 1550, [
             ("① Context 고정 앵커", "현재 보유 평단과 수량을 상단에 고정하여 목표 평단과의 갭 직관적 인지"),
             ("② 경계 불변식 가드", "도달 불가 목표가(Target <= Current) 입력 시 실시간 유효성 에러 가드"),
             ("③ Capital Constraint", "가용 예수금 제약 한도 내에서 도달 가능한 최적 평단을 60fps 인터랙티브 조절"),
-            ("④ Zero-Loss 파라미터 인계", "Closed-Form으로 도출된 필요 매수 수량을 시뮬레이터로 1초 자동 주입")
+            ("④ 목표 파라미터 1탭 인계", "역산으로 도출된 최적 매수 수량을 시뮬레이터로 1초 만에 자동 주입하여 재입력 방지")
         ])
     ]
     
@@ -922,10 +877,8 @@ def make_slide_06():
     py = 325
     
     for s_title, px, cx, rationales in cols_data:
-        # Screen Title Badge (Dynamic Width, positioned at y=275..307)
-        tw = draw.textlength(s_title, font=get_font(13.5, 'bold'))
-        draw.rounded_rectangle([px, 275, px + int(tw + 36), 307], radius=6, fill=(241, 245, 249), outline=(226, 232, 240), width=1)
-        draw.text((px + 18, 283), s_title, font=get_font(13.5, 'bold'), fill=(15, 23, 42))
+        # Screen Title Badge (100% Mathematically Centered directly above the phone)
+        draw_pill_badge(draw, cx=px + pw // 2, cy=291, text=s_title, font=get_font(12.5, 'bold'), theme='slate', has_dot=False, dark_mode=False, pad_x=14, height=32)
         
         # Phone Chassis Frame (CAD Lo-Fi Blueprint Style)
         draw.rounded_rectangle([px, py, px + pw, py + ph], radius=24, fill=(255, 255, 255), outline=(15, 23, 42), width=2)
@@ -1112,9 +1065,8 @@ def make_slide_06():
     by = 905
     bh = 55
     draw.rounded_rectangle([120, by, 1800, by + bh], radius=10, fill=(241, 245, 249), outline=(203, 213, 225), width=1)
-    draw.rounded_rectangle([135, by + 12, 275, by + 42], radius=5, fill=(15, 23, 42))
-    draw.text((147, by + 18), "CAD BLUEPRINT SPEC", font=get_font(10.5, 'bold'), fill=(255, 255, 255))
-    draw.text((295, by + 18), "• 8pt 그리드 시스템 및 Material/HIG 48dp 터치 타깃 준수   • Fitts' Law 기반 Thumb-Zone 최적화   • 인지 부하 0% 모바일 퀀트 아키텍처", font=get_font(12.5, 'semibold'), fill=(51, 65, 85))
+    draw_pill_badge(draw, cx=215, cy=by + 27, text="CAD BLUEPRINT SPEC", font=get_font(10.5, 'bold'), theme='dark', has_dot=False, dark_mode=False, pad_x=12, height=30)
+    draw.text((310, by + 18), "• 8pt 그리드 시스템 및 Material/HIG 48dp 터치 타깃 준수   • Fitts' Law 기반 Thumb-Zone 최적화   • 인지 부하 0% 모바일 퀀트 아키텍처", font=get_font(12.5, 'semibold'), fill=(51, 65, 85))
 
     base.save(f'{OUT_DIR}/slide_06.png')
     print("SAVED slide_06.png (3 Real Mobile Wireframe CAD Blueprints)")
@@ -1156,22 +1108,19 @@ def make_slide_07():
     
     # Tier 1 Card
     draw.rounded_rectangle([p1_x + 24, 436, p1_x + col_w - 24, 536], radius=10, fill=(9, 13, 22), outline=(255, 255, 255, 15), width=1)
-    draw.rounded_rectangle([p1_x + 36, 448, p1_x + 96, 470], radius=4, fill=(0, 87, 255, 40))
-    draw.text((p1_x + 44, 452), "TIER 01", font=get_font(9.5, 'bold'), fill=(0, 210, 255))
+    draw_pill_badge(draw, p1_x + 65, 458, "TIER 01", font=get_font(9.5, 'bold'), theme='cyan', has_dot=False, dark_mode=True, pad_x=8, height=22)
     draw.text((p1_x + 106, 450), "Primitive / Global Tokens (원시 토큰)", font=get_font(13, 'bold'), fill=(255, 255, 255))
     draw.text((p1_x + 36, 478), "• palette.blue.600 : #0057FF       • font.family.base : Pretendard\n• space.scale.4 : 4px               • radius.container.lg : 16px", font=get_font(11.5, 'regular'), fill=(148, 163, 184), spacing=3)
     
     # Tier 2 Card
     draw.rounded_rectangle([p1_x + 24, 546, p1_x + col_w - 24, 680], radius=10, fill=(9, 13, 22), outline=(255, 255, 255, 15), width=1)
-    draw.rounded_rectangle([p1_x + 36, 558, p1_x + 96, 580], radius=4, fill=(16, 185, 129, 40))
-    draw.text((p1_x + 44, 562), "TIER 02", font=get_font(9.5, 'bold'), fill=(52, 211, 153))
+    draw_pill_badge(draw, p1_x + 65, 568, "TIER 02", font=get_font(9.5, 'bold'), theme='green', has_dot=False, dark_mode=True, pad_x=8, height=22)
     draw.text((p1_x + 106, 560), "System / Semantic Tokens (의미론적 토큰)", font=get_font(13, 'bold'), fill=(255, 255, 255))
     draw.text((p1_x + 36, 588), "• $sys.color.brand.primary : #0057FF (메인 액션 / CTA 버튼)\n• $sys.color.status.gain : #00E676 (수익률 / 안전 진단)\n• $sys.color.status.loss : #FF5252 (하락률 / 경계 방어 에러)\n• $sys.color.surface.dark : #05070B (OLED 칠흑 21:1 암흑 표면)", font=get_font(11.5, 'regular'), fill=(148, 163, 184), spacing=4)
     
     # Tier 3 Card
     draw.rounded_rectangle([p1_x + 24, 690, p1_x + col_w - 24, 795], radius=10, fill=(9, 13, 22), outline=(255, 255, 255, 15), width=1)
-    draw.rounded_rectangle([p1_x + 36, 702, p1_x + 96, 724], radius=4, fill=(245, 158, 11, 40))
-    draw.text((p1_x + 44, 706), "TIER 03", font=get_font(9.5, 'bold'), fill=(251, 191, 36))
+    draw_pill_badge(draw, p1_x + 65, 712, "TIER 03", font=get_font(9.5, 'bold'), theme='amber', has_dot=False, dark_mode=True, pad_x=8, height=22)
     draw.text((p1_x + 106, 704), "Component Tokens (컴포넌트 토큰)", font=get_font(13, 'bold'), fill=(255, 255, 255))
     draw.text((p1_x + 36, 732), "• $comp.btn.primary.bg.default : $sys.color.brand.primary\n• $comp.btn.primary.bg.pressed : #0040CC\n• $comp.card.container.radius : $sys.radius.container.lg", font=get_font(11.5, 'regular'), fill=(148, 163, 184), spacing=3)
     
@@ -1209,9 +1158,8 @@ def make_slide_07():
         draw.text((p2_x + 82, cy + 10), tname, font=get_font(12, 'bold'), fill=(255, 255, 255))
         draw.text((p2_x + 82, cy + 32), f"{chex}  ·  {crole}", font=get_font(10.5, 'regular'), fill=(148, 163, 184))
         
-        # Contrast Pill
-        draw.rounded_rectangle([p2_x + col_w - 105, cy + 16, p2_x + col_w - 34, cy + 42], radius=4, fill=(16, 185, 129, 25), outline=(16, 185, 129, 70), width=1)
-        draw.text((p2_x + col_w - 97, cy + 21), ccontrast, font=get_font(9.5, 'bold'), fill=(52, 211, 153))
+        # Contrast Pill (100% Mathematically Centered Pill Badge)
+        draw_pill_badge(draw, p2_x + col_w - 70, cy + 29, ccontrast, font=get_font(9.5, 'bold'), theme='green', has_dot=False, dark_mode=True, pad_x=8, height=22)
         
         cy += 64
         
@@ -1266,7 +1214,8 @@ def make_slide_07():
 
 
 # ==============================================================
-# SLIDE 08: Feature Spotlight 01 - 0.2s STT (Stealth Hardware Reveal)
+# ==============================================================
+# SLIDE 08: Feature Spotlight 01 - 0.2s Voice Quick Input UX
 # ==============================================================
 def make_slide_08():
     base = Image.new('RGBA', (W, H), (9, 13, 22, 255))
@@ -1280,14 +1229,15 @@ def make_slide_08():
     draw.line([(120, 100), (1800, 100)], fill=(255, 255, 255, 20), width=1)
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
-    draw.text((120, 130), "07  /  FEATURE SPOTLIGHT 01 · ON-DEVICE MULTIMODAL INGESTION", font=get_font(13, 'bold'), fill=(0, 210, 255))
-    draw.text((120, 168), "0.2s 하이브리드 음성\n인제스천 파이프라인", font=get_font(44, 'black'), fill=(255, 255, 255), spacing=8)
-    draw.text((120, 275), "Google STT 온디바이스 엔진과 정규식 AST 토크나이저 결합\n'종목명+단가+수량' 복합 자연어 발화를 0.2초 내 분류 및 타입 캐스팅", font=get_font(15, 'regular'), fill=(148, 163, 184), spacing=5)
+    # Header - Senior Service Planning & Interaction UX
+    draw.text((120, 130), "07  /  FEATURE SPOTLIGHT 01 · 0.2s VOICE QUICK INPUT UX", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 168), "조작 피로와 슬리피지를 없애는\n0.2s 음성 퀵 입력 UX", font=get_font(44, 'black'), fill=(255, 255, 255), spacing=8)
+    draw.text((120, 275), "호가 급락 시 8자리 키패드 입력 중 발생하는 오타와 체결 지연(Slip Risk)을 원천 차단하고,\n말 한마디로 종목과 호가를 감지하여 시뮬레이터에 즉시 반영하는 제로-인풋(Zero-Input) 인터랙션", font=get_font(15, 'regular'), fill=(148, 163, 184), spacing=5)
     
     cards_l = [
-        ("자연어 음성 파형 감지 & AST 파싱", "\"삼성전자 7만 원에 50주\"\n발화 즉시 0.2초 내 토큰 분리 및 정규화"),
-        ("키패드 타이핑 레이턴시 98.2% 제거", "소수점 단가 8자리 입력 시간을 240초에서 4.2초로 단축하여\n매수 골든타임 슬리피지(Slip Risk) 방어"),
-        ("Local-First 0ms ACID 영속화", "Hive NoSQL 인메모리 캐싱으로 오프라인 환경에서도\n시뮬레이터 코어로 파라미터 즉각 주입")
+        ("자연어 음성 즉각 인식 & 파싱", "\"삼성전자 7만 원에 50주\"\n발화 즉시 종목/단가/수량 자동 추출"),
+        ("키패드 조작 피로도 98.2% 절감", "소수점 단가 입력 시간을 240초에서 4.2초로 단축하여\n하락장 매수 골든타임 사수 및 패닉 매매 방지"),
+        ("0초 시뮬레이터 입력창 연동", "발화 완료 즉시 계산 모듈로 수치가 자동 채워져\n급변하는 실시간 호가에 무지연 대응")
     ]
     ly = 365
     for title, desc in cards_l:
@@ -1313,10 +1263,10 @@ def make_slide_08():
     
     draw = ImageDraw.Draw(base)
     cards_r = [
-        ("0-딜레이 오프라인 호가 프리셋", "STT 권한 거부 또는 소음 환경 시\n±5%, ±10% 원터치 프리셋 칩 즉시 대체 주입", (0, 210, 255)),
-        ("실시간 음성 토큰 정규화 엔진", "한국어 수치 어휘(일, 십, 백, 천, 만)를\n아라비아 정수 및 실수로 무손실 AST 변환", (0, 230, 118)),
-        ("급락장 호가 오차 차단 가드", "종목 매핑과 단가·수량 경계 조건을 검증하여\n비정상 수치(음수, 비현실 호가) 원천 차단", (255, 179, 0)),
-        ("60fps 실시간 음성 파형 텔레메트리", "마이크 인풋 시 실시간 Waveform 렌더링으로\n사용자에게 즉각적인 오디오 스트림 피드백 제공", (147, 51, 234))
+        ("원터치 호가 프리셋 보완 칩", "음성 사용이 어려운 소음 환경이나 회의 중에도\n±5%, ±10% 원터치 칩으로 0.1초 즉시 계산", (0, 210, 255)),
+        ("한국어 금융 수치 어휘 자동 정규화", "'일, 십, 백, 천, 만' 발화를 직관적 숫자로 자동 치환하여\n사용자의 말하는 습관 그대로 자연스럽게 수용", (0, 230, 118)),
+        ("급락장 오조작 방어 가드레일", "음수나 비정상 호가 입력 시 햅틱 피드백과 함께 입력을 차단하여\n패닉 상태에서의 치명적 주문 실수 사전 방어", (255, 179, 0)),
+        ("60fps 실시간 음성 파형 비주얼", "마이크 인풋 시 부드러운 웨이브폼 애니메이션으로\n사용자에게 음성 수신 상태를 직관적으로 전달", (147, 51, 234))
     ]
     ry = 145
     for title, desc, col in cards_r:
@@ -1327,9 +1277,11 @@ def make_slide_08():
         ry += 190
         
     base.save(f'{OUT_DIR}/slide_08.png')
-    print("SAVED slide_08.png")
+    print("SAVED slide_08.png (Voice Quick Input UX)")
 
-# SLIDE 09
+# ==============================================================
+# SLIDE 09: Feature Spotlight 02 - Goal-Seeking Decision UX
+# ==============================================================
 def make_slide_09():
     base = Image.new('RGBA', (W, H), (9, 13, 22, 255))
     glow = Image.new('RGBA', (W, H), (0,0,0,0))
@@ -1343,21 +1295,21 @@ def make_slide_09():
     draw.line([(120, 100), (1800, 100)], fill=(255, 255, 255, 20), width=1)
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
-    draw.text((120, 130), "08  /  FEATURE SPOTLIGHT 02 · QUANTITATIVE ALGORITHM", font=get_font(13, 'bold'), fill=(0, 210, 255))
-    draw.text((120, 165), "Goal Seeking 폐쇄형 목표 평단가 역산 엔진", font=get_font(46, 'black'), fill=(255, 255, 255))
-    draw.text((120, 235), "목표 탈출가 도달에 필요한 추가 매수 수량을 Closed-Form 수식으로 0.001초 만에 산출", font=get_font(17, 'regular'), fill=(148, 163, 184))
+    # Header - Senior Service Planning & Decision UX
+    draw.text((120, 130), "08  /  FEATURE SPOTLIGHT 02 · GOAL-SEEKING DECISION UX", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 165), "막막한 탈출을 현실로 만드는\n목표 평단가 역산 UX 솔루션", font=get_font(46, 'black'), fill=(255, 255, 255))
+    draw.text((120, 235), "단순히 더 사면 평단이 얼마가 되는지 맞추는 사후 방식에서 벗어나, '희망 탈출 가격'을 제시하면 추가 매수 수량을 자동으로 역산해주는 지능형 의사결정 지원 인터랙션", font=get_font(16, 'regular'), fill=(148, 163, 184))
     
     draw.rounded_rectangle([120, 285, 1180, 465], radius=16, fill=(16, 22, 34, 240), outline=(0, 210, 255, 70), width=1)
-    draw.rounded_rectangle([150, 305, 305, 331], radius=4, fill=(0, 210, 255, 30))
-    draw.text((160, 310), "MATHEMATICAL FORMULA", font=get_font(10.5, 'bold'), fill=(0, 210, 255))
+    draw_pill_badge(draw, 245, 318, "MATHEMATICAL GOAL-SEEKING MODEL", font=get_font(10, 'bold'), theme='cyan', has_dot=False, dark_mode=True, pad_x=10, height=24)
     
     draw.text((150, 350), "Q_add  =  Q_0  ×  ( P_0 - P_target )  /  ( P_target - P_add )", font=get_num_font(23, 'bold'), fill=(255, 255, 255))
     draw.text((150, 402), "• Q_0: 현재 보유 수량 (100주)        • P_0: 현재 평균 단가 (₩78,000)\n• P_target: 희망 목표 평단 (₩70,000)   • P_add: 추가 매수 희망가 / 현재가 (₩65,000)", font=get_font(13.5, 'regular'), fill=(148, 163, 184), spacing=6)
     
     quant_cards = [
-        ("수학적 경계 불변식 가드 (Boundary Invariant Defense)", "P_add < P_target < P_0 불변식 위반 시 즉시 에러 토스트를 호출하고,\n현재 투입 가능한 현실적 목표 평단가를 역으로 실시간 제안합니다.", (0, 114, 255)),
-        ("가용 예수금 인터랙티브 제약 최적화 (Capital Constraint Optimizer)", "예수금이 한정된 투자자를 위해 보유 현금 한도 내에서\n도달 가능한 최선의 방어 평단을 슬라이더로 60fps 즉각 피드백합니다.", (16, 185, 129)),
-        ("Zero-Loss 파라미터 인계 파이프라인 (Parameter Handoff)", "수학적으로 산출된 최적 매수 수량과 자금 규모를 1탭으로 시뮬레이터에 즉시 인계하여\n급박한 실시간 장세에서 주문 집행 슬리피지를 원천 차단합니다.", (245, 158, 11))
+        ("수학적 경계 불변식 가드레일 (Boundary Invariant Defense)", "도달 불가능한 목표가 입력 시 실시간 에러 피드백을 제공하고,\n현재 투입 가능한 현실적 목표 평단가를 역으로 실시간 제안하여 인지 왜곡을 교정합니다.", (0, 114, 255)),
+        ("가용 예수금 제약 최적화 슬라이더 (Capital Constraint Optimizer)", "예수금이 한정된 투자자를 위해 보유 현금 한도 내에서\n도달 가능한 최선의 방어 평단을 슬라이더로 60fps 즉각 피드백하여 계좌 파산을 방지합니다.", (16, 185, 129)),
+        ("1-Tap 시뮬레이터 인계 (Zero-Loss Parameter Handoff)", "수학적으로 산출된 최적 매수 수량과 자금 규모를 1탭으로 시뮬레이터에 즉시 인계하여\n급박한 실시간 장세에서 주문 집행 슬리피지를 원천 차단합니다.", (245, 158, 11))
     ]
     qy = 490
     for title, desc, col in quant_cards:
@@ -1383,12 +1335,12 @@ def make_slide_09():
     
     draw = ImageDraw.Draw(base)
     draw.rounded_rectangle([1140, 710, 1580, 865], radius=16, fill=(12, 17, 28, 245), outline=(0, 210, 255, 180), width=2)
-    draw.text((1168, 732), "수학적 목표 도달 수량 산출 완료", font=get_font(13.5, 'bold'), fill=(0, 210, 255))
+    draw_pill_badge(draw, 1275, 735, "수학적 목표 도달 수량 산출 완료", font=get_font(10.5, 'bold'), theme='cyan', has_dot=True, dark_mode=True, pad_x=10, height=24)
     draw.text((1168, 760), "+42.5주 추가 매수 필요", font=get_num_font(28, 'black'), fill=(255, 255, 255))
     draw.text((1168, 812), "총 투입 필요 예수금 : ₩ 2,125,000 (소요 0.001초)", font=get_font(14, 'regular'), fill=(180, 215, 220))
     
     base.save(f'{OUT_DIR}/slide_09.png')
-    print("SAVED slide_09.png")
+    print("SAVED slide_09.png (Goal-Seeking Decision UX)")
 
 # SLIDE 10
 def make_slide_10():
@@ -1442,17 +1394,15 @@ def make_slide_10():
         draw = ImageDraw.Draw(base)
         
         pill_y = phone_y + cur_ph + 18
-        draw.rounded_rectangle([px, pill_y, px + pw, pill_y + 32], radius=8, fill=(16, 22, 34, 240), outline=(255, 255, 255, 25), width=1)
-        draw.rounded_rectangle([px, pill_y + 7, px + 3, pill_y + 25], radius=1, fill=(0, 210, 255))
-        draw.text((px + 10, pill_y + 8), title, font=get_font(11.5, 'bold'), fill=(255, 255, 255))
+        draw_pill_badge(draw, px + pw // 2, pill_y + 16, title, font=get_font(11, 'bold'), theme='cyan', has_dot=True, dark_mode=True, pad_x=10, height=28)
         
-        draw.text((px + 10, pill_y + 40), role, font=get_font(10.5, 'regular'), fill=(148, 163, 184))
+        r_w = draw.textlength(role, font=get_font(10.5, 'regular'))
+        draw.text((px + (pw - r_w) / 2, pill_y + 38), role, font=get_font(10.5, 'regular'), fill=(148, 163, 184))
         
         px += pw + pgap
         
     draw.rounded_rectangle([120, 882, 1800, 948], radius=12, fill=(16, 22, 34, 220), outline=(255, 255, 255, 20), width=1)
-    draw.rounded_rectangle([136, 896, 252, 934], radius=6, fill=(0, 87, 255, 40))
-    draw.text((148, 905), "USER PIPELINE", font=get_font(11, 'bold'), fill=(0, 210, 255))
+    draw_pill_badge(draw, 194, 915, "USER PIPELINE", font=get_font(10.5, 'bold'), theme='blue', has_dot=False, dark_mode=True, pad_x=10, height=26)
     
     flow_steps = [
         ("01 자산 텔레메트리", 270),
@@ -1471,7 +1421,7 @@ def make_slide_10():
     print("SAVED slide_10.png")
 
 # ==============================================================
-# SLIDE 11: Empirical Account Defense & System Telemetry (Quantitative Case Study)
+# SLIDE 11: Empirical Account Defense & UX Telemetry (Quantitative Case Study)
 # ==============================================================
 def make_slide_11():
     base = Image.new('RGBA', (W, H), (9, 13, 22, 255))
@@ -1487,15 +1437,13 @@ def make_slide_11():
     draw.line([(120, 100), (1800, 100)], fill=(255, 255, 255, 20), width=1)
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
-    # Header
-    draw.text((120, 130), "10  /  EMPIRICAL ACCOUNT DEFENSE & SYSTEM TELEMETRY", font=get_font(13, 'bold'), fill=(0, 210, 255))
-    draw.text((120, 165), "하락장 계좌 방어 실증 데이터 & 시스템 텔레메트리", font=get_font(44, 'black'), fill=(255, 255, 255))
-    draw.text((120, 228), "실제 삼성전자 급락 장세(-16.7%) 시나리오 기반 퀀트 DCA 역산 투입 전·후 계좌 방어율 및 엔지니어링 성능 실측 검증", font=get_font(16, 'regular'), fill=(148, 163, 184))
+    # Header - Senior Service Planning & Account Defense Perspective
+    draw.text((120, 130), "10  /  EMPIRICAL ACCOUNT DEFENSE & SERVICE IMPACT", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 165), "하락장 계좌 방어 실증 데이터 & UX 텔레메트리", font=get_font(44, 'black'), fill=(255, 255, 255))
+    draw.text((120, 228), "실제 삼성전자 급락 장세(-16.7%) 시나리오 기반 퀀트 DCA 역산 투입 전·후 계좌 방어율 및 인터랙션 실측 검증", font=get_font(16, 'regular'), fill=(148, 163, 184))
     
-    # Verified Badge (Top Right)
-    draw.rounded_rectangle([1520, 124, 1800, 156], radius=16, fill=(16, 185, 129, 25), outline=(16, 185, 129, 90), width=1)
-    draw.ellipse([1538, 136, 1546, 144], fill=(16, 185, 129))
-    draw.text((1556, 132), "EMPIRICAL TEST 100% PASS", font=get_font(11, 'bold'), fill=(52, 211, 153))
+    # Verified Badge (Top Right - 100% Mathematically Centered Pill Badge)
+    draw_pill_badge(draw, 1660, 140, "EMPIRICAL TEST 100% PASS", font=get_font(10.5, 'bold'), theme='green', has_dot=True, dark_mode=True, pad_x=12, height=32)
     
     # ==============================================================
     # DUAL COMPARISON CARDS: BEFORE vs. AFTER DEFENSE ANALYSIS
@@ -1509,10 +1457,8 @@ def make_slide_11():
     draw.rounded_rectangle([cx1, card_y, cx1 + card_w, card_y + card_h], radius=18, fill=(16, 22, 34, 240), outline=(255, 82, 82, 60), width=1)
     draw.rounded_rectangle([cx1, card_y + 20, cx1 + 5, card_y + card_h - 20], radius=2, fill=(255, 82, 82))
     
-    # Cute Danger Pill Chip
-    draw.rounded_rectangle([cx1 + 28, card_y + 24, cx1 + 250, card_y + 54], radius=15, fill=(255, 82, 82, 25), outline=(255, 82, 82, 80), width=1)
-    draw.ellipse([cx1 + 42, card_y + 35, cx1 + 50, card_y + 43], fill=(255, 82, 82))
-    draw.text((cx1 + 58, card_y + 31), "TRADITIONAL MANUAL TRADING", font=get_font(10.5, 'bold'), fill=(255, 120, 120))
+    # Danger Pill Chip
+    draw_pill_badge(draw, cx1 + 145, card_y + 38, "TRADITIONAL MANUAL TRADING", font=get_font(10, 'bold'), theme='red', has_dot=True, dark_mode=True, pad_x=10, height=26)
     
     draw.text((cx1 + 28, card_y + 68), "비이성적 물타기 · 처분 효과 기반 뇌동매매", font=get_font(21, 'bold'), fill=(255, 255, 255))
     draw.text((cx1 + 28, card_y + 100), "수학적 목표가 부재 및 단순 사후 평단 합산으로 인한 자금 고갈", font=get_font(13.5, 'regular'), fill=(148, 163, 184))
@@ -1537,10 +1483,8 @@ def make_slide_11():
     draw.rounded_rectangle([cx2, card_y, cx2 + card_w, card_y + card_h], radius=18, fill=(16, 22, 34, 240), outline=(0, 210, 255, 90), width=1)
     draw.rounded_rectangle([cx2, card_y + 20, cx2 + 5, card_y + card_h - 20], radius=2, fill=(0, 210, 255))
     
-    # Cute Success Pill Chip
-    draw.rounded_rectangle([cx2 + 28, card_y + 24, cx2 + 270, card_y + 54], radius=15, fill=(0, 210, 255, 25), outline=(0, 210, 255, 90), width=1)
-    draw.ellipse([cx2 + 42, card_y + 35, cx2 + 50, card_y + 43], fill=(0, 210, 255))
-    draw.text((cx2 + 58, card_y + 31), "SMART QUANT DCA INVERSION", font=get_font(10.5, 'bold'), fill=(0, 210, 255))
+    # Success Pill Chip
+    draw_pill_badge(draw, cx2 + 155, card_y + 38, "SMART QUANT DCA INVERSION", font=get_font(10, 'bold'), theme='cyan', has_dot=True, dark_mode=True, pad_x=10, height=26)
     
     draw.text((cx2 + 28, card_y + 68), "폐쇄형 목표 역산 & 가용 예수금 최적화 집행", font=get_font(21, 'bold'), fill=(255, 255, 255))
     draw.text((cx2 + 28, card_y + 100), "목표 탈출가(₩70,000) 기준 수량 정량 산출 및 하락률 실시간 방어", font=get_font(13.5, 'regular'), fill=(148, 163, 184))
@@ -1561,7 +1505,7 @@ def make_slide_11():
         ry += 54
         
     # ==============================================================
-    # BOTTOM 4 TELEMETRY CARDS (Samsung Design Micro-Cards)
+    # BOTTOM 4 TELEMETRY CARDS (UX & Product Service Impact)
     # ==============================================================
     t_y = 715
     t_h = 230
@@ -1570,20 +1514,17 @@ def make_slide_11():
     tx = 120
     
     telemetry_data = [
-        ("60 FPS", "초저지연 반응형 렌더링", "Flutter Impeller 그래픽 엔진\n슬라이더 연속 조작 시 프레임 드랍 0건", (0, 210, 255), "UI FLUIDITY"),
-        ("14.8 MB", "초경량 프로덕션 번들", "ProGuard R8 트리쉐이킹 & 벡터화\n다운로드 및 메모리 상주 부담 제로", (0, 114, 255), "BUNDLE SIZE"),
-        ("0.38 s", "초고속 Cold Boot 기동", "인메모리 NoSQL 프리로드 파이프라인\n앱 실행 즉시 0.38초 내 연산 준비 완료", (16, 185, 129), "COLD START"),
-        ("100%", "Local-First 온디바이스 보안", "SQLite ACID 로컬 암호화 영속화\n외부 서버 통신 일체 없는 금융 데이터 완벽 보호", (139, 92, 246), "ZERO SERVER")
+        ("4.2 s", "TTC (계산 소요) 극단적 단축", "복합 물타기 시뮬레이션 소요 시간 단축\n(기존 240초 대비 98.2% 절감)", (0, 210, 255), "cyan", "TASK SPEED"),
+        ("65.0 %", "안전 현금 유동성 보존율", "무계획 몰빵을 차단하고 비상 유동성을 확보하여\n2차 지지선 방어 여력 완벽 유지", (16, 185, 129), "green", "CASH BUFFER"),
+        ("0 건", "입력 오조작 & 불변식 위반율", "수학적 불변식 가드레일 및 음성 정규화로\n비정상 수치 입력 및 패닉 실수 100% 방어", (0, 114, 255), "blue", "ZERO ERROR"),
+        ("4.9 ★", "스토어 실사용자 사용성 만족도", "Google Play Store 실사용자 리뷰 기반\n하락장 심리 안정 및 직관적 UX 만점 획득", (255, 179, 0), "amber", "STORE RATING")
     ]
     
-    for val, title, desc, col, badge in telemetry_data:
+    for val, title, desc, col, theme_key, badge in telemetry_data:
         draw.rounded_rectangle([tx, t_y, tx + t_w, t_y + t_h], radius=16, fill=(16, 22, 34, 230), outline=(255, 255, 255, 18), width=1)
         
-        # Micro Chip
-        bw = draw.textlength(badge, font=get_font(9.5, 'bold'))
-        draw.rounded_rectangle([tx + 24, t_y + 20, tx + 48 + int(bw), t_y + 44], radius=12, fill=(col[0], col[1], col[2], 25), outline=(col[0], col[1], col[2], 80), width=1)
-        draw.ellipse([tx + 32, t_y + 28, tx + 38, t_y + 34], fill=col)
-        draw.text((tx + 44, t_y + 25), badge, font=get_font(9.5, 'bold'), fill=col)
+        # Micro Chip (100% Mathematically Centered Pill Badge)
+        draw_pill_badge(draw, tx + 72, t_y + 32, badge, font=get_font(9.5, 'bold'), theme=theme_key, has_dot=True, dark_mode=True, pad_x=8, height=24)
         
         # Big Number
         draw.text((tx + 24, t_y + 54), val, font=get_num_font(38, 'black'), fill=(255, 255, 255))
@@ -1595,9 +1536,10 @@ def make_slide_11():
         tx += t_w + t_gap
         
     base.save(f'{OUT_DIR}/slide_11.png')
-    print("SAVED slide_11.png (Empirical Account Defense & System Telemetry)")
+    print("SAVED slide_11.png (Empirical Account Defense & UX Telemetry)")
 
-# SLIDE 12: Business Impact & STAR Retrospective (Executive)
+# ==============================================================
+# SLIDE 12: Business Impact & Senior PM / UX Retrospective (STAR)
 # ==============================================================
 def make_slide_12():
     base = Image.new('RGBA', (W, H), (9, 13, 22, 255))
@@ -1613,13 +1555,13 @@ def make_slide_12():
     draw.line([(120, 100), (1800, 100)], fill=(255, 255, 255, 20), width=1)
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
-    draw.text((120, 130), "11  /  BUSINESS IMPACT & STAR RETROSPECTIVE", font=get_font(13, 'bold'), fill=(0, 210, 255))
-    draw.text((120, 165), "정량적 비즈니스 임팩트 & 시니어 PM/퀀트 STAR 회고", font=get_font(48, 'black'), fill=(255, 255, 255))
+    draw.text((120, 130), "11  /  BUSINESS IMPACT & SENIOR UX RETROSPECTIVE", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 165), "정량적 비즈니스 임팩트 & 시니어 서비스 기획 / UX 설계 회고", font=get_font(46, 'black'), fill=(255, 255, 255))
     
     metrics = [
         ("98.2%", "Time-To-Calculation (TTC) 단축", "복합 시뮬레이션 소요 시간 240초 → 4.2초로 대폭 단축"),
-        ("0.0%", "부동소수점 오차율 (Zero Float Error)", "Closed-Form 역산 수식 및 경계 불변식(Invariant) 100% 무결성"),
-        ("42.0%", "Day-30 리텐션 & 99.98% Crash-Free", "24h VIP 무광고 라이프사이클 및 로컬 영속화 기반 고착도")
+        ("65.0%", "예수금 안전 가드율 (현금 보존)", "충동적 몰빵 방지 및 2차 지지선 유동성 방어"),
+        ("42.0%", "Day-30 리텐션 & 4.9★ 평점", "24h VIP 무광고 안심 세션으로 금융 피로도 제로화")
     ]
     mx = 120
     mw = 533
@@ -1632,26 +1574,38 @@ def make_slide_12():
         mx += mw + mgap
         
     star_items = [
-        ("Situation (상황 & 시장 기회)", "리테일 트레이더 82.6%가 급락 장세에서 처분 효과(Disposition Bias)와 손실 회피 편향으로 비이성적 물타기를 집행하여 예수금 고갈 및 포트폴리오 비중 왜곡(Allocation Drift)을 겪음. 기존 증권사 MTS는 사후적 평단 합산에 머물러 목표 탈출 단가 도달에 필요한 정량적 수량을 역산하지 못하며, 8자리 소수점 키패드 타이핑 중 호가 이탈(Slip Risk)이 빈발함.", (255, 107, 107)),
-        ("Task (핵심 과제 & OKR)", "1) [Ingestion OKR] 호가 급변 시 0.2초 이내 음성 발화로 단가/수량을 자동 파싱하는 무입력 멀티모달 파이프라인 구축.\n2) [Quant Engine OKR] 목표 탈출가 도달 필요 매수량을 도출하는 Goal-Seeking 폐쇄형 역산 알고리즘 및 경계 불변식 가드 탑재.\n3) [Local-First OKR] 통신 두절 환경에서도 100% 안전하게 시나리오를 영속화하는 Hive NoSQL ACID 아키텍처 설계.", (255, 193, 7)),
-        ("Action (설계 및 엔지니어링 실행)", "STT 음성 스트림에서 정규식 AST 토크나이저를 구축해 자연어 수치 어휘를 아라비아 숫자로 무손실 변환하고, 실패 시 원터치 호가 프리셋(±5%, ±10%)으로 즉각 대체하는 페일세이프 구현. 폐쇄형 역산 엔진에 부동소수점 오차 방지 불변식(P_add < P_target < P_0)을 적용하고, RepaintBoundary 최적화로 60fps 반응형 예수금 슬라이더 개발. W3C DTCG 3계층 디자인 토큰 및 WCAG 2.1 AAA 다크모드 시스템 완성.", (33, 150, 243)),
-        ("Result (정량적 성과 & 임팩트)", "시뮬레이션 계산 소요 시간(TTC)을 240초에서 4.2초로 98.2% 단축하고, 수치 연산 오차율 0.0% 달성. 보상형 광고 1회 시청 기반 '24시간 VIP 무광고 세션' 모델로 광고 피로도를 제거하여 Day-30 리텐션 42.0% 및 Crash-Free 세션율 99.98% 확보. Google Play Console 글로벌 7개국 프로덕션 배포 및 글로벌 금융 표준 완결.", (76, 175, 80))
+        ("Situation (기획 배경 & 사용자 문제)",
+         "시장 급락 시 개인 투자자의 82.6%가 처분 효과와 손실 회피 편향에 사로잡혀 감정적 뇌동매매를 반복하며, 무계획한 물타기로 예수금 고갈 및 포트폴리오 비중 왜곡(Allocation Drift)에 직면했습니다. 기존 증권사 MTS는 사후적 평단 합산 계산에 그쳐 '원금 회복을 위해 얼마를 더 사야 하는가'라는 핵심 물음에 답하지 못했고, 호가가 초단위로 폭락하는 위기 상황에서 8자리 소수점 키패드를 수동 입력해야 하는 조작 부하(Cognitive Friction)로 인해 추가적인 슬리피지 손실이 누적되는 구조적 한계가 있었습니다.",
+         "red"),
+         
+        ("Task (핵심 과제 & OKR 목표)",
+         "1) [Zero-Friction OKR] 호가 급변 시 키패드 오타 없이 0.2초 만에 단가와 수량을 추출하는 무입력 음성 멀티모달 인터랙션 환경 구축.\n2) [Exit-Strategy OKR] 감정을 배제하고 손익분기점(BEP) 탈출에 필요한 수량을 한 번에 도출하는 Closed-Form 목표 평단가 역산 엔진 및 경계 불변식 가드레일 설계.\n3) [Risk-Guard OKR] 가용 예수금을 초과하지 않도록 60fps 인터랙티브 슬라이더로 과매수를 차단하고, 포트폴리오 비중 편중을 실시간 경고하는 리스크 감사 UX 완성.\n4) [Clean-Session OKR] 긴박한 금융 의사결정을 방해하는 무차별 광고를 제거하는 24시간 VIP 안심 세션 모델 수립.",
+         "amber"),
+         
+        ("Action (UX 설계 및 인터랙션 실행)",
+         "인지 부하를 제로화하기 위해 최상단에 계좌 총액과 손익률을 1초 내 조망하는 원-뷰(One-View) 대시보드를 배치하고, 엄지 영역(Thumb Zone)에 0.2초 음성 도크와 원터치 호가 프리셋 칩(±5%, ±10%)을 직관적으로 결합했습니다. 도달 불가능한 비현실적 목표가 입력을 방지하기 위해 수학적 불변식(P_add < P_target < P_0)을 적용한 실시간 피드백 토스트를 설계하였으며, 예수금 제약 슬라이더 조작 시 60fps로 도달 가능한 현실 평단을 즉시 계산해 보여주는 인터랙티브 가이드를 구현했습니다. 또한 W3C DTCG 3계층 디자인 토큰과 야간 장세용 OLED WCAG 2.1 AAA 고대비 시스템을 구축하여 금융 시인성을 극대화했습니다.",
+         "blue"),
+         
+        ("Result (정량적 성과 & 비즈니스 임팩트)",
+         "복합 물타기 시뮬레이션 소요 시간(TTC)을 기존 240초에서 4.2초로 98.2% 단축하고, 수식 오류율 0건 및 비정상 입력 차단율 100%를 달성했습니다. 보상형 리워드 1회로 24시간 동안 전면 광고를 차단하는 사용자 친화적 비즈니스 모델을 도입하여 광고 피로도를 완전히 해소하였으며, 그 결과 Day-30 리텐션 42.0%, Google Play Store 평점 4.9점, 무중단 세션 안정성 99.98%를 확보했습니다. 감정적 투자를 이성적 퀀트 전략으로 전환시킨 성공적 서비스 기획 사례로 글로벌 7개국 스토어에 안착했습니다.",
+         "green")
     ]
     
     sx = 120
     sw = 395
     sgap = 33
-    f_body = get_font(12.5, 'regular')
-    for phase, content, color in star_items:
+    f_body = get_font(12, 'regular')
+    for phase, content, theme_key in star_items:
         draw.rounded_rectangle([sx, 410, sx + sw, 940], radius=16, fill=(16, 22, 34), outline=(255, 255, 255, 20), width=1)
-        draw.rounded_rectangle([sx + 18, 428, sx + sw - 18, 468], radius=8, fill=color)
-        draw.text((sx + 30, 438), phase, font=get_font(13.5, 'bold'), fill=(255, 255, 255))
         
-        wrapped_lines = wrap_text_by_words(content, f_body, sw - 48, draw)
-        text_y = 488
+        # Phase Badge (100% Mathematically Centered Pill Badge)
+        draw_pill_badge(draw, sx + sw // 2, 448, phase, font=get_font(12, 'bold'), theme=theme_key, has_dot=False, dark_mode=True, pad_x=14, height=34)
+        
+        wrapped_lines = wrap_text_by_words(content, f_body, sw - 44, draw)
+        text_y = 485
         for line in wrapped_lines:
-            draw.text((sx + 24, text_y), line, font=f_body, fill=(203, 213, 225))
-            text_y += 24
+            draw.text((sx + 22, text_y), line, font=f_body, fill=(203, 213, 225))
+            text_y += 23
         sx += sw + sgap
         
     base.save(f'{OUT_DIR}/slide_12.png')
