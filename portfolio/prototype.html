@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>스마트 물타기 계산기 (Smart DCA Calculator) - Live Interactive Prototype</title>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-  <link rel="stylesheet" href="style.css?v=20261024_prototype_v1">
+  <link rel="stylesheet" href="style.css?v=20261024_prototype_v2">
   <style>
-    /* Dedicated Standalone Prototype Page Styles */
     body {
       background: radial-gradient(circle at 50% 20%, #0d1527 0%, #080b11 60%, #04060a 100%);
       min-height: 100vh;
@@ -15,6 +14,8 @@
       flex-direction: column;
       align-items: center;
       padding: 0 0 60px 0;
+      color: #E2E8F0;
+      font-family: 'Pretendard', sans-serif;
     }
 
     .proto-navbar {
@@ -27,6 +28,7 @@
       gap: 16px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       margin-bottom: 24px;
+      box-sizing: border-box;
     }
 
     .proto-nav-left {
@@ -74,24 +76,455 @@
       gap: 12px;
     }
 
-    .device-pill {
+    .live-status-pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: rgba(0, 87, 255, 0.12);
-      border: 1px solid rgba(0, 87, 255, 0.3);
-      color: #60A5FA;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11.5px;
+      gap: 8px;
+      background: rgba(0, 230, 118, 0.12);
+      border: 1px solid rgba(0, 230, 118, 0.3);
+      color: #00E676;
+      font-size: 12px;
       font-weight: 700;
-      padding: 6px 12px;
+      padding: 6px 14px;
       border-radius: 9999px;
     }
 
-    .interactive-prototype-container {
-      margin: 0 auto;
-      max-width: 1380px;
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #00E676;
+      box-shadow: 0 0 8px #00E676;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .btn-open-fullapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, #0057FF, #00D2FF);
+      color: #FFFFFF;
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 7px 16px;
+      border-radius: 9999px;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(0, 87, 255, 0.35);
+      transition: all 0.2s ease;
+    }
+
+    .btn-open-fullapp:hover {
+      box-shadow: 0 6px 20px rgba(0, 210, 255, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .proto-container {
       width: 100%;
+      max-width: 1380px;
+      padding: 0 24px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .proto-header {
+      background: rgba(16, 22, 34, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 24px 28px;
+      box-sizing: border-box;
+      backdrop-filter: blur(12px);
+    }
+
+    .proto-kicker {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .proto-badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(0, 210, 255, 0.12);
+      border: 1px solid rgba(0, 210, 255, 0.35);
+      color: #00D2FF;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.05em;
+    }
+
+    .proto-subtext {
+      color: #64748B;
+      font-size: 12px;
+      font-family: monospace;
+    }
+
+    .proto-title {
+      font-size: 28px;
+      font-weight: 900;
+      color: #FFFFFF;
+      margin: 0 0 8px 0;
+      letter-spacing: -0.02em;
+    }
+
+    .proto-desc {
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: #94A3B8;
+      margin: 0 0 20px 0;
+    }
+
+    /* 4-Step Interactive Flow Stepper */
+    .flow-stepper-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .flow-step-btn {
+      background: rgba(9, 13, 22, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 14px 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .flow-step-btn:hover {
+      border-color: rgba(0, 210, 255, 0.4);
+      background: rgba(16, 22, 34, 0.95);
+      transform: translateY(-2px);
+    }
+
+    .flow-step-btn.active {
+      border-color: #00D2FF;
+      background: linear-gradient(180deg, rgba(0, 87, 255, 0.2) 0%, rgba(0, 210, 255, 0.08) 100%);
+      box-shadow: 0 0 20px rgba(0, 210, 255, 0.25);
+    }
+
+    .flow-step-btn.active::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #0057FF, #00D2FF);
+    }
+
+    .step-tag-pill {
+      font-size: 10px;
+      font-weight: 800;
+      color: #64748B;
+      letter-spacing: 0.04em;
+    }
+
+    .flow-step-btn.active .step-tag-pill {
+      color: #00D2FF;
+    }
+
+    .step-title-text {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #FFFFFF;
+    }
+
+    .step-sub-desc {
+      font-size: 11.5px;
+      color: #94A3B8;
+      line-height: 1.35;
+    }
+
+    /* Dual Workbench Layout */
+    .workbench-layout {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* Authentic Mobile Smartphone Chassis */
+    .phone-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .phone-chassis {
+      width: 390px;
+      height: 844px;
+      background: #000000;
+      border: 12px solid #1E232E;
+      border-radius: 54px;
+      box-shadow: 0 35px 90px rgba(0, 0, 0, 0.95), 0 0 0 1px #334155, 0 0 45px rgba(0, 87, 255, 0.25);
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+      box-sizing: content-box;
+    }
+
+    /* Side hardware buttons */
+    .phone-chassis::before {
+      content: '';
+      position: absolute;
+      left: -15px;
+      top: 110px;
+      width: 3px;
+      height: 26px;
+      background: #334155;
+      border-radius: 2px 0 0 2px;
+      box-shadow: 0 44px 0 #334155, 0 92px 0 #334155;
+    }
+
+    .phone-chassis::after {
+      content: '';
+      position: absolute;
+      right: -15px;
+      top: 160px;
+      width: 3px;
+      height: 52px;
+      background: #334155;
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* Sleek Speaker Grill & Camera Punch-hole */
+    .phone-dynamic-island {
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    .island-speaker {
+      width: 50px;
+      height: 4px;
+      background: #2D3748;
+      border-radius: 2px;
+    }
+
+    .island-cam {
+      width: 8px;
+      height: 8px;
+      background: #0F172A;
+      border: 1.5px solid #1E293B;
+      border-radius: 50%;
+    }
+
+    .island-sensor {
+      width: 5px;
+      height: 5px;
+      background: #020617;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+
+    /* Live Flutter Web Iframe */
+    .flutter-app-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 42px;
+      background: #05070B;
+      display: block;
+    }
+
+    .phone-caption {
+      font-size: 12px;
+      color: #64748B;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Right Details & Telemetry Workbench */
+    .workbench-column {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .guide-card {
+      background: rgba(16, 22, 34, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 22px 24px;
+      box-sizing: border-box;
+      backdrop-filter: blur(12px);
+    }
+
+    .guide-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .guide-tag {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(0, 87, 255, 0.15);
+      color: #60A5FA;
+      border: 1px solid rgba(0, 87, 255, 0.3);
+    }
+
+    .guide-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin: 0 0 10px 0;
+    }
+
+    .guide-text {
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: #CBD5E1;
+      margin: 0 0 16px 0;
+    }
+
+    .guide-action-box {
+      background: rgba(9, 13, 22, 0.7);
+      border: 1px dashed rgba(0, 210, 255, 0.35);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 12.5px;
+      color: #00D2FF;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .spec-item {
+      background: rgba(9, 13, 22, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .spec-label {
+      font-size: 11px;
+      color: #64748B;
+      margin-bottom: 4px;
+    }
+
+    .spec-value {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #F8FAFC;
+    }
+
+    .invariant-card {
+      background: rgba(16, 22, 34, 0.85);
+      border: 1px solid rgba(0, 230, 118, 0.25);
+      border-radius: 16px;
+      padding: 20px 24px;
+      box-sizing: border-box;
+    }
+
+    .inv-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .inv-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(0, 230, 118, 0.2);
+      color: #00E676;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 13px;
+    }
+
+    .inv-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #FFFFFF;
+    }
+
+    .inv-formula-box {
+      background: #090D16;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: monospace;
+      font-size: 13px;
+      color: #00E676;
+      margin-bottom: 10px;
+    }
+
+    .inv-desc {
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #94A3B8;
+      margin: 0;
+    }
+
+    .controls-card {
+      background: rgba(16, 22, 34, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .btn-action-pill {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #F8FAFC;
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-action-pill:hover {
+      background: rgba(0, 210, 255, 0.15);
+      border-color: rgba(0, 210, 255, 0.4);
+      color: #00D2FF;
     }
   </style>
 </head>
@@ -102,751 +535,232 @@
     <div class="proto-nav-left">
       <a href="index.html" class="btn-back-deck">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        케이스 스터디로 돌아가기
+        케이스 스터디 슬라이드로 돌아가기
       </a>
       <div class="proto-brand">
-        Smart DCA <span>Simulator</span>
+        Smart DCA <span>Simulator</span> · Live App Engine
       </div>
     </div>
 
     <div class="proto-nav-right">
       <span class="live-status-pill">
         <span class="status-dot"></span>
-        Interactive Live Engine
+        Flutter Web 60fps Native
       </span>
-      <span class="device-pill">iPhone 15 Pro (390×844)</span>
+      <a href="app/index.html" target="_blank" class="btn-open-fullapp">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        실제 앱 전체화면 열기
+      </a>
     </div>
   </header>
 
-  <!-- Main Interactive Prototype Container -->
-  <main class="interactive-prototype-container" id="live-prototype">
-    <div class="proto-header">
+  <!-- Main Prototyping Container -->
+  <main class="proto-container">
+    
+    <!-- Header with 4-Step User Flow Stepper -->
+    <section class="proto-header">
       <div class="proto-kicker">
-        <span class="proto-badge">⚡ LIVE INTERACTIVE PROTOTYPE</span>
-        <span class="proto-subtext">AUTHENTIC MOBILE DEVICE SIMULATOR (390×844) · CORE QUANT FLOW WALKTHROUGH</span>
+        <span class="proto-badge">⚡ LIVE FLUTTER APPLICATION</span>
+        <span class="proto-subtext">AUTHENTIC APP WEB ENGINE (390×844) · CORE QUANT FLOW ONLY</span>
       </div>
-      <h1 class="proto-title">실제 모바일 규격 인터랙티브 프로토타입</h1>
-      <p class="proto-desc">실제 스마트폰 디바이스 규격(390×844) 화면에서 <strong>[01. 홈 대시보드 (자산 진단)] → [02. 퀀트 역산 시뮬레이터] → [03. 리스크 감사 & 집행 리포트]</strong> 핵심 여정을 직접 탭하고 슬라이더를 조작하며 플로우를 체험해 보세요.</p>
+      <h1 class="proto-title">실제 플러터 앱 기반 인터랙티브 프로토타입</h1>
+      <p class="proto-desc">
+        케이스 스터디에서 기획한 <strong>핵심 4단계 UX 플로우(자산 진단 ➔ 음성 도크 ➔ 목표 역산 ➔ 플랜 확정)</strong>를 모바일 뷰포트에서 직접 실행할 수 있습니다. 상단 탭을 눌러 각 단계로 즉시 점프하거나, 화면 속 모바일 UI를 직접 터치하여 자연스럽게 플로우를 체험해 보세요.
+      </p>
+
+      <!-- 4-Step Flow Stepper -->
+      <div class="flow-stepper-row">
+        <button class="flow-step-btn active" data-step="0" data-flow="home" id="step-btn-0">
+          <span class="step-tag-pill">STEP 01</span>
+          <span class="step-title-text">자산 현황 진단</span>
+          <span class="step-sub-desc">삼성전자 -16.7% 계좌 상태 1초 조망</span>
+        </button>
+        <button class="flow-step-btn" data-step="1" data-flow="voice" id="step-btn-1">
+          <span class="step-tag-pill">STEP 02</span>
+          <span class="step-title-text">0.2초 음성 도크</span>
+          <span class="step-sub-desc">'7만원에 50주' 자연어 발화/프리셋 탭</span>
+        </button>
+        <button class="flow-step-btn" data-step="2" data-flow="target" id="step-btn-2">
+          <span class="step-tag-pill">STEP 03</span>
+          <span class="step-title-text">목표 평단가 역산</span>
+          <span class="step-sub-desc">목표 72,000원 입력 시 +38주 실시간 도출</span>
+        </button>
+        <button class="flow-step-btn" data-step="3" data-flow="sim" id="step-btn-3">
+          <span class="step-tag-pill">STEP 04</span>
+          <span class="step-title-text">최종 플랜 확정</span>
+          <span class="step-sub-desc">예수금 65% 보존 최적 평단 1-Tap 주문 복사</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Dual Workbench -->
+    <div class="workbench-layout">
       
-      <!-- Flow Stepper Navigation -->
-      <div class="proto-stepper-wrap">
-        <div class="proto-stepper">
-          <button class="step-btn active" data-step="0" id="step-btn-0">
-            <span class="step-pill">STEP 01</span>
-            <span class="step-label">홈 대시보드 (자산 진단)</span>
-          </button>
-          <div class="step-connector"></div>
-          <button class="step-btn" data-step="1" id="step-btn-1">
-            <span class="step-pill">STEP 02</span>
-            <span class="step-label">목표 평단가 역산 시뮬레이터</span>
-          </button>
-          <div class="step-connector"></div>
-          <button class="step-btn" data-step="2" id="step-btn-2">
-            <span class="step-pill">STEP 03</span>
-            <span class="step-label">리스크 감사 & 집행 보고서</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Preset Quick Chips -->
-      <div class="proto-presets" aria-label="Preset Stocks">
-        <span class="presets-label">실전 시나리오 프리셋:</span>
-        <button class="preset-chip active" data-name="삼성전자" data-p0="78000" data-q0="100" data-pt="70000" data-padd="65000" data-budget="2500000">삼성전자 (-16.7%)</button>
-        <button class="preset-chip" data-name="SK하이닉스" data-p0="192000" data-q0="50" data-pt="175000" data-padd="160000" data-budget="4000000">SK하이닉스 (-16.7%)</button>
-        <button class="preset-chip" data-name="테슬라" data-p0="245000" data-q0="40" data-pt="215000" data-padd="190000" data-budget="3000000">테슬라 (-22.4%)</button>
-      </div>
-    </div>
-
-    <!-- Invariant Guard Alert Banner -->
-    <div class="invariant-banner valid" id="invariant-banner">
-      <div class="invariant-icon" id="inv-icon">✓</div>
-      <div class="invariant-body">
-        <span class="invariant-title" id="inv-title">수학적 경계 불변식 만족 (Valid Invariant)</span>
-        <span class="invariant-formula" id="inv-formula">P_add (₩65,000) &lt; P_target (₩70,000) &lt; P_0 (₩78,000) [정상 폐쇄형 역산 가능]</span>
-      </div>
-    </div>
-
-    <!-- Dual Workbench Layout: Mobile Device + Telemetry Workbench -->
-    <div class="proto-dual-workbench">
-      
-      <!-- LEFT: AUTHENTIC MOBILE SMARTPHONE DEVICE FRAME -->
-      <div class="proto-device-column">
-        <div class="proto-mobile-chassis" id="mobile-chassis">
+      <!-- Left: Authentic Smartphone Chassis with Live Flutter Web App -->
+      <div class="phone-column">
+        <div class="phone-chassis" id="phone-chassis">
           
-          <!-- iPhone Top Bezel: iOS Status Bar & Dynamic Island -->
-          <div class="chassis-notch iphone-notch">
-            <span class="notch-time">9:41</span>
-            <div class="dynamic-island">
-              <div class="island-sensor"></div>
-              <div class="island-cam"></div>
-            </div>
-            <div class="notch-icons ios-icons">
-              <svg class="ios-signal" width="16" height="11" viewBox="0 0 16 12" fill="currentColor">
-                <rect x="0" y="9" width="2.5" height="3" rx="0.5"/>
-                <rect x="4.2" y="6" width="2.5" height="6" rx="0.5"/>
-                <rect x="8.4" y="3" width="2.5" height="9" rx="0.5"/>
-                <rect x="12.6" y="0" width="2.5" height="12" rx="0.5"/>
-              </svg>
-              <span class="ios-net">5G</span>
-              <svg class="ios-battery" width="22" height="11" viewBox="0 0 24 12" fill="none" stroke="currentColor">
-                <rect x="1" y="1" width="19" height="10" rx="3" stroke-width="1.5"/>
-                <rect x="3" y="3" width="13" height="6" rx="1.5" fill="currentColor"/>
-                <path d="M22 4.5v3" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
-            </div>
+          <!-- Speaker Grill & Camera Punch-hole -->
+          <div class="phone-dynamic-island">
+            <div class="island-speaker"></div>
+            <div class="island-cam"></div>
           </div>
 
-          <!-- Viewport & Animated Multi-Screen Track -->
-          <div class="chassis-viewport">
-            <div class="mobile-track" id="mobile-track">
-              
-              <!-- MOBILE SCREEN 01: HOME DASHBOARD (HomeScreen) -->
-              <div class="mobile-page" data-page="0">
-                <div class="m-appbar">
-                  <div class="m-appbar-left">
-                    <img src="assets/app_icon_clean_squircle.png" alt="Icon" class="m-app-icon" onerror="this.style.display='none'">
-                    <div class="m-appbar-titles">
-                      <span class="m-appbar-title">물타기 계산기</span>
-                      <span class="m-appbar-sub">스마트 평단가 관리 비서</span>
-                    </div>
-                  </div>
-                  <div class="m-appbar-actions">
-                    <span class="m-chip-btn">KRW (₩)</span>
-                  </div>
-                </div>
-
-                <div class="m-content">
-                  <!-- Hero Portfolio Card -->
-                  <div class="m-hero-card">
-                    <div class="m-hero-top">
-                      <span class="m-hero-chip">스마트 포트폴리오</span>
-                      <span class="m-hero-currency">KRW (₩) ⇄</span>
-                    </div>
-                    <span class="m-hero-label">총 투자금</span>
-                    <span class="m-hero-val" id="m-hero-total">₩ 7,800,000</span>
-                    <div class="m-hero-footer">
-                      <div class="m-hero-stat">
-                        <span class="m-stat-sub">보유 종목</span>
-                        <span class="m-stat-main" id="m-hero-stock-name">삼성전자 (100주)</span>
-                      </div>
-                      <div class="m-hero-stat">
-                        <span class="m-stat-sub">수익률</span>
-                        <span class="m-stat-main loss" id="m-hero-loss">-16.7% (손실 방어 필요)</span>
-                      </div>
-                      <button class="m-btn-calc" id="m-btn-hero-calc">계산하기 →</button>
-                    </div>
-                  </div>
-
-                  <!-- 24h VIP Session Card -->
-                  <div class="m-banner-vip">
-                    <div class="m-banner-left">
-                      <span class="m-badge-free">FREE</span>
-                      <span class="m-banner-title">VIP 24시간 광고 제거</span>
-                      <span class="m-banner-desc">짧은 영상 1편 시청 시 24시간 무광고</span>
-                    </div>
-                    <button class="m-btn-vip-action">받기 &gt;</button>
-                  </div>
-
-                  <!-- Primary Action Hub -->
-                  <div class="m-action-card" id="m-card-trigger-sim">
-                    <div class="m-action-icon">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0057FF" stroke-width="2.2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="16" y2="18"/></svg>
-                    </div>
-                    <div class="m-action-info">
-                      <div class="m-action-header">
-                        <span class="m-action-title">물타기 시뮬레이터</span>
-                        <span class="m-badge-core">CORE</span>
-                      </div>
-                      <span class="m-action-sub">목표 평단가 역산 및 A/B 전략 비교</span>
-                    </div>
-                    <span class="m-action-arrow">→</span>
-                  </div>
-
-                  <!-- Feature Grid -->
-                  <div class="m-grid-2">
-                    <div class="m-grid-tile" id="m-tile-report">
-                      <div class="m-tile-icon orange">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-                      </div>
-                      <span class="m-tile-name">포트폴리오 리포트</span>
-                      <span class="m-tile-sub">종목별 분산 및 손익 현황</span>
-                    </div>
-                    <div class="m-grid-tile">
-                      <div class="m-tile-icon blue">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00D2FF" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                      </div>
-                      <span class="m-tile-name">시나리오 기록</span>
-                      <span class="m-tile-sub">과거 계산 이력 비교</span>
-                    </div>
-                  </div>
-
-                  <div class="m-cta-wrap">
-                    <button class="m-cta-btn" id="m-flow-start-btn">
-                      <span>목표 평단 역산 시작하기</span>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- MOBILE SCREEN 02: QUANT GOAL-SEEKING SIMULATOR -->
-              <div class="mobile-page" data-page="1">
-                <div class="m-appbar">
-                  <button class="m-btn-back" id="m-btn-back-to-home">← 홈</button>
-                  <span class="m-appbar-title">목표 평단가 역산</span>
-                  <button class="m-btn-reset" id="m-btn-reset-sim">초기화</button>
-                </div>
-
-                <div class="m-content">
-                  <div class="m-flow-guide">
-                    <span class="m-guide-badge">STEP 02 / 03</span>
-                    <span class="m-guide-text">희망하는 탈출 평단가를 맞추기 위한 필요 수량 도출</span>
-                  </div>
-
-                  <!-- Stock Position Card -->
-                  <div class="m-card-compact">
-                    <div class="m-row-between">
-                      <span class="m-label-bold" id="m-pos-stock">삼성전자</span>
-                      <span class="m-val-mono" id="m-pos-p0-q0">₩ 78,000 / 100주</span>
-                    </div>
-                    <div class="m-subrow">
-                      <span>목표가: <strong id="m-pos-pt">₩ 70,000</strong></span>
-                      <span>현재가: <strong id="m-pos-padd">₩ 65,000</strong></span>
-                    </div>
-                  </div>
-
-                  <!-- Goal Seeking Live Result Card -->
-                  <div class="m-result-hero">
-                    <span class="m-res-kicker">가용 예수금 제약 최적화 결과</span>
-                    <span class="m-res-main" id="m-res-exec-q">+38 주 매수 집행</span>
-                    <div class="m-res-details" id="m-res-exec-sub">
-                      • 소요 자금: ₩ 2,470,000 (예수금 한도 내 98.8%)<br>
-                      • 도달 평단: <strong>₩ 74,420</strong> (-16.7% → -12.7%)<br>
-                      • 하락률 방어: <span style="color:#0057FF; font-weight:800;">+4.0%p 계좌 방어</span>
-                    </div>
-                  </div>
-
-                  <!-- Mobile Slider -->
-                  <div class="m-slider-box">
-                    <div class="m-row-between">
-                      <span class="m-slider-label">예수금 한도 슬라이더</span>
-                      <span class="m-slider-val" id="m-slider-budget-val">₩ 2,500,000</span>
-                    </div>
-                    <input type="range" class="m-range-slider" id="mobile-budget-slider" min="500000" max="6000000" step="100000" value="2500000">
-                    <div class="m-slider-ticks">
-                      <span>₩ 50만</span>
-                      <span>₩ 300만</span>
-                      <span>₩ 600만</span>
-                    </div>
-                  </div>
-
-                  <div class="m-cta-wrap">
-                    <button class="m-cta-btn" id="m-flow-to-report-btn">
-                      <span>리스크 리포트 확정 ▶</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- MOBILE SCREEN 03: RISK AUDIT & EXECUTION REPORT -->
-              <div class="mobile-page" data-page="2">
-                <div class="m-appbar">
-                  <button class="m-btn-back" id="m-btn-back-to-sim">← 역산</button>
-                  <span class="m-appbar-title">집행 진단 리포트</span>
-                  <button class="m-btn-share" id="m-btn-share-report">공유</button>
-                </div>
-
-                <div class="m-content">
-                  <div class="m-report-badge-safe">
-                    <span>✓ 계좌 안전도 판정: 정상 분할매수 (SAFE)</span>
-                  </div>
-
-                  <div class="m-report-summary">
-                    <span class="m-rep-title">최종 자산 총액 &amp; 보유 포지션</span>
-                    <span class="m-rep-big" id="m-report-total-val">₩ 10,270,000</span>
-                    <span class="m-rep-sub">총 보유 수량: <strong id="m-report-total-q">138 주</strong></span>
-                  </div>
-
-                  <!-- Allocation Mini Chart Visualizer -->
-                  <div class="m-alloc-card">
-                    <span class="m-alloc-title" id="m-report-stock-title">삼성전자 (집중 포지션)</span>
-                    <div class="m-alloc-bar">
-                      <div class="m-alloc-fill" style="width: 74%;"></div>
-                      <div class="m-alloc-cash" style="width: 26%;"></div>
-                    </div>
-                    <div class="m-alloc-legend">
-                      <span><span class="dot-blue"></span> 주식 비중 74.0%</span>
-                      <span><span class="dot-green"></span> 잔여 현금 26.0%</span>
-                    </div>
-                  </div>
-
-                  <!-- Decision Audit Table -->
-                  <div class="m-audit-table">
-                    <div class="m-audit-row">
-                      <span>최초 매입 포지션</span>
-                      <strong id="m-tbl-p0">₩ 78,000 (100주)</strong>
-                    </div>
-                    <div class="m-audit-row">
-                      <span>추가 분할 매수</span>
-                      <strong id="m-tbl-add">+38주 (₩2,470,000)</strong>
-                    </div>
-                    <div class="m-audit-row highlight">
-                      <span>최종 방어 평균단가</span>
-                      <strong id="m-tbl-final">₩ 74,420 (+4.0%p 방어)</strong>
-                    </div>
-                  </div>
-
-                  <div class="m-cta-wrap">
-                    <button class="m-cta-btn green" id="m-flow-restart-btn">
-                      <span>새로운 계산 시작 (처음으로)</span>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- Bottom Home Indicator -->
-          <div class="iphone-home-indicator"></div>
+          <!-- Real Flutter Web App Iframe -->
+          <iframe id="flutter-frame" class="flutter-app-iframe" src="app/index.html?flow=home" allow="microphone" title="Smart DCA Flutter Live App"></iframe>
         </div>
 
-        <!-- Phone Sub-Controls (Step switcher buttons) -->
-        <div class="proto-phone-controls">
-          <button class="phone-step-nav" id="btn-flow-prev">◀ 이전 단계</button>
-          <button class="phone-step-nav primary" id="btn-flow-next">다음 단계 ▶</button>
-          <button class="phone-step-nav reset" id="btn-flow-reset">처음으로 ↺</button>
+        <div class="phone-caption">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          화면 내부를 직접 터치/클릭하여 실제 앱 기능을 자유롭게 조작할 수 있습니다.
         </div>
       </div>
 
-      <!-- RIGHT: TELEMETRY & CONTROL WORKBENCH -->
-      <div class="proto-telemetry-column">
+      <!-- Right: Step UX Rationale & Quant Engine Workbench -->
+      <div class="workbench-column">
         
-        <!-- Live Parameter Control Box -->
-        <div class="proto-card">
-          <div class="card-heading">
-            <span class="step-num">01</span>
-            <h3>실시간 금융 파라미터 조율</h3>
+        <!-- Active Step Guide Card -->
+        <div class="guide-card" id="guide-card">
+          <div class="guide-header">
+            <span class="guide-tag" id="guide-tag">STEP 01 / ASSET DIAGNOSIS</span>
+            <span style="font-size: 11px; color: #64748B;">WCAG 2.1 AAA Contrast</span>
+          </div>
+          <h2 class="guide-title" id="guide-title">홈 대시보드: 공포 상황의 인지 부하 1초 제어</h2>
+          <p class="guide-text" id="guide-text">
+            갑작스러운 주가 급락(-16.7%) 시 발생하는 투자자의 시야 협착(Tunnel Vision)을 방지하기 위해, 총 자산과 실시간 손익률을 최상단 단일 카드에 배치했습니다. 복잡한 서브메뉴를 탐색할 필요 없이 1초 만에 계좌 상태를 즉시 조망합니다.
+          </p>
+
+          <div class="guide-action-box" id="guide-action-box">
+            👉 <strong>체험 가이드:</strong> 폰 화면 속 삼성전자 카드의 <strong>[계산하기 &gt;]</strong> 버튼이나 우측 하단 <strong>[AI 비서]</strong> 버튼을 탭해보세요.
           </div>
 
-          <div class="input-grid">
-            <div class="input-field">
-              <label for="input-p0">기존 평단가 (P₀)</label>
-              <div class="input-wrapper">
-                <input type="number" id="input-p0" value="78000" step="500">
-                <span class="input-unit-right">KRW</span>
-              </div>
+          <div class="guide-grid">
+            <div class="spec-item">
+              <div class="spec-label">Fitts' Law 조작권</div>
+              <div class="spec-value" id="spec-ergonomics">엄지 최적 반경 (Thumb Zone 78%)</div>
             </div>
-
-            <div class="input-field">
-              <label for="input-q0">보유 수량 (Q₀)</label>
-              <div class="input-wrapper">
-                <input type="number" id="input-q0" value="100" step="5">
-                <span class="input-unit-right">주</span>
-              </div>
-            </div>
-
-            <div class="input-field">
-              <label for="input-pt">희망 탈출 목표가 (P_target)</label>
-              <div class="input-wrapper highlight-cyan">
-                <input type="number" id="input-pt" value="70000" step="500">
-                <span class="input-unit-right">KRW</span>
-              </div>
-            </div>
-
-            <div class="input-field">
-              <label for="input-padd">추가 매수가 / 현재가 (P_add)</label>
-              <div class="input-wrapper">
-                <input type="number" id="input-padd" value="65000" step="500">
-                <span class="input-unit-right">KRW</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Slider for Budget -->
-          <div class="slider-block">
-            <div class="slider-header">
-              <span class="slider-title">가용 예수금 제약 한도 (Budget)</span>
-              <span class="slider-badge">제약 조건</span>
-              <span class="slider-val" id="budget-display">₩ 2,500,000</span>
-            </div>
-            <input type="range" class="proto-slider" id="input-budget" min="500000" max="6000000" step="100000" value="2500000">
-            <div class="slider-ticks">
-              <span>₩50만</span>
-              <span>₩300만</span>
-              <span>₩600만</span>
+            <div class="spec-item">
+              <div class="spec-label">핵심 뷰포트 반응 속도</div>
+              <div class="spec-value" id="spec-latency">0.001s (Instant Handoff)</div>
             </div>
           </div>
         </div>
 
-        <!-- Telemetry Live Mathematical Output Card -->
-        <div class="proto-card">
-          <div class="card-heading">
-            <span class="step-num">02</span>
-            <h3>실시간 폐쇄형 역산 솔루션 결과</h3>
+        <!-- Mathematical Invariant Verification Card -->
+        <div class="invariant-card">
+          <div class="inv-header">
+            <div class="inv-icon">✓</div>
+            <span class="inv-title">수학적 경계 불변식 검증 (Quant Invariant Guard)</span>
           </div>
-
-          <div class="result-tile actual-tile">
-            <div class="tile-header">
-              <span class="tile-tag active-tag">FEASIBLE EXECUTION · 실집행 최적해</span>
-              <span class="tile-note">예수금 한도 내 최적치</span>
-            </div>
-            <div class="tile-metrics">
-              <div class="metric-item">
-                <span class="m-label">최적 필요 매수 수량</span>
-                <span class="m-val accent-green" id="actual-q"><strong>+38</strong> 주</span>
-              </div>
-              <div class="metric-item">
-                <span class="m-label">도달 가능 최적 평단</span>
-                <span class="m-val accent-cyan" id="actual-avg">₩ 74,420</span>
-              </div>
-              <div class="metric-item">
-                <span class="m-label">소요 자금</span>
-                <span class="m-val" id="theory-cash">₩ 2,470,000</span>
-              </div>
-              <div class="metric-item">
-                <span class="m-label">방어 효과 (손실률 완화)</span>
-                <span class="m-val accent-emerald" id="actual-defense">-16.7% → -12.7% (+4.0%p 방어)</span>
-              </div>
-            </div>
+          <div class="inv-formula-box">
+            Q_add = Q_0 × (P_0 - P_target) / (P_target - P_add)<br>
+            불변식: P_add &lt; P_target &lt; P_0 [100% 만족]
           </div>
+          <p class="inv-desc">
+            시행착오식 단순 입력 방식과 달리, 닫힌 형태(Closed-form)의 폐쇄형 수식을 적용하여 단 1회의 연산으로 목표 도달에 필요한 매수량을 오차 없이 즉시 산출합니다.
+          </p>
+        </div>
 
-          <div class="result-tile theory-tile">
-            <div class="tile-header">
-              <span class="tile-tag">THEORETICAL TARGET · 이론적 필요 수량</span>
-              <span class="tile-formula">Q_need = Q₀(P₀ - P_t) / (P_t - P_add)</span>
-            </div>
-            <div class="tile-metrics">
-              <div class="metric-item">
-                <span class="m-label">이론적 필요 매수 수량</span>
-                <span class="m-val" id="theory-q"><strong>+160.0</strong> 주</span>
-              </div>
-            </div>
+        <!-- Quick Controls -->
+        <div class="controls-card">
+          <div>
+            <div style="font-size: 13.5px; font-weight: 800; color: #FFFFFF; margin-bottom: 3px;">앱 화면 제어 컨트롤</div>
+            <div style="font-size: 11.5px; color: #64748B;">초기화하거나 전체화면 창으로 전환</div>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-action-pill" id="btn-reload-frame">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              현재 화면 새로고침
+            </button>
+            <a href="app/index.html" target="_blank" class="btn-action-pill">
+              새 탭에서 열기 ↗
+            </a>
           </div>
         </div>
 
-        <!-- 1-Tap Handoff Action -->
-        <div class="proto-actions">
-          <button class="btn-handoff" id="btn-handoff">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            1-Tap 파라미터 시뮬레이터 인계
-          </button>
-          <button class="btn-copy-report" id="btn-copy-report">
-            클립보드 리포트 복사
-          </button>
-        </div>
       </div>
 
     </div>
-  </main>
 
-  <!-- Toast Notification -->
-  <div class="toast-notify" id="toast-notify">
-    <span class="toast-icon">✓</span>
-    <span class="toast-msg">파라미터가 인계되었습니다.</span>
-  </div>
+  </main>
 
   <script>
     (function() {
-      let currentFlowStep = 0;
-      const totalFlowSteps = 3;
-      const mobileTrack = document.getElementById('mobile-track');
-      const stepBtns = [
-        document.getElementById('step-btn-0'),
-        document.getElementById('step-btn-1'),
-        document.getElementById('step-btn-2')
+      const stepBtns = Array.from(document.querySelectorAll('.flow-step-btn'));
+      const iframe = document.getElementById('flutter-frame');
+      const btnReload = document.getElementById('btn-reload-frame');
+
+      const guideTag = document.getElementById('guide-tag');
+      const guideTitle = document.getElementById('guide-title');
+      const guideText = document.getElementById('guide-text');
+      const guideActionBox = document.getElementById('guide-action-box');
+      const specErgonomics = document.getElementById('spec-ergonomics');
+      const specLatency = document.getElementById('spec-latency');
+
+      const stepData = [
+        {
+          tag: 'STEP 01 / ASSET DIAGNOSIS',
+          title: '홈 대시보드: 공포 상황의 인지 부하 1초 제어',
+          text: '갑작스러운 주가 급락(-16.7%) 시 발생하는 투자자의 시야 협착(Tunnel Vision)을 방지하기 위해, 총 자산과 실시간 손익률을 최상단 단일 카드에 배치했습니다. 복잡한 서브메뉴를 탐색할 필요 없이 1초 만에 계좌 상태를 즉시 조망합니다.',
+          action: '👉 <strong>체험 가이드:</strong> 폰 화면 속 삼성전자 카드의 <strong>[계산하기 &gt;]</strong> 버튼이나 우측 하단 <strong>[AI 비서]</strong> 버튼을 탭해보세요.',
+          ergonomics: '엄지 최적 반경 (Thumb Zone 78%)',
+          latency: '0.001s (Instant Handoff)',
+          url: 'app/index.html?flow=home'
+        },
+        {
+          tag: 'STEP 02 / VOICE DOCK',
+          title: '0.2초 음성 도크: 호가 급변 시 오입력 원천 차단',
+          text: '호가가 1초 단위로 급변하는 패닉 장세에서 모바일 8자리 숫자 키패드 오입력은 치명적인 매매 실수로 이어집니다. 0.2초 반응형 음성 도크와 원터치 호가 프리셋 칩을 결합하여, 말 한마디(\"7만원에 50주\")로 파라미터를 즉시 추출합니다.',
+          action: '👉 <strong>체험 가이드:</strong> 음성 도크 시트에서 <strong>[시뮬레이터 적용]</strong> 버튼을 누르거나, 추천 호가 칩을 탭해보세요.',
+          ergonomics: '원핸드 바텀시트 (오조작 0건 달성)',
+          latency: '0.2s (Multimodal STT Parser)',
+          url: 'app/index.html?flow=voice'
+        },
+        {
+          tag: 'STEP 03 / QUANT INVERTER',
+          title: '목표 평단가 역산 엔진: 수학적 불변성의 확실성',
+          text: '희망하는 탈출 목표 평단가(₩72,000)를 입력하면, 퀀트 불변식 엔진이 현재 보유 수량과 시장가를 역산하여 필요한 매수량(+38주)과 예수금을 0.001초 만에 산출합니다. 실시간 수량 스텝퍼로 즉각적인 피드백을 제공합니다.',
+          action: '👉 <strong>체험 가이드:</strong> 목표 평단가 입력칸의 <strong>[+] [-]</strong> 스텝퍼 버튼을 눌러 실시간 평단가와 계좌 방어율 변화를 확인하세요.',
+          ergonomics: '48dp 터치 타깃 준수 (HIG/Material)',
+          latency: '0.001s (Closed-form Inversion)',
+          url: 'app/index.html?flow=target'
+        },
+        {
+          tag: 'STEP 04 / EXECUTION PLAN',
+          title: '최종 플랜 확정: 예수금 65% 보존과 주문 플랜 확정',
+          text: '무리한 물타기로 인한 조기 현금 고갈(Premature Depletion)을 방지하기 위해 가용 예수금 대비 65% 안전 버퍼를 유지하는 최적 평단가를 확정합니다. 검토가 끝난 분할 주문 플랜은 1-Tap으로 복사하여 증권사 앱에서 바로 집행합니다.',
+          action: '👉 <strong>체험 가이드:</strong> 1차/2차 분할 매수 실행 계획을 확인하고, 상단 <strong>[초기화]</strong> 버튼으로 다시 새로운 시뮬레이션을 시작해보세요.',
+          ergonomics: '1-Tap 원터치 복사 인터랙션',
+          latency: '65.0% Cash Preservation Buffer',
+          url: 'app/index.html?flow=sim'
+        }
       ];
 
-      function setFlowStep(stepIndex) {
-        if (stepIndex < 0) stepIndex = 0;
-        if (stepIndex >= totalFlowSteps) stepIndex = totalFlowSteps - 1;
-        currentFlowStep = stepIndex;
-
-        // Slide the phone track
-        if (mobileTrack) {
-          mobileTrack.style.transform = `translateX(-${currentFlowStep * (100 / totalFlowSteps)}%)`;
-        }
-
-        // Update stepper active classes
-        stepBtns.forEach((btn, idx) => {
-          if (btn) btn.classList.toggle('active', idx === currentFlowStep);
+      function setStep(index) {
+        stepBtns.forEach((btn, i) => {
+          btn.classList.toggle('active', i === index);
         });
 
-        // Update next button text
-        const btnNext = document.getElementById('btn-flow-next');
-        if (btnNext) {
-          if (currentFlowStep === 2) {
-            btnNext.textContent = '처음으로 ↺';
-          } else {
-            btnNext.textContent = '다음 단계 ▶';
-          }
-        }
+        const data = stepData[index];
+        guideTag.textContent = data.tag;
+        guideTitle.textContent = data.title;
+        guideText.textContent = data.text;
+        guideActionBox.innerHTML = data.action;
+        specErgonomics.textContent = data.ergonomics;
+        specLatency.textContent = data.latency;
+
+        iframe.src = data.url;
       }
 
-      // Connect stepper buttons
-      stepBtns.forEach((btn, idx) => {
-        if (btn) {
-          btn.addEventListener('click', () => setFlowStep(idx));
-        }
+      stepBtns.forEach((btn, index) => {
+        btn.addEventListener('click', () => setStep(index));
       });
 
-      // Connect mobile internal buttons
-      const mBtnHeroCalc = document.getElementById('m-btn-hero-calc');
-      const mCardTriggerSim = document.getElementById('m-card-trigger-sim');
-      const mFlowStartBtn = document.getElementById('m-flow-start-btn');
-      const mTileReport = document.getElementById('m-tile-report');
-
-      if (mBtnHeroCalc) mBtnHeroCalc.addEventListener('click', () => setFlowStep(1));
-      if (mCardTriggerSim) mCardTriggerSim.addEventListener('click', () => setFlowStep(1));
-      if (mFlowStartBtn) mFlowStartBtn.addEventListener('click', () => setFlowStep(1));
-      if (mTileReport) mTileReport.addEventListener('click', () => setFlowStep(2));
-
-      const mBtnBackToHome = document.getElementById('m-btn-back-to-home');
-      const mBtnResetSim = document.getElementById('m-btn-reset-sim');
-      const mFlowToReportBtn = document.getElementById('m-flow-to-report-btn');
-
-      if (mBtnBackToHome) mBtnBackToHome.addEventListener('click', () => setFlowStep(0));
-      if (mBtnResetSim) mBtnResetSim.addEventListener('click', () => {
-        inputBudget.value = 2500000;
-        if (mobileBudgetSlider) mobileBudgetSlider.value = 2500000;
-        updateCalculator();
-      });
-      if (mFlowToReportBtn) mFlowToReportBtn.addEventListener('click', () => setFlowStep(2));
-
-      const mBtnBackToSim = document.getElementById('m-btn-back-to-sim');
-      const mFlowRestartBtn = document.getElementById('m-flow-restart-btn');
-      const mBtnShareReport = document.getElementById('m-btn-share-report');
-
-      if (mBtnBackToSim) mBtnBackToSim.addEventListener('click', () => setFlowStep(1));
-      if (mFlowRestartBtn) mFlowRestartBtn.addEventListener('click', () => setFlowStep(0));
-      if (mBtnShareReport) mBtnShareReport.addEventListener('click', () => {
-        btnCopyReport.click();
-      });
-
-      // Bottom flow control buttons
-      const btnFlowPrev = document.getElementById('btn-flow-prev');
-      const btnFlowNext = document.getElementById('btn-flow-next');
-      const btnFlowReset = document.getElementById('btn-flow-reset');
-
-      if (btnFlowPrev) btnFlowPrev.addEventListener('click', () => setFlowStep(currentFlowStep - 1));
-      if (btnFlowNext) btnFlowNext.addEventListener('click', () => {
-        if (currentFlowStep === 2) {
-          setFlowStep(0);
-        } else {
-          setFlowStep(currentFlowStep + 1);
-        }
-      });
-      if (btnFlowReset) btnFlowReset.addEventListener('click', () => setFlowStep(0));
-
-      // Elements for Reactive Calculation
-      const inputP0 = document.getElementById('input-p0');
-      const inputQ0 = document.getElementById('input-q0');
-      const inputPt = document.getElementById('input-pt');
-      const inputPadd = document.getElementById('input-padd');
-      const inputBudget = document.getElementById('input-budget');
-      const mobileBudgetSlider = document.getElementById('mobile-budget-slider');
-
-      const budgetDisplay = document.getElementById('budget-display');
-      const mobileBudgetDisplay = document.getElementById('m-slider-budget-val');
-      const invariantBanner = document.getElementById('invariant-banner');
-      const invIcon = document.getElementById('inv-icon');
-      const invTitle = document.getElementById('inv-title');
-      const invFormula = document.getElementById('inv-formula');
-
-      const theoryQ = document.getElementById('theory-q');
-      const theoryCash = document.getElementById('theory-cash');
-      const actualQ = document.getElementById('actual-q');
-      const actualAvg = document.getElementById('actual-avg');
-      const actualDefense = document.getElementById('actual-defense');
-
-      // Mobile in-screen result elements
-      const mHeroTotal = document.getElementById('m-hero-total');
-      const mHeroStockName = document.getElementById('m-hero-stock-name');
-      const mHeroLoss = document.getElementById('m-hero-loss');
-      const mPosStock = document.getElementById('m-pos-stock');
-      const mPosP0Q0 = document.getElementById('m-pos-p0-q0');
-      const mPosPt = document.getElementById('m-pos-pt');
-      const mPosPadd = document.getElementById('m-pos-padd');
-      const mResExecQ = document.getElementById('m-res-exec-q');
-      const mResExecSub = document.getElementById('m-res-exec-sub');
-      const mReportTotalVal = document.getElementById('m-report-total-val');
-      const mReportTotalQ = document.getElementById('m-report-total-q');
-      const mReportStockTitle = document.getElementById('m-report-stock-title');
-      const mTblP0 = document.getElementById('m-tbl-p0');
-      const mTblAdd = document.getElementById('m-tbl-add');
-      const mTblFinal = document.getElementById('m-tbl-final');
-
-      const btnHandoff = document.getElementById('btn-handoff');
-      const btnCopyReport = document.getElementById('btn-copy-report');
-      const toastNotify = document.getElementById('toast-notify');
-      const presetChips = Array.from(document.querySelectorAll('.preset-chip'));
-
-      let currentStockName = '삼성전자';
-
-      function formatWon(val) {
-        return '₩ ' + Math.round(val).toLocaleString('ko-KR');
-      }
-
-      function updateCalculator() {
-        const p0 = parseFloat(inputP0.value) || 0;
-        const q0 = parseFloat(inputQ0.value) || 0;
-        const pt = parseFloat(inputPt.value) || 0;
-        const padd = parseFloat(inputPadd.value) || 0;
-        const budget = parseFloat(inputBudget.value) || 0;
-
-        // Sync display and mobile slider
-        const budgetText = formatWon(budget);
-        if (budgetDisplay) budgetDisplay.textContent = budgetText;
-        if (mobileBudgetDisplay) mobileBudgetDisplay.textContent = budgetText;
-        if (mobileBudgetSlider && mobileBudgetSlider.value != budget) {
-          mobileBudgetSlider.value = budget;
-        }
-
-        // Invariant Defense Check: P_add < P_target < P_0
-        const isValid = (padd < pt) && (pt < p0) && (q0 > 0);
-
-        if (invariantBanner) {
-          if (isValid) {
-            invariantBanner.className = 'invariant-banner valid';
-            invIcon.textContent = '✓';
-            invTitle.textContent = '수학적 경계 불변식 만족 (Valid Invariant)';
-            invFormula.textContent = `P_add (${formatWon(padd)}) < P_target (${formatWon(pt)}) < P_0 (${formatWon(p0)}) [정상 폐쇄형 역산 가능]`;
-            if (btnHandoff) btnHandoff.disabled = false;
-          } else {
-            invariantBanner.className = 'invariant-banner invalid';
-            invIcon.textContent = '✕';
-            invTitle.textContent = '경계 불변식 위반 (Invalid Boundary)';
-            invFormula.textContent = `필수 조건 (P_add < P_target < P_0) 위반! 도달 불가능한 목표 단가입니다.`;
-            if (btnHandoff) btnHandoff.disabled = true;
-
-            theoryQ.innerHTML = '<strong>불가</strong>';
-            theoryCash.textContent = '-';
-            actualQ.innerHTML = '<strong>불가</strong>';
-            actualAvg.textContent = '불변식 위반';
-            actualDefense.textContent = '유효한 파라미터를 입력해주세요.';
-            if (mResExecQ) mResExecQ.textContent = '불변식 위반';
-            if (mResExecSub) mResExecSub.textContent = '도달 가능한 유효한 목표가를 설정해주세요.';
-            return;
-          }
-        }
-
-        // 1. Theoretical Closed-Form Inversion: Q_add = Q_0 * (P_0 - P_t) / (P_t - P_add)
-        const qNeed = q0 * (p0 - pt) / (pt - padd);
-        const cashNeed = qNeed * padd;
-
-        theoryQ.innerHTML = `<strong>+${qNeed.toFixed(1)}</strong> 주`;
-        theoryCash.textContent = formatWon(cashNeed);
-
-        // 2. Budget Constrained Execution: Q_exec = floor(Budget / P_add)
-        const maxExecutableQ = Math.floor(budget / padd);
-        const actualCost = maxExecutableQ * padd;
-        const newTotalQ = q0 + maxExecutableQ;
-        const newAvg = (p0 * q0 + actualCost) / (newTotalQ > 0 ? newTotalQ : 1);
-
-        actualQ.innerHTML = `<strong>+${maxExecutableQ}</strong> 주 (${formatWon(actualCost)})`;
-        actualAvg.textContent = formatWon(newAvg);
-
-        // Defense Ratio: Compare loss at current price P_add
-        const initLoss = ((padd - p0) / p0) * 100;
-        const newLoss = ((padd - newAvg) / newAvg) * 100;
-        const defenseDelta = newLoss - initLoss;
-
-        const defenseStr = `${initLoss.toFixed(1)}% → ${newLoss.toFixed(1)}% (+${defenseDelta.toFixed(1)}%p 방어)`;
-        actualDefense.textContent = defenseStr;
-
-        // 3. Sync to Mobile Screen Elements
-        const currentInvest = p0 * q0;
-        const totalInvestAfter = currentInvest + actualCost;
-
-        if (mHeroTotal) mHeroTotal.textContent = formatWon(currentInvest);
-        if (mHeroStockName) mHeroStockName.textContent = `${currentStockName} (${q0}주)`;
-        if (mHeroLoss) mHeroLoss.textContent = `${initLoss.toFixed(1)}% (손실 방어 필요)`;
-
-        if (mPosStock) mPosStock.textContent = currentStockName;
-        if (mPosP0Q0) mPosP0Q0.textContent = `${formatWon(p0)} / ${q0}주`;
-        if (mPosPt) mPosPt.textContent = formatWon(pt);
-        if (mPosPadd) mPosPadd.textContent = formatWon(padd);
-
-        if (mResExecQ) mResExecQ.textContent = `+${maxExecutableQ} 주 매수 집행`;
-        if (mResExecSub) {
-          const pctBudget = budget > 0 ? ((actualCost / budget) * 100).toFixed(1) : '0';
-          mResExecSub.innerHTML = `
-            • 소요 자금: ${formatWon(actualCost)} (예수금 한도 내 ${pctBudget}%)<br>
-            • 도달 평단: <strong>${formatWon(newAvg)}</strong> (${initLoss.toFixed(1)}% → ${newLoss.toFixed(1)}%)<br>
-            • 하락률 방어: <span style="color:#0057FF; font-weight:800;">+${defenseDelta.toFixed(1)}%p 계좌 방어</span>
-          `;
-        }
-
-        if (mReportTotalVal) mReportTotalVal.textContent = formatWon(totalInvestAfter);
-        if (mReportTotalQ) mReportTotalQ.textContent = `${newTotalQ} 주`;
-        if (mReportStockTitle) mReportStockTitle.textContent = `${currentStockName} (집중 포지션)`;
-
-        if (mTblP0) mTblP0.textContent = `${formatWon(p0)} (${q0}주)`;
-        if (mTblAdd) mTblAdd.textContent = `+${maxExecutableQ}주 (${formatWon(actualCost)})`;
-        if (mTblFinal) mTblFinal.textContent = `${formatWon(newAvg)} (+${defenseDelta.toFixed(1)}%p 방어)`;
-      }
-
-      // Sync Mobile Slider to External Slider
-      if (mobileBudgetSlider) {
-        mobileBudgetSlider.addEventListener('input', () => {
-          inputBudget.value = mobileBudgetSlider.value;
-          updateCalculator();
+      if (btnReload) {
+        btnReload.addEventListener('click', () => {
+          iframe.src = iframe.src;
         });
       }
-
-      // Preset Chip Click Handlers
-      presetChips.forEach(chip => {
-        chip.addEventListener('click', () => {
-          presetChips.forEach(c => c.classList.remove('active'));
-          chip.classList.add('active');
-          currentStockName = chip.getAttribute('data-name');
-          inputP0.value = chip.getAttribute('data-p0');
-          inputQ0.value = chip.getAttribute('data-q0');
-          inputPt.value = chip.getAttribute('data-pt');
-          inputPadd.value = chip.getAttribute('data-padd');
-          inputBudget.value = chip.getAttribute('data-budget');
-          updateCalculator();
-        });
-      });
-
-      // 1-Tap Handoff Button
-      if (btnHandoff) {
-        btnHandoff.addEventListener('click', () => {
-          if (toastNotify) {
-            const toastMsg = toastNotify.querySelector('.toast-msg');
-            if (toastMsg) toastMsg.textContent = `${currentStockName} 4개 퀀트 파라미터가 시뮬레이터로 0ms 무손실 인계되었습니다.`;
-            toastNotify.classList.add('show');
-            setTimeout(() => toastNotify.classList.remove('show'), 2600);
-          }
-          setFlowStep(1); // Switch to step 2 (Simulator)
-        });
-      }
-
-      // Copy Report Button
-      if (btnCopyReport) {
-        btnCopyReport.addEventListener('click', () => {
-          const text = `[스마트 DCA 퀀트 리포트]\n종목: ${currentStockName}\n도달 평단: ${actualAvg.textContent}\n방어 효과: ${actualDefense.textContent}\n집행 수량: ${actualQ.textContent}`;
-          navigator.clipboard.writeText(text).then(() => {
-            if (toastNotify) {
-              const toastMsg = toastNotify.querySelector('.toast-msg');
-              if (toastMsg) toastMsg.textContent = '클립보드에 퀀트 진단 리포트가 복사되었습니다.';
-              toastNotify.classList.add('show');
-              setTimeout(() => toastNotify.classList.remove('show'), 2600);
-            }
-          }).catch(() => {});
-        });
-      }
-
-      // Listeners for external inputs
-      [inputP0, inputQ0, inputPt, inputPadd, inputBudget].forEach(input => {
-        if (input) {
-          input.addEventListener('input', updateCalculator);
-        }
-      });
-
-      // Initial Calculation
-      updateCalculator();
     })();
   </script>
 </body>

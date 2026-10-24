@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -39,39 +38,41 @@ class AdmobService {
   static const String _testNativeAndroid = 'ca-app-pub-3940256099942544/2247696110';
   static const String _testNativeIos = 'ca-app-pub-3940256099942544/3986624511';
 
+  static bool get _isAndroid => defaultTargetPlatform == TargetPlatform.android;
+
   /// Returns Real Ad Unit ID so production users generate revenue.
   /// When a device is added to testDeviceIds, AdMob automatically serves test ads for that device.
   static String get bannerAdUnitId {
     if (_forceTestAds) {
-      return Platform.isAndroid ? _testBannerAndroid : _testBannerIos;
+      return _isAndroid ? _testBannerAndroid : _testBannerIos;
     }
     return _realBannerAdUnitId;
   }
 
   static String get interstitialAdUnitId {
     if (_forceTestAds) {
-      return Platform.isAndroid ? _testInterstitialAndroid : _testInterstitialIos;
+      return _isAndroid ? _testInterstitialAndroid : _testInterstitialIos;
     }
     return _realInterstitialAdUnitId;
   }
 
   static String get rewardedAdUnitId {
     if (_forceTestAds) {
-      return Platform.isAndroid ? _testRewardedAndroid : _testRewardedIos;
+      return _isAndroid ? _testRewardedAndroid : _testRewardedIos;
     }
     return _realRewardedAdUnitId;
   }
 
   static String get appOpenAdUnitId {
     if (_forceTestAds) {
-      return Platform.isAndroid ? _testAppOpenAndroid : _testAppOpenIos;
+      return _isAndroid ? _testAppOpenAndroid : _testAppOpenIos;
     }
     return _realAppOpenAdUnitId;
   }
 
   static String get nativeAdUnitId {
     if (_forceTestAds) {
-      return Platform.isAndroid ? _testNativeAndroid : _testNativeIos;
+      return _isAndroid ? _testNativeAndroid : _testNativeIos;
     }
     return _realNativeAdUnitId;
   }

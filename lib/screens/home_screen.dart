@@ -22,7 +22,8 @@ import '../services/event_service.dart';
 import '../theme/t_membership_colors.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({super.key});
+  final bool initialOpenVoice;
+  const HomeScreen({super.key, this.initialOpenVoice = false});
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
@@ -42,6 +43,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _startCountdownTimer();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       AdmobService.showAppOpenAd();
+      if (widget.initialOpenVoice && mounted) {
+        _showAiPanel(context);
+      }
     });
   }
 

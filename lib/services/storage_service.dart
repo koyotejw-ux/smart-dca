@@ -1,9 +1,29 @@
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models/asset_model.dart';
 
 class StorageService {
   static Database? _database;
+
+  // In-memory web fallback store
+  static final Map<String, String> _webSettings = {
+    'hasSeenOnboarding': 'true',
+    'language': 'ko',
+    'currency': 'KRW',
+    'rewarded_vip_expiry_date': DateTime.now().add(const Duration(days: 30)).toIso8601String(),
+  };
+
+  static final List<Asset> _webAssets = [
+    Asset(
+      id: 1,
+      name: '삼성전자',
+      symbol: '005930',
+      initialPrice: 75000,
+      initialQuantity: 100,
+      type: 'stock',
+    ),
+  ];
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -51,6 +71,9 @@ class StorageService {
   }
 
   Future<bool> hasSeenOnboarding() async {
+    if (kIsWeb) {
+      return _webSettings['hasSeenOnboarding'] == 'true';
+    }
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       'settings',
@@ -66,6 +89,9 @@ class StorageService {
   }
 
   Future<String?> getSetting(String key) async {
+    if (kIsWeb) {
+      return _webSettings[key];
+    }
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       'settings',
@@ -77,6 +103,10 @@ class StorageService {
   }
 
   Future<void> setSetting(String key, String value) async {
+    if (kIsWeb) {
+      _webSettings[key] = value;
+      return;
+    }
     final db = await database;
     await db.insert(
       'settings',
@@ -86,6 +116,10 @@ class StorageService {
   }
 
   Future<void> removeSetting(String key) async {
+    if (kIsWeb) {
+      _webSettings.remove(key);
+      return;
+    }
     final db = await database;
     await db.delete(
       'settings',
@@ -95,11 +129,37 @@ class StorageService {
   }
 
   Future<int> insertAsset(Asset asset) async {
+    if (kIsWeb) {
+      final newId = (_webAssets.isEmpty ? 0 : _webAssets.map((a) => a.id ?? 0).reduce((a, b) => a > b ? a : b)) + 1;
+      final newAsset = Asset(
+        id: newId,
+        name: asset.name,
+        symbol: asset.symbol,
+        initialPrice: asset.initialPrice,
+        initialQuantity: asset.initialQuantity,
+        type: asset.type,
+      );
+      _webAssets.add(newAsset);
+      return newId;
+    }
     final db = await database;
     return await db.insert('assets', asset.toMap());
   }
 
   Future<List<Asset>> getAssets() async {
+    if (kIsWeb) {
+      if (_webAssets.isEmpty) {
+        _webAssets.add(Asset(
+          id: 1,
+          name: '삼성전자',
+          symbol: '005930',
+          initialPrice: 75000,
+          initialQuantity: 100,
+          type: 'stock',
+        ));
+      }
+      return List.from(_webAssets);
+    }
     final db = await database;
     // Auto-migrate legacy mock/crypto placeholder data
     await db.rawUpdate('''
@@ -112,11 +172,19 @@ class StorageService {
   }
 
   Future<void> deleteAsset(int id) async {
+    if (kIsWeb) {
+      _webAssets.removeWhere((a) => a.id == id);
+      return;
+    }
     final db = await database;
     await db.delete('assets', where: 'id = ?', whereArgs: [id]);
   }
 
   Future<void> clearAllAssets() async {
+    if (kIsWeb) {
+      _webAssets.clear();
+      return;
+    }
     final db = await database;
     await db.delete('assets');
   }

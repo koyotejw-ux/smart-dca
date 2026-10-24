@@ -19,15 +19,16 @@ import '../providers/currency_provider.dart';
 
 class SimulatorScreen extends ConsumerStatefulWidget {
   final Scenario? initialScenario;
-  const SimulatorScreen({super.key, this.initialScenario});
+  final bool initialTargetMode;
+  const SimulatorScreen({super.key, this.initialScenario, this.initialTargetMode = false});
 
   @override
   ConsumerState<SimulatorScreen> createState() => _SimulatorScreenState();
 }
 
 class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
-  final _assetNameController = TextEditingController(text: '보유 종목');
-  final _assetSymbolController = TextEditingController(text: 'STOCK');
+  final _assetNameController = TextEditingController(text: '삼성전자');
+  final _assetSymbolController = TextEditingController(text: '005930');
   final _initialPriceController = TextEditingController();
   final _initialQtyController = TextEditingController();
 
@@ -63,6 +64,19 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
     _priceControllersB[0].addListener(_calculate);
     _qtyControllersB[0].addListener(_calculate);
 
+    if (widget.initialTargetMode) {
+      _isTargetMode = true;
+      _initialPriceController.text = '75000';
+      _initialQtyController.text = '100';
+      _purchasePriceController.text = '62500';
+      _targetPriceController.text = '72000';
+    } else if (widget.initialScenario == null && _initialPriceController.text.isEmpty) {
+      _initialPriceController.text = '75000';
+      _initialQtyController.text = '100';
+      _priceControllersA[0].text = '62500';
+      _qtyControllersA[0].text = '38';
+    }
+
     if (widget.initialScenario != null) {
       final s = widget.initialScenario!;
       _initialPriceController.text = s.initialPrice.toStringAsFixed(0);
@@ -84,6 +98,8 @@ class _SimulatorScreenState extends ConsumerState<SimulatorScreen> {
           _qtyControllersA.add(q);
         }
       }
+      _calculate();
+    } else {
       _calculate();
     }
   }
