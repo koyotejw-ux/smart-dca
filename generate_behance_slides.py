@@ -1,3 +1,4 @@
+import textwrap
 import os
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
@@ -354,7 +355,7 @@ def make_slide_02():
     draw.line([(120, 980), (1800, 980)], fill=(226, 232, 240), width=1)
     
     # Header - Minimalist & Punchy
-    draw.text((120, 130), "01  /  USER RESEARCH", font=get_font(13, 'bold'), fill=(0, 87, 255))
+    draw.text((120, 130), "02  /  USER RESEARCH", font=get_font(13, 'bold'), fill=(0, 87, 255))
     draw.text((120, 165), "User Research", font=get_font(52, 'black'), fill=(15, 23, 42))
     draw.text((120, 240), "투자자 428명 설문과 심층 인터뷰에서 발견한 3대 핵심 문제", font=get_font(18, 'regular'), fill=(100, 116, 139))
     
@@ -431,7 +432,7 @@ def make_slide_03():
     draw.line([(120, 100), (1800, 100)], fill=(226, 232, 240), width=1)
     draw.line([(120, 980), (1800, 980)], fill=(226, 232, 240), width=1)
     
-    draw.text((120, 130), "02  /  PERSONA & VALUE", font=get_font(13, 'bold'), fill=(0, 87, 255))
+    draw.text((120, 130), "03  /  PERSONA & JOURNEY", font=get_font(13, 'bold'), fill=(0, 87, 255))
     draw.text((120, 165), "Persona & Value", font=get_font(52, 'black'), fill=(15, 23, 42))
     draw.text((120, 240), "기존 앱과의 차별점 비교 및 대표 타깃 페르소나 분석", font=get_font(18, 'regular'), fill=(100, 116, 139))
     
@@ -543,7 +544,7 @@ def make_slide_04():
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
     # Header - Minimalist & Punchy
-    draw.text((120, 130), "03  /  INFORMATION ARCHITECTURE", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 130), "04  /  ARCHITECTURE", font=get_font(13, 'bold'), fill=(0, 210, 255))
     draw.text((120, 165), "Information Architecture", font=get_font(52, 'black'), fill=(255, 255, 255))
     draw.text((120, 240), "자산 진단부터 출구 역산까지 5대 핵심 서비스 구조", font=get_font(18, 'regular'), fill=(148, 163, 184))
     
@@ -701,7 +702,7 @@ def make_slide_05():
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
     # Header - Minimalist & Punchy
-    draw.text((120, 130), "04  /  USER FLOW", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 130), "05  /  USER FLOW", font=get_font(13, 'bold'), fill=(0, 210, 255))
     draw.text((120, 165), "User Flow", font=get_font(52, 'black'), fill=(255, 255, 255))
     draw.text((120, 240), "위기 진단부터 0.2초 음성 입력, 목표 역산, 최종 플랜 확정까지의 4단계 여정", font=get_font(18, 'regular'), fill=(148, 163, 184))
     
@@ -745,9 +746,9 @@ def make_slide_05():
         )
     ]
     
-    pw = 250
-    ph = int(round(pw * (1754.0 / 860.0))) # 510px
-    py = 258
+    pw = 236
+    ph = int(round(pw * (2090.0 / 856.0))) # 576px
+    py = 265
     
     # Coordinates for 4 columns:
     cols_x = [120, 596, 1073, 1550]
@@ -847,7 +848,7 @@ def make_slide_06():
     draw.line([(120, 980), (1800, 980)], fill=(226, 232, 240), width=1)
     
     # Header - Minimalist & Punchy
-    draw.text((120, 130), "05  /  WIREFRAME", font=get_font(13, 'bold'), fill=(0, 87, 255))
+    draw.text((120, 130), "06  /  WIREFRAME", font=get_font(13, 'bold'), fill=(0, 87, 255))
     draw.text((120, 165), "Wireframe", font=get_font(52, 'black'), fill=(15, 23, 42))
     draw.text((120, 240), "엄지 조작(Thumb Zone) 최적화와 오조작 방지를 위한 화면 구조", font=get_font(18, 'regular'), fill=(100, 116, 139))
     
@@ -1084,7 +1085,7 @@ def make_slide_07():
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
     # Header - Minimalist & Punchy
-    draw.text((120, 130), "06  /  DESIGN SYSTEM", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 130), "07  /  DESIGN SYSTEM", font=get_font(13, 'bold'), fill=(0, 210, 255))
     draw.text((120, 165), "Design System", font=get_font(52, 'black'), fill=(255, 255, 255))
     draw.text((120, 240), "OLED 고대비 다크 테마, 타이포그래피, 시맨틱 디자인 토큰", font=get_font(18, 'regular'), fill=(148, 163, 184))
     
@@ -1231,7 +1232,7 @@ def make_slide_08():
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
     # Header - Punchy & Minimalist
-    draw.text((120, 130), "07  /  VOICE INPUT", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 130), "08  /  KEY FEATURE 01", font=get_font(13, 'bold'), fill=(0, 210, 255))
     draw.text((120, 165), "Voice Input", font=get_font(52, 'black'), fill=(255, 255, 255))
     draw.text((120, 235), "타이핑 스트레스를 없애는 0.2초 음성 인식 인터랙션", font=get_font(16, 'regular'), fill=(148, 163, 184))
     
@@ -1249,12 +1250,12 @@ def make_slide_08():
         ly += 190
         
     phone = Image.open('portfolio/iphone_mockups/iphone_08_voice.png').convert('RGBA')
-    pw = 310
+    pw = 275
     ph = int(round(phone.height * (pw / phone.width)))
     phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)
     
-    px = 805
-    py = 185
+    px = 822
+    py = 175
     sh = Image.new('RGBA', (W, H), (0,0,0,0))
     shd = ImageDraw.Draw(sh)
     shd.ellipse([px - 4, py + ph - 16, px + pw + 4, py + ph + 24], fill=(0, 0, 0, 240))
@@ -1297,7 +1298,7 @@ def make_slide_09():
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
     # Header - Punchy & Minimalist (Zero Collision)
-    draw.text((120, 130), "08  /  GOAL SEEKING", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 130), "09  /  KEY FEATURE 02", font=get_font(13, 'bold'), fill=(0, 210, 255))
     draw.text((120, 165), "Goal Seeking", font=get_font(52, 'black'), fill=(255, 255, 255))
     draw.text((120, 235), "원하는 탈출 가격에 도달하기 위한 최적 매수 수량 역산 솔루션", font=get_font(16, 'regular'), fill=(148, 163, 184))
     
@@ -1322,12 +1323,12 @@ def make_slide_09():
         qy += 135
         
     phone = Image.open('portfolio/iphone_mockups/iphone_03_target.png').convert('RGBA')
-    pw = 310
+    pw = 275
     ph = int(round(phone.height * (pw / phone.width)))
     phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)
     
-    px = 1380
-    py = 185
+    px = 1400
+    py = 175
     sh = Image.new('RGBA', (W, H), (0,0,0,0))
     shd = ImageDraw.Draw(sh)
     shd.ellipse([px - 4, py + ph - 16, px + pw + 4, py + ph + 24], fill=(0, 0, 0, 240))
@@ -1361,7 +1362,7 @@ def make_slide_10():
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
     # Header - Punchy & Minimalist
-    draw.text((120, 130), "09  /  MOBILE SCREENS", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 130), "10  /  MOBILE SCREENS", font=get_font(13, 'bold'), fill=(0, 210, 255))
     draw.text((120, 165), "Mobile Screens", font=get_font(52, 'black'), fill=(255, 255, 255))
     draw.text((120, 235), "자산 진단부터 퀀트 역산, 리스크 리포트까지 6대 핵심 화면", font=get_font(16, 'regular'), fill=(148, 163, 184))
     
@@ -1443,7 +1444,7 @@ def make_slide_11():
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
     # Header - Punchy & Minimalist
-    draw.text((120, 130), "10  /  RESULTS & IMPACT", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 130), "11  /  RESULTS & IMPACT", font=get_font(13, 'bold'), fill=(0, 210, 255))
     draw.text((120, 165), "Results & Impact", font=get_font(52, 'black'), fill=(255, 255, 255))
     draw.text((120, 235), "무계획 물타기 대비 계좌 방어 효과 및 주요 지표 비교", font=get_font(16, 'regular'), fill=(148, 163, 184))
     
@@ -1530,9 +1531,9 @@ def make_slide_11():
 # SLIDE 12: Business Impact & Senior PM / UX Retrospective (STAR)
 # ==============================================================
 def make_slide_12():
-    base = Image.new('RGBA', (W, H), (9, 13, 22, 255))
+    base = Image.new("RGBA", (W, H), (9, 13, 22, 255))
     
-    glow = Image.new('RGBA', (W, H), (0,0,0,0))
+    glow = Image.new("RGBA", (W, H), (0,0,0,0))
     gw = ImageDraw.Draw(glow)
     gw.ellipse([1100, 200, 1850, 900], fill=(0, 87, 255, 60))
     gw.ellipse([150, 400, 750, 1000], fill=(0, 230, 118, 40))
@@ -1543,84 +1544,142 @@ def make_slide_12():
     draw.line([(120, 100), (1800, 100)], fill=(255, 255, 255, 20), width=1)
     draw.line([(120, 980), (1800, 980)], fill=(255, 255, 255, 20), width=1)
     
-    # Header - Punchy & Minimalist
-    draw.text((120, 130), "11  /  RETROSPECTIVE", font=get_font(13, 'bold'), fill=(0, 210, 255))
-    draw.text((120, 165), "Retrospective", font=get_font(52, 'black'), fill=(255, 255, 255))
-    draw.text((120, 235), "정량적 비즈니스 임팩트와 프로젝트 디자인 회고 (STAR)", font=get_font(16, 'regular'), fill=(148, 163, 184))
+    # Header - Minimalist & Punchy
+    draw.text((120, 130), "12  /  RETROSPECTIVE & ROADMAP", font=get_font(13, "bold"), fill=(0, 210, 255))
+    draw.text((120, 165), "Retrospective & Roadmap", font=get_font(52, "black"), fill=(255, 255, 255))
+    draw.text((120, 235), "위기 극복 경험에서 얻은 핵심 인사이트와 향후 프로덕트 진화 방향", font=get_font(16, "regular"), fill=(148, 163, 184))
     
-    metrics = [
-        ("98.2%", "Time-To-Calculation 단축", "복합 시뮬레이션 소요 시간 240초 → 4.2초로 대폭 단축"),
-        ("65.0%", "예수금 안전 가드율", "충동적 몰빵 방지 및 2차 지지선 유동성 방어"),
-        ("42.0%", "Day-30 리텐션 & 4.9★", "24h VIP 무광고 안심 세션으로 금융 피로도 제로화")
-    ]
-    mx = 120
-    mw = 533
-    mgap = 40
-    for val, title, desc in metrics:
-        draw.rounded_rectangle([mx, 265, mx + mw, 385], radius=16, fill=(16, 22, 34), outline=(255, 255, 255, 20), width=1)
-        draw.text((mx + 28, 280), val, font=get_num_font(44, 'black'), fill=(0, 210, 255))
-        draw.text((mx + 28, 332), title, font=get_font(16, 'bold'), fill=(255, 255, 255))
-        draw.text((mx + 28, 358), desc, font=get_font(12, 'regular'), fill=(148, 163, 184))
-        mx += mw + mgap
-        
-    star_items = [
-        ("Situation (우리가 마주한 문제)",
-         [
-             ("급락장 패닉 매수", "불안감으로 인한 무계획 물타기와 자금 조기 소진"),
-             ("출구 전략 부재", "단순 단가 합산에 그쳐 원금 회복 경로 미제공"),
-             ("모바일 조작 피로", "급박한 호가 변동 속 소수점 타이핑 지연 및 오류"),
-             ("광고 공해 스트레스", "긴박한 금융 판단 순간을 방해하는 무차별 전면 광고")
-         ],
-         "red", (255, 100, 100)),
-         
-        ("Task (우리가 해결할 과제)",
-         [
-             ("0.2초 무입력 경험", "떨리는 손 대신 자연어 음성으로 즉각 수치 입력"),
-             ("목표가 역산 엔진", "손익분기점 탈출에 필요한 정확한 매수 수량 산출"),
-             ("자금 안전 가드", "예수금 한도 내 현실적 방어선 조율 인터랙션"),
-             ("금융 피로도 제로", "중요 판단을 방해하는 무차별 광고 완전 배제")
-         ],
-         "amber", (255, 179, 0)),
-         
-        ("Action (우리가 설계한 경험)",
-         [
-             ("Thumb Zone 도크", "엄지 영역 음성 입력 및 ±5%, ±10% 호가 칩 결합"),
-             ("스마트 대안 제안", "비현실적 목표 입력 시 실시간 대안 평단 제시"),
-             ("60fps 슬라이더", "예수금 제약에 따른 최선 방어선 실시간 피드백"),
-             ("OLED 고대비 테마", "야간 장세 시인성 극대화 및 시맨틱 컬러 적용")
-         ],
-         "blue", (0, 140, 255)),
-         
-        ("Result (우리가 만든 변화)",
-         [
-             ("TTC 98.2% 단축", "계산 소요 시간 240초에서 4.2초로 획기적 개선"),
-             ("오입력 100% 차단", "비정상 단가 및 오주문 사전 방어율 100% 달성"),
-             ("리텐션 42.0% 달성", "24시간 무광고 세션으로 스토어 4.9★ 평점 기록"),
-             ("투자자 심리 보호", "수학적 확신으로 뇌동매매 방지 및 자산 안전 방어")
-         ],
-         "green", (52, 211, 153))
+    # SECTION 1: 3 KEY LEARNINGS (상단: 핵심 배운 점 & UX 인사이트)
+    learnings = [
+        (
+            "LEARNING 01",
+            "공포 상황의 인지 마비 제어",
+            "입력의 최소화가 곧 계좌 방어의 시작",
+            [
+                "급락장 한가운데서 투자자의 작업 기억(Working Memory)은 극도로 위축되며, 0.1초의 지연과 복잡한 키패드 타이핑은 패닉셀(뇌동매매)을 촉발합니다.",
+                "'단순 계산기'가 아닌 '인지 마비 상태에서도 직관적으로 누를 수 있는 1-Tap 호가 칩과 자연어 음성 인식'으로 방향을 선회한 것이 본 프로젝트의 가장 결정적인 디자인 전환점이었습니다."
+            ],
+            "cyan", (0, 210, 255)
+        ),
+        (
+            "LEARNING 02",
+            "엄지 조작계와 음성 도크 시너지",
+            "단일 인터랙션을 넘어선 하이브리드 UX",
+            [
+                "이동 중이거나 떨리는 손으로 소수점 가격을 직접 입력하는 고통을 해결하기 위해, 한 손 조작 영역(Thumb Zone) 하단에 음성 도크를 상시 배치했습니다.",
+                "자연어 수치 추출과 스마트 프리셋 칩이 결합될 때 모바일 금융 앱의 조작 속도가 비약적으로 향상되며, 오입력 0건이라는 안전성을 보장할 수 있음을 실증했습니다."
+            ],
+            "green", (16, 185, 129)
+        ),
+        (
+            "LEARNING 03",
+            "수학적 불변성이 주는 심리적 안정",
+            "막연한 추정이 아닌 정밀한 닫힌 형식 해",
+            [
+                "투자자가 겪는 불안의 본질은 '내가 과연 얼마를 더 사야 탈출할 수 있는가'에 대한 불확실성에 있었습니다.",
+                "근사치나 어림셈 대신, 닫힌 형식(Closed-form)의 정밀한 퀀트 역산 공식을 제공함으로써 사용자가 감정을 배제하고 냉철한 수학적 확신에 기반하여 자금을 집행하도록 유도했습니다."
+            ],
+            "blue", (0, 114, 255)
+        )
     ]
     
-    sx = 120
-    sw = 395
-    sgap = 33
-    for phase, items, theme_key, theme_col in star_items:
-        draw.rounded_rectangle([sx, 410, sx + sw, 940], radius=16, fill=(16, 22, 34), outline=(255, 255, 255, 20), width=1)
+    lx = 120
+    lw = 533
+    lgap = 40
+    ly = 265
+    lh = 330
+    
+    for badge, title, subtitle, paras, theme_key, col in learnings:
+        draw.rounded_rectangle([lx, ly, lx + lw, ly + lh], radius=16, fill=(16, 22, 34, 230), outline=(255, 255, 255, 20), width=1)
+        draw_pill_badge(draw, lx + 70, ly + 28, badge, font=get_font(10, "bold"), theme=theme_key, has_dot=True, dark_mode=True, pad_x=10, height=24)
+        draw.text((lx + 24, ly + 62), title, font=get_font(20, "bold"), fill=(255, 255, 255))
+        draw.text((lx + 24, ly + 96), subtitle, font=get_font(13.5, "semibold"), fill=col)
+        draw.line([(lx + 24, ly + 124), (lx + lw - 24, ly + 124)], fill=(255, 255, 255, 20), width=1)
         
-        # Phase Badge
-        draw_pill_badge(draw, sx + sw // 2, 446, phase, font=get_font(11.5, 'bold'), theme=theme_key, has_dot=False, dark_mode=True, pad_x=14, height=32)
-        
-        iy = 480
-        for lead, desc in items:
-            draw.rounded_rectangle([sx + 16, iy, sx + sw - 16, iy + 92], radius=10, fill=(9, 13, 22), outline=(255, 255, 255, 12), width=1)
-            draw.text((sx + 30, iy + 14), f"• {lead}", font=get_font(13, 'bold'), fill=theme_col)
-            draw.text((sx + 30, iy + 44), desc, font=get_font(11.5, 'regular'), fill=(180, 195, 210))
-            iy += 105
+        py = ly + 138
+        for p in paras:
+            lines = textwrap.wrap(p, width=28)
+            for line in lines:
+                draw.text((lx + 24, py), line, font=get_font(12, "regular"), fill=(160, 175, 195))
+                py += 21
+            py += 6
             
-        sx += sw + sgap
+        lx += lw + lgap
+
+    # SECTION 2: 3-PHASE PRODUCT EVOLUTION ROADMAP (중단: 향후 로드맵)
+    roadmap = [
+        (
+            "PHASE 01 (LIVE)",
+            "퀀트 역산 엔진 & 0.2초 음성 도크",
+            "현재 Google Play 스토어 상용 출시 완료",
+            [
+                "국내/해외 주식 퀀트 목표 평단가 역산 엔진 탑재",
+                "0.2초 로컬 자연어 음성 파싱 및 호가 프리셋 칩",
+                "100% 오프라인 로컬 연산 (금융 데이터 유출 원천 차단)",
+                "OLED 고대비 다크 모드 및 시맨틱 디자인 시스템"
+            ],
+            "cyan", (0, 210, 255)
+        ),
+        (
+            "PHASE 02 (NEXT)",
+            "마이데이터 오픈뱅킹 실시간 연동",
+            "2026 Q4 예정 · 증권사 계좌 자동 동기화",
+            [
+                "금융 마이데이터 API 연동을 통한 보유 주식/예수금 자동 동기화",
+                "급변하는 실시간 시장가 추적 및 손익분기 탈출선 자동 갱신",
+                "급락 알림 및 1차/2차 분할 매수 적정 타이밍 자동 푸시",
+                "다중 증권 계좌 통합 평단가 분산 관리 대시보드"
+            ],
+            "amber", (255, 179, 0)
+        ),
+        (
+            "PHASE 03 (FUTURE)",
+            "포트폴리오 리밸런싱 & 분할 주문 엔진",
+            "2027 Q1 예정 · 퀀트 자산 배분 알고리즘",
+            [
+                "다종목 동시 탈출을 위한 마코위츠 기반 리밸런싱 최적화",
+                "볼린저밴드/RSI 기술적 지표 연계 변동성 헷지 분할 주문 엔진",
+                "투자 성향별 맞춤 머신러닝 리스크 완화 시나리오 추천",
+                "글로벌 7개 국어 커뮤니티 전략 공유 플랫폼 확장"
+            ],
+            "purple", (168, 85, 247)
+        )
+    ]
+    
+    rx = 120
+    rw = 533
+    rgap = 40
+    ry = 615
+    rh = 260
+    
+    for phase_badge, r_title, r_sub, bullets, theme_key, r_col in roadmap:
+        draw.rounded_rectangle([rx, ry, rx + rw, ry + rh], radius=16, fill=(16, 22, 34, 230), outline=(255, 255, 255, 20), width=1)
+        draw_pill_badge(draw, rx + 75, ry + 28, phase_badge, font=get_font(10, "bold"), theme=theme_key, has_dot=True, dark_mode=True, pad_x=10, height=24)
+        draw.text((rx + 24, ry + 62), r_title, font=get_font(18, "bold"), fill=(255, 255, 255))
+        draw.text((rx + 24, ry + 92), r_sub, font=get_font(12.5, "medium"), fill=r_col)
+        draw.line([(rx + 24, ry + 118), (rx + rw - 24, ry + 118)], fill=(255, 255, 255, 20), width=1)
         
-    base.save(f'{OUT_DIR}/slide_12.png')
-    print("SAVED slide_12.png")
+        by = ry + 130
+        for b_text in bullets:
+            draw.text((rx + 24, by), f"• {b_text}", font=get_font(12, "regular"), fill=(160, 175, 195))
+            by += 28
+            
+        rx += rw + rgap
+
+    # SECTION 3: PROJECT CREDITS & PRODUCTION WRAP-UP (하단: 크레딧 및 상태)
+    cy = 895
+    ch = 60
+    draw.rounded_rectangle([120, cy, 1800, cy + ch], radius=12, fill=(12, 17, 26, 255), outline=(255, 255, 255, 25), width=1)
+    
+    draw.text((144, cy + 20), "PROJECT CREDITS", font=get_font(12, "bold"), fill=(0, 210, 255))
+    draw.text((270, cy + 20), "End-to-End Product Design  ·  Quant Mathematical Modeling  ·  Flutter Mobile Architecture", font=get_font(13, "medium"), fill=(255, 255, 255))
+    
+    draw_pill_badge(draw, 1420, cy + 30, "GOOGLE PLAY STORE LIVE", font=get_font(10, "bold"), theme="green", has_dot=True, dark_mode=True, pad_x=12, height=26)
+    draw.text((1535, cy + 20), "100% Offline Engine · No Financial Logging", font=get_font(12, "medium"), fill=(148, 163, 184))
+    
+    base.save(f"{OUT_DIR}/slide_12.png")
+    print("SAVED slide_12.png (Redesigned Retrospective & Roadmap - Zero Duplicate Metrics)")
+
 
 if __name__ == '__main__':
     for i in range(1, 13):
