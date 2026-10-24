@@ -408,11 +408,133 @@ body.fit-window .behance-slide-img {
 }
 
 /* ==============================================================
-   4-B. LIVE HANDS-ON INTERACTIVE QUANT PROTOTYPE
+   PROTOTYPE SHOWCASE CARD (SLIDE FEED CTA)
    ============================================================== */
-/* ==============================================================
-   4-B. LIVE MOBILE-SIZED INTERACTIVE QUANT PROTOTYPE
-   ============================================================== */
+.proto-showcase-section {
+  width: 94vw;
+  max-width: 1560px;
+  margin: 30px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.proto-showcase-card {
+  width: 100%;
+  background: linear-gradient(135deg, rgba(13, 21, 39, 0.95) 0%, rgba(9, 13, 22, 0.98) 100%);
+  border: 1px solid rgba(0, 210, 255, 0.35);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.8), 0 0 50px rgba(0, 114, 255, 0.2);
+  border-radius: 24px;
+  padding: 60px 70px;
+  position: relative;
+  overflow: hidden;
+}
+
+.proto-showcase-card::before {
+  content: '';
+  position: absolute;
+  top: -150px;
+  right: -100px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0, 210, 255, 0.18) 0%, rgba(0, 87, 255, 0.08) 50%, transparent 70%);
+  pointer-events: none;
+}
+
+.proto-showcase-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  max-width: 920px;
+}
+
+.proto-showcase-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 210, 255, 0.12);
+  border: 1px solid rgba(0, 210, 255, 0.4);
+  color: #00D2FF;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+}
+
+.proto-showcase-title {
+  font-size: 38px;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+}
+
+.proto-showcase-desc {
+  font-size: 16px;
+  color: #94A3B8;
+  line-height: 1.65;
+}
+
+.proto-showcase-desc strong {
+  color: #E2E8F0;
+}
+
+.proto-showcase-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.feature-tag {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #CBD5E1;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 8px;
+}
+
+.proto-showcase-cta {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-launch-proto {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #0057FF 0%, #00B4D8 100%);
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 14px 28px;
+  border-radius: 9999px;
+  text-decoration: none;
+  box-shadow: 0 10px 30px rgba(0, 87, 255, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-launch-proto:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0, 210, 255, 0.5);
+  color: #FFFFFF;
+}
+
+.cta-hint {
+  font-size: 13px;
+  color: #64748B;
+  font-weight: 500;
+}
+
 .interactive-prototype-container {
   width: 94vw;
   max-width: 1560px;

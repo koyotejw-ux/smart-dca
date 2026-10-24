@@ -703,43 +703,43 @@ def make_slide_05():
     # Header - Minimalist & Punchy
     draw.text((120, 130), "04  /  USER FLOW", font=get_font(13, 'bold'), fill=(0, 210, 255))
     draw.text((120, 165), "User Flow", font=get_font(52, 'black'), fill=(255, 255, 255))
-    draw.text((120, 240), "계좌 상태 확인부터 출구 역산, 조건 조율, 최종 매수 확정까지의 4단계 여정", font=get_font(18, 'regular'), fill=(148, 163, 184))
+    draw.text((120, 240), "위기 진단부터 0.2초 음성 입력, 목표 역산, 최종 플랜 확정까지의 4단계 여정", font=get_font(18, 'regular'), fill=(148, 163, 184))
     
     # Flow Steps Definition: (Mockup, Step No, Title, Situation, Solution, Trigger, Action Badge, Theme)
     steps = [
         (
             'portfolio/iphone_mockups/iphone_01_home.png',
-            'STEP 01', '자산 진단 & 빠른 입력',
-            '갑작스러운 하락(-16.7%) 발생',
-            '홈 1초 조망 및 음성 도크 진입',
-            '계산기 1-Tap 실행',
-            '1-Tap [계산 진입]',
+            'STEP 01', '자산 현황 진단',
+            '갑작스러운 주가 급락(-16.7%) 발생',
+            '홈 대시보드 1초 조망 및 계좌 진단',
+            '0.2초 음성 도크 진입',
+            '0.2초 음성 도크 진입',
             'cyan'
         ),
         (
+            'portfolio/iphone_mockups/iphone_08_voice.png',
+            'STEP 02', '0.2초 음성 입력',
+            '급변하는 호가 속 타이핑 오입력 불안',
+            '자연어 음성 인식으로 수치 즉시 추출',
+            '목표 평단 역산기 인계',
+            '목표 역산 인계',
+            'blue'
+        ),
+        (
             'portfolio/iphone_mockups/iphone_03_target.png',
-            'STEP 02', '목표 평단가 역산',
-            '원금 회복에 필요한 매수량 불명확',
-            '목표가 입력 시 필요 수량 즉시 계산',
-            '역산 결과 시뮬레이터 인계',
-            '역산 결과 도출',
+            'STEP 03', '목표 평단가 역산',
+            '원금 탈출을 위한 필요 매수량 불명확',
+            '희망 목표가 기준 필요 수량 즉시 역산',
+            '예수금 슬라이더 조율',
+            '최종 방어 플랜 산출',
             'amber'
         ),
         (
             'portfolio/iphone_mockups/iphone_02_sim.png',
-            'STEP 03', '예수금 한도 최적화',
-            '무리한 추가 매수로 현금 고갈 우려',
-            '슬라이더로 한도 내 최적 평단 탐색',
-            '리스크 진단 리포트 확인',
-            '예수금 최적화 확정',
-            'blue'
-        ),
-        (
-            'portfolio/iphone_mockups/iphone_04_report.png',
-            'STEP 04', '리스크 점검 & 확정',
-            '특정 종목 자금 쏠림 최종 점검',
-            '자산 비중 진단 및 1-Tap 복사',
-            '원금 회복 매수 플랜 확정',
+            'STEP 04', '최종 플랜 확정',
+            '무리한 매수로 인한 현금 고갈 방지 필요',
+            '65% 예수금 보존 최적 평단 확정',
+            '1-Tap 주문 플랜 복사',
             '',
             'green'
         )
@@ -1367,7 +1367,7 @@ def make_slide_10():
     
     screens = [
         ('portfolio/iphone_mockups/iphone_01_home.png', '01. 홈 대시보드', '자산 현황 한눈에 보기 & 음성 도크'),
-        ('portfolio/iphone_mockups/iphone_02_sim.png', '02. 퀀트 계산기', '가중평균 & A/B 전략 실시간 비교'),
+        ('portfolio/iphone_mockups/iphone_08_voice.png', '02. AI 음성 비서', '0.2초 음성 & 호가 프리셋 칩'),
         ('portfolio/iphone_mockups/iphone_03_target.png', '03. 목표 역산 엔진', '손익분기점 탈출 필요 수량 도출'),
         ('portfolio/iphone_mockups/iphone_04_report.png', '04. 리스크 진단 리포트', '자산 쏠림 경고 & 안전도 진단'),
         ('portfolio/iphone_mockups/iphone_05_dark_home.png', '05. OLED 다크 테마', '야간 장세 최적화 초고대비 화면'),
