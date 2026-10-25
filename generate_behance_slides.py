@@ -267,7 +267,7 @@ def render_3d_phone(device_img, target_corners, depth=20, extrude_dir=(-14, 12),
     
     return composite
 
-# SLIDE 01: Hero Cover with Single Grand Flagship Phone (Zero Overlap)
+# SLIDE 01: Hero Cover with Project Overview & Role Meta (Essential for Portfolio)
 # ==============================================================
 def make_slide_01():
     base = Image.new('RGBA', (W, H), (9, 13, 22, 255))
@@ -290,44 +290,89 @@ def make_slide_01():
     icon_s = icon.resize((36, 36), Image.Resampling.LANCZOS)
     base.paste(icon_s, (120, 126), icon_s)
     
-    draw.text((168, 134), "ENTERPRISE FINTECH CASE STUDY", font=get_font(13, 'bold'), fill=(0, 210, 255))
-    draw.text((410, 134), "·", font=get_font(13, 'bold'), fill=(100, 116, 139))
-    draw.text((430, 134), "ALGORITHMIC QUANT DCA SOLUTION", font=get_font(13, 'bold'), fill=(148, 163, 184))
+    draw.text((168, 134), "FINTECH PRODUCT CASE STUDY", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((385, 134), "·", font=get_font(13, 'bold'), fill=(100, 116, 139))
+    draw.text((405, 134), "ALGORITHMIC QUANT DCA SOLUTION", font=get_font(13, 'bold'), fill=(148, 163, 184))
     
-    # Live Store Badge
-    draw_pill_badge(draw, 1060, 140, "PLAY STORE LIVE", theme='green', has_dot=True, dark_mode=True, height=32)
+    # Status Badges (Top Right of Left Column)
+    draw_pill_badge(draw, 960, 138, "SOLO PROJECT 100%", theme='cyan', has_dot=False, dark_mode=True, height=30)
+    draw_pill_badge(draw, 1130, 138, "PLAY STORE LIVE", theme='green', has_dot=True, dark_mode=True, height=30)
     
     # Headline - Minimalist & Punchy
-    draw.text((120, 190), "Smart DCA Calculator", font=get_font(56, 'black'), fill=(255, 255, 255))
+    draw.text((120, 185), "Smart DCA Calculator", font=get_font(52, 'black'), fill=(255, 255, 255))
     
-    # Subtitle - Clean, High-End Core Value
-    draw.text((120, 275), "급락장의 패닉을 이성적 확신으로 바꾸는 스마트 분할매수 솔루션", font=get_font(20, 'bold'), fill=(0, 210, 255))
-    draw.text((120, 316), "0.2초 음성 입력과 목표 평단가 역산으로 투자자의 마음과 계좌를 함께 지킵니다.", font=get_font(15.5, 'regular'), fill=(148, 163, 184))
+    # Subtitle - Clean Core Value
+    draw.text((120, 260), "급락장의 패닉을 이성적 확신으로 바꾸는 모바일 퀀트 분할매수 솔루션", font=get_font(19, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 296), "0.2초 음성 입력과 목표 평단가 역산으로 투자자의 마음과 계좌를 함께 지킵니다.", font=get_font(14.5, 'regular'), fill=(148, 163, 184))
     
-    # 3 High-Impact Metric Cards (Left: x=120..1080)
-    metrics = [
-        ("0.2s", "VOICE INPUT", "호가 급락 시 오타 없는 0.2초 음성 인식 및 원터치 호가 프리셋", "cyan"),
-        ("100%", "GOAL-SEEKING", "희망 탈출 가격에 도달하기 위한 최적 매수 수량 및 소요 자금 산출", "blue"),
-        ("24h", "CLEAN SESSION", "긴박한 금융 판단을 방해받지 않는 24시간 무광고 안심 환경", "green")
+    # ==============================================================
+    # SECTION 1: PROJECT OVERVIEW & ROLE META CARD (Essential for Portfolio!)
+    # ==============================================================
+    card_w = 1040
+    meta_y = 345
+    meta_h = 275
+    draw.rounded_rectangle([120, meta_y, 120 + card_w, meta_y + meta_h], radius=16, fill=(16, 22, 34, 240), outline=(0, 210, 255, 60), width=1)
+    
+    # Card Header Strip
+    draw.rounded_rectangle([120, meta_y, 120 + card_w, meta_y + 46], radius=16, fill=(12, 17, 28, 255))
+    draw.rectangle([120, meta_y + 30, 120 + card_w, meta_y + 46], fill=(12, 17, 28, 255))
+    draw.line([(120, meta_y + 46), (120 + card_w, meta_y + 46)], fill=(255, 255, 255, 18), width=1)
+    
+    draw_pill_badge(draw, 220, meta_y + 23, "PROJECT OVERVIEW & ROLE", font=get_font(10, 'bold'), theme='cyan', has_dot=True, dark_mode=True, pad_x=10, height=24)
+    draw.text((330, meta_y + 14), "포트폴리오 핵심 정보 요약 및 개인 기여도 명세", font=get_font(12, 'bold'), fill=(148, 163, 184))
+    
+    # 6-Grid Meta Information
+    meta_items = [
+        ("MY ROLE (역할)", "기획(PM) 100%  ·  UI/UX 디자인 100%  ·  Flutter 앱 개발 100%", "cyan"),
+        ("CONTRIBUTION (기여도)", "100% 개인 프로젝트 (문제 정의부터 디자인·개발·스토어 출시 전담)", "green"),
+        ("DURATION (기간)", "2026.02 - 2026.04 (6주 집중 스프린트 구축 및 상용 배포)", "amber"),
+        ("TECH STACK (기술 스택)", "Flutter 3.x, Dart, Figma, Python (수학적 퀀트 모델링), GitHub", "purple"),
+        ("DELIVERABLES (산출물)", "Google Play 상용 출시 앱, 인터랙티브 웹 프로토타입, 디자인 시스템", "blue"),
+        ("STATUS & PLATFORM)", "Google Play 배포 완료 (Android / Web 지원, 100% 온디바이스 로컬 연산)", "slate")
     ]
-    my = 430
-    card_w = 980
-    for val, tag, desc, theme in metrics:
-        draw.rounded_rectangle([120, my, 120 + card_w, my + 115], radius=14, fill=(16, 22, 34, 230), outline=(255, 255, 255, 20), width=1)
-        draw.rounded_rectangle([120, my + 16, 124, my + 99], radius=2, fill=(0, 114, 255))
+    
+    gx = 145
+    gy = meta_y + 60
+    col_w = 490
+    row_h = 66
+    
+    for idx, (label, val, theme_col) in enumerate(meta_items):
+        r = idx // 2
+        c = idx % 2
+        bx = gx + c * (col_w + 20)
+        by = gy + r * row_h
         
-        draw.text((148, my + 22), val, font=get_num_font(42, 'black'), fill=(255, 255, 255))
-        draw_pill_badge(draw, cy=my + 40, text=tag, font=get_font(10, 'bold'), theme=theme, has_dot=False, dark_mode=True, pad_x=10, height=24, left_x=320)
-        draw.text((148, my + 74), desc, font=get_font(14, 'regular'), fill=(148, 163, 184))
-        my += 140
+        draw.rounded_rectangle([bx, by, bx + col_w, by + 56], radius=8, fill=(9, 13, 22, 230), outline=(255, 255, 255, 14), width=1)
+        draw.text((bx + 14, by + 10), label, font=get_font(10.5, 'bold'), fill=(0, 210, 255))
+        draw.text((bx + 14, by + 30), val, font=get_font(12, 'semibold'), fill=(255, 255, 255))
         
-    # RIGHT SIDE: Single Grand Flagship Phone (Zero Overlap, 100% full screenshot)
+    # ==============================================================
+    # SECTION 2: 3 CORE INNOVATION HIGHLIGHTS (Clean & Balanced)
+    # ==============================================================
+    innovations = [
+        ("0.2s 음성 도크 인터랙션", "호가 급락 시 오타를 원천 차단하는 로컬 자연어 파싱 및 원터치 호가 프리셋", (0, 210, 255)),
+        ("목표가 기반 폐쇄형 퀀트 역산", "희망 탈출 평단 도달을 위한 필요 매수량 및 소요 자금을 닫힌 형식(Closed-form)으로 즉시 산출", (16, 185, 129)),
+        ("24시간 안심 무광고 세션", "긴박한 금융 판단을 방해받지 않는 무광고 환경 및 100% 온디바이스 데이터 보안", (245, 158, 11))
+    ]
+    
+    iy = 645
+    for title, desc, col in innovations:
+        draw.rounded_rectangle([120, iy, 120 + card_w, iy + 74], radius=12, fill=(16, 22, 34, 220), outline=(255, 255, 255, 18), width=1)
+        draw.rounded_rectangle([120, iy + 14, 124, iy + 60], radius=2, fill=col)
+        
+        draw.text((148, iy + 14), title, font=get_font(15, 'bold'), fill=(255, 255, 255))
+        draw.text((148, iy + 40), desc, font=get_font(12.5, 'regular'), fill=(148, 163, 184))
+        iy += 88
+        
+    # ==============================================================
+    # RIGHT SIDE: Single Grand Flagship Phone (Zero Overlap, Full-bleed)
+    # ==============================================================
     dev_home = Image.open('portfolio/iphone_mockups/iphone_01_home.png').convert('RGBA')
-    pw = 350
-    ph = int(round(pw * (dev_home.height / dev_home.width))) # ~854px
+    pw = 356
+    ph = int(round(pw * (dev_home.height / dev_home.width)))
     dev_home = dev_home.resize((pw, ph), Image.Resampling.LANCZOS)
     
-    px = 1350
+    px = 1320
     py = 115
     
     # 3D Soft Floor Contact Shadow
@@ -341,7 +386,7 @@ def make_slide_01():
     base.paste(dev_home, (px, py), dev_home)
     
     base.save(f'{OUT_DIR}/slide_01.png')
-    print("SAVED slide_01.png (Single Flagship Hero Mockup - Zero Overlap)")
+    print("SAVED slide_01.png (Single Flagship Hero Mockup with Role & Overview Meta)")
 
 # SLIDE 02: Discovery & User Research (Visual Charts & Citations)
 # ==============================================================
@@ -503,7 +548,7 @@ def make_slide_03():
     draw.rounded_rectangle([tx, ty, tx + tw, ty + 56], radius=16, fill=(241, 245, 249))
     draw.text((tx + 28, ty + 18), "비교 영역 (Dimensions)", font=get_font(14, 'bold'), fill=(71, 85, 105))
     draw.text((tx + 200, ty + 18), "증권사 MTS 내장 (Legacy)", font=get_font(13.5, 'bold'), fill=(71, 85, 105))
-    draw.text((tx + 410, ty + 18), "일반 유틸 계산기 (Ad-Heavy)", font=get_font(13.5, 'bold'), fill=(71, 85, 105))
+    draw.text((tx + 410, ty + 18), "일반 계산기 앱 (Ad-Supported)", font=get_font(13.5, 'bold'), fill=(71, 85, 105))
     
     col4_l = tx + 620
     col4_r = tx + tw - 10
@@ -512,12 +557,12 @@ def make_slide_03():
     draw.text((col4_l + 38, ty + 20), "SMART DCA CALCULATOR", font=get_font(12, 'bold'), fill=(255, 255, 255))
     
     matrix = [
-        ("입력 인터랙션 (Modality)", "단일 키패드 (Keypad Only)", "광고 지연 키패드 (Heavy Ad)", "멀티모달 (AI 음성 + 호가 칩)"),
+        ("입력 인터랙션 (Modality)", "단일 키패드 (Keypad Only)", "광고 노출 키패드 (Ad-Delay)", "멀티모달 (AI 음성 + 호가 칩)"),
         ("핵심 연산 모델 (Engine)", "단순 가중평균 (사후 합산)", "1회성 단일 수식 (휘발성)", "목표가 기반 폐쇄형 역산 엔진"),
         ("의사결정 지원 (Decision)", "단일 수치 나열", "미지원", "A vs B 전략 실시간 대조 매트릭스"),
         ("자산 안전 가드 (Safety)", "계좌 평가액 단순 나열", "미지원", "단일 종목 편중 및 예수금 고갈 경보"),
         ("개인 데이터 보안 (Privacy)", "중앙 서버 종속 (공인인증)", "임시 세션 (앱 종료 시 리셋)", "100% 온디바이스 로컬 저장"),
-        ("사용자 경험 보호 (Session)", "타사 금융 상품 배너 혼재", "무차별 전면 팝업 (피로도 극심)", "24시간 안심 무광고 리워드 세션"),
+        ("사용자 경험 보호 (Session)", "타사 금융 상품 배너 혼재", "연산 중 전면 광고 노출 (흐름 중단)", "24시간 안심 무광고 리워드 세션"),
         ("시각 편의성 (A11y)", "다크모드 미흡 / 저대비", "단순 그레이스케일 반전", "야간 최적화 OLED AAA 고대비")
     ]
     
@@ -1096,11 +1141,11 @@ def make_slide_06():
             draw.rounded_rectangle([px + 14, py + 306, px + pw - 14, py + 410], radius=10, fill=(255, 251, 235), outline=(245, 158, 11), width=1)
             draw.text((px + 24, py + 316), "수학적 목표 도달 수량 산출", font=get_font(10.5, 'bold'), fill=(180, 83, 9))
             draw.text((px + 24, py + 336), "+42.5 주 추가 매수", font=get_num_font(17, 'black'), fill=(15, 23, 42))
-            draw.text((px + 24, py + 364), "• 공식: Q_add = Q_0(P_0-Pt)/(Pt-Pa)\n• 필요 총 예수금 : ₩ 2,125,000\n• 연산 소요 시간 : 0.001초", font=get_font(9.5, 'regular'), fill=(71, 85, 105), spacing=2)
+            draw.text((px + 24, py + 364), "• 공식: Q_add = Q_0(P_0-Pt)/(Pt-Pa)\n• 필요 총 예수금 : ₩ 2,125,000\n• 연산 방식 : 닫힌 형식(Closed-form) 무지연 산출", font=get_font(9.5, 'regular'), fill=(71, 85, 105), spacing=2)
             
             # Bottom Action CTA
             draw.rounded_rectangle([px + 14, py + 490, px + pw - 14, py + 528], radius=8, fill=(16, 185, 129))
-            draw.text((px + 52, py + 501), "✓ 시뮬레이터로 1초 자동 주입", font=get_font(11, 'bold'), fill=(255, 255, 255))
+            draw.text((px + 52, py + 501), "✓ 시뮬레이터로 즉시 자동 주입", font=get_font(11, 'bold'), fill=(255, 255, 255))
             
         # Home Bar Indicator
         draw.rounded_rectangle([px + (pw - 80) // 2, py + ph - 14, px + (pw + 80) // 2, py + ph - 10], radius=2, fill=(15, 23, 42))
@@ -1124,11 +1169,11 @@ def make_slide_06():
     by = 905
     bh = 55
     draw.rounded_rectangle([120, by, 1800, by + bh], radius=10, fill=(241, 245, 249), outline=(203, 213, 225), width=1)
-    draw_pill_badge(draw, cx=215, cy=by + 27, text="CAD BLUEPRINT SPEC", font=get_font(10.5, 'bold'), theme='dark', has_dot=False, dark_mode=False, pad_x=12, height=30)
-    draw.text((310, by + 18), "• 8pt 그리드 시스템 및 Material/HIG 48dp 터치 타깃 준수   • Fitts' Law 기반 Thumb-Zone 최적화   • 인지 부하 0% 모바일 퀀트 아키텍처", font=get_font(12.5, 'semibold'), fill=(51, 65, 85))
+    draw_pill_badge(draw, cx=215, cy=by + 27, text="WIREFRAME SPEC & ERGONOMICS", font=get_font(10.5, 'bold'), theme='dark', has_dot=False, dark_mode=False, pad_x=12, height=30)
+    draw.text((340, by + 18), "• 8pt 그리드 시스템 및 Material/HIG 48dp 터치 타깃 준수   • Fitts' Law 기반 Thumb-Zone 최적화   • 인지 부하 최소화 모바일 인터랙션 최적화", font=get_font(12, 'semibold'), fill=(51, 65, 85))
 
     base.save(f'{OUT_DIR}/slide_06.png')
-    print("SAVED slide_06.png (3 Real Mobile Wireframe CAD Blueprints)")
+    print("SAVED slide_06.png (Mobile Wireframe & Ergonomics)")
 
 
 # SLIDE 07: Enterprise Design System & Token Naming Architecture
@@ -1389,7 +1434,7 @@ def make_slide_09():
         
     # Bottom Result Box (Left Bottom - Completely separated from phone!)
     draw.rounded_rectangle([120, 755, 120 + col_l_w, 925], radius=16, fill=(12, 17, 28, 245), outline=(0, 210, 255, 180), width=2)
-    draw_pill_badge(draw, 275, 785, "수학적 목표 도달 수량 산출 완료 (0.001초 연산)", font=get_font(10.5, 'bold'), theme='cyan', has_dot=True, dark_mode=True, pad_x=12, height=26)
+    draw_pill_badge(draw, 260, 785, "수학적 목표 도달 수량 산출 완료 (실시간 즉각 산출)", font=get_font(10.5, 'bold'), theme='cyan', has_dot=True, dark_mode=True, pad_x=12, height=26)
     draw.text((150, 815), "+42.5주 추가 매수 필요", font=get_num_font(34, 'black'), fill=(255, 255, 255))
     draw.text((150, 875), "총 투입 필요 예수금 : ₩ 2,125,000   ·   도달 목표 평단 : ₩ 70,000 (손익분기점 탈출)", font=get_font(15, 'semibold'), fill=(0, 210, 255))
     
@@ -1536,7 +1581,7 @@ def make_slide_11():
         ("현재가 및 평가 손실", "₩ 65,000  ·  손실률 -16.67% (계좌 평가손 ₩ -1,300,000)", (255, 100, 100)),
         ("원금 회복 필요 반등률", "+20.00% 상승 필요 (전고점 탈출 부담 극대화)", (255, 82, 82)),
         ("예수금 소진 및 유동성", "자금 소진율 92.4% (초기 무계획 몰빵으로 추가 방어 불가)", (255, 179, 0)),
-        ("투자자 심리 상태", "처분 효과와 공포에 짓눌려 결국 바닥에서 패닉셀", (148, 163, 184))
+        ("투자자 심리 상태", "처분 효과와 공포로 인한 비자발적 패닉셀(손절)", (148, 163, 184))
     ]
     ry = card_y + 140
     for label, val, val_col in b_rows:
@@ -1552,10 +1597,10 @@ def make_slide_11():
     
     draw_pill_badge(draw, cx2 + 155, card_y + 38, "AFTER : SMART DCA SOLUTION", font=get_font(10, 'bold'), theme='cyan', has_dot=True, dark_mode=True, pad_x=10, height=26)
     draw.text((cx2 + 28, card_y + 68), "스마트 DCA 역산 솔루션 (After)", font=get_font(21, 'bold'), fill=(255, 255, 255))
-    draw.text((cx2 + 28, card_y + 100), "희망 탈출 가격에 맞춘 정량 분할 매수로 계좌와 멘탈 보호", font=get_font(13.5, 'regular'), fill=(148, 163, 184))
+    draw.text((cx2 + 28, card_y + 100), "희망 탈출 가격에 맞춘 정량 분할 매수로 계좌와 심리적 안정성 확보", font=get_font(13.5, 'regular'), fill=(148, 163, 184))
     
     a_rows = [
-        ("정량 최적 매수 집행", "+38주 분할 매수  ·  소요 자금 ₩ 2,470,000 (0초 산출)", (0, 210, 255)),
+        ("정량 최적 매수 집행", "+38주 분할 매수  ·  소요 자금 ₩ 2,470,000 (무지연 산출)", (0, 210, 255)),
         ("방어 후 신규 평균단가", "₩ 74,420  (손실률 -12.65%로 +4.02%p 계좌 즉각 방어)", (52, 211, 153)),
         ("원금 회복 필요 반등률", "+7.69% 반등 시 본전 탈출 (회복 부담 61.5% 대폭 경감)", (52, 211, 153)),
         ("예수금 보존 및 안전 마진", "현금 보존율 65.0% 유지 (추가 지지선 대응 여력 확보)", (255, 179, 0)),
