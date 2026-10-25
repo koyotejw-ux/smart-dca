@@ -12,7 +12,6 @@ import 'providers/language_provider.dart';
 import 'providers/theme_provider.dart';
 import 'utils/l10n.dart';
 import 'package:flutter/services.dart';
-import 'services/unity_ad_service.dart';
 import 'services/admob_service.dart';
 
 void main() async {
@@ -31,9 +30,6 @@ void main() async {
 
   // Check onboarding status
   final hasSeenOnboarding = await StorageService().hasSeenOnboarding();
-
-  // Initialize Unity Ads
-  await UnityAdService.init(testMode: true);
 
   // Initialize Google AdMob
   await AdmobService.initialize();
