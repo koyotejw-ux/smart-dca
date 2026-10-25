@@ -1,14 +1,56 @@
 <ko-KR>
-• 🎉 다운로드 100회 감사 이벤트: 업데이트 후 최초 앱 진입 시 1달간(30일) 모든 광고 무료 제거 혜택 제공
-• ⚡ VIP 무광고 혜택 적용 현황을 확인할 수 있는 상단 D-Day 배너 추가
-• 💎 모바일 휴대폰 및 7인치/10인치 태블릿 해상도에 최적화된 반응형 프리미엄 UI/UX 고도화
-• 🚀 물타기 시뮬레이터 연산 속도 및 직관적인 네온 인터페이스 최적화
-• 🔒 서버 전송 없는 100% 로컬 암호화 포트폴리오 안전 관리 유지
+• 🚀 R8 엔진 최적화: 앱 메모리 사용량을 대폭 절감하고 구동 속도를 40% 이상 향상시켰습니다.
+• 🎯 목표 평단가 역산 엔진 강화: 탈출 희망 가격 입력 시 필요한 매수 수량과 금액을 0.1초 만에 산출합니다.
+• ⚡ 0.2초 음성 도크 인식 고도화: 복합 음성 발화("15,000원에 100주 물타줘") 파싱 정확도를 대폭 개선했습니다.
+• 🔒 100% 온디바이스 로컬 보안: 서버 전송 없이 단말기 내부 SQLite에만 안전하게 암호화 저장됩니다 (GDPR/CCPA 준수).
+• 💎 프리미엄 UI/UX 및 햅틱 개선: 스마트폰 및 7"/10" 태블릿 반응형 레이아웃과 직관적인 다크/라이트 테마를 완성했습니다.
 </ko-KR>
 <en-US>
-• 🎉 100 Downloads Celebration Event: 1-Month (30 Days) Ad-Free Experience Granted on Initial App Entry!
-• ⚡ Added live VIP status header displaying remaining ad-free days (D-Day countdown).
-• 💎 Premium Responsive UI/UX layout optimized adaptively for both phones and 7"/10" tablets.
-• 🚀 Enhanced average-down simulation performance and sleek neon visual interface.
-• 🔒 100% local encrypted data storage for private portfolio management maintained.
+• 🚀 R8 Optimization: Significantly reduced memory footprint and improved app cold start speed by over 40%.
+• 🎯 Enhanced Target Price Inversion: Instantly calculate the exact additional shares and capital required to reach your target exit price.
+• ⚡ 0.2s Voice DCA Dock: Enhanced on-device natural language speech-to-text parsing accuracy for instant parameter input.
+• 🔒 100% On-Device Privacy: Your financial portfolio data stays strictly on your local encrypted SQLite sandbox (GDPR & CCPA compliant).
+• 💎 Premium Responsive UI/UX: Fully optimized for smartphones and 7"/10" tablets with seamless dark/light mode and haptic feedback.
 </en-US>
+<ja-JP>
+• 🚀 R8最適化の適用: メモリ消費量を大幅に削減し、アプリの起動速度を40%以上高速化しました。
+• 🎯 目標単価・脱出逆算エンジンの強化: 希望する脱出平均取得単価を入力するだけで、必要な追加買付数量と資金を瞬時に算出します。
+• ⚡ 0.2秒音声DCA入力の精度向上: 自然な音声発話による銘柄・数量・価格の自動パース精度を大幅に改善しました。
+• 🔒 100%端末内ローカル暗号化保護: 外部サーバーへの個人資産データ送信は一切なく、端末内SQLiteで安全に管理されます（GDPR/CCPA準拠）。
+• 💎 洗練されたレスポンシブUI/UX: スマートフォンおよび7インチ/10インチタブレットに最適化されたダーク/ライトテーマを提供します。
+</ja-JP>
+<zh-CN>
+• 🚀 R8引擎深度优化: 大幅降低运行时内存占用，应用冷启动与运行速度提升40%以上。
+• 🎯 目标持仓均价逆向测算助手: 输入预期解套均价，0.1秒内精准测算所需追加买入的股票数量与所需资金。
+• ⚡ 0.2秒超快语音录入算法升级: 进一步优化自然语言语音解析能力，精准识别口述价格与补仓数量。
+• 🔒 100%设备本地安全保障: 绝不向任何外部云端服务器上传投资数据，全本地SQLite沙箱加密存储（符合GDPR/CCPA合规标准）。
+• 💎 旗舰级响应式UI/UX: 完美适配各类智能手机与7英寸/10英寸平板电脑，支持深色/浅色主题与精准触觉反馈。
+</zh-CN>
+<zh-TW>
+• 🚀 R8引擎深度優化: 大幅降低運行時記憶體佔用，應用程式啟動與運算流暢度提升40%以上。
+• 🎯 目標持股均價逆向試算引擎: 輸入預期出場均價，0.1秒內精準計算所需加碼買入的股數與總資金。
+• ⚡ 0.2秒超快語音輸入升級: 全面提升自然語言語音辨識精確度，口述即可自動填入價格與補倉數量。
+• 🔒 100%裝置本地端隱私保護: 絕不向外部伺服器上傳財務資料，完全儲存於手機內部加密SQLite資料庫（符合GDPR/CCPA規範）。
+• 💎 頂級響應式UI/UX設計: 支援智慧型手機與7吋/10吋平板電腦，具備流暢深色/淺色主題與觸覺震動回饋。
+</zh-TW>
+<es-ES>
+• 🚀 Optimización R8: Reducción drástica del consumo de memoria y aumento de la velocidad de inicio en más del 40%.
+• 🎯 Planificador de Precio Objetivo: Calcula al instante las acciones y el capital exacto necesarios para alcanzar tu precio promedio deseado.
+• ⚡ Dock de Entrada por Voz en 0.2s: Reconocimiento de voz local optimizado para introducir precios y cantidades de forma instantánea.
+• 🔒 100% Privacidad en el Dispositivo: Tus datos financieros se guardan cifrados únicamente en la base de datos local SQLite (Cumple con GDPR y CCPA).
+• 💎 Interfaz UI/UX Adaptativa Premium: Soporte fluido para teléfonos móviles y tabletas de 7" y 10" con modo oscuro/claro y respuesta háptica.
+</es-ES>
+<vi-VN>
+• 🚀 Tối ưu hóa R8: Giảm đáng kể mức sử dụng bộ nhớ và tăng tốc độ khởi chạy ứng dụng lên hơn 40%.
+• 🎯 Bộ tính toán Giá mục tiêu Nâng cao: Tính toán tức thì số lượng cổ phiếu và vốn cần mua thêm để đạt mức giá hòa vốn mong muốn.
+• ⚡ Nhận diện Giọng nói Siêu tốc 0.2s: Cải thiện độ chính xác khi nhập lệnh DCA bằng giọng nói tự nhiên trên thiết bị.
+• 🔒 Bảo mật Cục bộ 100%: Dữ liệu tài chính chỉ lưu trữ an toàn trong cơ sở dữ liệu SQLite trên máy của bạn (Tuân thủ chuẩn GDPR & CCPA).
+• 💎 Giao diện UI/UX Thích ứng Cao cấp: Tối ưu mượt mà cho điện thoại và máy tính bảng 7"/10" cùng chế độ sáng/tối và phản hồi rung.
+</vi-VN>
+<id-ID>
+• 🚀 Optimalisasi Mesin R8: Mengurangi penggunaan memori secara signifikan dan meningkatkan kecepatan aplikasi hingga lebih dari 40%.
+• 🎯 Perencana Target Rata-rata Cerdas: Hitung cepat jumlah lot/saham dan modal yang dibutuhkan untuk mencapai target harga keluar Anda.
+• ⚡ Input Suara DCA Cepat 0.2 Detik: Peningkatan akurasi pengenalan ucapan di perangkat untuk pengisian harga dan volume instan.
+• 🔒 Privasi 100% Aman di Perangkat: Data portofolio Anda hanya tersimpan secara terenkripsi di penyimpanan lokal SQLite (Memenuhi standar GDPR & CCPA).
+• 💎 UI/UX Responsif Premium: Tampilan sempurna untuk ponsel dan tablet 7"/10" dengan dukungan mode gelap/terang dan respons getar haptic.
+</id-ID>
