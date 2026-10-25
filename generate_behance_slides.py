@@ -1,3 +1,4 @@
+import math
 import textwrap
 import os
 import numpy as np
@@ -175,6 +176,83 @@ def draw_pill_badge(draw, cx=None, cy=0, text="", font=None, theme='blue', has_d
         
     draw.text((tx, ty), text, font=font, fill=scheme['text'])
     return bx1, by1, bx2, by2
+
+def draw_behavior_slider(draw, x, y, w, label, left_txt, right_txt, ratio, theme='blue'):
+    """
+    Renders an editorial behavior spectrum slider track with active segment and circular marker dot.
+    Inspired by senior Behance case study persona spectrums.
+    """
+    theme_colors = {
+        'blue': {'active': (0, 82, 255), 'dot': (0, 82, 255)},
+        'amber': {'active': (217, 119, 6), 'dot': (217, 119, 6)},
+        'green': {'active': (16, 185, 129), 'dot': (16, 185, 129)},
+        'cyan': {'active': (6, 182, 212), 'dot': (6, 182, 212)},
+    }
+    col = theme_colors.get(theme, theme_colors['blue'])
+    
+    # Label
+    draw.text((x, y), label, font=get_font(10.5, 'bold'), fill=(15, 23, 42))
+    
+    # Left and Right endpoint annotations
+    draw.text((x + 75, y + 1), left_txt, font=get_font(9, 'medium'), fill=(100, 116, 139))
+    r_bbox = draw.textbbox((0, 0), right_txt, font=get_font(9, 'medium'))
+    r_w = r_bbox[2] - r_bbox[0]
+    draw.text((x + w - r_w, y + 1), right_txt, font=get_font(9, 'medium'), fill=(100, 116, 139))
+    
+    # Slider Track
+    track_x = x + 125
+    track_w = w - 135 - r_w
+    track_y = y + 7
+    
+    draw.rounded_rectangle([track_x, track_y, track_x + track_w, track_y + 4], radius=2, fill=(226, 232, 240))
+    active_w = int(round(track_w * max(0.0, min(1.0, ratio))))
+    draw.rounded_rectangle([track_x, track_y, track_x + active_w, track_y + 4], radius=2, fill=col['active'])
+    
+    # Indicator Dot (circle with white ring)
+    dot_cx = track_x + active_w
+    dot_cy = track_y + 2
+    r = 5
+    draw.ellipse([dot_cx - r - 1, dot_cy - r - 1, dot_cx + r + 1, dot_cy + r + 1], fill=(255, 255, 255))
+    draw.ellipse([dot_cx - r, dot_cy - r, dot_cx + r, dot_cy + r], fill=col['dot'])
+
+
+def draw_dotted_callout(draw, p1, p2, col=(0, 82, 255), dot_r=4, elbow_x=None):
+    """
+    Renders an architectural blueprint-style dotted connector line from phone UI anchor to annotation card.
+    Inspired by Behance feature callout schematics.
+    """
+    x1, y1 = p1
+    x2, y2 = p2
+    
+    # 1. Anchor node at start point (circle with white ring)
+    draw.ellipse([x1 - dot_r - 2, y1 - dot_r - 2, x1 + dot_r + 2, y1 + dot_r + 2], fill=(255, 255, 255, 220))
+    draw.ellipse([x1 - dot_r, y1 - dot_r, x1 + dot_r, y1 + dot_r], fill=col)
+    
+    # 2. Dotted path
+    if elbow_x is None:
+        elbow_x = int(x1 + (x2 - x1) * 0.45)
+        
+    pts = [(x1, y1), (elbow_x, y1), (elbow_x, y2), (x2, y2)]
+    
+    def draw_dotted_segment(ptA, ptB, dot_spacing=6):
+        ax, ay = ptA
+        bx, by = ptB
+        dist = math.hypot(bx - ax, by - ay)
+        if dist == 0:
+            return
+        steps = int(dist // dot_spacing)
+        for s in range(steps + 1):
+            t = s / max(1, steps)
+            px = ax + (bx - ax) * t
+            py = ay + (by - ay) * t
+            draw.ellipse([px - 1.5, py - 1.5, px + 1.5, py + 1.5], fill=col)
+            
+    for i in range(len(pts) - 1):
+        draw_dotted_segment(pts[i], pts[i+1])
+        
+    # 3. Arrow / terminal anchor at end point
+    draw.polygon([(x2, y2), (x2 - 6, y2 - 4), (x2 - 6, y2 + 4)], fill=col)
+
 
 def draw_branch_badge(draw, cx, cy, text, is_yes=True):
     """Draws a clean, high-contrast, solid badge for YES / NO branches positioned with clear margins."""
@@ -424,7 +502,7 @@ def make_slide_02():
     draw.line([(120, 980), (1800, 980)], fill=(226, 232, 240), width=1)
     
     # Header - Korail Style Conversational Typography
-    draw.text((120, 75), "02 USER RESEARCH", font=get_font(14, 'bold'), fill=(0, 82, 255))
+    draw.text((120, 75), "02 USER RESEARCH | EMPIRICAL DATA", font=get_font(14, 'bold'), fill=(0, 82, 255))
     t1_a = "실제 투자자 428명의 데이터로 "
     t1_b = "비이성적 물타기의 고리를 끊어내요."
     font_title = get_font(38, 'bold')
@@ -436,7 +514,7 @@ def make_slide_02():
     card_w = 510
     card_h = 214
     gap = 16
-    sy = 265
+    sy = 250
     
     # CARD 1: 82.6% (Radial Donut Chart + Source Citation)
     c1_y = sy
@@ -510,22 +588,22 @@ def make_slide_02():
     draw_pill_badge(draw, 172, div_y3 + 28, "출처", font=get_font(9.5, 'bold'), theme='slate', has_dot=False, dark_mode=False, pad_x=8, height=22)
     draw.text((200, div_y3 + 20), "국내 14대 증권사 모바일 트레이딩 시스템(MTS) 기능 전수 조사 (2026.03)", font=get_font(10.5, 'regular'), fill=(100, 116, 139))
     
-    # RIGHT SIDE: 3 Concrete IDI Reality Cards
+    # RIGHT SIDE: 3 Concrete As-Is vs To-Be IDI Cards (Reference Image 2 Style)
     cards = [
         ("01", "비중 왜곡 : 무계획 추가 매수로 계좌가 묶이는 악순환",
-         "\"단가를 낮추려 4차까지 추가 매수했지만, 예수금 78%가 한 종목에 물렸고 평단은 겨우 1.8% 내려갔습니다.\"",
+         '"단가를 낮추려 4차까지 추가 매수했지만, 예수금 78%가 한 종목에 물렸고 평단은 겨우 1.8% 내려갔습니다."',
          "— 3년 차 스윙 투자자 심층 인터뷰",
-         "단일 종목 편중 경고와 차수별 방어 효과를 실시간으로 보여주어 무리한 물타기 방지"),
+         "실시간 단일 종목 예수금 한도 가드 & 차수별 방어 효과 시각화로 비중 왜곡 원천 차단"),
          
         ("02", "조작 피로 : 초 단위 폭락 장세에서의 입력 지연과 스트레스",
-         "\"호가가 무너지는 순간 키보드로 가격을 입력하다 지지선을 놓쳐 -6.4% 추가 손실을 봤습니다.\"",
+         '"호가가 무너지는 순간 키보드로 가격을 입력하다 지지선을 놓쳐 -6.4% 추가 손실을 봤습니다."',
          "— 모멘텀 단타 / 크립토 트레이더 인터뷰",
-         "0.2초 음성 입력과 원터치 호가 프리셋 칩으로 긴박한 순간의 타이핑 스트레스 제거"),
+         "0.2초 음성 도크 & ±5% 원터치 프리셋 칩으로 4.2초 만에 파라미터 세팅 완료"),
          
         ("03", "목표 부재 : 손익분기점 탈출에 필요한 정확한 수량의 부재",
-         "\"희망 매도가로 탈출하기 위해 정확히 몇 주를 얼마에 사야 하는지 계산할 수 없어 맹목적으로 샀습니다.\"",
+         '"희망 매도가로 탈출하기 위해 정확히 몇 주를 얼마에 사야 하는지 계산할 수 없어 맹목적으로 샀습니다."',
          "— 5년 차 퀀트 투자자 심층 인터뷰",
-         "목표 탈출가 입력 즉시 필요한 정확한 수량과 자금을 한눈에 보여주는 역산 솔루션")
+         "닫힌 형식(Closed-form) 퀀트 역산 엔진으로 목표 탈출가 도달 필요 수량 즉시 산출")
     ]
     
     ry = sy
@@ -533,30 +611,36 @@ def make_slide_02():
         draw.rounded_rectangle([660, ry, 1800, ry + card_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
         
         # Number badge
-        draw.rounded_rectangle([695, ry + 22, 735, ry + 54], radius=6, fill=(15, 23, 42))
-        n_bbox = draw.textbbox((0, 0), num, font=get_num_font(15, 'bold'))
-        draw.text((715 - (n_bbox[0] + n_bbox[2]) / 2, ry + 38 - (n_bbox[1] + n_bbox[3]) / 2), num, font=get_num_font(15, 'bold'), fill=(255, 255, 255))
-        draw.text((750, ry + 26), ptitle, font=get_font(17.5, 'bold'), fill=(15, 23, 42))
+        draw.rounded_rectangle([695, ry + 18, 735, ry + 48], radius=6, fill=(15, 23, 42))
+        n_bbox = draw.textbbox((0, 0), num, font=get_num_font(14, 'bold'))
+        draw.text((715 - (n_bbox[0] + n_bbox[2]) / 2, ry + 33 - (n_bbox[1] + n_bbox[3]) / 2), num, font=get_num_font(14, 'bold'), fill=(255, 255, 255))
+        draw.text((750, ry + 22), ptitle, font=get_font(17, 'bold'), fill=(15, 23, 42))
         
-        # Quote Card
-        draw.rounded_rectangle([695, ry + 66, 1765, ry + 138], radius=8, fill=(248, 250, 252))
-        draw.text((715, ry + 76), pquote, font=get_font(13.5, 'semibold'), fill=(30, 41, 59))
-        draw.text((715, ry + 104), pwho, font=get_font(12, 'regular'), fill=(100, 116, 139))
+        # Sub-Card 1: AS-IS (Red Tint Card)
+        draw.rounded_rectangle([695, ry + 58, 1765, ry + 124], radius=8, fill=(254, 242, 242), outline=(254, 202, 202), width=1)
+        draw_pill_badge(draw, left_x=710, cy=ry + 91, text="AS-IS", font=get_font(9.5, 'bold'), theme='red', has_dot=False, pad_x=6, height=22)
+        draw.text((770, ry + 73), pquote, font=get_font(13, 'semibold'), fill=(30, 41, 59))
+        draw.text((770, ry + 98), pwho, font=get_font(11.5, 'regular'), fill=(100, 116, 139))
             
-        # Solution Tag
-        _, _, bx2, _ = draw_pill_badge(draw, 735, ry + 172, "SOLUTION", font=get_font(10.5, 'bold'), theme='blue', has_dot=False, dark_mode=False, pad_x=10, height=24)
-        psol_bbox = draw.textbbox((0, 0), psol, font=get_font(13.5, 'semibold'))
-        psol_ty = int(round(ry + 172 - (psol_bbox[1] + psol_bbox[3]) / 2.0))
-        draw.text((bx2 + 14, psol_ty), psol, font=get_font(13.5, 'semibold'), fill=(30, 41, 59))
+        # Sub-Card 2: TO-BE (Blue Tint Card)
+        draw.rounded_rectangle([695, ry + 134, 1765, ry + 198], radius=8, fill=(239, 246, 255), outline=(191, 219, 254), width=1)
+        draw_pill_badge(draw, left_x=710, cy=ry + 166, text="TO-BE", font=get_font(9.5, 'bold'), theme='blue', has_dot=False, pad_x=6, height=22)
+        draw.text((770, ry + 147), f"스마트 DCA 솔루션 : {psol}", font=get_font(13, 'bold'), fill=(0, 82, 255))
+        draw.text((770, ry + 172), "1-Tap 즉각 피드백으로 심리적 불안을 해소하고 수학적 출구 전략 확정", font=get_font(11.5, 'regular'), fill=(71, 85, 105))
         
         ry += card_h + gap
         
+    # Bottom Core Research Insight Banner (Reference Image 1 Style)
+    iy = 948
+    draw.rounded_rectangle([120, iy, 1800, iy + 48], radius=12, fill=(239, 246, 255), outline=(191, 219, 254), width=1)
+    draw_pill_badge(draw, left_x=138, cy=iy + 24, text="RESEARCH INSIGHT", font=get_font(10.5, 'bold'), theme='blue', has_dot=True, pad_x=12, height=28)
+    ins_txt = "비이성적 물타기는 정보의 부족이 아닌 '명확한 탈출 기준과 즉각적 인터랙션 도구의 부재'에서 기인함을 발견하고, 0.2초 음성 도크와 닫힌 형식 퀀트 역산 모델을 핵심 아키텍처로 수립했습니다."
+    draw.text((330, iy + 15), ins_txt, font=get_font(13, 'semibold'), fill=(30, 41, 59))
+        
     base.save(f'{OUT_DIR}/slide_02.png')
-    print("SAVED slide_02.png (Visual Charts & Citations)")
+    print("SAVED slide_02.png (As-is vs To-be Cards & Research Insight Banner)")
 
-# ==============================================================
-# SLIDE 03: Benchmark Matrix & Personas (Quantitative Architecture)
-# ==============================================================
+
 def make_slide_03():
     base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
     draw = ImageDraw.Draw(base)
@@ -565,14 +649,14 @@ def make_slide_03():
     draw.line([(120, 980), (1800, 980)], fill=(226, 232, 240), width=1)
     
     # Header - Korail Style Conversational Typography
-    draw.text((120, 75), "03 PERSONA & JOURNEY", font=get_font(14, 'bold'), fill=(0, 82, 255))
+    draw.text((120, 75), "03 PERSONA & BENCHMARK", font=get_font(14, 'bold'), fill=(0, 82, 255))
     t1_a = "기존 증권사 앱의 한계를 넘어 "
     t1_b = "차별화된 사용자 가치를 정의했어요."
     font_title = get_font(38, 'bold')
     w_t1_a = draw.textlength(t1_a, font=font_title)
     draw.text((120, 115), t1_a, font=font_title, fill=(15, 23, 42))
     draw.text((120 + w_t1_a, 115), t1_b, font=font_title, fill=(0, 82, 255))
-    draw.text((120, 175), "기존 앱과의 5대 차별점 비교 및 대표 타깃 페르소나의 핵심 페인포인트 분석", font=get_font(16, 'regular'), fill=(71, 85, 105))
+    draw.text((120, 175), "기존 앱과의 5대 차별점 비교 및 대표 타깃 페르소나의 행동 성향(Behavior Spectrum) 분석", font=get_font(16, 'regular'), fill=(71, 85, 105))
     
     # Left: High-Precision Comparison Matrix
     tx = 120
@@ -613,57 +697,74 @@ def make_slide_03():
         draw.text((col4_l + 32, row_y + 19), c3, font=get_font(12, 'bold'), fill=(0, 87, 255))
         row_y += 81
         
-    # Right: 2 High-Impact Persona Cards
+    # Right: 2 High-Impact Persona Cards with Behavior Sliders (Reference Image 3 Style)
     px = 1120
     py = 250
     pw = 680
     
-    # Persona A
+    # Persona A (김투자)
     draw.rounded_rectangle([px, py, px + pw, py + 308], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-    _, _, bx2_a, _ = draw_pill_badge(draw, cy=py + 36, text="ARCHETYPE A", font=get_font(10, 'bold'), theme='blue', has_dot=True, dark_mode=False, pad_x=10, height=26, left_x=px + 28)
+    _, _, bx2_a, _ = draw_pill_badge(draw, cy=py + 32, text="ARCHETYPE A", font=get_font(10, 'bold'), theme='blue', has_dot=True, dark_mode=False, pad_x=10, height=26, left_x=px + 28)
     name_a = "김투자 (34세, 적립식 직장인 투자자)"
-    bbox_a = draw.textbbox((0, 0), name_a, font=get_font(17, 'bold'))
-    ty_a = int(round(py + 36 - (bbox_a[1] + bbox_a[3]) / 2.0))
-    draw.text((bx2_a + 16, ty_a), name_a, font=get_font(17, 'bold'), fill=(15, 23, 42))
+    bbox_a = draw.textbbox((0, 0), name_a, font=get_font(16.5, 'bold'))
+    ty_a = int(round(py + 32 - (bbox_a[1] + bbox_a[3]) / 2.0))
+    draw.text((bx2_a + 16, ty_a), name_a, font=get_font(16.5, 'bold'), fill=(15, 23, 42))
     
-    draw.text((px + 28, py + 66), "\"월급날마다 분할 매수하지만, 내 자금이 언제 바닥날지 늘 불안합니다.\"", font=get_font(14, 'bold'), fill=(0, 87, 255))
+    draw.text((px + 28, py + 58), '"월급날마다 분할 매수하지만, 내 자금이 언제 바닥날지 늘 불안합니다."', font=get_font(13.5, 'bold'), fill=(0, 87, 255))
+    
     desc_a = [
-        "• 투자 성향 : 계획적인 분할 매수를 원하나 모바일에서 계산을 관리하기 어려움",
-        "• 주요 고통 : 추가 매수로 인해 특정 종목 비중이 커져 포트폴리오 균형이 무너짐",
-        "• 추구 가치 : 5초 이내 계산 완료 및 보유 현금 한도 내에서 최선의 평단 확인"
+        "• 투자 성향 : 계획적 분할 매수를 원하나 모바일에서 수식 관리가 어려움",
+        "• 주요 고통 : 추가 매수로 인해 특정 종목 비중이 커져 포트폴리오 붕괴",
+        "• 핵심 목표 : 가용 현금 한도 내 최적의 손익분기 평단 도출 (5초 이내)"
     ]
-    dy = py + 106
+    dy = py + 84
     for d in desc_a:
-        draw.text((px + 28, dy), d, font=get_font(12.5, 'regular'), fill=(71, 85, 105))
-        dy += 32
+        draw.text((px + 28, dy), d, font=get_font(12, 'regular'), fill=(71, 85, 105))
+        dy += 22
         
-    # Persona B
+    # Behavior Spectrum (Reference Image 3 Sliders)
+    draw.line([(px + 28, py + 162), (px + pw - 28, py + 162)], fill=(241, 245, 249), width=1)
+    draw.text((px + 28, py + 172), "BEHAVIOR SPECTRUM (투자 행동 성향 지표)", font=get_font(10.5, 'bold'), fill=(100, 116, 139))
+    
+    draw_behavior_slider(draw, px + 28, py + 198, 295, "매매 주기", "안정 적립", "공격 단타", 0.20, theme='blue')
+    draw_behavior_slider(draw, px + 355, py + 198, 295, "자금 운용", "계획 분할", "몰빵 집중", 0.25, theme='blue')
+    draw_behavior_slider(draw, px + 28, py + 238, 295, "계산 도구", "수동 암산", "퀀트 역산", 0.35, theme='blue')
+    draw_behavior_slider(draw, px + 355, py + 238, 295, "모바일 긴급", "여유 조망", "초단위 긴급", 0.60, theme='blue')
+    
+    # Persona B (박스캘퍼)
     py += 337
     draw.rounded_rectangle([px, py, px + pw, py + 308], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-    _, _, bx2_b, _ = draw_pill_badge(draw, cy=py + 36, text="ARCHETYPE B", font=get_font(10, 'bold'), theme='amber', has_dot=True, dark_mode=False, pad_x=10, height=26, left_x=px + 28)
+    _, _, bx2_b, _ = draw_pill_badge(draw, cy=py + 32, text="ARCHETYPE B", font=get_font(10, 'bold'), theme='amber', has_dot=True, dark_mode=False, pad_x=10, height=26, left_x=px + 28)
     name_b = "박스캘퍼 (28세, 실시간 모멘텀 트레이더)"
-    bbox_b = draw.textbbox((0, 0), name_b, font=get_font(17, 'bold'))
-    ty_b = int(round(py + 36 - (bbox_b[1] + bbox_b[3]) / 2.0))
-    draw.text((bx2_b + 16, ty_b), name_b, font=get_font(17, 'bold'), fill=(15, 23, 42))
+    bbox_b = draw.textbbox((0, 0), name_b, font=get_font(16.5, 'bold'))
+    ty_b = int(round(py + 32 - (bbox_b[1] + bbox_b[3]) / 2.0))
+    draw.text((bx2_b + 16, ty_b), name_b, font=get_font(16.5, 'bold'), fill=(15, 23, 42))
     
-    draw.text((px + 28, py + 66), "\"초 단위로 쏟아지는 급락장에서 가격을 치고 있을 여유가 없습니다.\"", font=get_font(14, 'bold'), fill=(217, 119, 6))
+    draw.text((px + 28, py + 58), '"초 단위로 쏟아지는 급락장에서 가격을 치고 있을 여유가 없습니다."', font=get_font(13.5, 'bold'), fill=(217, 119, 6))
+    
     desc_b = [
-        "• 투자 성향 : 빠른 의사결정이 생명이며 감정에 휘둘리지 않는 직관적 도구 선호",
+        "• 투자 성향 : 변동성 모멘텀 매매, 호가 변동에 따른 초 단위 빠른 체결",
         "• 주요 고통 : 소수점 단가 타이핑 중 호가가 이탈하여 체결 기회를 놓침",
-        "• 추구 가치 : 말 한마디로 끝나는 음성 입력과 탈출 목표가 도달 필요 수량 즉시 확인"
+        "• 핵심 목표 : 말 한마디로 끝나는 0.2초 음성 입력과 목표 탈출 수량 즉시 확인"
     ]
-    dy = py + 106
+    dy = py + 84
     for d in desc_b:
-        draw.text((px + 28, dy), d, font=get_font(12.5, 'regular'), fill=(71, 85, 105))
-        dy += 32
+        draw.text((px + 28, dy), d, font=get_font(12, 'regular'), fill=(71, 85, 105))
+        dy += 22
+        
+    # Behavior Spectrum (Reference Image 3 Sliders)
+    draw.line([(px + 28, py + 162), (px + pw - 28, py + 162)], fill=(241, 245, 249), width=1)
+    draw.text((px + 28, py + 172), "BEHAVIOR SPECTRUM (투자 행동 성향 지표)", font=get_font(10.5, 'bold'), fill=(100, 116, 139))
+    
+    draw_behavior_slider(draw, px + 28, py + 198, 295, "매매 주기", "안정 적립", "공격 단타", 0.95, theme='amber')
+    draw_behavior_slider(draw, px + 355, py + 198, 295, "자금 운용", "계획 분할", "몰빵 집중", 0.85, theme='amber')
+    draw_behavior_slider(draw, px + 28, py + 238, 295, "계산 도구", "수동 암산", "퀀트 역산", 0.85, theme='amber')
+    draw_behavior_slider(draw, px + 355, py + 238, 295, "모바일 긴급", "여유 조망", "초단위 긴급", 1.00, theme='amber')
         
     base.save(f'{OUT_DIR}/slide_03.png')
-    print("SAVED slide_03.png")
+    print("SAVED slide_03.png (Benchmark Matrix & Persona Behavior Sliders)")
 
-# ==============================================================
-# ==============================================================
-# SLIDE 04: Service Planning Information Architecture (IA Tree)
-# ==============================================================
+
 def make_slide_04():
     base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
     draw = ImageDraw.Draw(base)
@@ -804,14 +905,14 @@ def make_slide_05():
     draw.line([(120, 980), (1800, 980)], fill=(226, 232, 240), width=1)
     
     # Header - Korail Style Conversational Typography
-    draw.text((120, 75), "05 USER FLOW | INTERACTION LOGIC", font=get_font(14, 'bold'), fill=(0, 82, 255))
+    draw.text((120, 75), "05 USER FLOW & JOURNEY MAP", font=get_font(14, 'bold'), fill=(0, 82, 255))
     t1_a = "자산 진단부터 플랜 확정까지, "
     t1_b = "자연스러운 4단계 플로우를 완성했어요."
     font_title = get_font(38, 'bold')
     w_t1_a = draw.textlength(t1_a, font=font_title)
     draw.text((120, 115), t1_a, font=font_title, fill=(15, 23, 42))
     draw.text((120 + w_t1_a, 115), t1_b, font=font_title, fill=(0, 82, 255))
-    draw.text((120, 175), "위기 감지부터 0.2초 음성 입력, 목표 역산, 65% 예수금 보존 플랜 확정까지의 원활한 사용자 여정", font=get_font(16, 'regular'), fill=(71, 85, 105))
+    draw.text((120, 175), "위기 감지부터 0.2초 음성 입력, 목표 역산, 65% 예수금 보존 플랜 확정까지의 원활한 사용자 여정 & 심리 회복 곡선", font=get_font(16, 'regular'), fill=(71, 85, 105))
     
     steps = [
         (
@@ -821,7 +922,9 @@ def make_slide_05():
             '홈 대시보드 1초 조망 및 계좌 진단',
             '0.2초 음성 도크 진입',
             '0.2초 음성 도크 진입',
-            'cyan'
+            'cyan',
+            '공포 😰 (-16.7%)',
+            'red'
         ),
         (
             'portfolio/iphone_mockups/iphone_08_voice.png',
@@ -830,6 +933,8 @@ def make_slide_05():
             '자연어 음성 인식으로 수치 즉시 추출',
             '목표 평단 역산기 인계',
             '목표 역산 인계',
+            'blue',
+            '안도 😌 (0.2초)',
             'blue'
         ),
         (
@@ -839,6 +944,8 @@ def make_slide_05():
             '희망 목표가 기준 필요 수량 즉시 역산',
             '예수금 슬라이더 조율',
             '최종 방어 플랜 산출',
+            'amber',
+            '명쾌 💡 (닫힌형식)',
             'amber'
         ),
         (
@@ -848,6 +955,8 @@ def make_slide_05():
             '65% 예수금 보존 최적 평단 확정',
             '1-Tap 주문 플랜 복사',
             '매수 집행 완료',
+            'green',
+            '확신 🚀 (65%보존)',
             'green'
         )
     ]
@@ -859,6 +968,17 @@ def make_slide_05():
     
     card_w = 385
     cols_x = [120, 550, 980, 1410]
+    
+    # User Emotion Trajectory Connecting Curve (Reference Image 3 Emotion Curve)
+    # Renders an upward recovery wave from panic to certainty right above mockups
+    e_pts = [(cols_x[0] + card_w // 2, 218), (cols_x[1] + card_w // 2, 213), (cols_x[2] + card_w // 2, 208), (cols_x[3] + card_w // 2, 203)]
+    for idx in range(len(e_pts) - 1):
+        x_a, y_a = e_pts[idx]
+        x_b, y_b = e_pts[idx + 1]
+        draw.line([(x_a, y_a), (x_b, y_b)], fill=(0, 82, 255, 120), width=2)
+    for px_e, py_e in e_pts:
+        draw.ellipse([px_e - 4, py_e - 4, px_e + 4, py_e + 4], fill=(0, 82, 255), outline=(255, 255, 255), width=2)
+    draw.text((120, 207), "EMOTION TRAJECTORY :", font=get_font(10.5, 'bold'), fill=(100, 116, 139))
     
     # 1. Flow Connectors and Action Badges
     for i in range(3):
@@ -875,7 +995,8 @@ def make_slide_05():
         draw_pill_badge(draw, mid_x, mid_y - 28, action_text, font=get_font(9.5, 'bold'), theme=action_theme, has_dot=True, dark_mode=False, pad_x=8, height=26)
         
     # 2. Draw 4 iPhone Mockups with Soft Shadows
-    for i, (mockup_path, step_tag, title, ctx, rat, trig, action, theme) in enumerate(steps):
+    for i, s_data in enumerate(steps):
+        mockup_path = s_data[0]
         cx = cols_x[i]
         px = cx + (card_w - pw) // 2
         
@@ -895,16 +1016,22 @@ def make_slide_05():
     card_y = py + ph + 18
     card_h = 245
     
-    for i, (mockup_path, step_tag, title, ctx, rat, trig, action, theme) in enumerate(steps):
+    for i, s_data in enumerate(steps):
+        mockup_path, step_tag, title, ctx, rat, trig, action, theme, em_text, em_theme = s_data
         cx = cols_x[i]
         
         draw.rounded_rectangle([cx, card_y, cx + card_w, card_y + card_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
         
+        # Step Tag
         _, _, bx2_step, _ = draw_pill_badge(draw, cy=card_y + 26, text=step_tag, font=get_font(10, 'bold'), theme=theme, has_dot=False, dark_mode=False, pad_x=10, height=26, left_x=cx + 18)
         
-        t_bbox = draw.textbbox((0, 0), title, font=get_font(16, 'bold'))
+        # Title
+        t_bbox = draw.textbbox((0, 0), title, font=get_font(15, 'bold'))
         t_ty = int(round(card_y + 26 - (t_bbox[1] + t_bbox[3]) / 2.0))
-        draw.text((bx2_step + 12, t_ty), title, font=get_font(16, 'bold'), fill=(15, 23, 42))
+        draw.text((bx2_step + 10, t_ty), title, font=get_font(15, 'bold'), fill=(15, 23, 42))
+        
+        # Emotion Badge (Right Aligned - Reference Image 3 Style)
+        draw_pill_badge(draw, cx=cx + card_w - 75, cy=card_y + 26, text=em_text, font=get_font(9.5, 'bold'), theme=em_theme, has_dot=False, dark_mode=False, pad_x=8, height=24)
         
         draw.line([(cx + 18, card_y + 52), (cx + card_w - 18, card_y + 52)], fill=(241, 245, 249), width=1)
         
@@ -921,17 +1048,23 @@ def make_slide_05():
             ty += 24
             
         ty = card_y + card_h - 40
-        draw.rounded_rectangle([cx + 18, ty, cx + card_w - 18, ty + 28], radius=8, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+        theme_colors = {
+            'cyan': {'bg': (236, 254, 255), 'border': (165, 243, 252), 'text': (14, 116, 144)},
+            'blue': {'bg': (239, 246, 255), 'border': (191, 219, 254), 'text': (29, 78, 216)},
+            'amber': {'bg': (254, 243, 199), 'border': (253, 230, 138), 'text': (180, 83, 9)},
+            'green': {'bg': (236, 253, 245), 'border': (167, 243, 208), 'text': (5, 150, 105)},
+        }
+        t_style = theme_colors.get(theme, theme_colors['blue'])
+        draw.rounded_rectangle([cx + 18, ty, cx + card_w - 18, ty + 28], radius=8, fill=t_style['bg'], outline=t_style['border'], width=1)
         trig_str = f"▶ {trig}"
         trig_bbox = draw.textbbox((0, 0), trig_str, font=get_font(10.5, 'bold'))
         trig_ty = int(round((ty + 14) - (trig_bbox[1] + trig_bbox[3]) / 2.0))
-        draw.text((cx + 28, trig_ty), trig_str, font=get_font(10.5, 'bold'), fill=(0, 82, 255))
+        draw.text((cx + 28, trig_ty), trig_str, font=get_font(10.5, 'bold'), fill=t_style['text'])
         
     base.save(f'{OUT_DIR}/slide_05.png')
-    print("SAVED slide_05.png (Core UX Journey & Interactive UI Flow - Light Theme)")
+    print("SAVED slide_05.png (User Flow with Emotion Trajectory Curve & Badges)")
 
-# SLIDE 06: 3 Real Mobile Wireframe CAD Blueprints
-# ==============================================================
+
 def make_slide_06():
     base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
     draw = ImageDraw.Draw(base)
@@ -1417,23 +1550,27 @@ def make_slide_08():
     rx = 1100
     r_w = 720
     
-    draw_pill_badge(draw, rx + 65, 270, "VOICE DOCK", font=get_font(11, 'bold'), pad_x=12, height=26)
+    # Callout 1: VOICE DOCK
+    draw_pill_badge(draw, rx + 65, 270, "VOICE DOCK", font=get_font(11, 'bold'), theme='blue', dark_mode=False, pad_x=12, height=26)
     draw.text((rx, 305), "자연어 음성 즉각 인식 & 파라미터 분리", font=get_font(18, 'bold'), fill=(15, 23, 42))
-    draw.text((rx, 340), "\"삼성전자 7만 원에 50주\" 말하는 순간 종목, 단가, 수량을 자동으로 분리 인식해요.\n발화가 끝남과 동시에 시뮬레이터 수치가 채워져 실시간 호가 변동에 즉각 대응합니다.", font=get_font(14, 'regular'), fill=(71, 85, 105), spacing=5)
+    draw.text((rx, 340), '"삼성전자 7만 원에 50주" 말하는 순간 종목, 단가, 수량을 자동으로 분리 인식해요.\n발화가 끝남과 동시에 시뮬레이터 수치가 채워져 실시간 호가 변동에 즉각 대응합니다.', font=get_font(14, 'regular'), fill=(71, 85, 105), spacing=5)
     
-    draw_pill_badge(draw, rx + 75, 435, "PRESET CHIPS", font=get_font(11, 'bold'), pad_x=12, height=26)
+    # Callout 2: PRESET CHIPS
+    draw_pill_badge(draw, rx + 75, 435, "PRESET CHIPS", font=get_font(11, 'bold'), theme='cyan', dark_mode=False, pad_x=12, height=26)
     draw.text((rx, 470), "소음 환경을 위한 원터치 호가 프리셋 칩", font=get_font(18, 'bold'), fill=(15, 23, 42))
     draw.text((rx, 505), "음성을 쓰기 어려운 대중교통이나 조용한 환경에서도 ±5%, ±10% 호가 칩으로\n손가락 1-Tap 터치만으로 0.1초 만에 즉시 추가 매수 시나리오를 계산해요.", font=get_font(14, 'regular'), fill=(71, 85, 105), spacing=5)
     
+    # Callout 3: AI LIVE PARSER CARD
     card_y = 600
     card_h = 240
     draw.rounded_rectangle([rx, card_y, rx + r_w, card_y + card_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     
-    draw_pill_badge(draw, rx + 80, card_y + 30, "AI LIVE PARSER", font=get_font(10.5, 'bold'), pad_x=10, height=24)
+    draw_pill_badge(draw, rx + 80, card_y + 30, "AI LIVE PARSER", font=get_font(10.5, 'bold'), theme='purple', dark_mode=False, pad_x=10, height=24)
     draw.text((rx + 160, card_y + 22), "실시간 온디바이스 음성 파싱 피드백", font=get_font(13.5, 'bold'), fill=(15, 23, 42))
     
     draw.rounded_rectangle([rx + 24, card_y + 60, rx + r_w - 24, card_y + 130], radius=12, fill=(241, 245, 249), outline=(203, 213, 225), width=1)
-    draw.text((rx + 42, card_y + 76), "🎙️ \"삼성전자 70,000원에 50주 추가 매수\"", font=get_font(16, 'bold'), fill=(0, 82, 255))
+    draw_pill_badge(draw, left_x=rx + 42, cy=card_y + 86, text="LIVE STT", font=get_font(9.5, 'bold'), theme='blue', has_dot=True, dark_mode=False, pad_x=8, height=22)
+    draw.text((rx + 130, card_y + 75), '"삼성전자 70,000원에 50주 추가 매수"', font=get_font(16, 'bold'), fill=(0, 82, 255))
     draw.text((rx + 42, card_y + 104), "100% 로컬 STT 음성 엔진 인식 완료 (소요 시간 0.22초)", font=get_font(12, 'regular'), fill=(100, 116, 139))
     
     chips = [
@@ -1451,12 +1588,15 @@ def make_slide_08():
         draw.text((cx + 14, cy + 32), val, font=get_font(13.5, 'bold'), fill=c_col)
         cx += cw + 14
         
+    # Architectural Dotted Callouts linking Phone UI to Badges (Reference Image 5 Style)
+    draw_dotted_callout(draw, p1=(px + pw - 30, py + 620), p2=(rx - 15, 270), col=(0, 82, 255))
+    draw_dotted_callout(draw, p1=(px + pw - 30, py + 520), p2=(rx - 15, 435), col=(6, 182, 212))
+    draw_dotted_callout(draw, p1=(px + pw - 30, py + 380), p2=(rx - 15, 630), col=(124, 58, 237))
+        
     base.save(f'{OUT_DIR}/slide_08.png')
-    print("SAVED slide_08.png (Korail Image 5 Style Voice Dock UI)")
+    print("SAVED slide_08.png (Voice Dock UI with Blueprint Dotted Callouts)")
 
-# ==============================================================
-# SLIDE 09: Feature Spotlight 02 - Goal-Seeking (Korail Image 5 Style)
-# ==============================================================
+
 def make_slide_09():
     base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
     draw = ImageDraw.Draw(base)
@@ -1534,30 +1674,34 @@ def make_slide_09():
     rx = 1100
     r_w = 720
     
-    draw_pill_badge(draw, rx + 105, 270, "CLOSED-FORM QUANT", font=get_font(11, 'bold'), pad_x=12, height=26)
+    # Callout 1: CLOSED-FORM QUANT
+    draw_pill_badge(draw, rx + 105, 270, "CLOSED-FORM QUANT", font=get_font(11, 'bold'), theme='blue', dark_mode=False, pad_x=12, height=26)
     draw.text((rx, 305), "수학적 폐쇄형 역산 알고리즘 (Zero-Latency)", font=get_font(18, 'bold'), fill=(15, 23, 42))
     draw.text((rx, 340), "Q_add = Q_0 × (P_0 - P_target) / (P_target - P_add) 수식을 온디바이스에서 즉시 풀어내어\n복잡한 시행착오 반복 연산 없이 닫힌 형식으로 필요 수량과 자금을 즉시 산출해요.", font=get_font(14, 'regular'), fill=(71, 85, 105), spacing=5)
     
-    draw_pill_badge(draw, rx + 95, 435, "BOUNDARY GUARD", font=get_font(11, 'bold'), pad_x=12, height=26)
+    # Callout 2: BOUNDARY GUARD
+    draw_pill_badge(draw, rx + 95, 435, "BOUNDARY GUARD", font=get_font(11, 'bold'), theme='amber', dark_mode=False, pad_x=12, height=26)
     draw.text((rx, 470), "비현실적 목표 사전 가드 & 대안 평단 제시", font=get_font(18, 'bold'), fill=(15, 23, 42))
     draw.text((rx, 505), "현재 추가 매수가보다 낮은 비현실적 목표 입력 시 즉시 감지하여 안전 경고를 띄우고,\n현재 가용 예수금 범위 안에서 도달 가능한 최선의 방어 평단을 추천해요.", font=get_font(14, 'regular'), fill=(71, 85, 105), spacing=5)
     
+    # Callout 3: QUANT ENGINE CARD
     card_y = 600
     card_h = 240
     draw.rounded_rectangle([rx, card_y, rx + r_w, card_y + card_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     
-    draw_pill_badge(draw, rx + 80, card_y + 30, "QUANT ENGINE", font=get_font(10.5, 'bold'), pad_x=10, height=24)
-    draw.text((rx + 160, card_y + 22), "수학적 목표 도달 수량 산출 완료 (오차 0%)", font=get_font(13.5, 'bold'), fill=(15, 23, 42))
+    draw_pill_badge(draw, rx + 80, card_y + 30, "QUANT ENGINE", font=get_font(10.5, 'bold'), theme='green', dark_mode=False, pad_x=10, height=24)
+    draw.text((rx + 160, card_y + 22), "실시간 퀀트 역산 검증 리포트", font=get_font(13.5, 'bold'), fill=(15, 23, 42))
     
-    draw.rounded_rectangle([rx + 24, card_y + 60, rx + r_w - 24, card_y + 130], radius=12, fill=(241, 245, 249), outline=(203, 213, 225), width=1)
-    draw.text((rx + 42, card_y + 76), "📊 \"+42.5주 추가 매수 필요 (소요 예수금: ₩ 2,125,000)\"", font=get_font(16, 'bold'), fill=(0, 82, 255))
-    draw.text((rx + 42, card_y + 104), "목표 탈출 평단 ₩ 70,000 도달 확정 · 1-Tap 시뮬레이터 인계 지원", font=get_font(12, 'regular'), fill=(100, 116, 139))
+    draw.rounded_rectangle([rx + 24, card_y + 60, rx + r_w - 24, card_y + 130], radius=12, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+    draw_pill_badge(draw, left_x=rx + 42, cy=card_y + 86, text="SOLVED", font=get_font(9.5, 'bold'), theme='green', has_dot=True, dark_mode=False, pad_x=8, height=22)
+    draw.text((rx + 130, card_y + 75), "목표 탈출가 ₩70,000 도달을 위해 42.5주 필요", font=get_font(16, 'bold'), fill=(0, 82, 255))
+    draw.text((rx + 42, card_y + 104), "100% 로컬 닫힌 형식 퀀트 알고리즘 연산 완료 (연산 오차 0.00%)", font=get_font(12, 'regular'), fill=(100, 116, 139))
     
     chips = [
-        ("현재 평단", "₩ 78,000", (100, 116, 139)),
+        ("기존 평단", "₩ 78,000", (100, 116, 139)),
         ("목표 평단", "₩ 70,000", (0, 82, 255)),
         ("필요 수량", "+42.5 주", (16, 185, 129)),
-        ("탈출 여부", "손익분기 도달 ✓", (245, 158, 11))
+        ("필요 자금", "₩ 2,762,500", (245, 158, 11))
     ]
     cx = rx + 24
     cy = card_y + 155
@@ -1568,12 +1712,15 @@ def make_slide_09():
         draw.text((cx + 14, cy + 32), val, font=get_font(13.5, 'bold'), fill=c_col)
         cx += cw + 14
         
+    # Architectural Dotted Callouts linking Phone UI to Badges (Reference Image 5 Style)
+    draw_dotted_callout(draw, p1=(px + pw - 30, py + 330), p2=(rx - 15, 270), col=(0, 82, 255))
+    draw_dotted_callout(draw, p1=(px + pw - 30, py + 410), p2=(rx - 15, 435), col=(217, 119, 6))
+    draw_dotted_callout(draw, p1=(px + pw - 30, py + 520), p2=(rx - 15, 630), col=(16, 185, 129))
+        
     base.save(f'{OUT_DIR}/slide_09.png')
-    print("SAVED slide_09.png (Korail Image 5 Style Goal Seeking UI)")
+    print("SAVED slide_09.png (Goal Seeking UI with Blueprint Dotted Callouts)")
 
-# ==============================================================
-# SLIDE 10: High-Fidelity Mobile Screens (Korail Image 5 Style)
-# ==============================================================
+
 def make_slide_10():
     base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
     draw = ImageDraw.Draw(base)
