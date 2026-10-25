@@ -65,6 +65,58 @@ def draw_diamond(draw, cx, cy, w, h, fill, outline, width=2):
     ]
     draw.polygon(pts, fill=fill, outline=outline)
 
+def draw_parallelogram(draw, cx, cy, w, h, fill, outline, skew=12, width=1):
+    pts = [
+        (cx - w // 2 + skew, cy - h // 2),
+        (cx + w // 2 + skew, cy - h // 2),
+        (cx + w // 2 - skew, cy + h // 2),
+        (cx - w // 2 - skew, cy + h // 2)
+    ]
+    draw.polygon(pts, fill=fill, outline=outline)
+
+def draw_dashed_line(draw, p1, p2, col=(0, 82, 255), width=2, dash_len=4, gap_len=3):
+    width = int(round(width))
+    x1, y1 = p1
+    x2, y2 = p2
+    dx = x2 - x1
+    dy = y2 - y1
+    dist = (dx**2 + dy**2)**0.5
+    if dist == 0:
+        return
+    step = dash_len + gap_len
+    num_steps = int(dist // step)
+    for i in range(num_steps):
+        s = i * step
+        e = s + dash_len
+        sx = x1 + dx * (s / dist)
+        sy = y1 + dy * (s / dist)
+        ex = x1 + dx * (min(e, dist) / dist)
+        ey = y1 + dy * (min(e, dist) / dist)
+        draw.line([(sx, sy), (ex, ey)], fill=col, width=width)
+
+def draw_dashed_rounded_rect(draw, bbox, radius=8, fill=(240, 246, 255), outline=(0, 82, 255), width=1, dash_len=4, gap_len=3):
+    draw.rounded_rectangle(bbox, radius=radius, fill=fill)
+    x1, y1, x2, y2 = bbox
+    draw_dashed_line(draw, (x1 + radius, y1), (x2 - radius, y1), outline, width, dash_len, gap_len)
+    draw_dashed_line(draw, (x2, y1 + radius), (x2, y2 - radius), outline, width, dash_len, gap_len)
+    draw_dashed_line(draw, (x2 - radius, y2), (x1 + radius, y2), outline, width, dash_len, gap_len)
+    draw_dashed_line(draw, (x1, y2 - radius), (x1, y1 + radius), outline, width, dash_len, gap_len)
+
+def draw_dashed_arrow(draw, p1, p2, col=(0, 82, 255), width=2, dash_len=4, gap_len=3, arrow_size=5):
+    draw_dashed_line(draw, p1, p2, col, width, dash_len, gap_len)
+    x1, y1 = p1
+    x2, y2 = p2
+    if x1 == x2:
+        if y2 > y1:
+            draw.polygon([(x2 - arrow_size, y2 - arrow_size * 1.5), (x2 + arrow_size, y2 - arrow_size * 1.5), (x2, y2)], fill=col)
+        else:
+            draw.polygon([(x2 - arrow_size, y2 + arrow_size * 1.5), (x2 + arrow_size, y2 + arrow_size * 1.5), (x2, y2)], fill=col)
+    elif y1 == y2:
+        if x2 > x1:
+            draw.polygon([(x2 - arrow_size * 1.5, y2 - arrow_size), (x2 - arrow_size * 1.5, y2 + arrow_size), (x2, y2)], fill=col)
+        else:
+            draw.polygon([(x2 + arrow_size * 1.5, y2 - arrow_size), (x2 + arrow_size * 1.5, y2 + arrow_size), (x2, y2)], fill=col)
+
 # Helper: Draw Directional Arrow
 def draw_arrow(draw, p1, p2, col=(100, 116, 139), width=2, arrow_size=6):
     x1, y1 = p1
@@ -1054,574 +1106,686 @@ def make_slide_05():
     draw.line([(120, 100), (1800, 100)], fill=(226, 232, 240), width=1)
     draw.line([(120, 980), (1800, 980)], fill=(226, 232, 240), width=1)
     
-    # Header - Korail Style Conversational Typography
-    draw.text((120, 75), "05 USER FLOW & JOURNEY MAP", font=get_font(14, 'bold'), fill=(0, 82, 255))
-    t1_a = "자산 진단부터 플랜 확정까지, "
-    t1_b = "자연스러운 4단계 플로우를 완성했어요."
-    font_title = get_font(38, 'bold')
+    # Header - Category & Conversational Typography
+    draw.text((120, 75), "Flow Chart", font=get_font(15, 'bold'), fill=(0, 82, 255))
+    t1_a = "쉽고 빠르게 "
+    t1_b = "최적의 물타기 플랜을 계산할 수 있어요"
+    font_title = get_font(36, 'bold')
     w_t1_a = draw.textlength(t1_a, font=font_title)
-    draw.text((120, 115), t1_a, font=font_title, fill=(15, 23, 42))
-    draw.text((120 + w_t1_a, 115), t1_b, font=font_title, fill=(0, 82, 255))
-    draw.text((120, 175), "위기 감지부터 0.2초 음성 입력, 목표 역산, 65% 예수금 보존 플랜 확정까지의 원활한 사용자 여정 & 심리 회복 곡선", font=get_font(16, 'regular'), fill=(71, 85, 105))
+    draw.text((120, 110), t1_a, font=font_title, fill=(15, 23, 42))
+    draw.text((120 + w_t1_a, 110), t1_b, font=font_title, fill=(0, 82, 255))
     
-    steps = [
-        (
-            'portfolio/iphone_mockups/iphone_01_home.png',
-            'STEP 01', '자산 현황 진단',
-            '갑작스러운 주가 급락(-16.7%) 발생',
-            '홈 대시보드 1초 조망 및 계좌 진단',
-            '0.2초 음성 도크 진입',
-            '0.2초 음성 도크 진입',
-            'cyan',
-            '공포 😰 (-16.7%)',
-            'red'
-        ),
-        (
-            'portfolio/iphone_mockups/iphone_08_voice.png',
-            'STEP 02', '0.2초 음성 입력',
-            '급변하는 호가 속 타이핑 오입력 불안',
-            '자연어 음성 인식으로 수치 즉시 추출',
-            '목표 평단 역산기 인계',
-            '목표 역산 인계',
-            'blue',
-            '안도 😌 (0.2초)',
-            'blue'
-        ),
-        (
-            'portfolio/iphone_mockups/iphone_03_target.png',
-            'STEP 03', '목표 평단가 역산',
-            '원금 탈출을 위한 필요 매수량 불명확',
-            '희망 목표가 기준 필요 수량 즉시 역산',
-            '예수금 슬라이더 조율',
-            '최종 방어 플랜 산출',
-            'amber',
-            '명쾌 💡 (닫힌형식)',
-            'amber'
-        ),
-        (
-            'portfolio/iphone_mockups/iphone_02_sim.png',
-            'STEP 04', '최종 플랜 확정',
-            '무리한 매수로 인한 현금 고갈 방지 필요',
-            '65% 예수금 보존 최적 평단 확정',
-            '1-Tap 주문 플랜 복사',
-            '매수 집행 완료',
-            'green',
-            '확신 🚀 (65%보존)',
-            'green'
-        )
+    draw.text((120, 165), "페르소나 김민우, 박서연의 저니맵을 바탕으로 제작된 플로우 차트입니다.", font=get_font(14, 'regular'), fill=(71, 85, 105))
+    draw.text((120, 188), "프로젝트 목표에 알맞게 플로우를 구성하였으며, 뎁스를 최소화해 쉽고 빠르게 물타기 계산 및 시나리오를 도출할 수 있도록 유도했습니다.", font=get_font(14, 'regular'), fill=(71, 85, 105))
+    
+    # TOP-RIGHT: 플로우 차트 기호표 (Flow Chart Legend) - EXACT MATCH to Reference Image 1
+    leg_x = 1320
+    leg_y = 65
+    leg_w = 480
+    leg_h = 135
+    draw.rounded_rectangle([leg_x, leg_y, leg_x + leg_w, leg_y + leg_h], radius=14, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw.text((leg_x + 20, leg_y + 14), "플로우 차트 기호표", font=get_font(12, 'bold'), fill=(0, 82, 255))
+    
+    # Row 1 of Legend: 시작/끝, 판단, Yes, 화살표
+    # 1. 시작/끝 (Blue filled pill)
+    draw.rounded_rectangle([leg_x + 20, leg_y + 45, leg_x + 72, leg_y + 68], radius=11, fill=(0, 82, 255))
+    draw.text((leg_x + 82, leg_y + 49), "시작/끝", font=get_font(10.5, 'medium'), fill=(71, 85, 105))
+    
+    # 2. 판단 (Diamond)
+    draw_diamond(draw, cx=leg_x + 195, cy=leg_y + 56, w=32, h=22, fill=(255, 255, 255), outline=(0, 82, 255), width=1)
+    draw.text((leg_x + 220, leg_y + 49), "판단", font=get_font(10.5, 'medium'), fill=(71, 85, 105))
+    
+    # 3. Yes (Blue dashed line with arrow)
+    draw_dashed_arrow(draw, (leg_x + 300, leg_y + 56), (leg_x + 345, leg_y + 56), col=(0, 82, 255), width=2)
+    draw.text((leg_x + 355, leg_y + 49), "Yes", font=get_font(10.5, 'medium'), fill=(71, 85, 105))
+    
+    # 4. 화살표 (Gray solid arrow)
+    draw_arrow(draw, (leg_x + 400, leg_y + 56), (leg_x + 435, leg_y + 56), col=(100, 116, 139), width=2)
+    draw.text((leg_x + 442, leg_y + 49), "화살표", font=get_font(10, 'medium'), fill=(71, 85, 105))
+    
+    # Row 2 of Legend: 프로세스, 주요 프로세스, 입력/출력, No
+    # 5. 프로세스 (Rounded rect)
+    draw.rounded_rectangle([leg_x + 20, leg_y + 88, leg_x + 72, leg_y + 112], radius=6, fill=(255, 255, 255), outline=(0, 82, 255), width=1)
+    draw.text((leg_x + 82, leg_y + 92), "프로세스", font=get_font(10.5, 'medium'), fill=(71, 85, 105))
+    
+    # 6. 주요 프로세스 (Dashed rounded rect)
+    draw_dashed_rounded_rect(draw, [leg_x + 140, leg_y + 88, leg_x + 195, leg_y + 112], radius=6, fill=(240, 246, 255), outline=(0, 82, 255), width=1)
+    draw.text((leg_x + 205, leg_y + 92), "주요 프로세스", font=get_font(10.5, 'medium'), fill=(71, 85, 105))
+    
+    # 7. 입력/출력 (Parallelogram)
+    draw_parallelogram(draw, cx=leg_x + 315, cy=leg_y + 100, w=40, h=24, fill=(255, 255, 255), outline=(0, 82, 255), skew=8)
+    draw.text((leg_x + 342, leg_y + 92), "입력/출력", font=get_font(10.5, 'medium'), fill=(71, 85, 105))
+    
+    # 8. No (Pink dashed line with arrow)
+    draw_dashed_arrow(draw, (leg_x + 400, leg_y + 100), (leg_x + 435, leg_y + 100), col=(244, 63, 94), width=2)
+    draw.text((leg_x + 442, leg_y + 92), "No", font=get_font(10.5, 'medium'), fill=(71, 85, 105))
+    
+    # =========================================================
+    # FLOW CHART BODY
+    # =========================================================
+    # Entry Sequence (Top Left-Center)
+    root_x = 210
+    
+    # Start Pill
+    draw.rounded_rectangle([root_x - 45, 226, root_x + 45, 254], radius=14, fill=(0, 82, 255))
+    draw.text((root_x, 240), "Start", font=get_font(12, 'bold'), fill=(255, 255, 255), anchor='mm')
+    
+    # Arrow to Splash
+    draw_arrow(draw, (root_x, 254), (root_x, 278), col=(147, 197, 253), width=2)
+    
+    # Splash Process
+    draw.rounded_rectangle([root_x - 55, 278, root_x + 55, 310], radius=8, fill=(255, 255, 255), outline=(0, 82, 255), width=1)
+    draw.text((root_x, 294), "Splash", font=get_font(11, 'bold'), fill=(15, 23, 42), anchor='mm')
+    
+    # Arrow to Onboarding Decision
+    draw_arrow(draw, (root_x, 310), (root_x, 335), col=(147, 197, 253), width=2)
+    
+    # Decision: 최초 실행? (Diamond)
+    draw_diamond(draw, cx=root_x, cy=362, w=120, h=48, fill=(255, 255, 255), outline=(0, 82, 255), width=1)
+    draw.text((root_x, 362), "온보딩&튜토리얼", font=get_font(10, 'bold'), fill=(15, 23, 42), anchor='mm')
+    
+    # If Yes (first time) -> goes left to Onboarding Guide
+    onb_x = 90
+    draw_dashed_line(draw, (root_x - 60, 362), (onb_x, 362), col=(244, 63, 94), width=1)
+    draw.text(((root_x - 60 + onb_x) // 2, 350), "No (미완료)", font=get_font(9, 'bold'), fill=(244, 63, 94), anchor='mm')
+    draw_dashed_arrow(draw, (onb_x, 362), (onb_x, 395), col=(244, 63, 94), width=1)
+    
+    draw.rounded_rectangle([onb_x - 45, 395, onb_x + 45, 432], radius=8, fill=(254, 242, 242), outline=(244, 63, 94), width=1)
+    draw.text((onb_x, 407), "인터랙티브", font=get_font(9.5, 'bold'), fill=(153, 27, 27), anchor='mm')
+    draw.text((onb_x, 420), "온보딩 가이드", font=get_font(9, 'regular'), fill=(153, 27, 27), anchor='mm')
+    
+    # If Yes (already onboarded) -> directly down to Bus
+    draw_dashed_line(draw, (root_x, 386), (root_x, 440), col=(0, 82, 255), width=1)
+    draw.text((root_x + 35, 412), "Yes (완료)", font=get_font(9.5, 'bold'), fill=(0, 82, 255), anchor='mm')
+    
+    # Connect Onboarding back to Bus
+    draw_arrow(draw, (onb_x, 432), (onb_x, 440), col=(147, 197, 253), width=2)
+    
+    # =========================================================
+    # Horizontal Distribution Bus Line at y=440
+    # =========================================================
+    draw.line([(onb_x, 440), (1670, 440)], fill=(147, 197, 253), width=2)
+    
+    # 5 Main Feature Columns
+    cols = [
+        ("홈 대시보드", 210, [
+            ("header", "홈 (대시보드)", (239, 246, 255), (0, 82, 255)),
+            ("process", "보유 자산 총괄 요약", (255, 255, 255), (0, 82, 255)),
+            ("process", "최근 계산 기록 확인", (255, 255, 255), (0, 82, 255)),
+            ("process", "원터치 호가 프리셋 탭", (255, 255, 255), (0, 82, 255)),
+            ("key_process", "빠른 계산 진입", (240, 246, 255), (0, 82, 255)),
+            ("finish", "대시보드 조망 완료", (0, 82, 255), (0, 82, 255))
+        ]),
+        ("물타기 계산기 (Simulator)", 560, [
+            ("header", "물타기 계산기", (239, 246, 255), (0, 82, 255)),
+            ("io", "보유 평단 · 수량 입력", (255, 255, 255), (0, 82, 255)),
+            ("io", "추가 매수가 · 수량 입력", (255, 255, 255), (0, 82, 255)),
+            ("process", "가중평균 실시간 연산", (255, 255, 255), (0, 82, 255)),
+            ("decision", "목표 평단가 도달?", (255, 255, 255), (0, 82, 255)),
+            ("key_process", "포트폴리오 자산 저장", (240, 246, 255), (0, 82, 255)),
+            ("finish", "시뮬레이션 완료", (0, 82, 255), (0, 82, 255))
+        ]),
+        ("목표가 역산기 (Target DCA)", 930, [
+            ("header", "목표가 역산기", (239, 246, 255), (0, 82, 255)),
+            ("io", "희망 목표 평단가 입력", (255, 255, 255), (0, 82, 255)),
+            ("key_process", "폐쇄형 퀀트 역산 가동", (240, 246, 255), (0, 82, 255)),
+            ("io", "필요 예수금 · 수량 산출", (255, 255, 255), (0, 82, 255)),
+            ("decision", "예수금 감당 가능?", (255, 255, 255), (0, 82, 255)),
+            ("key_process", "1-Tap 플랜 클립보드 복사", (240, 246, 255), (0, 82, 255)),
+            ("finish", "목표 역산 완료", (0, 82, 255), (0, 82, 255))
+        ]),
+        ("AI 음성 도크 (Voice DCA)", 1300, [
+            ("header", "AI 음성 도크", (239, 246, 255), (0, 82, 255)),
+            ("process", "마이크 버튼 탭", (255, 255, 255), (0, 82, 255)),
+            ("io", "자연어 발화 ('15,000원에 100주')", (255, 255, 255), (0, 82, 255)),
+            ("process", "온디바이스 STT 파싱", (255, 255, 255), (0, 82, 255)),
+            ("key_process", "수치 및 종목 자동 매핑", (240, 246, 255), (0, 82, 255)),
+            ("key_process", "시뮬레이터 파라미터 주입", (240, 246, 255), (0, 82, 255)),
+            ("finish", "음성 계산 완료", (0, 82, 255), (0, 82, 255))
+        ]),
+        ("포트폴리오 & 글로벌 설정", 1670, [
+            ("header", "포트폴리오 & 설정", (239, 246, 255), (0, 82, 255)),
+            ("key_process", "SQLite 로컬 암호화 저장", (240, 246, 255), (0, 82, 255)),
+            ("process", "종목별 손익 · 비중 차트", (255, 255, 255), (0, 82, 255)),
+            ("process", "10개 글로벌 언어 선택", (255, 255, 255), (0, 82, 255)),
+            ("process", "다크 / 라이트 모드 설정", (255, 255, 255), (0, 82, 255)),
+            ("process", "개인정보처리방침 열람", (255, 255, 255), (0, 82, 255)),
+            ("finish", "설정 적용 완료", (0, 82, 255), (0, 82, 255))
+        ])
     ]
     
-    pw = 215
-    mockup_ref = Image.open(steps[0][0])
-    ph = int(round(pw * (mockup_ref.height / mockup_ref.width))) # 443px exact fit
-    py = 230
+    box_w = 210
+    box_h = 38
+    start_y = 475
     
-    card_w = 385
-    cols_x = [120, 550, 980, 1410]
-    
-    # User Emotion Trajectory Connecting Curve (Reference Image 3 Emotion Curve)
-    # Renders an upward recovery wave from panic to certainty right above mockups
-    e_pts = [(cols_x[0] + card_w // 2, 218), (cols_x[1] + card_w // 2, 213), (cols_x[2] + card_w // 2, 208), (cols_x[3] + card_w // 2, 203)]
-    for idx in range(len(e_pts) - 1):
-        x_a, y_a = e_pts[idx]
-        x_b, y_b = e_pts[idx + 1]
-        draw.line([(x_a, y_a), (x_b, y_b)], fill=(0, 82, 255, 120), width=2)
-    for px_e, py_e in e_pts:
-        draw.ellipse([px_e - 4, py_e - 4, px_e + 4, py_e + 4], fill=(0, 82, 255), outline=(255, 255, 255), width=2)
-    draw.text((120, 207), "EMOTION TRAJECTORY :", font=get_font(10.5, 'bold'), fill=(100, 116, 139))
-    
-    # 1. Flow Connectors and Action Badges
-    for i in range(3):
-        x_from = cols_x[i] + card_w + 4
-        x_to = cols_x[i+1] - 4
-        mid_x = (x_from + x_to) // 2
-        mid_y = py + ph // 2 - 10
+    for c_title, cx, nodes in cols:
+        # Arrow down from bus line
+        draw_arrow(draw, (cx, 440), (cx, start_y), col=(147, 197, 253), width=2)
         
-        draw.line([(x_from, mid_y), (x_to, mid_y)], fill=(0, 82, 255, 180), width=2)
-        draw.polygon([(x_to, mid_y), (x_to - 8, mid_y - 5), (x_to - 8, mid_y + 5)], fill=(0, 82, 255))
-        
-        action_text = steps[i][6]
-        action_theme = steps[i][7]
-        draw_pill_badge(draw, mid_x, mid_y - 28, action_text, font=get_font(9.5, 'bold'), theme=action_theme, has_dot=True, dark_mode=False, pad_x=8, height=26)
-        
-    # 2. Draw 4 iPhone Mockups with Soft Shadows
-    for i, s_data in enumerate(steps):
-        mockup_path = s_data[0]
-        cx = cols_x[i]
-        px = cx + (card_w - pw) // 2
-        
-        sh = Image.new('RGBA', (W, H), (0,0,0,0))
-        shd = ImageDraw.Draw(sh)
-        shd.rounded_rectangle([px + 10, py + 14, px + pw - 10, py + ph + 20], radius=28, fill=(0, 0, 0, 50))
-        sh = sh.filter(ImageFilter.GaussianBlur(16))
-        base = Image.alpha_composite(base, sh)
-        
-        phone = Image.open(mockup_path).convert('RGBA')
-        phone = phone.resize((pw, ph), Image.Resampling.LANCZOS)
-        base.paste(phone, (px, py), phone)
-        
-    draw = ImageDraw.Draw(base)
-    
-    # 3. 4 Dedicated UX Planning Annotation Cards below each phone
-    card_y = py + ph + 18
-    card_h = 245
-    
-    for i, s_data in enumerate(steps):
-        mockup_path, step_tag, title, ctx, rat, trig, action, theme, em_text, em_theme = s_data
-        cx = cols_x[i]
-        
-        draw.rounded_rectangle([cx, card_y, cx + card_w, card_y + card_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-        
-        # Step Tag
-        _, _, bx2_step, _ = draw_pill_badge(draw, cy=card_y + 26, text=step_tag, font=get_font(10, 'bold'), theme=theme, has_dot=False, dark_mode=False, pad_x=10, height=26, left_x=cx + 18)
-        
-        # Title
-        t_bbox = draw.textbbox((0, 0), title, font=get_font(15, 'bold'))
-        t_ty = int(round(card_y + 26 - (t_bbox[1] + t_bbox[3]) / 2.0))
-        draw.text((bx2_step + 10, t_ty), title, font=get_font(15, 'bold'), fill=(15, 23, 42))
-        
-        # Emotion Badge (Right Aligned - Reference Image 3 Style)
-        draw_pill_badge(draw, cx=cx + card_w - 75, cy=card_y + 26, text=em_text, font=get_font(9.5, 'bold'), theme=em_theme, has_dot=False, dark_mode=False, pad_x=8, height=24)
-        
-        draw.line([(cx + 18, card_y + 52), (cx + card_w - 18, card_y + 52)], fill=(241, 245, 249), width=1)
-        
-        ty = card_y + 66
-        draw.text((cx + 18, ty), "• 상황 :", font=get_font(11.5, 'bold'), fill=(220, 38, 38))
-        c_lines = wrap_text_by_words(ctx, get_font(11.5, 'regular'), card_w - 85, draw)
-        draw.text((cx + 65, ty), c_lines[0] if c_lines else "", font=get_font(11.5, 'regular'), fill=(30, 41, 59))
-        ty += 28
-        
-        draw.text((cx + 18, ty), "• 해결 :", font=get_font(11.5, 'bold'), fill=(0, 82, 255))
-        r_lines = wrap_text_by_words(rat, get_font(11.5, 'regular'), card_w - 85, draw)
-        for r_line in r_lines[:2]:
-            draw.text((cx + 65, ty), r_line, font=get_font(11.5, 'regular'), fill=(71, 85, 105))
-            ty += 24
-            
-        ty = card_y + card_h - 40
-        theme_colors = {
-            'cyan': {'bg': (236, 254, 255), 'border': (165, 243, 252), 'text': (14, 116, 144)},
-            'blue': {'bg': (239, 246, 255), 'border': (191, 219, 254), 'text': (29, 78, 216)},
-            'amber': {'bg': (254, 243, 199), 'border': (253, 230, 138), 'text': (180, 83, 9)},
-            'green': {'bg': (236, 253, 245), 'border': (167, 243, 208), 'text': (5, 150, 105)},
-        }
-        t_style = theme_colors.get(theme, theme_colors['blue'])
-        draw.rounded_rectangle([cx + 18, ty, cx + card_w - 18, ty + 28], radius=8, fill=t_style['bg'], outline=t_style['border'], width=1)
-        trig_str = f"▶ {trig}"
-        trig_bbox = draw.textbbox((0, 0), trig_str, font=get_font(10.5, 'bold'))
-        trig_ty = int(round((ty + 14) - (trig_bbox[1] + trig_bbox[3]) / 2.0))
-        draw.text((cx + 28, trig_ty), trig_str, font=get_font(10.5, 'bold'), fill=t_style['text'])
-        
+        curr_y = start_y
+        for i, (ntype, label, bg, border) in enumerate(nodes):
+            if ntype == "header":
+                draw.rounded_rectangle([cx - box_w // 2, curr_y, cx + box_w // 2, curr_y + box_h], radius=8, fill=bg, outline=border, width=2)
+                draw.text((cx, curr_y + box_h // 2), label, font=get_font(12, 'bold'), fill=border, anchor='mm')
+                next_y = curr_y + box_h + 24
+                draw_arrow(draw, (cx, curr_y + box_h), (cx, next_y), col=(147, 197, 253), width=2)
+                curr_y = next_y
+            elif ntype == "process":
+                draw.rounded_rectangle([cx - box_w // 2, curr_y, cx + box_w // 2, curr_y + box_h], radius=6, fill=bg, outline=border, width=1)
+                draw.text((cx, curr_y + box_h // 2), label, font=get_font(11, 'medium'), fill=(15, 23, 42), anchor='mm')
+                next_y = curr_y + box_h + 24
+                draw_arrow(draw, (cx, curr_y + box_h), (cx, next_y), col=(147, 197, 253), width=2)
+                curr_y = next_y
+            elif ntype == "key_process":
+                draw_dashed_rounded_rect(draw, [cx - box_w // 2, curr_y, cx + box_w // 2, curr_y + box_h], radius=6, fill=bg, outline=border, width=1)
+                draw.text((cx, curr_y + box_h // 2), label, font=get_font(11, 'bold'), fill=border, anchor='mm')
+                next_y = curr_y + box_h + 24
+                draw_arrow(draw, (cx, curr_y + box_h), (cx, next_y), col=(147, 197, 253), width=2)
+                curr_y = next_y
+            elif ntype == "io":
+                draw_parallelogram(draw, cx=cx, cy=curr_y + box_h // 2, w=box_w, h=box_h, fill=(255, 255, 255), outline=border, skew=10)
+                draw.text((cx, curr_y + box_h // 2), label, font=get_font(10.5, 'medium'), fill=(15, 23, 42), anchor='mm')
+                next_y = curr_y + box_h + 24
+                draw_arrow(draw, (cx, curr_y + box_h), (cx, next_y), col=(147, 197, 253), width=2)
+                curr_y = next_y
+            elif ntype == "decision":
+                dh = 46
+                draw_diamond(draw, cx=cx, cy=curr_y + dh // 2, w=box_w, h=dh, fill=(255, 255, 255), outline=border, width=1)
+                draw.text((cx, curr_y + dh // 2), label, font=get_font(10.5, 'bold'), fill=border, anchor='mm')
+                next_y = curr_y + dh + 24
+                draw_arrow(draw, (cx, curr_y + dh), (cx, next_y), col=(147, 197, 253), width=2)
+                curr_y = next_y
+            elif ntype == "finish":
+                draw.rounded_rectangle([cx - 70, curr_y, cx + 70, curr_y + 32], radius=16, fill=(0, 82, 255))
+                draw.text((cx, curr_y + 16), label, font=get_font(11, 'bold'), fill=(255, 255, 255), anchor='mm')
+                
     base.save(f'{OUT_DIR}/slide_05.png')
-    print("SAVED slide_05.png (User Flow with Emotion Trajectory Curve & Badges)")
+    print("SAVED slide_05.png (Enterprise Flow Chart with Symbol Legend)")
 
 
 def make_slide_06():
     base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
     draw = ImageDraw.Draw(base)
     
-    # Hairline Top/Bottom Boundaries
+    # Hairline Boundaries
     draw.line([(120, 100), (1800, 100)], fill=(226, 232, 240), width=1)
     draw.line([(120, 980), (1800, 980)], fill=(226, 232, 240), width=1)
     
-    # Header - Korail Style Conversational Typography
-    draw.text((120, 75), "06 WIREFRAME | ERGONOMIC LAYOUT", font=get_font(14, 'bold'), fill=(0, 82, 255))
-    t1_a = "엄지 조작(Thumb Zone) 최적화로 "
-    t1_b = "급변하는 장세에서도 오작동을 차단해요."
-    font_title = get_font(38, 'bold')
-    w_t1_a = draw.textlength(t1_a, font=font_title)
-    draw.text((120, 115), t1_a, font=font_title, fill=(15, 23, 42))
-    draw.text((120 + w_t1_a, 115), t1_b, font=font_title, fill=(0, 82, 255))
-    draw.text((120, 175), "인체공학적 조작 반경과 비정상 입력 사전 가드로 설계된 3대 화면 와이어프레임 청사진", font=get_font(16, 'regular'), fill=(71, 85, 105))
+    # Header - Reference Image 2 Style
+    draw.text((120, 75), "Wireframe & Ui components", font=get_font(15, 'bold'), fill=(0, 82, 255))
+    draw.text((120, 110), "박스 형태를 모티브로, 전체적으로 둥근 박스 형태의 디자인을 사용했습니다.", font=get_font(32, 'bold'), fill=(15, 23, 42))
+    draw.text((120, 160), "인체공학적 조작 반경과 비정상 입력 사전 가드로 설계된 모바일 와이어프레임 및 UI 컴포넌트 시스템", font=get_font(14, 'regular'), fill=(71, 85, 105))
     
-    # 3 Screen Columns
-    cols_data = [
-        ("Screen 01. 홈 대시보드 구조", 120, 430, [
-            ("① 핵심 정보 1초 조망", "총 투자 원금과 실시간 손익률을 최상단 단일 카드에 배치하여 첫인상에서 계좌 상태 즉시 인지"),
-            ("② 말로 하는 0.2초 음성 도크", "호가 급변 시 즉각 발화할 수 있는 원터치 마이크 버튼 및 음성 파형 비주얼 제공"),
-            ("③ 원터치 호가 프리셋", "키패드 8자리 소수점 입력 피로도를 78% 줄이는 ±5%, ±10% 호가 빠른 선택 칩"),
-            ("④ 엄지 반경 액션 버튼", "한 손으로 폰을 쥔 상태에서 자연스럽게 닿는 하단 영역에 핵심 진입 버튼 배치")
-        ]),
-        ("Screen 02. 시뮬레이터 조작 구조", 680, 990, [
-            ("① 3-Tab 빠른 모드 전환", "단일 계산, 시나리오 A vs B, 목표 역산 탭을 상단에 두어 언제든 자유로운 모드 전환"),
-            ("② 직관적인 +/- 스텝퍼", "소프트 키보드로 화면이 가려지지 않도록 터치로 수량을 부드럽게 증감하는 인터랙션"),
-            ("③ 실시간 평단가 피드백", "수치를 바꿀 때마다 새로워지는 평단가와 계좌 방어율을 하단 결과 카드에 즉시 반영"),
-            ("④ 시나리오 즉시 보관", "검토 완료된 계산 결과를 내 폰에 안전하게 보관하고 리포트로 1초 만에 인계")
-        ]),
-        ("Screen 03. 목표 역산 엔진 구조", 1240, 1550, [
-            ("① 기준 포지션 상단 고정", "현재 보유 평단과 수량을 화면 상단에 띄워 목표 가격과의 격차를 직관적으로 비교"),
-            ("② 비현실적 목표 사전 가드", "도달 불가한 목표 가격 입력 시 실시간으로 친절한 피드백과 적정 대안 제시"),
-            ("③ 반응형 예수금 슬라이더", "가용 현금 한도 내에서 감당 가능한 최선의 방어 평단을 60fps로 매끄럽게 조율"),
-            ("④ 목표 파라미터 1탭 인계", "역산으로 도출된 최적 매수 수량을 시뮬레이터로 1초 만에 자동 주입하여 재입력 방지")
-        ])
+    # UPPER SECTION: 3 WIREFRAME & UI COMPONENT COLUMNS (y=200 to y=550)
+    col_y = 200
+    col_h = 350
+    
+    # Column 1: UI Components & Stepper Atoms (Left)
+    c1_x = 120
+    c1_w = 480
+    draw.rounded_rectangle([c1_x, col_y, c1_x + c1_w, col_y + col_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw_pill_badge(draw, cx=c1_x + 95, cy=col_y + 25, text="UI COMPONENTS", font=get_font(10, 'bold'), theme='cyan', has_dot=False, dark_mode=False, pad_x=10, height=26)
+    draw.text((c1_x + 24, col_y + 55), "인터랙티브 스텝퍼 & 퀀트 뱃지", font=get_font(16, 'bold'), fill=(15, 23, 42))
+    
+    # Stepper Component Mockup
+    sy = col_y + 90
+    draw.rounded_rectangle([c1_x + 24, sy, c1_x + c1_w - 24, sy + 60], radius=12, fill=(248, 250, 252), outline=(203, 213, 225), width=1)
+    draw.rounded_rectangle([c1_x + 36, sy + 10, c1_x + 76, sy + 50], radius=8, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw.text((c1_x + 56, sy + 30), "-", font=get_font(18, 'bold'), fill=(0, 82, 255), anchor='mm')
+    draw.text((c1_x + c1_w // 2, sy + 30), "100 주 (수량 조절)", font=get_font(14, 'bold'), fill=(15, 23, 42), anchor='mm')
+    draw.rounded_rectangle([c1_x + c1_w - 76, sy + 10, c1_x + c1_w - 36, sy + 50], radius=8, fill=(0, 82, 255))
+    draw.text((c1_x + c1_w - 56, sy + 30), "+", font=get_font(18, 'bold'), fill=(255, 255, 255), anchor='mm')
+    
+    # Preset Chips Row
+    py = sy + 75
+    draw.text((c1_x + 24, py), "빠른 호가 선택 프리셋 칩", font=get_font(12, 'bold'), fill=(71, 85, 105))
+    p_chips = [("+10%", "blue"), ("+20%", "blue"), ("-5%", "red"), ("전액", "green")]
+    ch_x = c1_x + 24
+    for chip_txt, chip_theme in p_chips:
+        draw_pill_badge(draw, cx=ch_x + 40, cy=py + 35, text=chip_txt, font=get_font(11, 'bold'), theme=chip_theme, has_dot=False, dark_mode=False, pad_x=12, height=30)
+        ch_x += 105
+        
+    # Price Tag & Metric Card
+    my = py + 75
+    draw.rounded_rectangle([c1_x + 24, my, c1_x + c1_w - 24, my + 80], radius=12, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+    draw.text((c1_x + 40, my + 18), "예상 방어 평단가", font=get_font(11, 'bold'), fill=(0, 82, 255))
+    draw.text((c1_x + 40, my + 44), "42,350 원", font=get_num_font(20, 'bold'), fill=(15, 23, 42))
+    draw_pill_badge(draw, cx=c1_x + c1_w - 85, cy=my + 40, text="-18.4% 절감", font=get_font(11, 'bold'), theme='green', has_dot=True, dark_mode=False, pad_x=10, height=28)
+    
+    # Column 2: Mobile Wireframe Chassis (Center)
+    c2_x = 640
+    c2_w = 460
+    draw.rounded_rectangle([c2_x, col_y, c2_x + c2_w, col_y + col_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw_pill_badge(draw, cx=c2_x + 115, cy=col_y + 25, text="THUMB-ZONE WIREFRAME", font=get_font(10, 'bold'), theme='blue', has_dot=False, dark_mode=False, pad_x=10, height=26)
+    
+    # Phone Frame Miniature
+    pw = 220
+    ph = 270
+    px = c2_x + (c2_w - pw) // 2
+    py_phone = col_y + 55
+    draw.rounded_rectangle([px, py_phone, px + pw, py_phone + ph], radius=18, fill=(248, 250, 252), outline=(15, 23, 42), width=2)
+    # Notch
+    draw.rounded_rectangle([px + pw // 2 - 25, py_phone + 6, px + pw // 2 + 25, py_phone + 14], radius=4, fill=(15, 23, 42))
+    # Top Card
+    draw.rounded_rectangle([px + 12, py_phone + 24, px + pw - 12, py_phone + 85], radius=8, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw.text((px + 20, py_phone + 32), "계좌 총 평가손익", font=get_font(8.5, 'regular'), fill=(100, 116, 139))
+    draw.text((px + 20, py_phone + 48), "-16.7%", font=get_num_font(14, 'bold'), fill=(220, 38, 38))
+    # Stepper Input in Phone
+    draw.rounded_rectangle([px + 12, py_phone + 95, px + pw - 12, py_phone + 155], radius=8, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw.text((px + 20, py_phone + 104), "추가 매수 수량 조절", font=get_font(8.5, 'bold'), fill=(15, 23, 42))
+    # Thumb Zone Action Button
+    draw.rounded_rectangle([px + 12, py_phone + 215, px + pw - 12, py_phone + 255], radius=10, fill=(0, 82, 255))
+    draw.text((px + pw // 2, py_phone + 235), "⚡ 0.2초 음성 도크", font=get_font(10, 'bold'), fill=(255, 255, 255), anchor='mm')
+    
+    # Column 3: Ergonomic Breakdown Callouts (Right)
+    c3_x = 1140
+    c3_w = 660
+    draw.rounded_rectangle([c3_x, col_y, c3_x + c3_w, col_y + col_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw_pill_badge(draw, cx=c3_x + 115, cy=col_y + 25, text="ERGONOMIC SPEC", font=get_font(10, 'bold'), theme='purple', has_dot=False, dark_mode=False, pad_x=10, height=26)
+    draw.text((c3_x + 24, col_y + 55), "인체공학적 조작성 및 오류 방지 설계", font=get_font(16, 'bold'), fill=(15, 23, 42))
+    
+    callouts = [
+        ("① Fitts' Law Thumb-Zone 48dp", "한 손 파지 시 엄지손가락이 닿는 하단 120dp 반경 내 주요 액션 버튼 배치"),
+        ("② 0.2초 음성 도크 시트 연동", "급변하는 호가 속 키패드 8자리 소수점 타이핑 피로도를 78% 줄이는 원터치 마이크"),
+        ("③ 비정상 입력 사전 가드 엔진", "도달 불가한 목표 평단가 입력 시 즉각적인 햅틱 경고 및 최적 분할 매수 대안 제시"),
+        ("④ 1-Tap 무손실 파라미터 인계", "역산으로 도출된 수치를 시뮬레이터로 0ms 자동 주입하여 재입력 오류 원천 방지")
     ]
+    cy_sub = col_y + 90
+    for c_title, c_desc in callouts:
+        draw.rounded_rectangle([c3_x + 24, cy_sub, c3_x + c3_w - 24, cy_sub + 52], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        draw.text((c3_x + 38, cy_sub + 12), c_title, font=get_font(12, 'bold'), fill=(0, 82, 255))
+        draw.text((c3_x + 38, cy_sub + 30), c_desc, font=get_font(11, 'regular'), fill=(71, 85, 105))
+        cy_sub += 62
+        
+    # =========================================================
+    # LOWER SECTION: DESIGN CONCEPT (Naming & Symbol) - EXACT MATCH to Reference Image 2
+    # =========================================================
+    sec_y = 575
+    draw.text((120, sec_y), "Design Concept", font=get_font(24, 'bold'), fill=(15, 23, 42))
     
-    pw = 285
-    ph = 550
-    py = 325
+    card_y = sec_y + 40
+    card_h = 340
     
-    for s_title, px, cx, rationales in cols_data:
-        # Screen Title Badge (100% Mathematically Centered directly above the phone)
-        draw_pill_badge(draw, cx=px + pw // 2, cy=291, text=s_title, font=get_font(12.5, 'bold'), theme='slate', has_dot=False, dark_mode=False, pad_x=14, height=32)
+    # Left Card: Naming
+    n_x = 120
+    n_w = 780
+    draw.rounded_rectangle([n_x, card_y, n_x + n_w, card_y + card_h], radius=18, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw.text((n_x + 32, card_y + 28), "Naming", font=get_font(16, 'bold'), fill=(0, 82, 255))
+    draw.text((n_x + 32, card_y + 56), "스마트 물타기는 복잡하고 불안했던 투자를 \"스마트하게 지킨다\"는 메시지를 담았습니다.", font=get_font(13.5, 'regular'), fill=(71, 85, 105))
+    
+    # Big Typography Display: Smart DCA [스마트 물타기]
+    ty_logo = card_y + 105
+    draw.text((n_x + 32, ty_logo), "Smart DCA", font=get_font(46, 'black'), fill=(0, 82, 255))
+    draw.text((n_x + 320, ty_logo + 10), "[스마트 물타기]", font=get_font(28, 'bold'), fill=(15, 23, 42))
+    
+    # Detailed Description
+    desc_n = (
+        "기존 금융 시장에서 공포와 감정에 휩쓸려 무계획하게 행해지던 '물타기(Dollar Cost Averaging)'를 "
+        "수학적 가중평균과 폐쇄형 역산 알고리즘으로 '스마트(Smart)'하게 전환하여, "
+        "감정이 아닌 객관적 시나리오로 자산을 지킨다는 핵심 메시지를 담았습니다.\n\n"
+        "• Smart : 폐쇄형 퀀트 역산 엔진 & 0.2초 온디바이스 음성 AI 파싱\n"
+        "• DCA : 분할 매수를 통한 리스크 헷지 및 평단가 방어 철학"
+    )
+    d_lines = desc_n.split('\n')
+    dy = ty_logo + 70
+    for line in d_lines:
+        draw.text((n_x + 32, dy), line, font=get_font(12, 'regular'), fill=(71, 85, 105))
+        dy += 22
         
-        # Phone Chassis Frame (CAD Lo-Fi Blueprint Style)
-        draw.rounded_rectangle([px, py, px + pw, py + ph], radius=24, fill=(255, 255, 255), outline=(15, 23, 42), width=2)
+    # Right Card: Symbol
+    s_x = 940
+    s_w = 860
+    draw.rounded_rectangle([s_x, card_y, s_x + s_w, card_y + card_h], radius=18, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw.text((s_x + 32, card_y + 28), "Symbol", font=get_font(16, 'bold'), fill=(0, 82, 255))
+    
+    # App Icon Squircle Mockup
+    icon_path = "assets/app_icon_clean_squircle.png"
+    if not os.path.exists(icon_path):
+        icon_path = "assets/app_icon.png"
         
-        # Phone Status Bar
-        draw.rounded_rectangle([px + (pw - 60) // 2, py + 10, px + (pw + 60) // 2, py + 22], radius=6, fill=(15, 23, 42))
-        draw.text((px + 18, py + 11), "9:41", font=get_font(10, 'bold'), fill=(15, 23, 42))
-        draw.rounded_rectangle([px + pw - 34, py + 13, px + pw - 18, py + 21], radius=2, outline=(15, 23, 42), width=1)
-        draw.line([(px + pw - 18, py + 15), (px + pw - 18, py + 19)], fill=(15, 23, 42), width=1)
+    ix = s_x + 40
+    iy = card_y + 80
+    isize = 140
+    if os.path.exists(icon_path):
+        try:
+            icon_img = Image.open(icon_path).convert('RGBA')
+            icon_img = icon_img.resize((isize, isize), Image.Resampling.LANCZOS)
+            # Create drop shadow
+            shadow = Image.new('RGBA', (isize + 24, isize + 24), (0, 0, 0, 0))
+            s_draw = ImageDraw.Draw(shadow)
+            s_draw.rounded_rectangle([12, 12, isize + 12, isize + 12], radius=32, fill=(0, 0, 0, 45))
+            shadow = shadow.filter(ImageFilter.GaussianBlur(6))
+            base.paste(shadow, (ix - 12, iy - 6), shadow)
+            base.paste(icon_img, (ix, iy), icon_img)
+        except Exception as e:
+            draw.rounded_rectangle([ix, iy, ix + isize, iy + isize], radius=32, fill=(0, 82, 255))
+    else:
+        draw.rounded_rectangle([ix, iy, ix + isize, iy + isize], radius=32, fill=(0, 82, 255))
         
-        # Internal Wireframe Components based on screen
-        if "홈 대시보드" in s_title:
-            # App Bar
-            draw.text((px + 18, py + 34), "Smart DCA", font=get_font(13, 'bold'), fill=(15, 23, 42))
-            draw.ellipse([px + pw - 42, py + 36, px + pw - 30, py + 48], outline=(100, 116, 139), width=1)
-            draw.text((px + pw - 38, py + 36), "?", font=get_font(10, 'bold'), fill=(100, 116, 139))
-            draw.ellipse([px + pw - 24, py + 36, px + pw - 12, py + 48], outline=(100, 116, 139), width=1)
-            
-            # VIP Status Banner (Clean Text Badge without emoji)
-            draw.rounded_rectangle([px + 14, py + 60, px + pw - 14, py + 94], radius=6, fill=(255, 251, 235), outline=(245, 158, 11), width=1)
-            draw.rounded_rectangle([px + 22, py + 67, px + 74, py + 87], radius=3, fill=(245, 158, 11))
-            draw.text((px + 28, py + 71), "VIP 24h", font=get_font(9, 'bold'), fill=(255, 255, 255))
-            draw.text((px + 82, py + 71), "무광고 활성 (18:24)", font=get_font(10, 'bold'), fill=(180, 83, 9))
-            draw.rounded_rectangle([px + pw - 56, py + 66, px + pw - 20, py + 88], radius=4, fill=(245, 158, 11))
-            draw.text((px + pw - 48, py + 71), "연장", font=get_font(9.5, 'bold'), fill=(255, 255, 255))
-            
-            # Hero Total Asset Card
-            draw.rounded_rectangle([px + 14, py + 104, px + pw - 14, py + 186], radius=10, fill=(248, 250, 252), outline=(203, 213, 225), width=1)
-            draw.text((px + 24, py + 114), "총 투자금액 (Total Assets)", font=get_font(10.5, 'regular'), fill=(100, 116, 139))
-            draw.text((px + 24, py + 132), "₩ 3,082,500", font=get_num_font(19, 'black'), fill=(15, 23, 42))
-            draw.rounded_rectangle([px + 24, py + 160, px + 76, py + 178], radius=4, fill=(220, 252, 231))
-            draw.text((px + 32, py + 163), "+0.0%", font=get_font(9.5, 'bold'), fill=(21, 128, 61))
-            draw.rounded_rectangle([px + pw - 78, py + 156, px + pw - 22, py + 180], radius=4, fill=(0, 87, 255))
-            draw.text((px + pw - 70, py + 160), "계산하기 >", font=get_font(9.5, 'bold'), fill=(255, 255, 255))
-            
-            # AI Voice Dock
-            draw.rounded_rectangle([px + 14, py + 196, px + pw - 14, py + 288], radius=10, fill=(245, 243, 255), outline=(122, 34, 255), width=1)
-            draw.ellipse([px + 24, py + 208, px + 48, py + 232], fill=(122, 34, 255))
-            draw.text((px + 31, py + 212), "🎙", font=get_font(12, 'bold'), fill=(255, 255, 255))
-            draw.text((px + 56, py + 214), "AI 음성 비서 (0.2s 파싱)", font=get_font(11, 'bold'), fill=(15, 23, 42))
-            
-            # Waveform Bars Wireframe
-            wave_x = px + 24
-            wave_heights = [6, 12, 18, 14, 22, 16, 10, 20, 15, 8, 14, 18, 10]
-            for wh in wave_heights:
-                draw.line([(wave_x, py + 252 - wh // 2), (wave_x, py + 252 + wh // 2)], fill=(122, 34, 255), width=2)
-                wave_x += 7
-            draw.text((px + 120, py + 244), "\"7만원에 50주\"", font=get_font(10, 'regular'), fill=(109, 40, 217))
-            
-            # Preset Chips
-            chips = ["+5%", "+10%", "-20%", "초기화"]
-            cx_pos = px + 22
-            for ch in chips:
-                cw = int(draw.textlength(ch, font=get_font(9, 'bold')) + 14)
-                draw.rounded_rectangle([cx_pos, py + 266, cx_pos + cw, py + 282], radius=4, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
-                draw.text((cx_pos + 7, py + 268), ch, font=get_font(9, 'bold'), fill=(71, 85, 105))
-                cx_pos += cw + 6
-                
-            # Asset Item Card
-            draw.rounded_rectangle([px + 14, py + 298, px + pw - 14, py + 380], radius=10, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-            draw.rounded_rectangle([px + 24, py + 308, px + 52, py + 336], radius=6, fill=(241, 245, 249))
-            draw.text((px + 30, py + 314), "삼", font=get_font(11, 'bold'), fill=(0, 87, 255))
-            draw.text((px + 60, py + 310), "삼성전자 (005930)", font=get_font(11, 'bold'), fill=(15, 23, 42))
-            draw.text((px + 60, py + 326), "100주 · 평단 ₩75,000", font=get_font(10, 'regular'), fill=(100, 116, 139))
-            draw.rounded_rectangle([px + 24, py + 350, px + pw - 24, py + 356], radius=3, fill=(241, 245, 249))
-            draw.rounded_rectangle([px + 24, py + 350, px + 170, py + 356], radius=3, fill=(0, 87, 255))
-            draw.text((px + 24, py + 362), "비중 65% (포트폴리오 중심 자산)", font=get_font(9.5, 'regular'), fill=(100, 116, 139))
-            
-            # Bottom Action Dock
-            draw.rounded_rectangle([px + 14, py + 490, px + pw - 14, py + 528], radius=8, fill=(0, 87, 255))
-            draw.text((px + 62, py + 501), "⚡ 물타기 시뮬레이터 진입", font=get_font(11, 'bold'), fill=(255, 255, 255))
-            
-        elif "시뮬레이터" in s_title:
-            # App Bar
-            draw.text((px + 18, py + 34), "< 물타기 시뮬레이터", font=get_font(12, 'bold'), fill=(15, 23, 42))
-            draw.text((px + pw - 48, py + 35), "↺ 초기화", font=get_font(10, 'bold'), fill=(220, 38, 38))
-            
-            # 3-Tab Segmented Control
-            draw.rounded_rectangle([px + 14, py + 58, px + pw - 14, py + 88], radius=6, fill=(241, 245, 249))
-            draw.rounded_rectangle([px + 16, py + 60, px + 98, py + 86], radius=5, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
-            draw.text((px + 34, py + 67), "단일 계산", font=get_font(10, 'bold'), fill=(0, 87, 255))
-            draw.text((px + 115, py + 67), "시나리오 A/B", font=get_font(10, 'regular'), fill=(100, 116, 139))
-            draw.text((px + 208, py + 67), "목표 역산", font=get_font(10, 'regular'), fill=(100, 116, 139))
-            
-            # Current Position Card
-            draw.rounded_rectangle([px + 14, py + 98, px + pw - 14, py + 186], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-            draw.text((px + 24, py + 106), "1. 현재 보유 평단가 및 수량", font=get_font(11, 'bold'), fill=(15, 23, 42))
-            
-            # Input Field 1
-            draw.rounded_rectangle([px + 24, py + 124, px + pw - 24, py + 150], radius=5, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
-            draw.text((px + 32, py + 130), "보유 평단 : 78,000 원", font=get_font(10, 'bold'), fill=(15, 23, 42))
-            draw.text((px + pw - 58, py + 130), "[-]  [+]", font=get_font(10, 'bold'), fill=(0, 87, 255))
-            
-            # Input Field 2
-            draw.rounded_rectangle([px + 24, py + 156, px + pw - 24, py + 182], radius=5, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
-            draw.text((px + 32, py + 162), "보유 수량 : 100 주", font=get_font(10, 'bold'), fill=(15, 23, 42))
-            draw.text((px + pw - 58, py + 162), "[-]  [+]", font=get_font(10, 'bold'), fill=(0, 87, 255))
-            
-            # Additional Purchase Rows
-            draw.rounded_rectangle([px + 14, py + 196, px + pw - 14, py + 288], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-            draw.text((px + 24, py + 204), "2. 차수별 추가 매수 계획", font=get_font(11, 'bold'), fill=(15, 23, 42))
-            
-            draw.rounded_rectangle([px + 24, py + 222, px + pw - 24, py + 252], radius=5, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
-            draw.text((px + 32, py + 230), "1차 추가 매수: 68,000원 · 50주", font=get_font(10, 'regular'), fill=(15, 23, 42))
-            
-            draw.rounded_rectangle([px + 24, py + 258, px + pw - 24, py + 280], radius=5, fill=(241, 245, 249), outline=(203, 213, 225), width=1)
-            draw.text((px + 85, py + 263), "+ 2차 추가 매수 생성", font=get_font(10, 'bold'), fill=(0, 87, 255))
-            
-            # Realtime Result Card (Highlighted)
-            draw.rounded_rectangle([px + 14, py + 298, px + pw - 14, py + 410], radius=10, fill=(240, 246, 255), outline=(0, 87, 255), width=1)
-            draw.text((px + 24, py + 308), "3. 실시간 연산 결과 피드백", font=get_font(11, 'bold'), fill=(0, 87, 255))
-            draw.text((px + 24, py + 328), "신규 평단가 : ₩ 74,666", font=get_num_font(15, 'black'), fill=(15, 23, 42))
-            draw.text((px + 24, py + 352), "• 평단 인하폭 : -4.3% (₩ 3,334 하향)\n• 총 보유 수량 : 150 주\n• 추가 투입 자금 : ₩ 3,400,000", font=get_font(10, 'regular'), fill=(51, 65, 85), spacing=2)
-            draw.rounded_rectangle([px + 24, py + 388, px + pw - 24, py + 404], radius=4, fill=(219, 234, 254))
-            draw.text((px + 32, py + 391), "✓ 목표 예수금 범위 내 안정적 분할", font=get_font(9, 'bold'), fill=(29, 78, 216))
-            
-            # Bottom Action CTA
-            draw.rounded_rectangle([px + 14, py + 490, px + pw - 14, py + 528], radius=8, fill=(0, 87, 255))
-            draw.text((px + 72, py + 501), "💾 시나리오 로컬 DB 저장", font=get_font(11, 'bold'), fill=(255, 255, 255))
-            
-        elif "목표 역산" in s_title:
-            # App Bar
-            draw.text((px + 18, py + 34), "< 목표 평단가 역산 엔진", font=get_font(12, 'bold'), fill=(15, 23, 42))
-            draw.ellipse([px + pw - 24, py + 36, px + pw - 12, py + 48], outline=(100, 116, 139), width=1)
-            draw.text((px + pw - 20, py + 36), "i", font=get_font(10, 'bold'), fill=(100, 116, 139))
-            
-            # Fixed Context Card
-            draw.rounded_rectangle([px + 14, py + 58, px + pw - 14, py + 120], radius=8, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-            draw.text((px + 24, py + 66), "🔒 현재 고정 컨텍스트 (Locked)", font=get_font(10.5, 'bold'), fill=(100, 116, 139))
-            draw.text((px + 24, py + 84), "현재 평단 ₩78,000  ·  보유 100주", font=get_font(11, 'bold'), fill=(15, 23, 42))
-            draw.text((px + 24, py + 102), "현재가 (추가 매수가) : ₩ 65,000", font=get_font(9.5, 'regular'), fill=(71, 85, 105))
-            
-            # Goal Target Price Input
-            draw.rounded_rectangle([px + 14, py + 130, px + pw - 14, py + 214], radius=10, fill=(255, 255, 255), outline=(0, 87, 255), width=1)
-            draw.text((px + 24, py + 138), "희망 목표 평단가 입력", font=get_font(11, 'bold'), fill=(0, 87, 255))
-            
-            draw.rounded_rectangle([px + 24, py + 158, px + pw - 24, py + 188], radius=6, fill=(240, 246, 255), outline=(186, 215, 255), width=1)
-            draw.text((px + 32, py + 165), "₩ 70,000 원", font=get_num_font(14, 'black'), fill=(0, 87, 255))
-            draw.text((px + pw - 58, py + 165), "[-]  [+]", font=get_font(10, 'bold'), fill=(0, 87, 255))
-            
-            # Boundary Defense Chip
-            draw.rounded_rectangle([px + 24, py + 194, px + pw - 24, py + 208], radius=3, fill=(220, 252, 231))
-            draw.text((px + 30, py + 196), "✓ 유효: 65,000원 < 목표 70,000원 < 78,000원", font=get_font(8.5, 'bold'), fill=(21, 128, 61))
-            
-            # Interactive Cash Constraint Slider
-            draw.rounded_rectangle([px + 14, py + 224, px + pw - 14, py + 296], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-            draw.text((px + 24, py + 232), "가용 예수금 인터랙티브 슬라이더", font=get_font(10.5, 'bold'), fill=(15, 23, 42))
-            
-            # Slider Track
-            draw.rounded_rectangle([px + 24, py + 258, px + pw - 24, py + 264], radius=3, fill=(226, 232, 240))
-            draw.rounded_rectangle([px + 24, py + 258, px + 160, py + 264], radius=3, fill=(16, 185, 129))
-            draw.ellipse([px + 154, py + 255, px + 166, py + 267], fill=(16, 185, 129), outline=(255, 255, 255), width=2)
-            draw.text((px + 24, py + 274), "한도: ₩ 2,500,000 (도달 가능 최선 평단)", font=get_font(9.5, 'regular'), fill=(71, 85, 105))
-            
-            # Closed-Form Output Card
-            draw.rounded_rectangle([px + 14, py + 306, px + pw - 14, py + 410], radius=10, fill=(255, 251, 235), outline=(245, 158, 11), width=1)
-            draw.text((px + 24, py + 316), "수학적 목표 도달 수량 산출", font=get_font(10.5, 'bold'), fill=(180, 83, 9))
-            draw.text((px + 24, py + 336), "+42.5 주 추가 매수", font=get_num_font(17, 'black'), fill=(15, 23, 42))
-            draw.text((px + 24, py + 364), "• 공식: Q_add = Q_0(P_0-Pt)/(Pt-Pa)\n• 필요 총 예수금 : ₩ 2,125,000\n• 연산 방식 : 닫힌 형식(Closed-form) 무지연 산출", font=get_font(9.5, 'regular'), fill=(71, 85, 105), spacing=2)
-            
-            # Bottom Action CTA
-            draw.rounded_rectangle([px + 14, py + 490, px + pw - 14, py + 528], radius=8, fill=(16, 185, 129))
-            draw.text((px + 52, py + 501), "✓ 시뮬레이터로 즉시 자동 주입", font=get_font(11, 'bold'), fill=(255, 255, 255))
-            
-        # Home Bar Indicator
-        draw.rounded_rectangle([px + (pw - 80) // 2, py + ph - 14, px + (pw + 80) // 2, py + ph - 10], radius=2, fill=(15, 23, 42))
-        
-        # 4 Rationales Beside Phone
-        ry = py + 10
-        for r_num_title, r_desc in rationales:
-            draw.rounded_rectangle([cx, ry, cx + 225, ry + 125], radius=10, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-            draw.rounded_rectangle([cx, ry + 14, cx + 4, ry + 111], radius=2, fill=(0, 87, 255))
-            draw.text((cx + 16, ry + 16), r_num_title, font=get_font(13.5, 'bold'), fill=(15, 23, 42))
-            
-            lines = wrap_text_by_words(r_desc, get_font(11.5, 'regular'), 190, draw)
-            ly = ry + 42
-            for line in lines[:3]:
-                draw.text((cx + 16, ly), line, font=get_font(11.5, 'regular'), fill=(71, 85, 105))
-                ly += 20
-                
-            ry += 145
-            
-    # Bottom Architecture Spec Bar
-    by = 905
-    bh = 55
-    draw.rounded_rectangle([120, by, 1800, by + bh], radius=10, fill=(241, 245, 249), outline=(203, 213, 225), width=1)
-    draw_pill_badge(draw, cx=215, cy=by + 27, text="WIREFRAME SPEC & ERGONOMICS", font=get_font(10.5, 'bold'), theme='dark', has_dot=False, dark_mode=False, pad_x=12, height=30)
-    draw.text((340, by + 18), "• 8pt 그리드 시스템 및 Material/HIG 48dp 터치 타깃 준수   • Fitts' Law 기반 Thumb-Zone 최적화   • 인지 부하 최소화 모바일 인터랙션 최적화", font=get_font(12, 'semibold'), fill=(51, 65, 85))
+    # Symbol Text
+    tx_sym = ix + isize + 36
+    draw.text((tx_sym, card_y + 75), "“골든 크로스와 U자형 반등”이라는 서비스 네임에 맞추어", font=get_font(14, 'bold'), fill=(15, 23, 42))
+    draw.text((tx_sym, card_y + 98), "평단가를 낮춰 반등을 이끄는 형태로 심볼을 디자인했습니다.", font=get_font(14, 'bold'), fill=(0, 82, 255))
+    
+    desc_s = (
+        "하향 곡선을 그리던 평균 단가가 추가 매수를 통해 점진적으로 낮아지며\n"
+        "주가 상승 반등 곡선과 교차(Golden Cross)하는 퀀트 모티프를\n"
+        "기하학적 곡면 스퀘어클(Squircle) 심볼로 시각화했습니다.\n\n"
+        "• Squircle Frame : iOS 및 Android 표준 스토어 규격 준수\n"
+        "• Blue Gradient : 금융 신뢰를 상징하는 시그니처 퀀트 블루 팔레트"
+    )
+    s_lines = desc_s.split('\n')
+    sy_desc = card_y + 145
+    for line in s_lines:
+        draw.text((tx_sym, sy_desc), line, font=get_font(12, 'regular'), fill=(71, 85, 105))
+        sy_desc += 22
 
     base.save(f'{OUT_DIR}/slide_06.png')
-    print("SAVED slide_06.png (Mobile Wireframe & Ergonomics)")
+    print("SAVED slide_06.png (Wireframe & UI components with Design Concept)")
 
 
 # ==============================================================
-# SLIDE 07: Enterprise Design System (Korail Reference Image 4 Style)
+# SLIDE 07: WhatNow-Style Dark Theme Design System (Reference Images 3 & 4)
 # ==============================================================
+
+
 def make_slide_07():
-    base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
+    # Deep Dark Navy Background
+    base = Image.new('RGBA', (W, H), (17, 22, 34, 255))
     draw = ImageDraw.Draw(base)
     
-    # Hairline Top/Bottom Boundaries
-    draw.line([(120, 100), (1800, 100)], fill=(226, 232, 240), width=1)
-    draw.line([(120, 980), (1800, 980)], fill=(226, 232, 240), width=1)
+    # Hairline Top/Bottom Boundaries in Dark Accent
+    draw.line([(120, 90), (1800, 90)], fill=(38, 50, 72), width=1)
+    draw.line([(120, 980), (1800, 980)], fill=(38, 50, 72), width=1)
     
-    # Header - Korail Style Conversational Typography
-    draw.text((120, 75), "07 DESIGN SYSTEM | TOKEN ARCHITECTURE", font=get_font(14, 'bold'), fill=(0, 82, 255))
-    t1_a = "W3C 표준 3-Tier 토큰과 "
-    t1_b = "스마트 퀀트 블루로 신뢰를 구축했어요."
-    font_title = get_font(38, 'bold')
-    w_t1_a = draw.textlength(t1_a, font=font_title)
-    draw.text((120, 115), t1_a, font=font_title, fill=(15, 23, 42))
-    draw.text((120 + w_t1_a, 115), t1_b, font=font_title, fill=(0, 82, 255))
-    draw.text((120, 175), "W3C DTCG 디자인 토큰, WCAG 2.1 AAA 7:1+ 초고대비, OpenType tnum 타뷸라 타이포그래피 시스템", font=get_font(16, 'regular'), fill=(71, 85, 105))
+    # Header - Category & Giant Italic Title (Reference Image 3 Style)
+    draw.text((120, 68), "07 DESIGN SYSTEM | UI COMPONENT ARCHITECTURE", font=get_font(13, 'bold'), fill=(0, 210, 255))
+    draw.text((120, 100), "Design System", font=get_font(46, 'black'), fill=(255, 255, 255))
+    draw.text((120, 160), "급박한 시장 환경에서도 직관적인 시각 인지성과 조작 안정성을 제공하는 스마트 물타기 계산기만의 UI 디자인 시스템을 제작했습니다.", font=get_font(15, 'regular'), fill=(148, 163, 184))
     
-    # 3 Structured Technical Panels (White Cards)
-    c_w = 540
-    c_gap = 40
-    card_y = 230
-    card_h = 735
+    # 8 MODULAR DARK CONTAINER CARDS (WhatNow Reference Style)
+    card_bg = (24, 32, 48)
+    card_border = (42, 54, 78)
+    inner_dark = (17, 22, 34)
     
-    p1_x = 100
-    p2_x = p1_x + c_w + c_gap
-    p3_x = p2_x + c_w + c_gap
+    # -------------------------------------------------------------
+    # 1. Bottom app bar (Top Left)
+    # -------------------------------------------------------------
+    b1_x = 120
+    b1_y = 210
+    b1_w = 520
+    b1_h = 190
+    draw.rounded_rectangle([b1_x, b1_y, b1_x + b1_w, b1_y + b1_h], radius=16, fill=card_bg, outline=card_border, width=1)
+    draw.text((b1_x + 24, b1_y + 16), "Bottom app bar", font=get_font(12, 'bold'), fill=(148, 163, 184))
     
-    # =========================================================
-    # PANEL 1: Token Architecture & DTCG Naming Rules (Left)
-    # =========================================================
-    draw.rounded_rectangle([p1_x, card_y, p1_x + c_w, card_y + card_h], radius=20, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-    draw.text((p1_x + 28, card_y + 24), "Token Taxonomy & Naming Conventions", font=get_font(18, 'bold'), fill=(15, 23, 42))
-    draw.text((p1_x + 28, card_y + 50), "W3C DTCG 표준 기반 3계층 (3-Tier) 토큰 체계", font=get_font(13, 'regular'), fill=(71, 85, 105))
+    # Bottom Bar Mockup 1
+    bar_y1 = b1_y + 44
+    draw.rounded_rectangle([b1_x + 20, bar_y1, b1_x + b1_w - 20, bar_y1 + 54], radius=10, fill=inner_dark, outline=(38, 50, 72), width=1)
+    draw.text((b1_x + 45, bar_y1 + 18), "🏠", font=get_font(16, 'regular'), fill=(255, 255, 255))
+    draw.text((b1_x + 95, bar_y1 + 18), "🔔", font=get_font(16, 'regular'), fill=(255, 255, 255))
+    draw.text((b1_x + 145, bar_y1 + 18), "⚙️", font=get_font(16, 'regular'), fill=(255, 255, 255))
+    # Blue Button on right
+    draw.rounded_rectangle([b1_x + b1_w - 150, bar_y1 + 8, b1_x + b1_w - 32, bar_y1 + 46], radius=8, fill=(0, 82, 255))
+    draw.text((b1_x + b1_w - 91, bar_y1 + 27), "+ Button", font=get_font(12, 'bold'), fill=(255, 255, 255), anchor='mm')
     
-    # Syntax Code Box
-    draw.rounded_rectangle([p1_x + 24, card_y + 78, p1_x + c_w - 24, card_y + 144], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-    draw.text((p1_x + 36, card_y + 88), "TOKEN SYNTAX SPECIFICATION", font=get_font(10, 'bold'), fill=(0, 82, 255))
-    draw.text((p1_x + 36, card_y + 108), "$[Scope] . [Category] . [Concept] . [Property] . [State]", font=get_num_font(13.5, 'bold'), fill=(15, 23, 42))
+    # Status Banner Mockup
+    bar_y2 = bar_y1 + 68
+    draw.rounded_rectangle([b1_x + 20, bar_y2, b1_x + b1_w - 20, bar_y2 + 50], radius=10, fill=inner_dark, outline=(38, 50, 72), width=1)
+    draw.text((b1_x + 36, bar_y2 + 15), "🌟", font=get_font(14, 'regular'), fill=(255, 255, 255))
+    draw.text((b1_x + 65, bar_y2 + 12), "실시간 퀀트 엔진 가동 중!", font=get_font(11.5, 'bold'), fill=(255, 255, 255))
+    draw.text((b1_x + 65, bar_y2 + 28), "0.2초 초고속 역산 모드", font=get_font(10, 'regular'), fill=(148, 163, 184))
+    draw.text((b1_x + b1_w - 40, bar_y2 + 25), "›", font=get_font(16, 'bold'), fill=(148, 163, 184), anchor='mm')
     
-    # Tier 1 Card
-    draw.rounded_rectangle([p1_x + 24, card_y + 154, p1_x + c_w - 24, card_y + 252], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-    draw_pill_badge(draw, p1_x + 65, card_y + 176, "TIER 01", font=get_font(9.5, 'bold'), theme='cyan', has_dot=False, dark_mode=False, pad_x=8, height=22)
-    draw.text((p1_x + 106, card_y + 168), "Primitive / Global Tokens (원시 토큰)", font=get_font(13, 'bold'), fill=(15, 23, 42))
-    draw.text((p1_x + 36, card_y + 198), "• palette.blue.600 : #0052FF       • font.family.base : Pretendard\n• space.scale.4 : 4px               • radius.container.lg : 16px", font=get_font(11.5, 'regular'), fill=(71, 85, 105), spacing=3)
+    # -------------------------------------------------------------
+    # 2. Header (Top Center)
+    # -------------------------------------------------------------
+    b2_x = 670
+    b2_y = 210
+    b2_w = 540
+    b2_h = 190
+    draw.rounded_rectangle([b2_x, b2_y, b2_x + b2_w, b2_y + b2_h], radius=16, fill=card_bg, outline=card_border, width=1)
+    draw.text((b2_x + 24, b2_y + 16), "Header", font=get_font(12, 'bold'), fill=(148, 163, 184))
     
-    # Tier 2 Card
-    draw.rounded_rectangle([p1_x + 24, card_y + 262, p1_x + c_w - 24, card_y + 395], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-    draw_pill_badge(draw, p1_x + 65, card_y + 284, "TIER 02", font=get_font(9.5, 'bold'), theme='green', has_dot=False, dark_mode=False, pad_x=8, height=22)
-    draw.text((p1_x + 106, card_y + 276), "System / Semantic Tokens (의미론적 토큰)", font=get_font(13, 'bold'), fill=(15, 23, 42))
-    draw.text((p1_x + 36, card_y + 304), "• $sys.color.brand.primary : #0052FF (메인 액션 / CTA 버튼)\n• $sys.color.status.gain : #10B981 (수익률 / 안전 진단)\n• $sys.color.status.loss : #EF4444 (하락률 / 경계 방어 에러)\n• $sys.color.surface.canvas : #F8FAFC (빛 반사 방지 표면)", font=get_font(11.5, 'regular'), fill=(71, 85, 105), spacing=4)
+    # Header Style A
+    h_y1 = b2_y + 44
+    draw.rounded_rectangle([b2_x + 20, h_y1, b2_x + b2_w - 20, h_y1 + 40], radius=8, fill=(255, 255, 255))
+    draw.text((b2_x + 36, h_y1 + 12), "←  Title", font=get_font(13, 'bold'), fill=(15, 23, 42))
+    draw.text((b2_x + b2_w - 90, h_y1 + 12), "🔗   📊   ⋮", font=get_font(11, 'bold'), fill=(15, 23, 42))
     
-    # Tier 3 Card
-    draw.rounded_rectangle([p1_x + 24, card_y + 405, p1_x + c_w - 24, card_y + 510], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-    draw_pill_badge(draw, p1_x + 65, card_y + 427, "TIER 03", font=get_font(9.5, 'bold'), theme='amber', has_dot=False, dark_mode=False, pad_x=8, height=22)
-    draw.text((p1_x + 106, card_y + 419), "Component Tokens (컴포넌트 토큰)", font=get_font(13, 'bold'), fill=(15, 23, 42))
-    draw.text((p1_x + 36, card_y + 447), "• $comp.btn.primary.bg.default : $sys.color.brand.primary\n• $comp.btn.primary.bg.pressed : #0038B8\n• $comp.card.container.radius : $sys.radius.container.lg", font=get_font(11.5, 'regular'), fill=(71, 85, 105), spacing=3)
+    # Header Style B
+    h_y2 = h_y1 + 48
+    draw.rounded_rectangle([b2_x + 20, h_y2, b2_x + b2_w - 20, h_y2 + 40], radius=8, fill=(255, 255, 255))
+    draw.text((b2_x + 36, h_y2 + 12), "Title", font=get_font(13, 'bold'), fill=(15, 23, 42))
+    draw.text((b2_x + b2_w - 90, h_y2 + 12), "🔗   📊   ⋮", font=get_font(11, 'bold'), fill=(15, 23, 42))
     
-    # Single Source of Truth Callout
-    draw.rounded_rectangle([p1_x + 24, card_y + 520, p1_x + c_w - 24, card_y + 710], radius=12, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-    draw.text((p1_x + 36, card_y + 536), "단일 진실 공급원 (Single Source of Truth)", font=get_font(13.5, 'bold'), fill=(0, 82, 255))
-    draw.text((p1_x + 36, card_y + 566), "Figma Tokens(Tokens Studio) 플러그인과 Flutter `.dart`\n디자인 토큰 클래스를 JSON으로 100% 자동 동기화하여\n디자인-엔지니어링 간 커뮤니케이션 오차 및 드리프트를\n원천 차단합니다.\n\n• CI/CD 연동 시 토큰 변경 사항 실시간 위젯 검증\n• 다크 모드 & 고대비 테마 0ms 무결점 전환 보장", font=get_font(11.5, 'regular'), fill=(71, 85, 105), spacing=4)
+    # Header Style C
+    h_y3 = h_y2 + 48
+    draw.rounded_rectangle([b2_x + 20, h_y3, b2_x + b2_w - 20, h_y3 + 40], radius=8, fill=(255, 255, 255))
+    draw.text((b2_x + 36, h_y3 + 12), "←  Title", font=get_font(13, 'bold'), fill=(15, 23, 42))
+    draw.rounded_rectangle([b2_x + b2_w - 110, h_y3 + 7, b2_x + b2_w - 32, h_y3 + 33], radius=6, fill=(15, 23, 42))
+    draw.text((b2_x + b2_w - 71, h_y3 + 20), "+ Button", font=get_font(10.5, 'bold'), fill=(255, 255, 255), anchor='mm')
     
-    # =========================================================
-    # PANEL 2: Semantic Color Palette & WCAG 2.1 AAA (Center)
-    # =========================================================
-    draw.rounded_rectangle([p2_x, card_y, p2_x + c_w, card_y + card_h], radius=20, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-    draw.text((p2_x + 28, card_y + 24), "Semantic Palette & WCAG 2.1 AAA Contrast", font=get_font(18, 'bold'), fill=(15, 23, 42))
-    draw.text((p2_x + 28, card_y + 50), "투자자 시인성 극대화를 위한 초고대비 토큰 매핑", font=get_font(13, 'regular'), fill=(71, 85, 105))
+    # -------------------------------------------------------------
+    # 3. Toast Bar (Top Right)
+    # -------------------------------------------------------------
+    b3_x = 1240
+    b3_y = 210
+    b3_w = 560
+    b3_h = 190
+    draw.rounded_rectangle([b3_x, b3_y, b3_x + b3_w, b3_y + b3_h], radius=16, fill=card_bg, outline=card_border, width=1)
+    draw.text((b3_x + 24, b3_y + 16), "Toast Bar", font=get_font(12, 'bold'), fill=(148, 163, 184))
     
-    # Hero Color Swatch
-    draw.rounded_rectangle([p2_x + 24, card_y + 78, p2_x + c_w - 24, card_y + 175], radius=14, fill=(0, 82, 255))
-    draw.text((p2_x + 44, card_y + 96), "QUANT BLUE", font=get_font(18, 'bold'), fill=(255, 255, 255))
-    draw.text((p2_x + 44, card_y + 120), "#0052FF  ·  Primary Brand Core", font=get_font(13, 'medium'), fill=(191, 219, 254))
-    draw.text((p2_x + 44, card_y + 144), "투자의 확신과 신뢰를 담은 스마트 퀀트 블루", font=get_font(12, 'regular'), fill=(255, 255, 255))
+    # Toast 1: with arrow
+    t_y1 = b3_y + 44
+    draw.rounded_rectangle([b3_x + 20, t_y1, b3_x + b3_w - 20, t_y1 + 40], radius=8, fill=(255, 255, 255))
+    draw.text((b3_x + 36, t_y1 + 12), "4개 퀀트 파라미터가 0ms 무손실 인계되었습니다.", font=get_font(11.5, 'medium'), fill=(15, 23, 42))
+    draw.text((b3_x + b3_w - 40, t_y1 + 12), "↗", font=get_font(14, 'bold'), fill=(15, 23, 42))
     
-    # 5 Tonal Swatches
-    tints = [
-        ("Dark", "#0038B8", (0, 56, 184), (255, 255, 255)),
-        ("Light 1", "#93C5FD", (147, 197, 253), (30, 41, 59)),
-        ("Light 2", "#BFDBFE", (191, 219, 254), (30, 41, 59)),
-        ("Light 3", "#DBEAFE", (219, 234, 254), (30, 41, 59)),
-        ("Surface", "#EFF6FF", (239, 246, 255), (30, 41, 59))
+    # Toast 2: with View action
+    t_y2 = t_y1 + 48
+    draw.rounded_rectangle([b3_x + 20, t_y2, b3_x + b3_w - 20, t_y2 + 40], radius=8, fill=(255, 255, 255))
+    draw.text((b3_x + 36, t_y2 + 12), "온디바이스 SQLite에 안전하게 암호화 저장되었습니다.", font=get_font(11.5, 'medium'), fill=(15, 23, 42))
+    draw.text((b3_x + b3_w - 55, t_y2 + 13), "View", font=get_font(11.5, 'bold'), fill=(0, 82, 255))
+    
+    # Toast 3: basic notice
+    t_y3 = t_y2 + 48
+    draw.rounded_rectangle([b3_x + 20, t_y3, b3_x + b3_w - 20, t_y3 + 40], radius=8, fill=(255, 255, 255))
+    draw.text((b3_x + 36, t_y3 + 12), "초고속 0.2초 음성 인식 엔진이 활성화되었습니다.", font=get_font(11.5, 'medium'), fill=(15, 23, 42))
+    
+    # -------------------------------------------------------------
+    # 4. Button & Presets (Middle Left)
+    # -------------------------------------------------------------
+    b4_x = 120
+    b4_y = 425
+    b4_w = 520
+    b4_h = 245
+    draw.rounded_rectangle([b4_x, b4_y, b4_x + b4_w, b4_y + b4_h], radius=16, fill=card_bg, outline=card_border, width=1)
+    draw.text((b4_x + 24, b4_y + 16), "Button", font=get_font(12, 'bold'), fill=(148, 163, 184))
+    
+    # Row 1: Circular FAB & Pill
+    btn_y1 = b4_y + 44
+    draw.ellipse([b4_x + 24, btn_y1, b4_x + 64, btn_y1 + 40], fill=inner_dark, outline=(38, 50, 72), width=1)
+    draw.text((b4_x + 44, btn_y1 + 20), "+", font=get_font(16, 'bold'), fill=(255, 255, 255), anchor='mm')
+    
+    draw.rounded_rectangle([b4_x + 80, btn_y1, b4_x + 160, btn_y1 + 40], radius=20, fill=(255, 255, 255))
+    draw.text((b4_x + 120, btn_y1 + 20), "+", font=get_font(16, 'bold'), fill=(15, 23, 42), anchor='mm')
+    
+    draw.rounded_rectangle([b4_x + 180, btn_y1, b4_x + b4_w - 24, btn_y1 + 40], radius=10, fill=inner_dark, outline=(38, 50, 72), width=1)
+    draw.text((b4_x + 330, btn_y1 + 20), "+ Button", font=get_font(12, 'bold'), fill=(255, 255, 255), anchor='mm')
+    
+    # Row 2: Standard Buttons
+    btn_y2 = btn_y1 + 52
+    draw.rounded_rectangle([b4_x + 24, btn_y2, b4_x + 160, btn_y2 + 40], radius=10, fill=inner_dark, outline=(38, 50, 72), width=1)
+    draw.text((b4_x + 92, btn_y2 + 20), "Button", font=get_font(12, 'bold'), fill=(255, 255, 255), anchor='mm')
+    
+    draw.rounded_rectangle([b4_x + 180, btn_y2, b4_x + b4_w - 24, btn_y2 + 40], radius=10, fill=inner_dark, outline=(38, 50, 72), width=1)
+    draw.text((b4_x + 330, btn_y2 + 20), "Button", font=get_font(12, 'bold'), fill=(255, 255, 255), anchor='mm')
+    
+    # Row 3: Preset Chips (Quick Action)
+    btn_y3 = btn_y2 + 52
+    draw.text((b4_x + 24, btn_y3), "호가 프리셋 칩 (Quick Presets)", font=get_font(11, 'bold'), fill=(148, 163, 184))
+    chip_y = btn_y3 + 22
+    ch_x = b4_x + 24
+    for txt, col in [("+10%", (0, 82, 255)), ("+20%", (0, 82, 255)), ("-5%", (220, 38, 38)), ("전액 매수", (16, 185, 129))]:
+        draw.rounded_rectangle([ch_x, chip_y, ch_x + 105, chip_y + 32], radius=8, fill=inner_dark, outline=col, width=1)
+        draw.text((ch_x + 52, chip_y + 16), txt, font=get_font(11, 'bold'), fill=col, anchor='mm')
+        ch_x += 120
+        
+    # -------------------------------------------------------------
+    # 5. Toggle & Segmented Tabs (Middle Center)
+    # -------------------------------------------------------------
+    b5_x = 670
+    b5_y = 425
+    b5_w = 540
+    b5_h = 245
+    draw.rounded_rectangle([b5_x, b5_y, b5_x + b5_w, b5_y + b5_h], radius=16, fill=card_bg, outline=card_border, width=1)
+    draw.text((b5_x + 24, b5_y + 16), "Toggle", font=get_font(12, 'bold'), fill=(148, 163, 184))
+    
+    # Switches
+    tog_y1 = b5_y + 44
+    # Switch Off
+    draw.rounded_rectangle([b5_x + 120, tog_y1, b5_x + 170, tog_y1 + 28], radius=14, fill=(255, 255, 255))
+    draw.ellipse([b5_x + 122, tog_y1 + 2, b5_x + 146, tog_y1 + 26], fill=(15, 23, 42))
+    # Switch On
+    draw.rounded_rectangle([b5_x + 190, tog_y1, b5_x + 240, tog_y1 + 28], radius=14, fill=(99, 102, 241))
+    draw.ellipse([b5_x + 214, tog_y1 + 2, b5_x + 238, tog_y1 + 26], fill=(255, 255, 255))
+    
+    # Segmented Control 1 (Active Purple / Inactive Gray)
+    seg_y1 = tog_y1 + 45
+    draw.rounded_rectangle([b5_x + 60, seg_y1, b5_x + b5_w - 60, seg_y1 + 44], radius=22, fill=(255, 255, 255))
+    draw.rounded_rectangle([b5_x + 63, seg_y1 + 3, b5_x + 270, seg_y1 + 41], radius=19, fill=(99, 102, 241))
+    draw.text((b5_x + 166, seg_y1 + 22), "예정된 시나리오", font=get_font(11.5, 'bold'), fill=(255, 255, 255), anchor='mm')
+    draw.text((b5_x + 360, seg_y1 + 22), "지난 계산 기록", font=get_font(11.5, 'medium'), fill=(100, 116, 139), anchor='mm')
+    
+    # Segmented Control 2 (Currency Pills: KRW vs USD)
+    seg_y2 = seg_y1 + 56
+    draw.rounded_rectangle([b5_x + 60, seg_y2, b5_x + b5_w - 60, seg_y2 + 44], radius=22, fill=(255, 255, 255))
+    draw.rounded_rectangle([b5_x + 270, seg_y2 + 3, b5_x + b5_w - 63, seg_y2 + 41], radius=19, fill=(99, 102, 241))
+    draw.text((b5_x + 166, seg_y2 + 22), "원화 (KRW ₩)", font=get_font(11.5, 'medium'), fill=(100, 116, 139), anchor='mm')
+    draw.text((b5_x + 360, seg_y2 + 22), "달러 (USD $)", font=get_font(11.5, 'bold'), fill=(255, 255, 255), anchor='mm')
+    
+    # -------------------------------------------------------------
+    # 6. Card (Middle Right)
+    # -------------------------------------------------------------
+    b6_x = 1240
+    b6_y = 425
+    b6_w = 560
+    b6_h = 245
+    draw.rounded_rectangle([b6_x, b6_y, b6_x + b6_w, b6_y + b6_h], radius=16, fill=card_bg, outline=card_border, width=1)
+    draw.text((b6_x + 24, b6_y + 16), "Card", font=get_font(12, 'bold'), fill=(148, 163, 184))
+    
+    # Card 1: Metric Gauge
+    mc_y = b6_y + 44
+    draw.rounded_rectangle([b6_x + 20, mc_y, b6_x + 175, mc_y + 180], radius=12, fill=(255, 255, 255))
+    draw.text((b6_x + 32, mc_y + 14), "활성화된 계산", font=get_font(9.5, 'bold'), fill=(15, 23, 42))
+    # Circular Gauge graphic
+    draw.ellipse([b6_x + 48, mc_y + 38, b6_x + 148, mc_y + 138], fill=(238, 242, 255), outline=(99, 102, 241), width=3)
+    draw.text((b6_x + 98, mc_y + 88), "-18.4%", font=get_num_font(14, 'bold'), fill=(99, 102, 241), anchor='mm')
+    draw.text((b6_x + 32, mc_y + 150), "방어 평단가", font=get_font(11, 'bold'), fill=(15, 23, 42))
+    
+    # Card 2: Time Over / Warning Alert
+    draw.rounded_rectangle([b6_x + 190, mc_y, b6_x + 345, mc_y + 180], radius=12, fill=(255, 255, 255))
+    draw.text((b6_x + 202, mc_y + 14), "경고 알림 카드", font=get_font(9.5, 'bold'), fill=(220, 38, 38))
+    draw.ellipse([b6_x + 218, mc_y + 38, b6_x + 318, mc_y + 138], fill=(254, 242, 242), outline=(239, 68, 68), width=3)
+    draw.text((b6_x + 268, mc_y + 88), "ALERT", font=get_font(13, 'black'), fill=(220, 38, 38), anchor='mm')
+    draw.rounded_rectangle([b6_x + 205, mc_y + 145, b6_x + 330, mc_y + 172], radius=6, fill=(239, 68, 68))
+    draw.text((b6_x + 268, mc_y + 158), "+ Button", font=get_font(10, 'bold'), fill=(255, 255, 255), anchor='mm')
+    
+    # Card 3: Voice Prompt & Mini Status
+    draw.rounded_rectangle([b6_x + 360, mc_y, b6_x + b6_w - 20, mc_y + 90], radius=12, fill=(255, 255, 255))
+    draw.text((b6_x + 375, mc_y + 16), "🎙️ 음성 파형 인식", font=get_font(11, 'bold'), fill=(15, 23, 42))
+    draw.text((b6_x + 375, mc_y + 38), "15,000원에 100주 물타줘", font=get_font(10, 'regular'), fill=(71, 85, 105))
+    draw_pill_badge(draw, cx=b6_x + 450, cy=mc_y + 68, text="99.2% 신뢰도", font=get_font(9, 'bold'), theme='green', has_dot=True, dark_mode=False, pad_x=8, height=20)
+    
+    draw.rounded_rectangle([b6_x + 360, mc_y + 102, b6_x + b6_w - 20, mc_y + 180], radius=12, fill=inner_dark, outline=(38, 50, 72), width=1)
+    draw.text((b6_x + 375, mc_y + 118), "상태 (State)", font=get_font(11, 'bold'), fill=(255, 255, 255))
+    draw_pill_badge(draw, cx=b6_x + 410, cy=mc_y + 150, text="NEW", font=get_font(9, 'bold'), theme='amber', has_dot=False, dark_mode=True, pad_x=8, height=22)
+    draw_pill_badge(draw, cx=b6_x + 480, cy=mc_y + 150, text="ACTIVE", font=get_font(9, 'bold'), theme='blue', has_dot=False, dark_mode=True, pad_x=8, height=22)
+    
+    # -------------------------------------------------------------
+    # 7. Confirm Dialog (Bottom Left) - EXACT MATCH to Reference Image 4
+    # -------------------------------------------------------------
+    b7_x = 120
+    b7_y = 695
+    b7_w = 520
+    b7_h = 265
+    draw.rounded_rectangle([b7_x, b7_y, b7_x + b7_w, b7_y + b7_h], radius=16, fill=card_bg, outline=card_border, width=1)
+    draw.text((b7_x + 24, b7_y + 16), "Confirm dialog", font=get_font(12, 'bold'), fill=(148, 163, 184))
+    
+    # Clean White Modal Card
+    m_x = b7_x + 50
+    m_y = b7_y + 45
+    m_w = 420
+    m_h = 195
+    draw.rounded_rectangle([m_x, m_y, m_x + m_w, m_y + m_h], radius=14, fill=(255, 255, 255))
+    draw.text((m_x + 24, m_y + 24), "약속 정보 재설정", font=get_font(16, 'bold'), fill=(15, 23, 42))
+    draw.text((m_x + 24, m_y + 54), "기입된 약속 정보를 모두 삭제 합니다.\n약속 정보를 재설정 하시겠습니까?", font=get_font(11.5, 'regular'), fill=(71, 85, 105), spacing=4)
+    
+    # [취소] [확인] Buttons
+    draw.rounded_rectangle([m_x + 24, m_y + 128, m_x + 190, m_y + 172], radius=10, fill=(241, 245, 249))
+    draw.text((m_x + 107, m_y + 150), "취소", font=get_font(13, 'bold'), fill=(71, 85, 105), anchor='mm')
+    
+    draw.rounded_rectangle([m_x + 210, m_y + 128, m_x + m_w - 24, m_y + 172], radius=10, fill=(99, 102, 241))
+    draw.text((m_x + 300, m_y + 150), "확인", font=get_font(13, 'bold'), fill=(255, 255, 255), anchor='mm')
+    
+    # -------------------------------------------------------------
+    # 8. Map Profile, Timer & Chip (Bottom Right)
+    # -------------------------------------------------------------
+    b8_x = 670
+    b8_y = 695
+    b8_w = 1130
+    b8_h = 265
+    draw.rounded_rectangle([b8_x, b8_y, b8_x + b8_w, b8_y + b8_h], radius=16, fill=card_bg, outline=card_border, width=1)
+    
+    # 8-A: Map Profile & Avatars
+    draw.text((b8_x + 30, b8_y + 16), "Map Profile", font=get_font(12, 'bold'), fill=(148, 163, 184))
+    draw.rounded_rectangle([b8_x + 30, b8_y + 45, b8_x + 95, b8_y + 125], radius=10, fill=(99, 102, 241))
+    draw.text((b8_x + 62, b8_y + 80), "👤", font=get_font(22, 'regular'), fill=(255, 255, 255), anchor='mm')
+    draw.rounded_rectangle([b8_x + 35, b8_y + 135, b8_x + 90, b8_y + 160], radius=12, fill=(255, 255, 255))
+    draw.text((b8_x + 62, b8_y + 147), "이름", font=get_font(10, 'bold'), fill=(15, 23, 42), anchor='mm')
+    
+    draw.rounded_rectangle([b8_x + 115, b8_y + 45, b8_x + 180, b8_y + 125], radius=10, fill=(59, 130, 246))
+    draw.text((b8_x + 147, b8_y + 80), "📈", font=get_font(22, 'regular'), fill=(255, 255, 255), anchor='mm')
+    draw.rounded_rectangle([b8_x + 115, b8_y + 135, b8_x + 180, b8_y + 160], radius=12, fill=(255, 255, 255))
+    draw.text((b8_x + 147, b8_y + 147), "세글자", font=get_font(10, 'bold'), fill=(15, 23, 42), anchor='mm')
+    
+    # 8-B: Timer & Badges
+    draw.text((b8_x + 230, b8_y + 16), "Timer", font=get_font(12, 'bold'), fill=(148, 163, 184))
+    # Timer Pill
+    draw.rounded_rectangle([b8_x + 230, b8_y + 55, b8_x + 350, b8_y + 105], radius=25, fill=(99, 102, 241))
+    draw.text((b8_x + 290, b8_y + 80), "58 : 33", font=get_num_font(18, 'bold'), fill=(255, 255, 255), anchor='mm')
+    # Time Over Pill
+    draw.rounded_rectangle([b8_x + 370, b8_y + 55, b8_x + 500, b8_y + 92], radius=12, fill=(99, 102, 241))
+    draw.text((b8_x + 435, b8_y + 73), "TIME OVER", font=get_font(12, 'bold'), fill=(255, 255, 255), anchor='mm')
+    draw.rounded_rectangle([b8_x + 370, b8_y + 105, b8_x + 500, b8_y + 142], radius=12, fill=(239, 68, 68))
+    draw.text((b8_x + 435, b8_y + 123), "TIME OVER", font=get_font(12, 'bold'), fill=(255, 255, 255), anchor='mm')
+    
+    # 8-C: Chip (WhatNow Style Text, State, Music Chips)
+    draw.text((b8_x + 550, b8_y + 16), "Chip", font=get_font(12, 'bold'), fill=(148, 163, 184))
+    chip_items = [
+        ("💣 Text", "상태", "🎵 000"),
+        ("👑 Text", "상태", "☁️ 000"),
+        ("⚡ 0.2s Fast", "R8 최적화", "🔒 100% On-Device")
     ]
-    ti_x = p2_x + 24
-    ti_w = (c_w - 48 - 16) // 5
-    for t_lbl, t_hex, t_rgb, t_tx in tints:
-        draw.rounded_rectangle([ti_x, card_y + 185, ti_x + ti_w, card_y + 235], radius=8, fill=t_rgb, outline=(226, 232, 240) if t_lbl == "Surface" else None)
-        draw.text((ti_x + 8, card_y + 193), t_lbl, font=get_font(10.5, 'bold'), fill=t_tx)
-        draw.text((ti_x + 8, card_y + 213), t_hex, font=get_font(9.5, 'medium'), fill=t_tx)
-        ti_x += ti_w + 4
+    cy_c = b8_y + 52
+    for c_a, c_b, c_c in chip_items:
+        draw.rounded_rectangle([b8_x + 550, cy_c, b8_x + 690, cy_c + 32], radius=16, fill=(255, 255, 255))
+        draw.text((b8_x + 620, cy_c + 16), c_a, font=get_font(11, 'bold'), fill=(15, 23, 42), anchor='mm')
         
-    # Contrast Audit Table
-    color_tokens = [
-        ("sys.color.brand.primary", "#0052FF", "Brand Primary CTA · Active Tab", (0, 82, 255), "8.4:1 AAA"),
-        ("sys.color.status.gain", "#059669", "Profit Yield · Safe State Health", (5, 150, 105), "7.2:1 AAA"),
-        ("sys.color.status.loss", "#DC2626", "Loss Rate · Boundary Error Guard", (220, 38, 38), "7.1:1 AAA"),
-        ("sys.color.status.vip", "#D97706", "24h VIP Ad-Free Token", (217, 119, 6), "7.4:1 AAA"),
-        ("sys.color.accent.quant", "#0284C7", "Goal Seeking Algorithm Core", (2, 132, 199), "7.8:1 AAA"),
-        ("sys.color.surface.canvas", "#F8FAFC", "Glare-Free Neutral Canvas", (248, 250, 252), "18.2:1 AAA")
-    ]
-    
-    ct_y = card_y + 252
-    for token_name, hex_val, desc, rgb_val, contrast in color_tokens:
-        draw.rounded_rectangle([p2_x + 24, ct_y, p2_x + c_w - 24, ct_y + 54], radius=8, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-        draw.rounded_rectangle([p2_x + 36, ct_y + 12, p2_x + 66, ct_y + 42], radius=6, fill=rgb_val, outline=(203, 213, 225) if "surface" in token_name else None)
+        draw.rounded_rectangle([b8_x + 710, cy_c, b8_x + 830, cy_c + 32], radius=16, fill=inner_dark, outline=(38, 50, 72), width=1)
+        draw.text((b8_x + 770, cy_c + 16), c_b, font=get_font(11, 'medium'), fill=(148, 163, 184), anchor='mm')
         
-        draw.text((p2_x + 76, ct_y + 10), token_name, font=get_num_font(12, 'bold'), fill=(15, 23, 42))
-        draw.text((p2_x + 76, ct_y + 30), desc, font=get_font(10.5, 'regular'), fill=(71, 85, 105))
+        draw.rounded_rectangle([b8_x + 850, cy_c, b8_x + 1020, cy_c + 32], radius=16, fill=(99, 102, 241))
+        draw.text((b8_x + 935, cy_c + 16), c_c, font=get_font(11, 'bold'), fill=(255, 255, 255), anchor='mm')
+        cy_c += 44
         
-        draw_pill_badge(draw, p2_x + c_w - 75, ct_y + 27, contrast, font=get_font(9.5, 'bold'), theme='green' if 'AAA' in contrast else 'cyan', has_dot=False, dark_mode=False, pad_x=6, height=22)
-        ct_y += 62
-        
-    # Behavioral Finance Rationale
-    draw.rounded_rectangle([p2_x + 24, card_y + 630, p2_x + c_w - 24, card_y + 710], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-    draw.text((p2_x + 36, card_y + 642), "행동재무학적 색채 심리 (Color Psychology)", font=get_font(12, 'bold'), fill=(0, 82, 255))
-    draw.text((p2_x + 36, card_y + 666), "하락장 속에서 투자자의 인지 과부하를 줄이고 시각적 노이즈를\n배제하기 위해 7:1 이상의 초고대비율을 엄격히 준수합니다.", font=get_font(11, 'regular'), fill=(71, 85, 105), spacing=3)
-    
-    # =========================================================
-    # PANEL 3: Financial Typography, tnum & Atomic Grid (Right)
-    # =========================================================
-    draw.rounded_rectangle([p3_x, card_y, p3_x + c_w, card_y + card_h], radius=20, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-    draw.text((p3_x + 28, card_y + 24), "Typography & OpenType `tnum` Spec", font=get_font(18, 'bold'), fill=(15, 23, 42))
-    draw.text((p3_x + 28, card_y + 50), "실시간 호가 변동 및 금융 수치 정렬을 위한 타뷸라 규격", font=get_font(13, 'regular'), fill=(71, 85, 105))
-    
-    # OpenType tnum Callout
-    draw.rounded_rectangle([p3_x + 24, card_y + 78, p3_x + c_w - 24, card_y + 215], radius=12, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-    draw.text((p3_x + 36, card_y + 92), "타뷸라 넘버 (Tabular Numbers) 규격 적용", font=get_font(13.5, 'bold'), fill=(0, 82, 255))
-    draw.text((p3_x + 36, card_y + 118), "일반 비례 서체는 숫자 폭이 달라(1은 좁고 8은 넓음) 실시간 시세\n변동 시 숫자가 좌우로 떨리는(Jitter) 현상이 발생합니다.\n\nFlutter의 `FontFeature.tabularFigures()`를 강제하여 모든\n숫자의 폭을 고정하고 수직 합계선 정렬을 완벽하게 보장합니다.", font=get_font(11, 'regular'), fill=(71, 85, 105), spacing=3)
-    
-    # Type Scale Table
-    draw.rounded_rectangle([p3_x + 24, card_y + 225, p3_x + c_w - 24, card_y + 540], radius=12, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-    
-    draw.text((p3_x + 40, card_y + 240), "Type Scale", font=get_font(12, 'bold'), fill=(148, 163, 184))
-    draw.text((p3_x + 260, card_y + 240), "Size / Weight", font=get_font(12, 'bold'), fill=(148, 163, 184))
-    draw.text((p3_x + 410, card_y + 240), "Features", font=get_font(12, 'bold'), fill=(148, 163, 184))
-    draw.line([(p3_x + 40, card_y + 262), (p3_x + c_w - 40, card_y + 262)], fill=(226, 232, 240), width=1)
-    
-    scales = [
-        ("H1 디스플레이", "32pt", "Bold", "Pretendard"),
-        ("H2 메인 타이틀", "24pt", "SemiBold", "Pretendard"),
-        ("서브 타이틀", "20pt", "SemiBold", "Pretendard"),
-        ("본문 1 (Primary)", "16pt", "Medium", "Tracking -0.2px"),
-        ("설명 (Caption)", "14pt", "Regular", "Color Slate 600"),
-        ("금융 수치 (Tabular)", "16pt", "Bold", "OpenType `tnum`")
-    ]
-    sc_y = card_y + 275
-    for s_label, s_size, s_weight, s_feat in scales:
-        draw.text((p3_x + 40, sc_y), s_label, font=get_font(12.5, 'semibold'), fill=(15, 23, 42))
-        draw.text((p3_x + 260, sc_y), f"{s_size} · {s_weight}", font=get_font(12, 'medium'), fill=(71, 85, 105))
-        draw.text((p3_x + 410, sc_y), s_feat, font=get_font(11.5, 'bold') if "tnum" in s_feat else get_font(11, 'regular'), fill=(0, 82, 255) if "tnum" in s_feat else (100, 116, 139))
-        sc_y += 42
-        
-    # 4/8pt Atomic Grid System
-    draw.rounded_rectangle([p3_x + 24, card_y + 550, p3_x + c_w - 24, card_y + 710], radius=12, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-    draw.text((p3_x + 36, card_y + 566), "4pt / 8pt 아토믹 스페이싱 & 반경 토큰 체계", font=get_font(13.5, 'bold'), fill=(0, 82, 255))
-    draw.text((p3_x + 36, card_y + 596), "• Spacing Scale : 4, 8, 12, 16, 24, 32, 48px\n• Corner Radius : r-4 (4px), r-8 (8px), r-12 (12px), r-16, r-24\n• Elevation System : Diffuse Shadow 4dp (카드), 8dp (다이얼로그)\n• Thumb Zone Grid : 하단 120px 이내 엄지 반경 액션 배치", font=get_font(11.5, 'regular'), fill=(71, 85, 105), spacing=5)
+    # Bottom Design Token Spec Bar
+    draw.text((b8_x + 30, b8_y + 225), "Tokens : Pretendard Typography  ·  4pt/8pt Spatial Grid  ·  Accessible Contrast AAA 7:1+  ·  Component Library", font=get_font(11, 'regular'), fill=(100, 116, 139))
     
     base.save(f'{OUT_DIR}/slide_07.png')
-    print("SAVED slide_07.png (Senior Enterprise Design System Architecture)")
+    print("SAVED slide_07.png (WhatNow-Style Dark Theme Design System)")
 
-# ==============================================================
-# SLIDE 08: Feature Spotlight 01 - Voice Input (Korail Image 5 Style)
-# ==============================================================
+
 def make_slide_08():
     base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
     draw = ImageDraw.Draw(base)
