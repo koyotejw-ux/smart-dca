@@ -2969,29 +2969,32 @@ def make_slide_12():
     draw.text((rx + 140, 228), "PDF 문서 또는 브라우저에서 각 카드를 클릭하면 해당 화면으로 즉시 이동하여 터치 테스트할 수 있습니다.", font=get_font(11.5, 'bold'), fill=(56, 189, 248), anchor='lm')
     
     # 4 Interactive Flow Cards
+    base_proto_url = os.environ.get("GITHUB_PAGES_BASE_URL", "https://coyote-dev.github.io/average_down_calculator")
+    proto_entry_url = f"{base_proto_url}/prototype.html"
+
     steps = [
         (
             "STEP 01", "01. 자산 현황 진단 대시보드",
             "보유 주식 수량 및 평균 매입가 입력 · 실시간 계좌 평가 손익 및 리스크 대시보드 진단",
-            "http://localhost:8080/prototype.html?flow=home",
+            f"{proto_entry_url}?flow=home",
             "blue"
         ),
         (
             "STEP 02", "02. 0.2초 음성 도크 & 호가 프리셋 칩",
             "긴박한 하락장에서 말로 빠르게 입력하는 온디바이스 음성 바텀시트 모달 조작",
-            "http://localhost:8080/prototype.html?flow=voice",
+            f"{proto_entry_url}?flow=voice",
             "green"
         ),
         (
             "STEP 03", "03. 목표 평단가 역산 엔진 (Closed-Form)",
             "탈출 희망 가격 입력 시 필요 수량과 소요 자금을 0.00% 오차로 즉시 역산 산출",
-            "http://localhost:8080/prototype.html?flow=target",
+            f"{proto_entry_url}?flow=target",
             "cyan"
         ),
         (
             "STEP 04", "04. 최종 플랜 확정 & 안전 계좌 진단",
             "예수금 65% 안전 마진 점검 및 리스크 진단 리포트 기반 최종 분할 매수 플랜 확정",
-            "http://localhost:8080/prototype.html?flow=sim",
+            f"{proto_entry_url}?flow=sim",
             "purple"
         )
     ]
@@ -3031,7 +3034,7 @@ def make_slide_12():
     draw.text((rx + 24, my + 65), "불필요한 설명 문서 없이 실제 스마트폰 뷰포트에서 앱 전체를 터치 테스트할 수 있습니다.", font=get_font(12, 'regular'), fill=(148, 163, 184), anchor='lm')
     
     # Large Launch Pill
-    draw_pill_badge(draw, cx=rx + rw - 130, cy=my + 50, text="PROTOTYPE RUN 🚀", font=get_font(12, 'bold'), theme='blue', solid=True, pad_x=18, height=42)
+    draw_pill_badge(draw, cx=rx + rw - 130, cy=my + 50, text="RUN PROTOTYPE ↗", font=get_font(12, 'bold'), theme='blue', solid=True, pad_x=18, height=42)
     
     # Bottom PDF Hyperlink Info & QR Code Area (y=800 to 980, h=180) - Dark Glass Box
     qy = 800
@@ -3039,13 +3042,13 @@ def make_slide_12():
     draw.rounded_rectangle([rx, qy, rx + rw, qy + qh], radius=14, fill=(17, 24, 39, 255), outline=(40, 53, 72), width=1)
     
     draw_pill_badge(draw, left_x=rx + 24, cy=qy + 26, text="HYPERLINK & MOBILE QR SCAN", font=get_font(9, 'bold'), theme='green', has_dot=True, dark_mode=True, pad_x=8, height=20)
-    draw.text((rx + 24, qy + 58), "• PDF 하이퍼링크 내장 : PDF 뷰어(Acrobat, Chrome, Edge)에서 위 버튼 클릭 시 새 탭 실행", font=get_font(11.5, 'medium'), fill=(203, 213, 225))
-    draw.text((rx + 24, qy + 84), "• 오프라인 모바일 스캔 : 종이 인쇄물이나 태블릿 발표 시 우측 QR 코드를 카메라로 스캔", font=get_font(11.5, 'medium'), fill=(203, 213, 225))
-    draw.text((rx + 24, qy + 110), "• 글로벌 웹 배포 호환 : GitHub Pages 및 포트폴리오 웹 사이트 딥링크 완벽 연동", font=get_font(11.5, 'medium'), fill=(56, 189, 248))
-    draw.text((rx + 24, qy + 140), "Direct URL : http://localhost:8080/prototype.html  (또는 온라인 포트폴리오 도메인)", font=get_num_font(11, 'bold'), fill=(148, 163, 184))
+    draw.text((rx + 24, qy + 58), "• PDF 원클릭 하이퍼링크 : PDF 뷰어에서 각 카드나 버튼 클릭 시 반응형 프로토타입 즉시 실행", font=get_font(11.5, 'medium'), fill=(203, 213, 225))
+    draw.text((rx + 24, qy + 84), "• 스마트폰 실물 QR 스캔 : 스마트폰 기본 카메라로 우측 QR 코드 스캔 시 모바일 전용 뷰 작동", font=get_font(11.5, 'medium'), fill=(203, 213, 225))
+    draw.text((rx + 24, qy + 110), "• GitHub Pages 상시 배포 : 전 세계 어디서든 무설치로 60fps 플러터 엔진 즉각 체험 가능", font=get_font(11.5, 'medium'), fill=(56, 189, 248))
+    draw.text((rx + 24, qy + 140), f"Live Web : {proto_entry_url}", font=get_num_font(11, 'bold'), fill=(148, 163, 184))
     
     # Generate High-Contrast QR Code on Crisp White Plate
-    qr_url = "http://localhost:8080/prototype.html"
+    qr_url = proto_entry_url
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_M,
@@ -3054,22 +3057,23 @@ def make_slide_12():
     )
     qr.add_data(qr_url)
     qr.make(fit=True)
-    qr_img = qr.make_image(fill_color=(15, 23, 42), back_color=(255, 255, 255)).convert('RGBA')
-    qr_size = 140
+    qr_img = qr.make_image(fill_color=(11, 15, 23), back_color=(255, 255, 255)).convert('RGBA')
+    qr_size = 136
     qr_img = qr_img.resize((qr_size, qr_size), Image.Resampling.NEAREST)
     
-    qr_x = rx + rw - qr_size - 24
-    qr_y = qy + (qh - qr_size) // 2
+    qr_x = rx + rw - qr_size - 28
+    qr_y = qy + 14
     
-    draw.rounded_rectangle([qr_x - 6, qr_y - 6, qr_x + qr_size + 6, qr_y + qr_size + 6], radius=8, fill=(255, 255, 255))
+    draw.rounded_rectangle([qr_x - 8, qr_y - 6, qr_x + qr_size + 8, qr_y + qr_size + 24], radius=10, fill=(255, 255, 255))
     base.paste(qr_img, (qr_x, qr_y), qr_img)
+    draw.text((qr_x + qr_size // 2, qr_y + qr_size + 8), "SCAN FOR MOBILE TEST", font=get_font(8.5, 'bold'), fill=(11, 15, 23), anchor='mm')
     
     draw_slide_footer(draw, 12, dark_mode=True)
     base.save(f'{OUT_DIR}/slide_12.png')
-    print("SAVED slide_12.png (Premium Dark Finale Live Interactive Prototype Hub)")
+    print("SAVED slide_12.png (Premium Dark Finale Live Interactive Prototype Hub with Live QR Code)")
     return {
         'step_boxes': step_boxes,
-        'master_box': (master_box, "http://localhost:8080/prototype.html")
+        'master_box': (master_box, proto_entry_url)
     }
 
 

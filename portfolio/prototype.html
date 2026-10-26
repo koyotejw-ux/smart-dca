@@ -325,6 +325,159 @@
     .device-caption-hint strong {
       color: #00D2FF;
     }
+
+    /* Desktop Label vs Mobile Label Defaults */
+    .flow-pill .desktop-label {
+      display: inline;
+    }
+    .flow-pill .mobile-label {
+      display: none;
+    }
+    .btn-back-deck .btn-back-label-desktop {
+      display: inline;
+    }
+    .btn-back-deck .btn-back-label-mobile {
+      display: none;
+    }
+    .btn-icon-action .btn-label {
+      display: inline;
+    }
+
+    /* ==============================================================
+       MOBILE RESPONSIVE BREAKPOINT (max-width: 768px)
+       Transforms phone mockup into 100% native mobile app screen
+       ============================================================== */
+    @media (max-width: 768px) {
+      html, body {
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+      }
+
+      /* Compact, Sleek Mobile Top Navigation (46px) */
+      .proto-navbar {
+        height: 46px;
+        padding: 0 10px;
+        gap: 6px;
+        background: rgba(11, 15, 23, 0.96);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .proto-brand,
+      .live-status-pill,
+      #btn-fullscreen-app {
+        display: none !important;
+      }
+
+      .btn-back-deck {
+        padding: 5px 8px;
+        font-size: 11px;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+      .btn-back-deck .btn-back-label-desktop {
+        display: none !important;
+      }
+      .btn-back-deck .btn-back-label-mobile {
+        display: inline !important;
+      }
+
+      /* Flow Pills: Compact Mobile Touch Tabs */
+      .flow-pill-group {
+        gap: 3px;
+        padding: 2px 4px;
+        background: rgba(0, 0, 0, 0.65);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 9999px;
+        flex: 1;
+        justify-content: center;
+        max-width: calc(100vw - 110px);
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .flow-pill-group::-webkit-scrollbar {
+        display: none;
+      }
+
+      .flow-pill {
+        padding: 5px 8px;
+        font-size: 11px;
+        gap: 3px;
+        white-space: nowrap;
+        border-radius: 9999px;
+      }
+      .flow-pill .flow-num {
+        font-size: 9px;
+        font-weight: 800;
+      }
+      .flow-pill .desktop-label {
+        display: none !important;
+      }
+      .flow-pill .mobile-label {
+        display: inline !important;
+      }
+
+      .btn-icon-action {
+        padding: 6px;
+        font-size: 11px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn-icon-action .btn-label {
+        display: none !important;
+      }
+
+      /* Transform Device Stage into 100% Native Full-Screen Mobile App */
+      .device-stage {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100vw !important;
+        height: calc(100vh - 46px) !important;
+        height: calc(100dvh - 46px) !important;
+        max-height: calc(100dvh - 46px) !important;
+        background: #000000 !important;
+        overflow: hidden !important;
+      }
+      .device-stage::before {
+        display: none !important; /* Hide ambient glow on mobile */
+      }
+
+      .phone-chassis {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100% !important;
+        aspect-ratio: auto !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background: #000000 !important;
+      }
+      .phone-chassis::before,
+      .phone-chassis::after {
+        display: none !important; /* Hide simulated hardware buttons on mobile */
+      }
+
+      .phone-dynamic-island {
+        display: none !important; /* Physical phone already has camera/cutout */
+      }
+
+      .flutter-app-iframe {
+        border-radius: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+
+      .device-caption-hint {
+        display: none !important; /* Remove hint to prevent covering bottom nav */
+      }
+    }
   </style>
 </head>
 <body>
@@ -332,9 +485,10 @@
   <!-- Top Floating Minimal Navigation & Section Switcher -->
   <header class="proto-navbar">
     <div class="proto-nav-left">
-      <a href="index.html#live-prototype" class="btn-back-deck">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        포트폴리오로 돌아가기
+      <a href="index.html#slide-12" class="btn-back-deck">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span class="btn-back-label-desktop">포트폴리오로 돌아가기</span>
+        <span class="btn-back-label-mobile">포트폴리오</span>
       </a>
       <div class="proto-brand">
         <strong>스마트 물타기 계산기</strong> · 모바일 목업 테스터
@@ -343,21 +497,25 @@
 
     <!-- Center Flow Segment Switcher: 4 Core Sections -->
     <nav class="flow-pill-group" aria-label="테스트 구간 선택">
-      <button class="flow-pill active" data-flow="home" id="pill-home">
+      <button class="flow-pill active" data-flow="home" id="pill-home" title="01. 자산 현황 진단">
         <span class="flow-num">01</span>
-        <span>자산 진단</span>
+        <span class="desktop-label">자산 진단</span>
+        <span class="mobile-label">진단</span>
       </button>
-      <button class="flow-pill" data-flow="voice" id="pill-voice">
+      <button class="flow-pill" data-flow="voice" id="pill-voice" title="02. 0.2초 음성 도크">
         <span class="flow-num">02</span>
-        <span>0.2초 음성 도크</span>
+        <span class="desktop-label">0.2초 음성 도크</span>
+        <span class="mobile-label">음성</span>
       </button>
-      <button class="flow-pill" data-flow="target" id="pill-target">
+      <button class="flow-pill" data-flow="target" id="pill-target" title="03. 목표 평단가 역산 엔진">
         <span class="flow-num">03</span>
-        <span>목표 역산 엔진</span>
+        <span class="desktop-label">목표 역산 엔진</span>
+        <span class="mobile-label">역산</span>
       </button>
-      <button class="flow-pill" data-flow="sim" id="pill-sim">
+      <button class="flow-pill" data-flow="sim" id="pill-sim" title="04. 최종 플랜 확정 & 안전 진단">
         <span class="flow-num">04</span>
-        <span>최종 플랜 확정</span>
+        <span class="desktop-label">최종 플랜 확정</span>
+        <span class="mobile-label">플랜</span>
       </button>
     </nav>
 
@@ -369,7 +527,7 @@
       </span>
       <button class="btn-icon-action" id="btn-reload" title="현재 화면 새로고침">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        새로고침
+        <span class="btn-label">새로고침</span>
       </button>
       <a href="app/index.html" target="_blank" class="btn-icon-action" id="btn-fullscreen-app" title="실제 앱 브라우저 새 창에서 열기">
         새 탭 ↗
