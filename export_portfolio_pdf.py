@@ -86,12 +86,19 @@ def export_slides_to_pdf(base_url=None):
                 'uri': f"{base_url}/prototype.html"
             })
             
-            # 4 Step Flow Interactive Cards (Mapped to exact 1920x1080 design coordinates)
+            # Master Primary Hero Launcher Banner (TOP: y=196 to 316)
+            page.insert_link({
+                'kind': fitz.LINK_URI,
+                'from': fitz.Rect(800, 196, 1820, 316),
+                'uri': f"{base_url}/prototype.html"
+            })
+            
+            # 4 Step Flow Interactive Cards (Mapped to exact 1920x1080 design coordinates: y=334 to 708)
             step_links = [
-                (fitz.Rect(800, 236, 1820, 324), f"{base_url}/prototype.html?flow=home"),
-                (fitz.Rect(800, 334, 1820, 422), f"{base_url}/prototype.html?flow=voice"),
-                (fitz.Rect(800, 432, 1820, 520), f"{base_url}/prototype.html?flow=target"),
-                (fitz.Rect(800, 530, 1820, 618), f"{base_url}/prototype.html?flow=sim")
+                (fitz.Rect(800, 334, 1820, 420), f"{base_url}/prototype.html?flow=home"),
+                (fitz.Rect(800, 430, 1820, 516), f"{base_url}/prototype.html?flow=voice"),
+                (fitz.Rect(800, 526, 1820, 612), f"{base_url}/prototype.html?flow=target"),
+                (fitz.Rect(800, 622, 1820, 708), f"{base_url}/prototype.html?flow=sim")
             ]
             for rect, url in step_links:
                 page.insert_link({
@@ -100,17 +107,10 @@ def export_slides_to_pdf(base_url=None):
                     'uri': url
                 })
                 
-            # Master Primary Hero Launcher Banner
+            # Bottom QR Code and Link Area (y=752 to 980)
             page.insert_link({
                 'kind': fitz.LINK_URI,
-                'from': fitz.Rect(800, 638, 1820, 758),
-                'uri': f"{base_url}/prototype.html"
-            })
-            
-            # Bottom QR Code and Link Area
-            page.insert_link({
-                'kind': fitz.LINK_URI,
-                'from': fitz.Rect(800, 776, 1820, 980),
+                'from': fitz.Rect(800, 752, 1820, 980),
                 'uri': f"{base_url}/prototype.html"
             })
             

@@ -2958,84 +2958,33 @@ def make_slide_12():
     draw.text((120, 958), "• 반응형 모바일 뷰포트 시뮬레이터 & URL 딥링크 상태 복원 완벽 지원", font=get_font(11, 'medium'), fill=(56, 189, 248))
     
     # ---------------------------------------------------------
-    # RIGHT: 4 STEP INTERACTIVE CARDS + MASTER LAUNCHER (x=800 to 1820, w=1020)
-    # Visual Hierarchy:
-    # 1. Tertiary: Subtle inline guide hint (no heavy boxes or loud badges)
+    # RIGHT: MASTER LAUNCHER + 4 STEPS + TIP + QR CODE (x=800 to 1820, w=1020)
+    # Visual Hierarchy (Top-Down):
+    # 1. PRIMARY HERO (TOP): Radiant Blue-Cyan Gradient Master Launcher with Ambient Glow
     # 2. Secondary: 4 Subdued Step Cards (dark glass, muted slate badges, ghost outline buttons)
-    # 3. PRIMARY HERO: Radiant Blue-Cyan Gradient Master Launcher with Ambient Glow
+    # 3. Tertiary: Subtle inline guide hint (quiet text between steps and QR)
     # 4. Supporting: Dark QR Code Plate & Hyperlink Area
     # ---------------------------------------------------------
     rx = 800
     rw = 1020
-    
-    # 1. Subtle, Un-emphasized Guide Hint (No loud box or bright badge)
-    draw.text((rx + 4, 212), "TIP · 원하는 단계 카드를 선택하거나, 아래 마스터 런처로 앱 전체 플로우를 직접 체험해 보세요.", font=get_font(11.5, 'regular'), fill=(115, 130, 150), anchor='lm')
-    
-    # 2. 4 Subdued Step Cards (Secondary Level)
     base_proto_url = os.environ.get("GITHUB_PAGES_BASE_URL", "https://coyote-dev.github.io/average_down_calculator")
     proto_entry_url = f"{base_proto_url}/prototype.html"
-
-    steps = [
-        (
-            "STEP 01", "01. 자산 현황 진단 대시보드",
-            "보유 주식 수량 및 평균 매입가 입력 · 실시간 계좌 평가 손익 및 리스크 대시보드 진단",
-            f"{proto_entry_url}?flow=home"
-        ),
-        (
-            "STEP 02", "02. 0.2초 음성 도크 & 호가 프리셋 칩",
-            "긴박한 하락장에서 말로 빠르게 입력하는 온디바이스 음성 바텀시트 모달 조작",
-            f"{proto_entry_url}?flow=voice"
-        ),
-        (
-            "STEP 03", "03. 목표 평단가 역산 엔진 (Closed-Form)",
-            "탈출 희망 가격 입력 시 필요 수량과 소요 자금을 0.00% 오차로 즉시 역산 산출",
-            f"{proto_entry_url}?flow=target"
-        ),
-        (
-            "STEP 04", "04. 최종 플랜 확정 & 안전 계좌 진단",
-            "예수금 65% 안전 마진 점검 및 리스크 진단 리포트 기반 최종 분할 매수 플랜 확정",
-            f"{proto_entry_url}?flow=sim"
-        )
-    ]
     
-    sy = 236
-    sh_h = 88
-    sgap = 10
-    step_boxes = []
-    
-    for badge, title, desc, url in steps:
-        box_rect = [rx, sy, rx + rw, sy + sh_h]
-        step_boxes.append((box_rect, url))
-        
-        # Subdued Dark Glass Box (No bright stripes)
-        draw.rounded_rectangle(box_rect, radius=12, fill=(15, 20, 32, 230), outline=(32, 42, 58), width=1)
-        
-        # Muted Dark Slate Badge (Uniform and quiet)
-        draw_pill_badge(draw, left_x=rx + 18, cy=sy + 24, text=badge, font=get_font(9, 'bold'), theme='slate', dark_mode=True, has_dot=False, pad_x=8, height=20)
-        draw.text((rx + 90, sy + 24), title, font=get_font(14.5, 'bold'), fill=(226, 232, 240), anchor='lm')
-        draw.text((rx + 18, sy + 58), desc, font=get_font(11, 'regular'), fill=(105, 120, 140), anchor='lm')
-        
-        # Right Click Button - Subtle Ghost Outline Pill (Secondary)
-        btn_x = rx + rw - 120
-        draw_pill_badge(draw, cx=btn_x + 45, cy=sy + 44, text="바로가기 ↗", font=get_font(10.5, 'bold'), theme='slate', dark_mode=True, has_dot=False, pad_x=12, height=28)
-        
-        sy += sh_h + sgap
-        
     # ---------------------------------------------------------
-    # 3. PRIMARY HERO: MASTER LAUNCHER with Iconic Blue Gradient
+    # 1. PRIMARY HERO (TOP): MASTER LAUNCHER with Iconic Blue Gradient
     # ---------------------------------------------------------
-    my = 638
+    my = 196
     mh = 120
     master_box = [rx, my, rx + rw, my + mh]
     
-    # 3-A. Radiant Blue Ambient Glow Behind Card
+    # 1-A. Radiant Blue Ambient Glow Behind Card
     m_glow = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     m_glow_d = ImageDraw.Draw(m_glow)
     m_glow_d.rounded_rectangle([rx - 6, my - 2, rx + rw + 6, my + mh + 8], radius=24, fill=(0, 87, 255, 120))
     m_glow = m_glow.filter(ImageFilter.GaussianBlur(24))
     base = Image.alpha_composite(base, m_glow)
     
-    # 3-B. Generate Vibrant 135-degree Blue-to-Cyan Linear Gradient Box
+    # 1-B. Generate Vibrant 135-degree Blue-to-Cyan Linear Gradient Box
     t = np.linspace(0, 1, rw, endpoint=True, dtype=np.float32)
     r_arr = (0 * (1 - t) + 0 * t).astype(np.uint8)
     g_arr = (87 * (1 - t) + 195 * t).astype(np.uint8)
@@ -3054,7 +3003,7 @@ def make_slide_12():
     base.paste(grad_box, (rx, my), grad_mask)
     draw = ImageDraw.Draw(base)
     
-    # 3-C. Content Inside Radiant Gradient Card
+    # 1-C. Content Inside Radiant Gradient Card
     # High-contrast deep navy pill badge with white border and text
     badge_w = 145
     draw.rounded_rectangle([rx + 24, my + 16, rx + 24 + badge_w, my + 38], radius=11, fill=(0, 36, 110, 190), outline=(255, 255, 255, 180), width=1)
@@ -3084,17 +3033,71 @@ def make_slide_12():
     draw.text((btn_rx + btn_w // 2, btn_ry + btn_h // 2), "RUN PROTOTYPE ↗", font=get_font(13.5, 'bold'), fill=(0, 82, 255), anchor='mm')
     
     # ---------------------------------------------------------
-    # 4. SUPPORTING: Dark QR Code & Hyperlink Area (y=776 to 980, h=204)
+    # 2. 4 SUBDUED STEP CARDS (Secondary Level)
     # ---------------------------------------------------------
-    qy = 776
-    qh = 204
+    steps = [
+        (
+            "STEP 01", "01. 자산 현황 진단 대시보드",
+            "보유 주식 수량 및 평균 매입가 입력 · 실시간 계좌 평가 손익 및 리스크 대시보드 진단",
+            f"{proto_entry_url}?flow=home"
+        ),
+        (
+            "STEP 02", "02. 0.2초 음성 도크 & 호가 프리셋 칩",
+            "긴박한 하락장에서 말로 빠르게 입력하는 온디바이스 음성 바텀시트 모달 조작",
+            f"{proto_entry_url}?flow=voice"
+        ),
+        (
+            "STEP 03", "03. 목표 평단가 역산 엔진 (Closed-Form)",
+            "탈출 희망 가격 입력 시 필요 수량과 소요 자금을 0.00% 오차로 즉시 역산 산출",
+            f"{proto_entry_url}?flow=target"
+        ),
+        (
+            "STEP 04", "04. 최종 플랜 확정 & 안전 계좌 진단",
+            "예수금 65% 안전 마진 점검 및 리스크 진단 리포트 기반 최종 분할 매수 플랜 확정",
+            f"{proto_entry_url}?flow=sim"
+        )
+    ]
+    
+    sy = 334
+    sh_h = 86
+    sgap = 10
+    step_boxes = []
+    
+    for badge, title, desc, url in steps:
+        box_rect = [rx, sy, rx + rw, sy + sh_h]
+        step_boxes.append((box_rect, url))
+        
+        # Subdued Dark Glass Box (No bright stripes)
+        draw.rounded_rectangle(box_rect, radius=12, fill=(15, 20, 32, 230), outline=(32, 42, 58), width=1)
+        
+        # Muted Dark Slate Badge (Uniform and quiet)
+        draw_pill_badge(draw, left_x=rx + 18, cy=sy + 23, text=badge, font=get_font(9, 'bold'), theme='slate', dark_mode=True, has_dot=False, pad_x=8, height=20)
+        draw.text((rx + 90, sy + 23), title, font=get_font(14, 'bold'), fill=(226, 232, 240), anchor='lm')
+        draw.text((rx + 18, sy + 56), desc, font=get_font(11, 'regular'), fill=(105, 120, 140), anchor='lm')
+        
+        # Right Click Button - Subtle Ghost Outline Pill (Secondary)
+        btn_x = rx + rw - 120
+        draw_pill_badge(draw, cx=btn_x + 45, cy=sy + 43, text="바로가기 ↗", font=get_font(10.5, 'bold'), theme='slate', dark_mode=True, has_dot=False, pad_x=12, height=28)
+        
+        sy += sh_h + sgap
+        
+    # ---------------------------------------------------------
+    # 3. TERTIARY: Subtle, Un-emphasized Guide Hint
+    # ---------------------------------------------------------
+    draw.text((rx + 4, 730), "TIP · 특정 단계만 개별 테스트하거나, 모바일 실물 기기에서는 아래 QR 코드를 카메라로 스캔하세요.", font=get_font(11.5, 'regular'), fill=(115, 130, 150), anchor='lm')
+    
+    # ---------------------------------------------------------
+    # 4. SUPPORTING: Dark QR Code & Hyperlink Area (y=752 to 980, h=228)
+    # ---------------------------------------------------------
+    qy = 752
+    qh = 228
     draw.rounded_rectangle([rx, qy, rx + rw, qy + qh], radius=14, fill=(14, 19, 30, 255), outline=(32, 42, 58), width=1)
     
-    draw_pill_badge(draw, left_x=rx + 24, cy=qy + 28, text="HYPERLINK & MOBILE QR SCAN", font=get_font(9, 'bold'), theme='slate', has_dot=True, dark_mode=True, pad_x=8, height=20)
-    draw.text((rx + 24, qy + 64), "• PDF 원클릭 하이퍼링크 : PDF 뷰어에서 각 카드나 버튼 클릭 시 반응형 프로토타입 즉시 실행", font=get_font(11.5, 'medium'), fill=(180, 195, 215))
-    draw.text((rx + 24, qy + 92), "• 스마트폰 실물 QR 스캔 : 스마트폰 기본 카메라로 우측 QR 코드 스캔 시 모바일 전용 뷰 작동", font=get_font(11.5, 'medium'), fill=(180, 195, 215))
-    draw.text((rx + 24, qy + 120), "• GitHub Pages 상시 배포 : 전 세계 어디서든 무설치로 60fps 플러터 엔진 즉각 체험 가능", font=get_font(11.5, 'medium'), fill=(56, 189, 248))
-    draw.text((rx + 24, qy + 154), f"Live Web : {proto_entry_url}", font=get_num_font(11, 'bold'), fill=(130, 145, 170))
+    draw_pill_badge(draw, left_x=rx + 24, cy=qy + 30, text="HYPERLINK & MOBILE QR SCAN", font=get_font(9, 'bold'), theme='slate', has_dot=True, dark_mode=True, pad_x=8, height=20)
+    draw.text((rx + 24, qy + 70), "• PDF 원클릭 하이퍼링크 : PDF 뷰어에서 각 카드나 버튼 클릭 시 반응형 프로토타입 즉시 실행", font=get_font(11.5, 'medium'), fill=(180, 195, 215))
+    draw.text((rx + 24, qy + 100), "• 스마트폰 실물 QR 스캔 : 스마트폰 기본 카메라로 우측 QR 코드 스캔 시 모바일 전용 뷰 작동", font=get_font(11.5, 'medium'), fill=(180, 195, 215))
+    draw.text((rx + 24, qy + 130), "• GitHub Pages 상시 배포 : 전 세계 어디서든 무설치로 60fps 플러터 엔진 즉각 체험 가능", font=get_font(11.5, 'medium'), fill=(56, 189, 248))
+    draw.text((rx + 24, qy + 168), f"Live Web : {proto_entry_url}", font=get_num_font(11, 'bold'), fill=(130, 145, 170))
     
     # Generate High-Contrast QR Code on Crisp White Plate
     qr_url = proto_entry_url
@@ -3107,11 +3110,11 @@ def make_slide_12():
     qr.add_data(qr_url)
     qr.make(fit=True)
     qr_img = qr.make_image(fill_color=(11, 15, 23), back_color=(255, 255, 255)).convert('RGBA')
-    qr_size = 140
+    qr_size = 144
     qr_img = qr_img.resize((qr_size, qr_size), Image.Resampling.NEAREST)
     
     qr_x = rx + rw - qr_size - 28
-    qr_y = qy + 18
+    qr_y = qy + 24
     
     draw.rounded_rectangle([qr_x - 8, qr_y - 6, qr_x + qr_size + 8, qr_y + qr_size + 24], radius=10, fill=(255, 255, 255))
     base.paste(qr_img, (qr_x, qr_y), qr_img)
@@ -3119,7 +3122,7 @@ def make_slide_12():
     
     draw_slide_footer(draw, 12, dark_mode=True)
     base.save(f'{OUT_DIR}/slide_12.png')
-    print("SAVED slide_12.png (High-Hierarchy Live Interactive Prototype Hub with Blue Gradient Master Launcher)")
+    print("SAVED slide_12.png (High-Hierarchy Live Interactive Prototype Hub with Blue Gradient Master Launcher at Top)")
     return {
         'step_boxes': step_boxes,
         'master_box': (master_box, proto_entry_url)
