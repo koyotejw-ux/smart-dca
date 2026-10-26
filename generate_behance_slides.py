@@ -321,8 +321,13 @@ def draw_dotted_callout(draw, p1, p2, col=(0, 82, 255), dot_r=4, elbow_x=None):
     for i in range(len(pts) - 1):
         draw_dotted_segment(pts[i], pts[i+1])
         
-    # 3. Arrow / terminal anchor at end point
-    draw.polygon([(x2, y2), (x2 - 6, y2 - 4), (x2 - 6, y2 + 4)], fill=col)
+    # 3. Arrow / terminal anchor at end point (pointing appropriately)
+    arrow_size = 6
+    if x2 >= x1:
+        draw.polygon([(x2, y2), (x2 - arrow_size, y2 - arrow_size * 0.7), (x2 - arrow_size, y2 + arrow_size * 0.7)], fill=col)
+    else:
+        draw.polygon([(x2, y2), (x2 + arrow_size, y2 - arrow_size * 0.7), (x2 + arrow_size, y2 + arrow_size * 0.7)], fill=col)
+
 
 
 def draw_branch_badge(draw, cx, cy, text, is_yes=True):
@@ -2241,257 +2246,371 @@ def make_slide_08():
     base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
     draw = ImageDraw.Draw(base)
     
-    # 1. Header (Category Kicker + Conversational Title with Blue Highlights)
-    draw.text((100, 75), "VOICE INPUT DOCK", font=get_font(14, 'bold'), fill=(0, 82, 255))
+    # Hairline Boundaries
+    draw.line([(100, 70), (1820, 70)], fill=(226, 232, 240), width=1)
+    draw.line([(100, 990), (1820, 990)], fill=(226, 232, 240), width=1)
+    
+    # -------------------------------------------------------------
+    # 1. Left Column: Grouped Header Card & Comparison Pane (x=100, w=490)
+    # -------------------------------------------------------------
+    lx = 100
+    lw = 490
+    
+    # 1-A. Header Group (Well-spaced, prominent title, readable body)
+    draw_pill_badge(draw, left_x=lx, cy=95, text="VOICE INPUT DOCK · 0.2s STT ENGINE", font=get_font(10.5, 'bold'), theme='blue', has_dot=True, dark_mode=False, pad_x=10, height=24)
     
     t1_a = "복잡한 타이핑 없이 "
     t1_b = "말 한마디로,"
-    font_title = get_font(38, 'bold')
+    font_title = get_font(34, 'extrabold')
     w_t1_a = draw.textlength(t1_a, font=font_title)
-    draw.text((100, 115), t1_a, font=font_title, fill=(15, 23, 42))
-    draw.text((100 + w_t1_a, 115), t1_b, font=font_title, fill=(0, 82, 255))
+    draw.text((lx, 126), t1_a, font=font_title, fill=(15, 23, 42))
+    draw.text((lx + w_t1_a, 126), t1_b, font=font_title, fill=(0, 81, 255))
     
     t2_a = "0.2초 만에 "
     t2_b = "파라미터를 완성해요."
     w_t2_a = draw.textlength(t2_a, font=font_title)
-    draw.text((100, 172), t2_a, font=font_title, fill=(15, 23, 42))
-    draw.text((100 + w_t2_a, 172), t2_b, font=font_title, fill=(0, 82, 255))
+    draw.text((lx, 172), t2_a, font=font_title, fill=(0, 81, 255))
+    draw.text((lx + w_t2_a, 172), t2_b, font=font_title, fill=(15, 23, 42))
     
-    desc_text = "급격히 하락하는 장세 속에서 긴박한 타이핑 실수(Fat-finger)를 원천 차단하기 위해 화면 하단에 0.2초 음성 도크를 배치했어요. 자연어 음성 발화 즉시 수치와 종목을 100% 로컬에서 분리·파싱해 계산기 모듈로 무지연 자동 입력합니다."
-    desc_lines = wrap_text_by_words(desc_text, get_font(13.5, 'regular'), 450, draw)
+    desc_text = "급격히 하락하는 장세 속에서 긴박한 타이핑 실수(Fat-finger)를 원천 차단하기 위해 화면 하단에 0.2초 음성 도크를 배치했어요. 자연어 음성 발화 즉시 수치와 종목을 100% 온디바이스에서 분리·파싱해 계산기 모듈로 무지연 자동 입력합니다."
+    desc_lines = wrap_text_by_words(desc_text, get_font(12.5, 'regular'), lw, draw)
     dy = 224
     for dl in desc_lines:
-        draw.text((100, dy), dl, font=get_font(13.5, 'regular'), fill=(71, 85, 105))
-        dy += 22
+        draw.text((lx, dy), dl, font=get_font(12.5, 'regular'), fill=(71, 85, 105))
+        dy += 20
+        
+    # 1-B. Comparison Container Card (Manual vs Voice AI)
+    comp_y = 310
+    comp_h = 660
+    draw.rounded_rectangle([lx, comp_y, lx + lw, comp_y + comp_h], radius=18, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     
-    # 2. Left Column: 2 Clean Comparison Previews
-    card_l_w = 200
+    draw_pill_badge(draw, left_x=lx + 24, cy=comp_y + 30, text="PARADIGM COMPARISON", font=get_font(9.5, 'bold'), theme='slate', has_dot=False, pad_x=8, height=22)
+    draw.text((lx + 185, comp_y + 22), "수동 입력 vs 0.2초 음성 도크", font=get_font(14, 'bold'), fill=(15, 23, 42))
+    draw.line([(lx + 24, comp_y + 50), (lx + lw - 24, comp_y + 50)], fill=(241, 245, 249), width=1)
+    
+    # 2 Comparison Phone Mockups
     screen_home = Image.open('portfolio/iphone_mockups/iphone_01_home.png').convert('RGBA')
-    s1_w = card_l_w
-    s1_h = int(round(s1_w * (screen_home.height / screen_home.width)))
-    s1 = screen_home.resize((s1_w, s1_h), Image.Resampling.LANCZOS)
-    
     screen_sim = Image.open('portfolio/iphone_mockups/iphone_02_sim.png').convert('RGBA')
-    s2_w = card_l_w
-    s2_h = int(round(s2_w * (screen_sim.height / screen_sim.width)))
-    s2 = screen_sim.resize((s2_w, s2_h), Image.Resampling.LANCZOS)
     
-    y_screen = 335
-    x_s1 = 100
-    x_s2 = 330
+    s_w = 205
+    s_h = int(round(s_w * (screen_home.height / screen_home.width)))
+    s1 = screen_home.resize((s_w, s_h), Image.Resampling.LANCZOS)
+    s2 = screen_sim.resize((s_w, s_h), Image.Resampling.LANCZOS)
     
-    draw.text((x_s1 + 45, y_screen - 28), "직접 타이핑 입력", font=get_font(13, 'bold'), fill=(100, 116, 139))
-    draw.text((x_s2 + 40, y_screen - 28), "음성 도크 자동 파싱", font=get_font(13, 'bold'), fill=(0, 82, 255))
+    y_screen = comp_y + 70
+    x_s1 = lx + 24
+    x_s2 = lx + lw - 24 - s_w
+    
+    draw_pill_badge(draw, cx=x_s1 + s_w//2, cy=y_screen + 14, text="직접 타이핑 입력", font=get_font(10, 'bold'), theme='slate', has_dot=False, pad_x=10, height=22)
+    draw_pill_badge(draw, cx=x_s2 + s_w//2, cy=y_screen + 14, text="음성 도크 자동 파싱", font=get_font(10, 'bold'), theme='blue', has_dot=False, pad_x=10, height=22)
     
     for sx, simg in [(x_s1, s1), (x_s2, s2)]:
         sh = Image.new('RGBA', (W, H), (0,0,0,0))
         shd = ImageDraw.Draw(sh)
-        shd.rounded_rectangle([sx + 6, y_screen + 10, sx + card_l_w - 6, y_screen + s1_h + 12], radius=24, fill=(0, 0, 0, 45))
-        sh = sh.filter(ImageFilter.GaussianBlur(14))
+        shd.rounded_rectangle([sx + 6, y_screen + 34, sx + s_w - 6, y_screen + 34 + s_h], radius=22, fill=(0, 0, 0, 40))
+        sh = sh.filter(ImageFilter.GaussianBlur(12))
         base = Image.alpha_composite(base, sh)
-        base.paste(simg, (sx, y_screen), simg)
+        base.paste(simg, (sx, y_screen + 28), simg)
         
     draw = ImageDraw.Draw(base)
-    draw.text((x_s1 + 10, y_screen + s1_h + 16), "• 4개 파라미터 수동 입력 (240초)\n• 하락장 긴박한 타이핑 오타 빈발", font=get_font(11.5, 'regular'), fill=(148, 163, 184), spacing=4)
-    draw.text((x_s2 + 10, y_screen + s2_h + 16), "• 자연어 발화 즉시 0.2초 분리 인계\n• 100% 온디바이스 로컬 연산", font=get_font(11.5, 'semibold'), fill=(0, 82, 255), spacing=4)
+    by_s1 = y_screen + 32 + s_h + 14
+    draw.rounded_rectangle([x_s1, by_s1, x_s1 + s_w, comp_y + comp_h - 20], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+    draw.text((x_s1 + 12, by_s1 + 10), "수동 키패드 타이핑", font=get_font(10.5, 'bold'), fill=(100, 116, 139))
+    draw.text((x_s1 + 12, by_s1 + 28), "• 4개 파라미터 (240초)\n• 하락장 긴박한 오타 빈발\n• 반복 수정 피로도 극심", font=get_font(10, 'regular'), fill=(100, 116, 139), spacing=4)
     
-    # 3. Center Column: Grand Hero Phone Mockup (Generous negative space)
+    draw.rounded_rectangle([x_s2, by_s1, x_s2 + s_w, comp_y + comp_h - 20], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+    draw.text((x_s2 + 12, by_s1 + 10), "0.2초 음성 도크", font=get_font(10.5, 'bold'), fill=(0, 81, 255))
+    draw.text((x_s2 + 12, by_s1 + 28), "• 0.2초 즉각 분리 인계\n• 100% 온디바이스 연산\n• 오타 제로 실시간 주입", font=get_font(10, 'semibold'), fill=(0, 81, 255), spacing=4)
+    
+    # -------------------------------------------------------------
+    # 2. Center Column: Grand Hero Phone Mockup (x=635, w=370)
+    # -------------------------------------------------------------
     phone_voice = Image.open('portfolio/iphone_mockups/iphone_08_voice.png').convert('RGBA')
-    pw = 350
+    pw = 360
     ph = int(round(pw * (phone_voice.height / phone_voice.width)))
     phone_v = phone_voice.resize((pw, ph), Image.Resampling.LANCZOS)
     
-    px = 650
-    py = 210
+    px = 635
+    py = 220
     
     sh_center = Image.new('RGBA', (W, H), (0,0,0,0))
     shc_draw = ImageDraw.Draw(sh_center)
-    shc_draw.rounded_rectangle([px + 12, py + 16, px + pw - 12, py + ph + 24], radius=36, fill=(0, 0, 0, 65))
-    shc_draw.ellipse([px - 20, py + ph - 25, px + pw + 20, py + ph + 35], fill=(0, 82, 255, 30))
-    sh_center = sh_center.filter(ImageFilter.GaussianBlur(28))
+    shc_draw.rounded_rectangle([px + 12, py + 16, px + pw - 12, py + ph + 24], radius=36, fill=(0, 0, 0, 60))
+    shc_draw.ellipse([px - 20, py + ph - 25, px + pw + 20, py + ph + 35], fill=(0, 81, 255, 30))
+    sh_center = sh_center.filter(ImageFilter.GaussianBlur(26))
     base = Image.alpha_composite(base, sh_center)
     base.paste(phone_v, (px, py), phone_v)
     draw = ImageDraw.Draw(base)
     
-    # 4. Right Column: Callouts & Component Card
-    rx = 1100
-    r_w = 720
+    # -------------------------------------------------------------
+    # 3. Right Column: 3 Distinct Grouped Feature Cards (x=1050, w=770)
+    # -------------------------------------------------------------
+    rx = 1050
+    rw = 770
     
-    # Callout 1: VOICE DOCK
-    c1_y = 285
-    draw_pill_badge(draw, rx + 65, c1_y, "VOICE DOCK", font=get_font(11, 'bold'), theme='blue', dark_mode=False, pad_x=12, height=26)
-    draw.text((rx, c1_y + 30), "자연어 음성 즉각 인식 & 파라미터 분리", font=get_font(18, 'bold'), fill=(15, 23, 42))
-    draw.text((rx, c1_y + 62), '"삼성전자 7만 원에 50주" 말하는 순간 종목, 단가, 수량을 자동으로 분리 인식해요.\n발화가 끝남과 동시에 시뮬레이터 수치가 채워져 실시간 호가 변동에 즉각 대응합니다.', font=get_font(13.5, 'regular'), fill=(71, 85, 105), spacing=4)
+    # CARD 1: Voice Recognition & Parsing Card
+    c1_y = 190
+    c1_h = 160
+    draw.rounded_rectangle([rx, c1_y, rx + rw, c1_y + c1_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw_pill_badge(draw, left_x=rx + 28, cy=c1_y + 32, text="VOICE DOCK · STT PARSER", font=get_font(10, 'bold'), theme='blue', has_dot=True, dark_mode=False, pad_x=10, height=24)
+    draw.text((rx + 240, c1_y + 22), "자연어 음성 즉각 인식 & 파라미터 분리", font=get_font(17, 'bold'), fill=(15, 23, 42))
+    draw.line([(rx + 28, c1_y + 54), (rx + rw - 28, c1_y + 54)], fill=(241, 245, 249), width=1)
     
-    # Callout 2: PRESET CHIPS
-    c2_y = 445
-    draw_pill_badge(draw, rx + 75, c2_y, "PRESET CHIPS", font=get_font(11, 'bold'), theme='cyan', dark_mode=False, pad_x=12, height=26)
-    draw.text((rx, c2_y + 30), "소음 환경을 위한 원터치 호가 프리셋 칩", font=get_font(18, 'bold'), fill=(15, 23, 42))
-    draw.text((rx, c2_y + 62), "음성을 쓰기 어려운 대중교통이나 조용한 환경에서도 ±5%, ±10% 호가 칩으로\n손가락 1-Tap 터치만으로 0.1초 만에 즉시 추가 매수 시나리오를 계산해요.", font=get_font(13.5, 'regular'), fill=(71, 85, 105), spacing=4)
+    c1_desc = '"삼성전자 7만 원에 50주"라고 말하는 순간, 온디바이스 AI가 종목, 단가, 수량을 자동으로 분리 인식합니다.\n발화 종료와 동시에 시뮬레이터 수치가 즉시 채워져 실시간 호가 변동에 0.2초 만에 즉각 대응합니다.'
+    draw.text((rx + 28, c1_y + 70), c1_desc, font=get_font(13, 'regular'), fill=(71, 85, 105), spacing=6)
+    draw.text((rx + 28, c1_y + 124), "✓ 8자리 소수점 키패드 타이핑 피로도 78% 절감 · 0.2s 음성 STT 파싱 무손실 주입", font=get_font(11, 'bold'), fill=(0, 81, 255))
     
-    # Callout 3: AI LIVE PARSER CARD
-    card_y = 600
-    card_h = 240
-    draw.rounded_rectangle([rx, card_y, rx + r_w, card_y + card_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    # CARD 2: Preset Chips Card
+    c2_y = 370
+    c2_h = 160
+    draw.rounded_rectangle([rx, c2_y, rx + rw, c2_y + c2_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw_pill_badge(draw, left_x=rx + 28, cy=c2_y + 32, text="PRESET CHIPS · 1-TAP HAPTIC", font=get_font(10, 'bold'), theme='cyan', has_dot=True, dark_mode=False, pad_x=10, height=24)
+    draw.text((rx + 270, c2_y + 22), "소음 환경을 위한 원터치 호가 프리셋 칩", font=get_font(17, 'bold'), fill=(15, 23, 42))
+    draw.line([(rx + 28, c2_y + 54), (rx + rw - 28, c2_y + 54)], fill=(241, 245, 249), width=1)
     
-    draw_pill_badge(draw, rx + 80, card_y + 30, "AI LIVE PARSER", font=get_font(10.5, 'bold'), theme='purple', dark_mode=False, pad_x=10, height=24)
-    draw.text((rx + 160, card_y + 22), "실시간 온디바이스 음성 파싱 피드백", font=get_font(13.5, 'bold'), fill=(15, 23, 42))
+    c2_desc = '음성을 쓰기 어려운 대중교통이나 조용한 환경에서도 ±5%, ±10% 호가 칩과 +50주, +100주 수량 칩으로\n손가락 1-Tap 터치만으로 0.1초 만에 즉시 추가 매수 시나리오를 안전하게 계산합니다.'
+    draw.text((rx + 28, c2_y + 70), c2_desc, font=get_font(13, 'regular'), fill=(71, 85, 105), spacing=6)
+    draw.text((rx + 28, c2_y + 124), "✓ 1-Tap 햅틱 피드백 연동 · 소음 및 무음 환경에서도 완전한 퀀트 시뮬레이션 지원", font=get_font(11, 'bold'), fill=(8, 145, 178))
     
-    draw.rounded_rectangle([rx + 24, card_y + 60, rx + r_w - 24, card_y + 130], radius=12, fill=(241, 245, 249), outline=(203, 213, 225), width=1)
-    draw_pill_badge(draw, left_x=rx + 42, cy=card_y + 86, text="LIVE STT", font=get_font(9.5, 'bold'), theme='blue', has_dot=True, dark_mode=False, pad_x=8, height=22)
-    draw.text((rx + 130, card_y + 75), '"삼성전자 70,000원에 50주 추가 매수"', font=get_font(16, 'bold'), fill=(0, 82, 255))
-    draw.text((rx + 42, card_y + 104), "100% 로컬 STT 음성 엔진 인식 완료 (소요 시간 0.22초)", font=get_font(12, 'regular'), fill=(100, 116, 139))
+    # CARD 3: Realtime Telemetry & AI Live Parser Card
+    c3_y = 550
+    c3_h = 420
+    draw.rounded_rectangle([rx, c3_y, rx + rw, c3_y + c3_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw_pill_badge(draw, left_x=rx + 28, cy=c3_y + 32, text="AI LIVE PARSER", font=get_font(10, 'bold'), theme='purple', has_dot=True, dark_mode=False, pad_x=10, height=24)
+    draw.text((rx + 185, c3_y + 22), "실시간 온디바이스 음성 파싱 피드백 (Telemetry)", font=get_font(17, 'bold'), fill=(15, 23, 42))
+    draw.line([(rx + 28, c3_y + 54), (rx + rw - 28, c3_y + 54)], fill=(241, 245, 249), width=1)
     
+    # Speech Recognition Bubble
+    sb_y = c3_y + 70
+    draw.rounded_rectangle([rx + 28, sb_y, rx + rw - 28, sb_y + 86], radius=12, fill=(245, 243, 255), outline=(221, 214, 254), width=1)
+    draw_pill_badge(draw, left_x=rx + 48, cy=sb_y + 28, text="LIVE STT 0.22s", font=get_font(9.5, 'bold'), theme='purple', has_dot=True, dark_mode=False, pad_x=8, height=22)
+    draw.text((rx + 180, sb_y + 18), '"삼성전자 70,000원에 50주 추가 매수"', font=get_font(18, 'bold'), fill=(109, 40, 217))
+    draw.text((rx + 48, sb_y + 54), "100% 로컬 온디바이스 STT 음성 엔진 인식 완료 · 네트워크 연결 불필요 (소요 시간 0.22초)", font=get_font(11.5, 'regular'), fill=(100, 116, 139))
+    
+    # 4 Parsed Parameter Cards
     chips = [
-        ("종목", "삼성전자", (0, 82, 255)),
-        ("매수가", "₩ 70,000", (16, 185, 129)),
-        ("수량", "50 주", (147, 51, 234)),
-        ("인계 상태", "자동 완성 ✓", (245, 158, 11))
+        ("종목 (Ticker)", "삼성전자 (005930)", "정규화 성공", (0, 81, 255)),
+        ("매수가 (Price)", "₩ 70,000", "현재가 연동", (0, 180, 90)),
+        ("수량 (Quantity)", "50 주", "비중 45%", (122, 34, 255)),
+        ("인계 상태 (State)", "자동 완성 ✓", "0ms 무손실 주입", (217, 119, 6))
     ]
-    cx = rx + 24
-    cy = card_y + 155
-    cw = 158
-    for label, val, c_col in chips:
-        draw.rounded_rectangle([cx, cy, cx + cw, cy + 60], radius=8, fill=(250, 252, 255), outline=(226, 232, 240), width=1)
-        draw.text((cx + 14, cy + 10), label, font=get_font(11, 'bold'), fill=(100, 116, 139))
-        draw.text((cx + 14, cy + 32), val, font=get_font(13.5, 'bold'), fill=c_col)
-        cx += cw + 14
+    ch_y = sb_y + 104
+    ch_w = (rw - 56 - 36) // 4
+    for idx, (label, val, sub_txt, c_col) in enumerate(chips):
+        cx = rx + 28 + idx * (ch_w + 12)
+        draw.rounded_rectangle([cx, ch_y, cx + ch_w, ch_y + 90], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        draw.text((cx + 14, ch_y + 12), label, font=get_font(10.5, 'bold'), fill=(100, 116, 139))
+        draw.text((cx + 14, ch_y + 36), val, font=get_num_font(15, 'bold'), fill=c_col)
+        draw.text((cx + 14, ch_y + 64), sub_txt, font=get_font(9.5, 'medium'), fill=(71, 85, 105))
         
-    # Architectural Dotted Callouts linking Phone UI to Badges (Reference Image 5 Style - Clean Parallel Layout)
-    draw_dotted_callout(draw, p1=(px + pw - 20, c1_y), p2=(rx - 15, c1_y), col=(0, 82, 255))
-    draw_dotted_callout(draw, p1=(px + pw - 20, c2_y), p2=(rx - 15, c2_y), col=(6, 182, 212))
-    draw_dotted_callout(draw, p1=(px + pw - 20, card_y + 30), p2=(rx - 15, card_y + 30), col=(124, 58, 237))
-        
+    # Technical Architecture Audit Footer inside Card 3
+    tf_y = ch_y + 106
+    draw.rounded_rectangle([rx + 28, tf_y, rx + rw - 28, c3_y + c3_h - 20], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+    draw.text((rx + 44, tf_y + 14), "온디바이스 음성 파싱 보안 & 무결성 검증 (Privacy Guarantee):", font=get_font(11, 'bold'), fill=(0, 81, 255))
+    draw.text((rx + 44, tf_y + 34), "• 외부 클라우드 전송 0건 : 사용자 음성 및 주식 거래 데이터는 기기 외부로 절대 유출되지 않는 100% 로컬 연산", font=get_font(10.5, 'regular'), fill=(71, 85, 105))
+    draw.text((rx + 44, tf_y + 52), "• 무지연 0ms 파라미터 주입 : 파싱된 수치가 플러터 상태 관리자(Provider)로 즉시 바인딩되어 계산기에 실시간 반영", font=get_font(10.5, 'regular'), fill=(71, 85, 105))
+    
+    # Dotted connector callout lines from Hero phone to right cards (Realistic UI anchors)
+    draw_dotted_callout(draw, p1=(px + pw - 15, 390), p2=(rx - 15, c1_y + 50), col=(0, 81, 255))
+    draw_dotted_callout(draw, p1=(px + pw - 15, 520), p2=(rx - 15, c2_y + 50), col=(8, 145, 178))
+    draw_dotted_callout(draw, p1=(px + pw - 15, 660), p2=(rx - 15, c3_y + 50), col=(122, 34, 255))
+    
     base.save(f'{OUT_DIR}/slide_08.png')
-    print("SAVED slide_08.png (Voice Dock UI with Blueprint Dotted Callouts)")
+    print("SAVED slide_08.png (Enhanced Voice Dock UI with Grouped Cards)")
 
 
 def make_slide_09():
     base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
     draw = ImageDraw.Draw(base)
     
-    # 1. Header (Category Kicker + Conversational Title with Blue Highlights)
-    draw.text((100, 75), "GOAL SEEKING ENGINE", font=get_font(14, 'bold'), fill=(0, 82, 255))
+    # Hairline Boundaries
+    draw.line([(100, 70), (1820, 70)], fill=(226, 232, 240), width=1)
+    draw.line([(100, 990), (1820, 990)], fill=(226, 232, 240), width=1)
+    
+    # -------------------------------------------------------------
+    # 1. Left Column: Grouped Header Card & Quant Theory & Guard (x=100, w=540)
+    # (DIFFERENT LAYOUT: Feature cards & math formulas on the left!)
+    # -------------------------------------------------------------
+    lx = 100
+    lw = 540
+    
+    # 1-A. Header Group (Prominent Title, grouped structure)
+    draw_pill_badge(draw, left_x=lx, cy=95, text="GOAL SEEKING ENGINE · CLOSED-FORM QUANT", font=get_font(10.5, 'bold'), theme='blue', has_dot=True, dark_mode=False, pad_x=10, height=24)
     
     t1_a = "원하는 "
     t1_b = "목표 평단만 지정하면,"
-    font_title = get_font(38, 'bold')
+    font_title = get_font(34, 'extrabold')
     w_t1_a = draw.textlength(t1_a, font=font_title)
-    draw.text((100, 115), t1_a, font=font_title, fill=(15, 23, 42))
-    draw.text((100 + w_t1_a, 115), t1_b, font=font_title, fill=(0, 82, 255))
+    draw.text((lx, 126), t1_a, font=font_title, fill=(15, 23, 42))
+    draw.text((lx + w_t1_a, 126), t1_b, font=font_title, fill=(0, 81, 255))
     
     t2_a = "필요한 "
     t2_b = "수량과 자금을 즉시 역산해요."
     w_t2_a = draw.textlength(t2_a, font=font_title)
-    draw.text((100, 172), t2_a, font=font_title, fill=(15, 23, 42))
-    draw.text((100 + w_t2_a, 172), t2_b, font=font_title, fill=(0, 82, 255))
+    draw.text((lx, 172), t2_a, font=font_title, fill=(15, 23, 42))
+    draw.text((lx + w_t2_a, 172), t2_b, font=font_title, fill=(0, 81, 255))
     
     desc_text = "손익분기점 탈출을 위해 도달해야 하는 목표가를 설정하면, 몇 주를 얼마에 더 사야 하는지 닫힌 형식(Closed-form) 퀀트 방정식으로 오차 없이 온디바이스에서 즉시 도출합니다."
-    desc_lines = wrap_text_by_words(desc_text, get_font(13.5, 'regular'), 450, draw)
+    desc_lines = wrap_text_by_words(desc_text, get_font(12.5, 'regular'), lw, draw)
     dy = 224
     for dl in desc_lines:
-        draw.text((100, dy), dl, font=get_font(13.5, 'regular'), fill=(71, 85, 105))
-        dy += 22
-    
-    # 2. Left Column: 2 Comparison / Step Screens
-    card_l_w = 200
-    screen_target = Image.open('portfolio/iphone_mockups/iphone_03_target.png').convert('RGBA')
-    s1_w = card_l_w
-    s1_h = int(round(s1_w * (screen_target.height / screen_target.width)))
-    s1 = screen_target.resize((s1_w, s1_h), Image.Resampling.LANCZOS)
-    
-    screen_report = Image.open('portfolio/iphone_mockups/iphone_04_report.png').convert('RGBA')
-    s2_w = card_l_w
-    s2_h = int(round(s2_w * (screen_report.height / screen_report.width)))
-    s2 = screen_report.resize((s2_w, s2_h), Image.Resampling.LANCZOS)
-    
-    y_screen = 335
-    x_s1 = 100
-    x_s2 = 330
-    
-    draw.text((x_s1 + 45, y_screen - 28), "목표 평단가 지정", font=get_font(13, 'bold'), fill=(100, 116, 139))
-    draw.text((x_s2 + 45, y_screen - 28), "리스크 한도 점검", font=get_font(13, 'bold'), fill=(0, 82, 255))
-    
-    for sx, simg in [(x_s1, s1), (x_s2, s2)]:
-        sh = Image.new('RGBA', (W, H), (0,0,0,0))
-        shd = ImageDraw.Draw(sh)
-        shd.rounded_rectangle([sx + 6, y_screen + 10, sx + card_l_w - 6, y_screen + s1_h + 12], radius=24, fill=(0, 0, 0, 45))
-        sh = sh.filter(ImageFilter.GaussianBlur(14))
-        base = Image.alpha_composite(base, sh)
-        base.paste(simg, (sx, y_screen), simg)
+        draw.text((lx, dy), dl, font=get_font(12.5, 'regular'), fill=(71, 85, 105))
+        dy += 20
         
-    draw = ImageDraw.Draw(base)
-    draw.text((x_s1 + 10, y_screen + s1_h + 16), "• 탈출 희망 평단 설정\n• 가용 예수금 실시간 연동", font=get_font(11.5, 'regular'), fill=(148, 163, 184), spacing=4)
-    draw.text((x_s2 + 10, y_screen + s2_h + 16), "• 자산 쏠림도 및 비중 경고\n• 안전 매수 가이드 제시", font=get_font(11.5, 'semibold'), fill=(0, 82, 255), spacing=4)
+    # 1-B. Card 1: 수학적 폐쇄형 역산 알고리즘 (Zero-Latency)
+    q1_y = 310
+    q1_h = 230
+    draw.rounded_rectangle([lx, q1_y, lx + lw, q1_y + q1_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw_pill_badge(draw, left_x=lx + 24, cy=q1_y + 30, text="CLOSED-FORM QUANT", font=get_font(10, 'bold'), theme='blue', has_dot=True, dark_mode=False, pad_x=10, height=24)
+    draw.text((lx + 215, q1_y + 20), "수학적 폐쇄형 역산 알고리즘 (Zero-Latency)", font=get_font(16, 'bold'), fill=(15, 23, 42))
+    draw.line([(lx + 24, q1_y + 52), (lx + lw - 24, q1_y + 52)], fill=(241, 245, 249), width=1)
     
-    # 3. Center Column: Grand Hero Phone Mockup (Generous negative space)
-    pw = 350
+    # Formula Box
+    f_box_y = q1_y + 64
+    draw.rounded_rectangle([lx + 24, f_box_y, lx + lw - 24, f_box_y + 54], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+    draw.text((lx + lw//2, f_box_y + 27), "Q_add = Q_0 × (P_0 - P_target) / (P_target - P_add)", font=get_num_font(15, 'bold'), fill=(0, 81, 255), anchor='mm')
+    
+    draw.text((lx + 24, f_box_y + 68), "복잡한 시행착오 반복 연산 없이 단 한 번의 닫힌 형식(Closed-form) 대수적 전개로\n추가 매수 필요 주식 수량과 총 소요 자금을 0ms 오차 0.00%로 완벽하게 도출합니다.", font=get_font(11.5, 'regular'), fill=(71, 85, 105), spacing=5)
+    
+    # 1-C. Card 2: 비현실적 목표 사전 가드 & 대안 평단 제시
+    q2_y = 560
+    q2_h = 200
+    draw.rounded_rectangle([lx, q2_y, lx + lw, q2_y + q2_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw_pill_badge(draw, left_x=lx + 24, cy=q2_y + 30, text="BOUNDARY GUARD", font=get_font(10, 'bold'), theme='amber', has_dot=True, dark_mode=False, pad_x=10, height=24)
+    draw.text((lx + 205, q2_y + 20), "비현실적 목표 사전 가드 & 대안 평단 제시", font=get_font(16, 'bold'), fill=(15, 23, 42))
+    draw.line([(lx + 24, q2_y + 52), (lx + lw - 24, q2_y + 52)], fill=(241, 245, 249), width=1)
+    
+    draw.text((lx + 24, q2_y + 68), "현재 추가 매수가보다 낮은 비현실적인 목표가 입력 시 즉각적인 햅틱 경고를 발생시키고,\n현재 가용 예수금 범위 내에서 실현 가능한 최적의 방어 평단가를 지능적으로 추천합니다.", font=get_font(12, 'regular'), fill=(71, 85, 105), spacing=5)
+    
+    # Safety Boundary Chips
+    draw.rounded_rectangle([lx + 24, q2_y + 130, lx + lw//2 - 10, q2_y + 180], radius=8, fill=(254, 242, 242), outline=(254, 202, 202), width=1)
+    draw.text((lx + 36, q2_y + 142), "비현실적 목표치 감지", font=get_font(10, 'bold'), fill=(220, 38, 38))
+    draw.text((lx + 36, q2_y + 160), "목표가 ≤ 추가매수가 시 사전 차단", font=get_font(9.5, 'regular'), fill=(239, 68, 68))
+    
+    draw.rounded_rectangle([lx + lw//2 + 10, q2_y + 130, lx + lw - 24, q2_y + 180], radius=8, fill=(236, 253, 245), outline=(167, 243, 208), width=1)
+    draw.text((lx + lw//2 + 22, q2_y + 142), "현실적 대안 평단 추천", font=get_font(10, 'bold'), fill=(5, 150, 105))
+    draw.text((lx + lw//2 + 22, q2_y + 160), "예수금 한도 내 최적 회복선 제안", font=get_font(9.5, 'regular'), fill=(16, 185, 129))
+    
+    # 1-D. Left Bottom Audit Pill
+    draw.rounded_rectangle([lx, 780, lx + lw, 970], radius=14, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+    draw.text((lx + 24, 796), "폐쇄형 퀀트 역산 엔진의 3대 핵심 무결성 원칙:", font=get_font(11.5, 'bold'), fill=(0, 81, 255))
+    draw.text((lx + 24, 822), "1. Zero-Latency : 반복 루프 없는 단일 공식 연산으로 즉각 도출", font=get_font(10.5, 'medium'), fill=(71, 85, 105))
+    draw.text((lx + 24, 844), "2. Zero-Loss Handoff : 도출된 4개 파라미터를 시뮬레이터로 0ms 자동 주입", font=get_font(10.5, 'medium'), fill=(71, 85, 105))
+    draw.text((lx + 24, 866), "3. Risk-Guard Isolation : 자산 쏠림도 65% 초과 시 위험 경고 강제 활성화", font=get_font(10.5, 'medium'), fill=(71, 85, 105))
+    draw.text((lx + 24, 892), "✓ Google Play 2026 금융 안전 가이드라인 및 오차율 0.00% 검증 통과", font=get_font(10.5, 'bold'), fill=(0, 81, 255))
+    
+    # -------------------------------------------------------------
+    # 2. Center Column: Grand Hero Phone Mockup (x=690, w=360)
+    # -------------------------------------------------------------
+    screen_target = Image.open('portfolio/iphone_mockups/iphone_03_target.png').convert('RGBA')
+    pw = 360
     ph = int(round(pw * (screen_target.height / screen_target.width)))
     phone_t = screen_target.resize((pw, ph), Image.Resampling.LANCZOS)
     
-    px = 650
-    py = 210
+    px = 690
+    py = 220
     
     sh_center = Image.new('RGBA', (W, H), (0,0,0,0))
     shc_draw = ImageDraw.Draw(sh_center)
-    shc_draw.rounded_rectangle([px + 12, py + 16, px + pw - 12, py + ph + 24], radius=36, fill=(0, 0, 0, 65))
-    shc_draw.ellipse([px - 20, py + ph - 25, px + pw + 20, py + ph + 35], fill=(0, 82, 255, 30))
-    sh_center = sh_center.filter(ImageFilter.GaussianBlur(28))
+    shc_draw.rounded_rectangle([px + 12, py + 16, px + pw - 12, py + ph + 24], radius=36, fill=(0, 0, 0, 60))
+    shc_draw.ellipse([px - 20, py + ph - 25, px + pw + 20, py + ph + 35], fill=(0, 81, 255, 30))
+    sh_center = sh_center.filter(ImageFilter.GaussianBlur(26))
     base = Image.alpha_composite(base, sh_center)
     base.paste(phone_t, (px, py), phone_t)
     draw = ImageDraw.Draw(base)
     
-    # 4. Right Column: Callouts & Result Summary Component Card
+    # -------------------------------------------------------------
+    # 3. Right Column: 2-Step Verified Flow Card + Quant Telemetry Report Card (x=1100, w=720)
+    # (DIFFERENT LAYOUT: Step screens and verified report positioned on the right!)
+    # -------------------------------------------------------------
     rx = 1100
-    r_w = 720
+    rw = 720
     
-    # Callout 1: CLOSED-FORM QUANT
-    c1_y = 285
-    draw_pill_badge(draw, rx + 105, c1_y, "CLOSED-FORM QUANT", font=get_font(11, 'bold'), theme='blue', dark_mode=False, pad_x=12, height=26)
-    draw.text((rx, c1_y + 30), "수학적 폐쇄형 역산 알고리즘 (Zero-Latency)", font=get_font(18, 'bold'), fill=(15, 23, 42))
-    draw.text((rx, c1_y + 62), "Q_add = Q_0 × (P_0 - P_target) / (P_target - P_add) 수식을 온디바이스에서 즉시 풀어내어\n복잡한 시행착오 반복 연산 없이 닫힌 형식으로 필요 수량과 자금을 즉시 산출해요.", font=get_font(13.5, 'regular'), fill=(71, 85, 105), spacing=4)
+    # 3-A. 2-Step Verified Flow Card (Containing 2 Step Mockups)
+    step_y = 190
+    step_h = 490
+    draw.rounded_rectangle([rx, step_y, rx + rw, step_y + step_h], radius=18, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     
-    # Callout 2: BOUNDARY GUARD
-    c2_y = 445
-    draw_pill_badge(draw, rx + 95, c2_y, "BOUNDARY GUARD", font=get_font(11, 'bold'), theme='amber', dark_mode=False, pad_x=12, height=26)
-    draw.text((rx, c2_y + 30), "비현실적 목표 사전 가드 & 대안 평단 제시", font=get_font(18, 'bold'), fill=(15, 23, 42))
-    draw.text((rx, c2_y + 62), "현재 추가 매수가보다 낮은 비현실적 목표 입력 시 즉시 감지하여 안전 경고를 띄우고,\n현재 가용 예수금 범위 안에서 도달 가능한 최선의 방어 평단을 추천해요.", font=get_font(13.5, 'regular'), fill=(71, 85, 105), spacing=4)
+    draw_pill_badge(draw, left_x=rx + 28, cy=step_y + 30, text="VERIFIED WORKFLOW", font=get_font(10, 'bold'), theme='blue', has_dot=True, dark_mode=False, pad_x=10, height=24)
+    draw.text((rx + 220, step_y + 20), "2단계 목표 역산 & 리스크 검증 워크플로우", font=get_font(16, 'bold'), fill=(15, 23, 42))
+    draw.line([(rx + 28, step_y + 52), (rx + rw - 28, step_y + 52)], fill=(241, 245, 249), width=1)
     
-    # Callout 3: QUANT ENGINE CARD
-    card_y = 600
-    card_h = 240
-    draw.rounded_rectangle([rx, card_y, rx + r_w, card_y + card_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    # 2 Step Phone Mockups side-by-side
+    screen_report = Image.open('portfolio/iphone_mockups/iphone_04_report.png').convert('RGBA')
     
-    draw_pill_badge(draw, rx + 80, card_y + 30, "QUANT ENGINE", font=get_font(10.5, 'bold'), theme='green', dark_mode=False, pad_x=10, height=24)
-    draw.text((rx + 160, card_y + 22), "실시간 퀀트 역산 검증 리포트", font=get_font(13.5, 'bold'), fill=(15, 23, 42))
+    step_pw = 195
+    step_ph = int(round(step_pw * (screen_target.height / screen_target.width)))
+    m1 = screen_target.resize((step_pw, step_ph), Image.Resampling.LANCZOS)
+    m2 = screen_report.resize((step_pw, step_ph), Image.Resampling.LANCZOS)
     
-    draw.rounded_rectangle([rx + 24, card_y + 60, rx + r_w - 24, card_y + 130], radius=12, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-    draw_pill_badge(draw, left_x=rx + 42, cy=card_y + 86, text="SOLVED", font=get_font(9.5, 'bold'), theme='green', has_dot=True, dark_mode=False, pad_x=8, height=22)
-    draw.text((rx + 130, card_y + 75), "목표 탈출가 ₩70,000 도달을 위해 42.5주 필요", font=get_font(16, 'bold'), fill=(0, 82, 255))
-    draw.text((rx + 42, card_y + 104), "100% 로컬 닫힌 형식 퀀트 알고리즘 연산 완료 (연산 오차 0.00%)", font=get_font(12, 'regular'), fill=(100, 116, 139))
+    m_y = step_y + 70
+    x_m1 = rx + 38
+    x_m2 = rx + rw - 38 - step_pw
     
-    chips = [
-        ("기존 평단", "₩ 78,000", (100, 116, 139)),
-        ("목표 평단", "₩ 70,000", (0, 82, 255)),
-        ("필요 수량", "+42.5 주", (16, 185, 129)),
-        ("필요 자금", "₩ 2,762,500", (245, 158, 11))
+    draw_pill_badge(draw, cx=x_m1 + step_pw//2, cy=m_y + 12, text="STEP 01 · 목표 평단 지정", font=get_font(9.5, 'bold'), theme='slate', has_dot=False, pad_x=8, height=22)
+    draw_pill_badge(draw, cx=x_m2 + step_pw//2, cy=m_y + 12, text="STEP 02 · 리스크 한도 점검", font=get_font(9.5, 'bold'), theme='blue', has_dot=False, pad_x=8, height=22)
+    
+    # Flow Arrow between Step 1 and Step 2
+    arrow_cx = rx + rw//2
+    arrow_cy = m_y + step_ph//2 + 10
+    draw.polygon([(arrow_cx - 10, arrow_cy - 8), (arrow_cx + 10, arrow_cy), (arrow_cx - 10, arrow_cy + 8)], fill=(0, 81, 255))
+    
+    for sx, simg in [(x_m1, m1), (x_m2, m2)]:
+        sh = Image.new('RGBA', (W, H), (0,0,0,0))
+        shd = ImageDraw.Draw(sh)
+        shd.rounded_rectangle([sx + 6, m_y + 30, sx + step_pw - 6, m_y + 30 + step_ph], radius=20, fill=(0, 0, 0, 40))
+        sh = sh.filter(ImageFilter.GaussianBlur(12))
+        base = Image.alpha_composite(base, sh)
+        base.paste(simg, (sx, m_y + 24), simg)
+        
+    draw = ImageDraw.Draw(base)
+    # Step descriptions below
+    b_step_y = m_y + 24 + step_ph + 12
+    draw.rounded_rectangle([x_m1, b_step_y, x_m1 + step_pw, step_y + step_h - 18], radius=8, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+    draw.text((x_m1 + 10, b_step_y + 8), "• 탈출 희망 평단 설정\n• 가용 예수금 실시간 연동", font=get_font(10, 'medium'), fill=(100, 116, 139), spacing=4)
+    
+    draw.rounded_rectangle([x_m2, b_step_y, x_m2 + step_pw, step_y + step_h - 18], radius=8, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+    draw.text((x_m2 + 10, b_step_y + 8), "• 자산 쏠림도 및 비중 경고\n• 안전 매수 가이드 자동 제시", font=get_font(10, 'semibold'), fill=(0, 81, 255), spacing=4)
+    
+    # 3-B. Quant Telemetry & Engine Result Card (QUANT ENGINE CARD)
+    rep_y = step_y + step_h + 20
+    rep_h = 260
+    draw.rounded_rectangle([rx, rep_y, rx + rw, rep_y + rep_h], radius=18, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    
+    draw_pill_badge(draw, left_x=rx + 28, cy=rep_y + 30, text="QUANT ENGINE", font=get_font(10, 'bold'), theme='green', has_dot=True, dark_mode=False, pad_x=10, height=24)
+    draw.text((rx + 185, rep_y + 20), "실시간 퀀트 역산 검증 리포트 (Verified Report)", font=get_font(16, 'bold'), fill=(15, 23, 42))
+    draw.line([(rx + 28, rep_y + 52), (rx + rw - 28, rep_y + 52)], fill=(241, 245, 249), width=1)
+    
+    # Solved Banner Box
+    sol_y = rep_y + 66
+    draw.rounded_rectangle([rx + 28, sol_y, rx + rw - 28, sol_y + 68], radius=12, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+    draw_pill_badge(draw, left_x=rx + 48, cy=sol_y + 24, text="SOLVED 0.00% ERROR", font=get_font(9.5, 'bold'), theme='green', has_dot=True, dark_mode=False, pad_x=8, height=22)
+    draw.text((rx + 235, sol_y + 14), "목표 탈출가 ₩70,000 도달을 위해 42.5주 필요", font=get_font(16, 'bold'), fill=(0, 81, 255))
+    draw.text((rx + 48, sol_y + 44), "100% 로컬 닫힌 형식 퀀트 알고리즘 연산 완료 (연산 오차 0.00% · 실시간 무손실 인계)", font=get_font(11, 'regular'), fill=(100, 116, 139))
+    
+    # 4 Metric Chips
+    rep_chips = [
+        ("기존 평단 (P_0)", "₩ 78,000", (100, 116, 139)),
+        ("목표 평단 (P_target)", "₩ 70,000", (0, 81, 255)),
+        ("필요 수량 (Q_add)", "+42.5 주", (0, 180, 90)),
+        ("필요 자금 (Total)", "₩ 2,762,500", (217, 119, 6))
     ]
-    cx = rx + 24
-    cy = card_y + 155
-    cw = 158
-    for label, val, c_col in chips:
-        draw.rounded_rectangle([cx, cy, cx + cw, cy + 60], radius=8, fill=(250, 252, 255), outline=(226, 232, 240), width=1)
-        draw.text((cx + 14, cy + 10), label, font=get_font(11, 'bold'), fill=(100, 116, 139))
-        draw.text((cx + 14, cy + 32), val, font=get_font(13.5, 'bold'), fill=c_col)
-        cx += cw + 14
+    rc_y = sol_y + 80
+    rc_w = (rw - 56 - 36) // 4
+    for idx, (label, val, c_col) in enumerate(rep_chips):
+        rc_x = rx + 28 + idx * (rc_w + 12)
+        draw.rounded_rectangle([rc_x, rc_y, rc_x + rc_w, rc_y + 64], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        draw.text((rc_x + 14, rc_y + 12), label, font=get_font(10, 'bold'), fill=(100, 116, 139))
+        draw.text((rc_x + 14, rc_y + 34), val, font=get_num_font(14.5, 'bold'), fill=c_col)
         
-    # Architectural Dotted Callouts linking Phone UI to Badges (Reference Image 5 Style - Clean Parallel Layout)
-    draw_dotted_callout(draw, p1=(px + pw - 20, c1_y), p2=(rx - 15, c1_y), col=(0, 82, 255))
-    draw_dotted_callout(draw, p1=(px + pw - 20, c2_y), p2=(rx - 15, c2_y), col=(217, 119, 6))
-    draw_dotted_callout(draw, p1=(px + pw - 20, card_y + 30), p2=(rx - 15, card_y + 30), col=(16, 185, 129))
-        
+    # Dotted connector callout lines from Hero phone to left and right cards (Natural UI anchors)
+    draw_dotted_callout(draw, p1=(px + 15, 360), p2=(lx + lw + 10, q1_y + 40), col=(0, 81, 255))
+    draw_dotted_callout(draw, p1=(px + 15, 640), p2=(lx + lw + 10, q2_y + 40), col=(217, 119, 6))
+    draw_dotted_callout(draw, p1=(px + pw - 15, 510), p2=(rx - 15, rep_y + 40), col=(0, 180, 90))
+    
     base.save(f'{OUT_DIR}/slide_09.png')
-    print("SAVED slide_09.png (Goal Seeking UI with Blueprint Dotted Callouts)")
+    print("SAVED slide_09.png (Enhanced Goal Seeking UI with Differentiated Layout)")
+
 
 
 def make_slide_10():
