@@ -500,6 +500,63 @@ body.fit-window .behance-slide-img {
   border-radius: 8px;
 }
 
+.proto-section-pills {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.proto-section-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 12px 18px;
+  border-radius: 12px;
+  color: #F1F5F9;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.proto-section-btn:hover {
+  background: rgba(0, 87, 255, 0.18);
+  border-color: rgba(0, 210, 255, 0.5);
+  color: #00D2FF;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 87, 255, 0.25);
+}
+
+.proto-section-btn .pill-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(0, 210, 255, 0.15);
+  color: #00D2FF;
+  border: 1px solid rgba(0, 210, 255, 0.3);
+}
+
+.proto-section-btn .pill-text {
+  font-size: 13.5px;
+  font-weight: 700;
+  flex: 1;
+}
+
+.proto-section-btn .pill-icon {
+  font-size: 14px;
+  font-weight: 700;
+  opacity: 0.6;
+  transition: transform 0.2s ease;
+}
+
+.proto-section-btn:hover .pill-icon {
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
+
 .proto-showcase-cta {
   display: flex;
   align-items: center;

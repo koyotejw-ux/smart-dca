@@ -3,95 +3,155 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>스마트 물타기 계산기 (Smart DCA Calculator) - Live Interactive Prototype</title>
+  <title>스마트 물타기 계산기 (Smart DCA Calculator) - Live Mockup Phone Simulator</title>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-  <link rel="stylesheet" href="style.css?v=20261024_prototype_v2">
   <style>
-    body {
-      background: radial-gradient(circle at 50% 20%, #0d1527 0%, #080b11 60%, #04060a 100%);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 0 0 60px 0;
-      color: #E2E8F0;
-      font-family: 'Pretendard', sans-serif;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 30%, #0d1527 0%, #080b11 60%, #030508 100%);
+      color: #E2E8F0;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Floating Glassmorphism Navigation Bar */
     .proto-navbar {
       width: 100%;
-      max-width: 1380px;
-      padding: 20px 24px;
+      height: 56px;
+      padding: 0 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
+      background: rgba(13, 21, 39, 0.75);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      margin-bottom: 24px;
-      box-sizing: border-box;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 100;
+      flex-shrink: 0;
     }
 
     .proto-nav-left {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
     }
 
     .btn-back-deck {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       color: #E2E8F0;
       font-size: 13px;
       font-weight: 700;
-      padding: 8px 16px;
+      padding: 7px 15px;
       border-radius: 9999px;
       text-decoration: none;
-      transition: all 0.25s ease;
+      transition: all 0.2s ease;
     }
 
     .btn-back-deck:hover {
       background: rgba(0, 210, 255, 0.15);
-      border-color: rgba(0, 210, 255, 0.5);
+      border-color: rgba(0, 210, 255, 0.45);
       color: #00D2FF;
       transform: translateX(-2px);
     }
 
     .proto-brand {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
-      color: #FFFFFF;
+      color: #94A3B8;
       letter-spacing: -0.01em;
     }
 
-    .proto-brand span {
-      color: #00D2FF;
+    .proto-brand strong {
+      color: #FFFFFF;
     }
 
+    /* Center Flow Segment Switcher Pills */
+    .flow-pill-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 4px;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .flow-pill {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #94A3B8;
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: inherit;
+    }
+
+    .flow-pill .flow-num {
+      font-size: 10.5px;
+      font-weight: 800;
+      opacity: 0.65;
+    }
+
+    .flow-pill:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .flow-pill.active {
+      background: linear-gradient(135deg, #0057FF, #00D2FF);
+      color: #FFFFFF;
+      border-color: transparent;
+      box-shadow: 0 2px 12px rgba(0, 210, 255, 0.35);
+    }
+
+    .flow-pill.active .flow-num {
+      opacity: 0.9;
+    }
+
+    /* Right Quick Actions */
     .proto-nav-right {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .live-status-pill {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       background: rgba(0, 230, 118, 0.12);
       border: 1px solid rgba(0, 230, 118, 0.3);
       color: #00E676;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
-      padding: 6px 14px;
+      padding: 5px 12px;
       border-radius: 9999px;
     }
 
     .status-dot {
-      width: 7px;
-      height: 7px;
+      width: 6.5px;
+      height: 6.5px;
       border-radius: 50%;
       background: #00E676;
       box-shadow: 0 0 8px #00E676;
@@ -103,210 +163,107 @@
       50% { opacity: 0.4; transform: scale(0.85); }
     }
 
-    .btn-open-fullapp {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: linear-gradient(135deg, #0057FF, #00D2FF);
-      color: #FFFFFF;
-      font-size: 12.5px;
-      font-weight: 700;
-      padding: 7px 16px;
+    .btn-icon-action {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #E2E8F0;
+      padding: 6px 12px;
       border-radius: 9999px;
-      text-decoration: none;
-      box-shadow: 0 4px 14px rgba(0, 87, 255, 0.35);
-      transition: all 0.2s ease;
-    }
-
-    .btn-open-fullapp:hover {
-      box-shadow: 0 6px 20px rgba(0, 210, 255, 0.5);
-      transform: translateY(-1px);
-    }
-
-    .proto-container {
-      width: 100%;
-      max-width: 1380px;
-      padding: 0 24px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .proto-header {
-      background: rgba(16, 22, 34, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 18px;
-      padding: 24px 28px;
-      box-sizing: border-box;
-      backdrop-filter: blur(12px);
-    }
-
-    .proto-kicker {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-
-    .proto-badge {
+      font-size: 12px;
+      font-weight: 700;
       display: inline-flex;
       align-items: center;
-      background: rgba(0, 210, 255, 0.12);
-      border: 1px solid rgba(0, 210, 255, 0.35);
-      color: #00D2FF;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 6px;
-      letter-spacing: 0.05em;
-    }
-
-    .proto-subtext {
-      color: #64748B;
-      font-size: 12px;
-      font-family: monospace;
-    }
-
-    .proto-title {
-      font-size: 28px;
-      font-weight: 900;
-      color: #FFFFFF;
-      margin: 0 0 8px 0;
-      letter-spacing: -0.02em;
-    }
-
-    .proto-desc {
-      font-size: 14.5px;
-      line-height: 1.6;
-      color: #94A3B8;
-      margin: 0 0 20px 0;
-    }
-
-    /* 4-Step Interactive Flow Stepper */
-    .flow-stepper-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-    }
-
-    .flow-step-btn {
-      background: rgba(9, 13, 22, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 14px 16px;
-      text-align: left;
+      gap: 5px;
       cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .btn-icon-action:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #FFFFFF;
+    }
+
+    /* Device Center Stage: Zero Document Clutter */
+    .device-stage {
+      flex: 1;
+      width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      align-items: center;
+      justify-content: center;
       position: relative;
       overflow: hidden;
+      padding: 12px 20px;
     }
 
-    .flow-step-btn:hover {
-      border-color: rgba(0, 210, 255, 0.4);
-      background: rgba(16, 22, 34, 0.95);
-      transform: translateY(-2px);
-    }
-
-    .flow-step-btn.active {
-      border-color: #00D2FF;
-      background: linear-gradient(180deg, rgba(0, 87, 255, 0.2) 0%, rgba(0, 210, 255, 0.08) 100%);
-      box-shadow: 0 0 20px rgba(0, 210, 255, 0.25);
-    }
-
-    .flow-step-btn.active::before {
+    /* Ambient Lighting Behind Mockup */
+    .device-stage::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #0057FF, #00D2FF);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 480px;
+      height: 720px;
+      background: radial-gradient(circle, rgba(0, 110, 255, 0.22) 0%, rgba(0, 210, 255, 0.08) 45%, transparent 75%);
+      filter: blur(50px);
+      pointer-events: none;
+      z-index: 1;
     }
 
-    .step-tag-pill {
-      font-size: 10px;
-      font-weight: 800;
-      color: #64748B;
-      letter-spacing: 0.04em;
-    }
-
-    .flow-step-btn.active .step-tag-pill {
-      color: #00D2FF;
-    }
-
-    .step-title-text {
-      font-size: 13.5px;
-      font-weight: 800;
-      color: #FFFFFF;
-    }
-
-    .step-sub-desc {
-      font-size: 11.5px;
-      color: #94A3B8;
-      line-height: 1.35;
-    }
-
-    /* Dual Workbench Layout */
-    .workbench-layout {
-      display: grid;
-      grid-template-columns: 420px 1fr;
-      gap: 28px;
-      align-items: start;
-    }
-
-    /* Authentic Mobile Smartphone Chassis */
-    .phone-column {
+    /* Authentic Smartphone Chassis */
+    .phone-chassis {
+      position: relative;
+      z-index: 10;
+      width: 390px;
+      max-width: 90vw;
+      height: min(844px, calc(100vh - 100px));
+      aspect-ratio: 390 / 844;
+      background: #000000;
+      border: 11px solid #1E232E;
+      border-radius: 52px;
+      box-shadow: 
+        0 30px 90px rgba(0, 0, 0, 0.95),
+        0 0 0 1px rgba(255, 255, 255, 0.12),
+        0 0 45px rgba(0, 87, 255, 0.25);
+      overflow: hidden;
+      box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 16px;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .phone-chassis {
-      width: 390px;
-      height: 844px;
-      background: #000000;
-      border: 12px solid #1E232E;
-      border-radius: 54px;
-      box-shadow: 0 35px 90px rgba(0, 0, 0, 0.95), 0 0 0 1px #334155, 0 0 45px rgba(0, 87, 255, 0.25);
-      position: relative;
-      overflow: hidden;
-      user-select: none;
-      box-sizing: content-box;
-    }
-
-    /* Side hardware buttons */
+    /* Side Hardware Buttons via Pseudo-elements */
     .phone-chassis::before {
       content: '';
       position: absolute;
-      left: -15px;
-      top: 110px;
+      left: -14px;
+      top: 100px;
       width: 3px;
-      height: 26px;
+      height: 24px;
       background: #334155;
       border-radius: 2px 0 0 2px;
-      box-shadow: 0 44px 0 #334155, 0 92px 0 #334155;
+      box-shadow: 0 42px 0 #334155, 0 88px 0 #334155;
     }
 
     .phone-chassis::after {
       content: '';
       position: absolute;
-      right: -15px;
-      top: 160px;
+      right: -14px;
+      top: 145px;
       width: 3px;
-      height: 52px;
+      height: 48px;
       background: #334155;
       border-radius: 0 2px 2px 0;
     }
 
-    /* Sleek Speaker Grill & Camera Punch-hole */
+    /* Dynamic Island at Top */
     .phone-dynamic-island {
       position: absolute;
-      top: 6px;
+      top: 7px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
@@ -314,448 +271,187 @@
       gap: 12px;
       z-index: 50;
       pointer-events: none;
+      background: #000000;
+      padding: 3px 14px;
+      border-radius: 20px;
     }
 
     .island-speaker {
-      width: 50px;
+      width: 44px;
       height: 4px;
-      background: #2D3748;
+      background: #27272A;
       border-radius: 2px;
     }
 
     .island-cam {
       width: 8px;
       height: 8px;
-      background: #0F172A;
+      background: #09090B;
       border: 1.5px solid #1E293B;
       border-radius: 50%;
     }
 
-    .island-sensor {
-      width: 5px;
-      height: 5px;
-      background: #020617;
-      border-radius: 50%;
-      margin-right: 8px;
-    }
-
-    /* Live Flutter Web Iframe */
+    /* Live Flutter Web App Iframe */
     .flutter-app-iframe {
       width: 100%;
       height: 100%;
       border: none;
-      border-radius: 42px;
+      border-radius: 40px;
       background: #05070B;
       display: block;
+      z-index: 10;
     }
 
-    .phone-caption {
-      font-size: 12px;
-      color: #64748B;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Right Details & Telemetry Workbench */
-    .workbench-column {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .guide-card {
-      background: rgba(16, 22, 34, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      padding: 22px 24px;
-      box-sizing: border-box;
-      backdrop-filter: blur(12px);
-    }
-
-    .guide-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .guide-tag {
-      font-size: 11px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 4px;
-      background: rgba(0, 87, 255, 0.15);
-      color: #60A5FA;
-      border: 1px solid rgba(0, 87, 255, 0.3);
-    }
-
-    .guide-title {
-      font-size: 18px;
-      font-weight: 800;
-      color: #FFFFFF;
-      margin: 0 0 10px 0;
-    }
-
-    .guide-text {
-      font-size: 13.5px;
-      line-height: 1.6;
-      color: #CBD5E1;
-      margin: 0 0 16px 0;
-    }
-
-    .guide-action-box {
-      background: rgba(9, 13, 22, 0.7);
-      border: 1px dashed rgba(0, 210, 255, 0.35);
-      border-radius: 10px;
-      padding: 12px 16px;
-      font-size: 12.5px;
-      color: #00D2FF;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .guide-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .spec-item {
-      background: rgba(9, 13, 22, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 10px;
-      padding: 12px 14px;
-    }
-
-    .spec-label {
-      font-size: 11px;
-      color: #64748B;
-      margin-bottom: 4px;
-    }
-
-    .spec-value {
-      font-size: 13.5px;
-      font-weight: 800;
-      color: #F8FAFC;
-    }
-
-    .invariant-card {
-      background: rgba(16, 22, 34, 0.85);
-      border: 1px solid rgba(0, 230, 118, 0.25);
-      border-radius: 16px;
-      padding: 20px 24px;
-      box-sizing: border-box;
-    }
-
-    .inv-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .inv-icon {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: rgba(0, 230, 118, 0.2);
-      color: #00E676;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 13px;
-    }
-
-    .inv-title {
-      font-size: 14.5px;
-      font-weight: 800;
-      color: #FFFFFF;
-    }
-
-    .inv-formula-box {
-      background: #090D16;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-family: monospace;
-      font-size: 13px;
-      color: #00E676;
-      margin-bottom: 10px;
-    }
-
-    .inv-desc {
-      font-size: 12.5px;
-      line-height: 1.55;
+    /* Subtle Floating Bottom Hint */
+    .device-caption-hint {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      font-size: 11.5px;
       color: #94A3B8;
-      margin: 0;
-    }
-
-    .controls-card {
-      background: rgba(16, 22, 34, 0.85);
+      background: rgba(15, 23, 42, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      padding: 20px 24px;
+      padding: 5px 16px;
+      border-radius: 9999px;
+      backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .btn-action-pill {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #F8FAFC;
-      font-size: 12.5px;
-      font-weight: 700;
-      padding: 8px 16px;
-      border-radius: 9999px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
       gap: 6px;
+      pointer-events: none;
     }
 
-    .btn-action-pill:hover {
-      background: rgba(0, 210, 255, 0.15);
-      border-color: rgba(0, 210, 255, 0.4);
+    .device-caption-hint strong {
       color: #00D2FF;
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Navigation Bar -->
+  <!-- Top Floating Minimal Navigation & Section Switcher -->
   <header class="proto-navbar">
     <div class="proto-nav-left">
-      <a href="index.html" class="btn-back-deck">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        케이스 스터디 슬라이드로 돌아가기
+      <a href="index.html#live-prototype" class="btn-back-deck">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        포트폴리오로 돌아가기
       </a>
       <div class="proto-brand">
-        Smart DCA <span>Simulator</span> · Live App Engine
+        <strong>스마트 물타기 계산기</strong> · 모바일 목업 테스터
       </div>
     </div>
 
+    <!-- Center Flow Segment Switcher: 4 Core Sections -->
+    <nav class="flow-pill-group" aria-label="테스트 구간 선택">
+      <button class="flow-pill active" data-flow="home" id="pill-home">
+        <span class="flow-num">01</span>
+        <span>자산 진단</span>
+      </button>
+      <button class="flow-pill" data-flow="voice" id="pill-voice">
+        <span class="flow-num">02</span>
+        <span>0.2초 음성 도크</span>
+      </button>
+      <button class="flow-pill" data-flow="target" id="pill-target">
+        <span class="flow-num">03</span>
+        <span>목표 역산 엔진</span>
+      </button>
+      <button class="flow-pill" data-flow="sim" id="pill-sim">
+        <span class="flow-num">04</span>
+        <span>최종 플랜 확정</span>
+      </button>
+    </nav>
+
+    <!-- Right Quick Actions -->
     <div class="proto-nav-right">
       <span class="live-status-pill">
         <span class="status-dot"></span>
-        Flutter Web 60fps Native
+        Flutter Web 60fps
       </span>
-      <a href="app/index.html" target="_blank" class="btn-open-fullapp">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        실제 앱 전체화면 열기
+      <button class="btn-icon-action" id="btn-reload" title="현재 화면 새로고침">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        새로고침
+      </button>
+      <a href="app/index.html" target="_blank" class="btn-icon-action" id="btn-fullscreen-app" title="실제 앱 브라우저 새 창에서 열기">
+        새 탭 ↗
       </a>
     </div>
   </header>
 
-  <!-- Main Prototyping Container -->
-  <main class="proto-container">
+  <!-- Main Viewport: Centered Mockup Phone Device -->
+  <main class="device-stage">
     
-    <!-- Header with 4-Step User Flow Stepper -->
-    <section class="proto-header">
-      <div class="proto-kicker">
-        <span class="proto-badge">⚡ LIVE FLUTTER APPLICATION</span>
-        <span class="proto-subtext">AUTHENTIC APP WEB ENGINE (390×844) · CORE QUANT FLOW ONLY</span>
-      </div>
-      <h1 class="proto-title">실제 플러터 앱 기반 인터랙티브 프로토타입</h1>
-      <p class="proto-desc">
-        케이스 스터디에서 기획한 <strong>핵심 4단계 UX 플로우(자산 진단 ➔ 음성 도크 ➔ 목표 역산 ➔ 플랜 확정)</strong>를 모바일 뷰포트에서 직접 실행할 수 있습니다. 상단 탭을 눌러 각 단계로 즉시 점프하거나, 화면 속 모바일 UI를 직접 터치하여 자연스럽게 플로우를 체험해 보세요.
-      </p>
-
-      <!-- 4-Step Flow Stepper -->
-      <div class="flow-stepper-row">
-        <button class="flow-step-btn active" data-step="0" data-flow="home" id="step-btn-0">
-          <span class="step-tag-pill">STEP 01</span>
-          <span class="step-title-text">자산 현황 진단</span>
-          <span class="step-sub-desc">삼성전자 -16.7% 계좌 상태 1초 조망</span>
-        </button>
-        <button class="flow-step-btn" data-step="1" data-flow="voice" id="step-btn-1">
-          <span class="step-tag-pill">STEP 02</span>
-          <span class="step-title-text">0.2초 음성 도크</span>
-          <span class="step-sub-desc">'7만원에 50주' 자연어 발화/프리셋 탭</span>
-        </button>
-        <button class="flow-step-btn" data-step="2" data-flow="target" id="step-btn-2">
-          <span class="step-tag-pill">STEP 03</span>
-          <span class="step-title-text">목표 평단가 역산</span>
-          <span class="step-sub-desc">목표 72,000원 입력 시 +38주 실시간 도출</span>
-        </button>
-        <button class="flow-step-btn" data-step="3" data-flow="sim" id="step-btn-3">
-          <span class="step-tag-pill">STEP 04</span>
-          <span class="step-title-text">최종 플랜 확정</span>
-          <span class="step-sub-desc">예수금 65% 보존 최적 평단 1-Tap 주문 복사</span>
-        </button>
-      </div>
-    </section>
-
-    <!-- Dual Workbench -->
-    <div class="workbench-layout">
+    <div class="phone-chassis" id="phone-chassis">
       
-      <!-- Left: Authentic Smartphone Chassis with Live Flutter Web App -->
-      <div class="phone-column">
-        <div class="phone-chassis" id="phone-chassis">
-          
-          <!-- Speaker Grill & Camera Punch-hole -->
-          <div class="phone-dynamic-island">
-            <div class="island-speaker"></div>
-            <div class="island-cam"></div>
-          </div>
-
-          <!-- Real Flutter Web App Iframe -->
-          <iframe id="flutter-frame" class="flutter-app-iframe" src="app/index.html?flow=home" allow="microphone" title="Smart DCA Flutter Live App"></iframe>
-        </div>
-
-        <div class="phone-caption">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-          화면 내부를 직접 터치/클릭하여 실제 앱 기능을 자유롭게 조작할 수 있습니다.
-        </div>
+      <!-- Speaker & Dynamic Island -->
+      <div class="phone-dynamic-island">
+        <div class="island-speaker"></div>
+        <div class="island-cam"></div>
       </div>
 
-      <!-- Right: Step UX Rationale & Quant Engine Workbench -->
-      <div class="workbench-column">
-        
-        <!-- Active Step Guide Card -->
-        <div class="guide-card" id="guide-card">
-          <div class="guide-header">
-            <span class="guide-tag" id="guide-tag">STEP 01 / ASSET DIAGNOSIS</span>
-            <span style="font-size: 11px; color: #64748B;">WCAG 2.1 AAA Contrast</span>
-          </div>
-          <h2 class="guide-title" id="guide-title">홈 대시보드: 공포 상황의 인지 부하 1초 제어</h2>
-          <p class="guide-text" id="guide-text">
-            갑작스러운 주가 급락(-16.7%) 시 발생하는 투자자의 시야 협착(Tunnel Vision)을 방지하기 위해, 총 자산과 실시간 손익률을 최상단 단일 카드에 배치했습니다. 복잡한 서브메뉴를 탐색할 필요 없이 1초 만에 계좌 상태를 즉시 조망합니다.
-          </p>
+      <!-- Real Flutter Web App Iframe -->
+      <iframe 
+        id="flutter-frame" 
+        class="flutter-app-iframe" 
+        src="app/index.html?flow=home" 
+        allow="microphone" 
+        title="Smart DCA Live Interactive Mobile Device">
+      </iframe>
 
-          <div class="guide-action-box" id="guide-action-box">
-            👉 <strong>체험 가이드:</strong> 폰 화면 속 삼성전자 카드의 <strong>[계산하기 &gt;]</strong> 버튼이나 우측 하단 <strong>[AI 비서]</strong> 버튼을 탭해보세요.
-          </div>
+    </div>
 
-          <div class="guide-grid">
-            <div class="spec-item">
-              <div class="spec-label">Fitts' Law 조작권</div>
-              <div class="spec-value" id="spec-ergonomics">엄지 최적 반경 (Thumb Zone 78%)</div>
-            </div>
-            <div class="spec-item">
-              <div class="spec-label">핵심 뷰포트 반응 속도</div>
-              <div class="spec-value" id="spec-latency">0.001s (Instant Handoff)</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Mathematical Invariant Verification Card -->
-        <div class="invariant-card">
-          <div class="inv-header">
-            <div class="inv-icon">✓</div>
-            <span class="inv-title">수학적 경계 불변식 검증 (Quant Invariant Guard)</span>
-          </div>
-          <div class="inv-formula-box">
-            Q_add = Q_0 × (P_0 - P_target) / (P_target - P_add)<br>
-            불변식: P_add &lt; P_target &lt; P_0 [100% 만족]
-          </div>
-          <p class="inv-desc">
-            시행착오식 단순 입력 방식과 달리, 닫힌 형태(Closed-form)의 폐쇄형 수식을 적용하여 단 1회의 연산으로 목표 도달에 필요한 매수량을 오차 없이 즉시 산출합니다.
-          </p>
-        </div>
-
-        <!-- Quick Controls -->
-        <div class="controls-card">
-          <div>
-            <div style="font-size: 13.5px; font-weight: 800; color: #FFFFFF; margin-bottom: 3px;">앱 화면 제어 컨트롤</div>
-            <div style="font-size: 11.5px; color: #64748B;">초기화하거나 전체화면 창으로 전환</div>
-          </div>
-          <div style="display: flex; gap: 8px;">
-            <button class="btn-action-pill" id="btn-reload-frame">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-              현재 화면 새로고침
-            </button>
-            <a href="app/index.html" target="_blank" class="btn-action-pill">
-              새 탭에서 열기 ↗
-            </a>
-          </div>
-        </div>
-
-      </div>
-
+    <!-- Subtle Floating Bottom Helper Hint -->
+    <div class="device-caption-hint">
+      📱 화면 속 버튼 및 키패드를 직접 터치/클릭하여 <strong>실제 플러터 앱</strong>을 조작하세요.
     </div>
 
   </main>
 
   <script>
     (function() {
-      const stepBtns = Array.from(document.querySelectorAll('.flow-step-btn'));
+      const pills = Array.from(document.querySelectorAll('.flow-pill'));
       const iframe = document.getElementById('flutter-frame');
-      const btnReload = document.getElementById('btn-reload-frame');
+      const btnReload = document.getElementById('btn-reload');
+      const btnFullscreenApp = document.getElementById('btn-fullscreen-app');
 
-      const guideTag = document.getElementById('guide-tag');
-      const guideTitle = document.getElementById('guide-title');
-      const guideText = document.getElementById('guide-text');
-      const guideActionBox = document.getElementById('guide-action-box');
-      const specErgonomics = document.getElementById('spec-ergonomics');
-      const specLatency = document.getElementById('spec-latency');
+      // Valid flows mapping
+      const validFlows = ['home', 'voice', 'target', 'sim'];
 
-      const stepData = [
-        {
-          tag: 'STEP 01 / ASSET DIAGNOSIS',
-          title: '홈 대시보드: 공포 상황의 인지 부하 1초 제어',
-          text: '갑작스러운 주가 급락(-16.7%) 시 발생하는 투자자의 시야 협착(Tunnel Vision)을 방지하기 위해, 총 자산과 실시간 손익률을 최상단 단일 카드에 배치했습니다. 복잡한 서브메뉴를 탐색할 필요 없이 1초 만에 계좌 상태를 즉시 조망합니다.',
-          action: '👉 <strong>체험 가이드:</strong> 폰 화면 속 삼성전자 카드의 <strong>[계산하기 &gt;]</strong> 버튼이나 우측 하단 <strong>[AI 비서]</strong> 버튼을 탭해보세요.',
-          ergonomics: '엄지 최적 반경 (Thumb Zone 78%)',
-          latency: '0.001s (Instant Handoff)',
-          url: 'app/index.html?flow=home'
-        },
-        {
-          tag: 'STEP 02 / VOICE DOCK',
-          title: '0.2초 음성 도크: 호가 급변 시 오입력 원천 차단',
-          text: '호가가 1초 단위로 급변하는 패닉 장세에서 모바일 8자리 숫자 키패드 오입력은 치명적인 매매 실수로 이어집니다. 0.2초 반응형 음성 도크와 원터치 호가 프리셋 칩을 결합하여, 말 한마디(\"7만원에 50주\")로 파라미터를 즉시 추출합니다.',
-          action: '👉 <strong>체험 가이드:</strong> 음성 도크 시트에서 <strong>[시뮬레이터 적용]</strong> 버튼을 누르거나, 추천 호가 칩을 탭해보세요.',
-          ergonomics: '원핸드 바텀시트 (오조작 0건 달성)',
-          latency: '0.2s (Multimodal STT Parser)',
-          url: 'app/index.html?flow=voice'
-        },
-        {
-          tag: 'STEP 03 / QUANT INVERTER',
-          title: '목표 평단가 역산 엔진: 수학적 불변성의 확실성',
-          text: '희망하는 탈출 목표 평단가(₩72,000)를 입력하면, 퀀트 불변식 엔진이 현재 보유 수량과 시장가를 역산하여 필요한 매수량(+38주)과 예수금을 0.001초 만에 산출합니다. 실시간 수량 스텝퍼로 즉각적인 피드백을 제공합니다.',
-          action: '👉 <strong>체험 가이드:</strong> 목표 평단가 입력칸의 <strong>[+] [-]</strong> 스텝퍼 버튼을 눌러 실시간 평단가와 계좌 방어율 변화를 확인하세요.',
-          ergonomics: '48dp 터치 타깃 준수 (HIG/Material)',
-          latency: '0.001s (Closed-form Inversion)',
-          url: 'app/index.html?flow=target'
-        },
-        {
-          tag: 'STEP 04 / EXECUTION PLAN',
-          title: '최종 플랜 확정: 예수금 65% 보존과 주문 플랜 확정',
-          text: '무리한 물타기로 인한 조기 현금 고갈(Premature Depletion)을 방지하기 위해 가용 예수금 대비 65% 안전 버퍼를 유지하는 최적 평단가를 확정합니다. 검토가 끝난 분할 주문 플랜은 1-Tap으로 복사하여 증권사 앱에서 바로 집행합니다.',
-          action: '👉 <strong>체험 가이드:</strong> 1차/2차 분할 매수 실행 계획을 확인하고, 상단 <strong>[초기화]</strong> 버튼으로 다시 새로운 시뮬레이션을 시작해보세요.',
-          ergonomics: '1-Tap 원터치 복사 인터랙션',
-          latency: '65.0% Cash Preservation Buffer',
-          url: 'app/index.html?flow=sim'
-        }
-      ];
+      // Function to switch flow
+      function setFlow(flow, updateUrl = true) {
+        if (!validFlows.includes(flow)) flow = 'home';
 
-      function setStep(index) {
-        stepBtns.forEach((btn, i) => {
-          btn.classList.toggle('active', i === index);
+        pills.forEach(pill => {
+          pill.classList.toggle('active', pill.getAttribute('data-flow') === flow);
         });
 
-        const data = stepData[index];
-        guideTag.textContent = data.tag;
-        guideTitle.textContent = data.title;
-        guideText.textContent = data.text;
-        guideActionBox.innerHTML = data.action;
-        specErgonomics.textContent = data.ergonomics;
-        specLatency.textContent = data.latency;
+        const targetUrl = 'app/index.html?flow=' + flow;
+        iframe.src = targetUrl;
 
-        iframe.src = data.url;
+        if (btnFullscreenApp) {
+          btnFullscreenApp.href = targetUrl;
+        }
+
+        if (updateUrl) {
+          const currentUrl = new URL(window.location);
+          currentUrl.searchParams.set('flow', flow);
+          window.history.replaceState({}, '', currentUrl.toString());
+        }
       }
 
-      stepBtns.forEach((btn, index) => {
-        btn.addEventListener('click', () => setStep(index));
+      // Check URL search parameters on initial load
+      const urlParams = new URLSearchParams(window.location.search);
+      const initialFlow = urlParams.get('flow') || 'home';
+      setFlow(initialFlow, false);
+
+      // Add click listeners to switcher pills
+      pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          const flow = pill.getAttribute('data-flow');
+          setFlow(flow, true);
+        });
       });
 
+      // Reload iframe button
       if (btnReload) {
         btnReload.addEventListener('click', () => {
           iframe.src = iframe.src;
