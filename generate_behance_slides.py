@@ -595,77 +595,129 @@ def make_slide_02():
     draw.text((100, 165), "투자자 428명 정량 데이터 및 14대 증권사 전수 조사를 통해 도출한 3대 핵심 위협과 SWOT 전략", font=get_font(15.5, 'regular'), fill=(71, 85, 105))
     
     # ==============================================================
-    # 1. TOP: 3 Horizontal Market Trend Cards (Reference Image 1 Style)
+    # 1. TOP: 3 Horizontal Market Trend Cards (Donut, H-Bar, V-Bar)
     # ==============================================================
     card_w = 546
     card_h = 220
     gap = 40
     sy = 215
     
-    # CARD 1: MARKET TREND (Donut Chart)
+    # --------------------------------------------------------------
+    # CARD 1: MARKET TREND (Large Donut Chart - 82.6%)
+    # --------------------------------------------------------------
     c1_x = 100
     draw.rounded_rectangle([c1_x, sy, c1_x + card_w, sy + card_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     draw.rounded_rectangle([c1_x, sy + 18, c1_x + 5, sy + card_h - 18], radius=2, fill=(220, 38, 38))
     
-    draw_pill_badge(draw, left_x=c1_x + 24, cy=sy + 36, text="MARKET TREND", font=get_font(10, 'bold'), theme='red', has_dot=False, pad_x=8, height=22)
-    draw.text((c1_x + 24, sy + 62), "손실 회피와 비이성적 물타기", font=get_font(16.5, 'bold'), fill=(15, 23, 42))
-    draw.text((c1_x + 24, sy + 90), "개인 투자자 10명 중 8명 이상이 출구 전략 없이\n감에 의존해 추가 매수를 감행하다 손실을 키웁니다.", font=get_font(12, 'regular'), fill=(100, 116, 139), spacing=4)
+    # Left Typography Stack
+    draw_pill_badge(draw, left_x=c1_x + 24, cy=sy + 32, text="MARKET TREND", font=get_font(10, 'bold'), theme='red', has_dot=False, pad_x=8, height=22)
+    draw.text((c1_x + 24, sy + 56), "손실 회피와 비이성적 물타기", font=get_font(16.5, 'bold'), fill=(15, 23, 42))
+    draw.text((c1_x + 24, sy + 88), "개인 투자자 10명 중 8명 이상이 출구 전략 없이\n감에 의존해 추가 매수를 감행하다 손실을 키웁니다.", font=get_font(11.5, 'regular'), fill=(100, 116, 139), spacing=4)
     
-    draw.text((c1_x + 24, sy + 148), "82.6%", font=get_num_font(42, 'black'), fill=(220, 38, 38))
-    draw.text((c1_x + 165, sy + 166), "경험률 (자본시장연구원 N=428)", font=get_font(11, 'bold'), fill=(100, 116, 139))
+    draw.text((c1_x + 24, sy + 144), "82.6%", font=get_num_font(38, 'black'), fill=(220, 38, 38))
+    draw.text((c1_x + 24, sy + 188), "경험률 (자본시장연구원 N=428)", font=get_font(11, 'bold'), fill=(100, 116, 139))
     
-    cx_donut = c1_x + card_w - 75
-    cy_donut = sy + 110
-    draw_donut_chart_on_base(base, cx_donut, cy_donut, r_outer=38, r_inner=26, percentage=82.6, col_fill=(220, 38, 38), col_track=(241, 245, 249))
+    # Right: Large Anti-Aliased Donut Chart (Radius 56 / 38)
+    cx_donut = c1_x + card_w - 95
+    cy_donut = sy + 116
+    draw_donut_chart_on_base(base, cx_donut, cy_donut, r_outer=56, r_inner=38, percentage=82.6, col_fill=(220, 38, 38), col_track=(254, 226, 226))
     draw = ImageDraw.Draw(base)
-    d_lbl = "83%"
-    d_bbox = draw.textbbox((0, 0), d_lbl, font=get_font(11, 'bold'))
-    draw.text((cx_donut - (d_bbox[0] + d_bbox[2]) / 2, cy_donut - (d_bbox[1] + d_bbox[3]) / 2), d_lbl, font=get_font(11, 'bold'), fill=(220, 38, 38))
     
-    # CARD 2: BEHAVIOR TREND (Bar Chart Comparison)
+    # Top Tag above Donut
+    draw_pill_badge(draw, cx=cx_donut, cy=sy + 32, text="N=428 실태조사", font=get_font(9, 'bold'), theme='red', has_dot=False, pad_x=8, height=20)
+    
+    # Center text inside Donut hole (Mathematically centered)
+    d_num = "83%"
+    b_dnum = draw.textbbox((0, 0), d_num, font=get_num_font(18, 'black'))
+    w_dnum = b_dnum[2] - b_dnum[0]
+    h_dnum = b_dnum[3] - b_dnum[1]
+    d_sub = "응답률"
+    b_dsub = draw.textbbox((0, 0), d_sub, font=get_font(9.5, 'bold'))
+    w_dsub = b_dsub[2] - b_dsub[0]
+    h_dsub = b_dsub[3] - b_dsub[1]
+    
+    d_tot_h = h_dnum + 4 + h_dsub
+    d_top = cy_donut - d_tot_h / 2.0
+    draw.text((cx_donut - (b_dnum[0] + b_dnum[2]) / 2.0, d_top - b_dnum[1]), d_num, font=get_num_font(18, 'black'), fill=(220, 38, 38))
+    draw.text((cx_donut - (b_dsub[0] + b_dsub[2]) / 2.0, d_top + h_dnum + 4 - b_dsub[1]), d_sub, font=get_font(9.5, 'bold'), fill=(100, 116, 139))
+    
+    # --------------------------------------------------------------
+    # CARD 2: BEHAVIOR TREND (Large Horizontal Bar Chart)
+    # --------------------------------------------------------------
     c2_x = c1_x + card_w + gap
     draw.rounded_rectangle([c2_x, sy, c2_x + card_w, sy + card_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     draw.rounded_rectangle([c2_x, sy + 18, c2_x + 5, sy + card_h - 18], radius=2, fill=(217, 119, 6))
     
-    draw_pill_badge(draw, left_x=c2_x + 24, cy=sy + 36, text="BEHAVIOR TREND", font=get_font(10, 'bold'), theme='amber', has_dot=False, pad_x=8, height=22)
-    draw.text((c2_x + 24, sy + 62), "급박한 순간의 타이핑 인지부하", font=get_font(16.5, 'bold'), fill=(15, 23, 42))
-    draw.text((c2_x + 24, sy + 90), "호가가 급변하는 폭락장에서 8자리 단가를 직접 치다\n지지선을 놓치고 추가 손실(-6.4%)에 직면합니다.", font=get_font(12, 'regular'), fill=(100, 116, 139), spacing=4)
+    # Left Typography Stack
+    draw_pill_badge(draw, left_x=c2_x + 24, cy=sy + 32, text="BEHAVIOR TREND", font=get_font(10, 'bold'), theme='amber', has_dot=False, pad_x=8, height=22)
+    draw.text((c2_x + 24, sy + 56), "급박한 순간의 타이핑 인지부하", font=get_font(16.5, 'bold'), fill=(15, 23, 42))
+    draw.text((c2_x + 24, sy + 88), "호가가 급변하는 폭락장에서 8자리 단가를 직접 치다\n지지선을 놓치고 추가 손실(-6.4%)에 직면합니다.", font=get_font(11.5, 'regular'), fill=(100, 116, 139), spacing=4)
     
-    draw.text((c2_x + 24, sy + 148), "240s → 4.2s", font=get_num_font(34, 'black'), fill=(217, 119, 6))
-    draw.text((c2_x + 24, sy + 190), "소요 시간 -98% 단축 (인지부하 인터뷰 N=428)", font=get_font(11, 'bold'), fill=(16, 185, 129))
+    draw.text((c2_x + 24, sy + 144), "240s → 4.2s", font=get_num_font(30, 'black'), fill=(217, 119, 6))
+    draw.text((c2_x + 24, sy + 188), "소요 시간 98% 단축 (인터뷰 실측)", font=get_font(11, 'bold'), fill=(16, 185, 129))
     
-    # Comparison Bar Graphic
-    bar_x = c2_x + card_w - 150
-    bar_w = 125
-    draw.text((bar_x, sy + 115), "기존 240초", font=get_font(9.5, 'bold'), fill=(148, 163, 184))
-    draw.rounded_rectangle([bar_x, sy + 130, bar_x + bar_w, sy + 138], radius=4, fill=(254, 202, 202))
-    draw.text((bar_x, sy + 152), "스마트 4.2초", font=get_font(9.5, 'bold'), fill=(16, 185, 129))
-    draw.rounded_rectangle([bar_x, sy + 167, bar_x + 12, sy + 175], radius=4, fill=(16, 185, 129))
+    # Right: Large Horizontal Bar Chart
+    bx = c2_x + card_w - 170
+    b_w = 145
+    draw_pill_badge(draw, cx=bx + b_w // 2, cy=sy + 32, text="소요 시간 비교", font=get_font(9, 'bold'), theme='amber', has_dot=False, pad_x=8, height=20)
     
-    # CARD 3: INDUSTRY GAP (Matrix Segment)
+    # Bar 1: 기존 수동 키패드 (240초)
+    draw.text((bx, sy + 57), "기존 수동 키패드", font=get_font(10, 'bold'), fill=(148, 163, 184))
+    w_240s = draw.textlength("240s", font=get_num_font(11.5, 'bold'))
+    draw.text((bx + b_w - w_240s, sy + 57), "240s", font=get_num_font(11.5, 'bold'), fill=(220, 38, 38))
+    draw.rounded_rectangle([bx, sy + 75, bx + b_w, sy + 75 + 16], radius=8, fill=(254, 226, 226))
+    draw.rounded_rectangle([bx, sy + 75, bx + b_w, sy + 75 + 16], radius=8, fill=(248, 113, 113))
+    
+    # Bar 2: 스마트 음성 도크 (4.2초)
+    draw.text((bx, sy + 101), "스마트 음성 도크", font=get_font(10, 'bold'), fill=(0, 82, 255))
+    w_4s = draw.textlength("4.2s", font=get_num_font(11.5, 'bold'))
+    draw.text((bx + b_w - w_4s, sy + 101), "4.2s", font=get_num_font(11.5, 'bold'), fill=(16, 185, 129))
+    draw.rounded_rectangle([bx, sy + 119, bx + b_w, sy + 119 + 16], radius=8, fill=(241, 245, 249))
+    draw.rounded_rectangle([bx, sy + 119, bx + 18, sy + 119 + 16], radius=8, fill=(16, 185, 129))
+    
+    # Speed Reduction Callout Badge (No missing glyphs)
+    draw_pill_badge(draw, cx=bx + b_w // 2, cy=sy + 166, text="57배 고속 · 98% 단축", font=get_font(9.5, 'bold'), theme='green', has_dot=False, pad_x=10, height=24, solid=True)
+    
+    # --------------------------------------------------------------
+    # CARD 3: INDUSTRY GAP (Large Vertical Bar / Column Chart)
+    # --------------------------------------------------------------
     c3_x = c2_x + card_w + gap
     draw.rounded_rectangle([c3_x, sy, c3_x + card_w, sy + card_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     draw.rounded_rectangle([c3_x, sy + 18, c3_x + 5, sy + card_h - 18], radius=2, fill=(0, 82, 255))
     
-    draw_pill_badge(draw, left_x=c3_x + 24, cy=sy + 36, text="INDUSTRY GAP", font=get_font(10, 'bold'), theme='blue', has_dot=False, pad_x=8, height=22)
-    draw.text((c3_x + 24, sy + 62), "증권사 MTS의 역산 기능 부재", font=get_font(16.5, 'bold'), fill=(15, 23, 42))
-    draw.text((c3_x + 24, sy + 90), "국내 모든 MTS는 사후 가중평균만 보여줄 뿐,\n'탈출하려면 정확히 몇 주를 사야 하는가'에 답하지 못함.", font=get_font(12, 'regular'), fill=(100, 116, 139), spacing=4)
+    # Left Typography Stack
+    draw_pill_badge(draw, left_x=c3_x + 24, cy=sy + 32, text="INDUSTRY GAP", font=get_font(10, 'bold'), theme='blue', has_dot=False, pad_x=8, height=22)
+    draw.text((c3_x + 24, sy + 56), "증권사 MTS의 역산 기능 부재", font=get_font(16.5, 'bold'), fill=(15, 23, 42))
+    draw.text((c3_x + 24, sy + 88), "국내 모든 MTS는 사후 가중평균만 보여줄 뿐,\n'탈출하려면 정확히 몇 주를 사야 하는가'에 답하지 못함.", font=get_font(11.5, 'regular'), fill=(100, 116, 139), spacing=4)
     
-    draw.text((c3_x + 24, sy + 148), "0 / 14개", font=get_num_font(42, 'black'), fill=(0, 82, 255))
-    draw.text((c3_x + 24, sy + 190), "국내 14대 증권사 MTS 전수조사 (역산 지원 0%)", font=get_font(11, 'bold'), fill=(100, 116, 139))
+    draw.text((c3_x + 24, sy + 144), "0 / 14개", font=get_num_font(38, 'black'), fill=(0, 82, 255))
+    draw.text((c3_x + 24, sy + 188), "국내 14대 증권사 전수조사 (역산 0%)", font=get_font(11, 'bold'), fill=(100, 116, 139))
     
-    # Matrix Grid Graphic
-    mx = c3_x + card_w - 150
-    my = sy + 120
-    bs = 14
-    bgap = 5
-    for idx in range(14):
-        r = idx // 7
-        c = idx % 7
-        bx_seg = mx + c * (bs + bgap)
-        by_seg = my + r * (bs + bgap)
-        draw.rounded_rectangle([bx_seg, by_seg, bx_seg + bs, by_seg + bs], radius=3, fill=(254, 242, 242), outline=(252, 165, 165), width=1)
-        draw.text((bx_seg + 3, by_seg + 1), "✕", font=get_font(7.5, 'bold'), fill=(239, 68, 68))
+    # Right: Large Vertical Bar / Column Chart
+    draw_pill_badge(draw, cx=c3_x + card_w - 90, cy=sy + 32, text="역산 지원율", font=get_font(9, 'bold'), theme='blue', has_dot=False, pad_x=8, height=20)
+    
+    base_v_y = sy + 160
+    col_h = 74
+    draw.line([(c3_x + card_w - 165, base_v_y), (c3_x + card_w - 20, base_v_y)], fill=(226, 232, 240), width=1)
+    draw_dashed_line(draw, (c3_x + card_w - 160, base_v_y - col_h // 2), (c3_x + card_w - 25, base_v_y - col_h // 2), col=(241, 245, 249), width=1, dash_len=3, gap_len=3)
+    
+    # Column 1: 14대 증권사 MTS (0%) - Empty container track with red bottom indicator
+    col1_x = c3_x + card_w - 124
+    draw.rounded_rectangle([col1_x - 22, base_v_y - col_h, col1_x + 22, base_v_y], radius=6, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+    draw.rounded_rectangle([col1_x - 22, base_v_y - 8, col1_x + 22, base_v_y], radius=3, fill=(254, 202, 202), outline=(239, 68, 68), width=1)
+    w_0pct = draw.textlength("0%", font=get_num_font(13.5, 'bold'))
+    draw.text((col1_x - w_0pct / 2.0, base_v_y - col_h - 20), "0%", font=get_num_font(13.5, 'bold'), fill=(220, 38, 38))
+    w_mts = draw.textlength("14대 MTS", font=get_font(10.5, 'bold'))
+    draw.text((col1_x - w_mts / 2.0, base_v_y + 8), "14대 MTS", font=get_font(10.5, 'bold'), fill=(148, 163, 184))
+    
+    # Column 2: 스마트 DCA (100%) - Full solid container column
+    col2_x = c3_x + card_w - 56
+    draw.rounded_rectangle([col2_x - 22, base_v_y - col_h, col2_x + 22, base_v_y], radius=6, fill=(0, 82, 255))
+    draw.rounded_rectangle([col2_x - 20, base_v_y - col_h + 2, col2_x + 20, base_v_y - col_h + 8], radius=3, fill=(96, 165, 250))
+    w_100pct = draw.textlength("100%", font=get_num_font(13.5, 'black'))
+    draw.text((col2_x - w_100pct / 2.0, base_v_y - col_h - 20), "100%", font=get_num_font(13.5, 'black'), fill=(0, 82, 255))
+    w_dca = draw.textlength("스마트 DCA", font=get_font(10.5, 'bold'))
+    draw.text((col2_x - w_dca / 2.0, base_v_y + 8), "스마트 DCA", font=get_font(10.5, 'bold'), fill=(0, 82, 255))
         
     # ==============================================================
     # 2. MIDDLE: INSIGHT CONNECTING BANNER WITH DOWN ARROW (Image 1 Style)
