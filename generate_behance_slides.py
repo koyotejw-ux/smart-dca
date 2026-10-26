@@ -150,10 +150,11 @@ def draw_l_arrow(draw, corner, p2, col=(100, 116, 139), width=2, arrow_size=6):
             draw.polygon([(x2 + arrow_size * 1.5, y2 - arrow_size), (x2 + arrow_size * 1.5, y2 + arrow_size), (x2, y2)], fill=col)
 
 
-def draw_pill_badge(draw, cx=None, cy=0, text="", font=None, theme='blue', has_dot=True, dark_mode=True, pad_x=14, height=30, left_x=None):
+def draw_pill_badge(draw, cx=None, cy=0, text="", font=None, theme='blue', has_dot=True, dark_mode=False, pad_x=14, height=30, left_x=None, solid=False):
     """
     Renders a mathematically centered, high-contrast, beautiful pill badge with pixel-perfect alignment.
     Supports themes: 'blue', 'green', 'red', 'amber', 'purple', 'cyan', 'slate', 'dark'.
+    Supports fill types: soft pastel tint (default light), solid brand fill (solid=True), or dark outline (dark_mode=True).
     Can be positioned by center (cx, cy) or aligned by left edge (left_x, cy).
     """
     if font is None:
@@ -179,8 +180,23 @@ def draw_pill_badge(draw, cx=None, cy=0, text="", font=None, theme='blue', has_d
         'slate':  {'bg': (241, 245, 249, 255), 'border': (203, 213, 225, 255), 'text': (51, 65, 85, 255),   'dot': (100, 116, 139, 255)},
         'dark':   {'bg': (15, 23, 42, 255),    'border': (15, 23, 42, 255),     'text': (255, 255, 255, 255),'dot': (0, 210, 255, 255)},
     }
+    color_schemes_solid = {
+        'blue':   {'bg': (0, 82, 255, 255),   'border': (0, 82, 255, 255),   'text': (255, 255, 255, 255), 'dot': (191, 219, 254, 255)},
+        'cyan':   {'bg': (8, 145, 178, 255),  'border': (8, 145, 178, 255),  'text': (255, 255, 255, 255), 'dot': (207, 250, 254, 255)},
+        'green':  {'bg': (16, 185, 129, 255), 'border': (16, 185, 129, 255), 'text': (255, 255, 255, 255), 'dot': (209, 250, 229, 255)},
+        'red':    {'bg': (239, 68, 68, 255),  'border': (239, 68, 68, 255),  'text': (255, 255, 255, 255), 'dot': (254, 226, 226, 255)},
+        'amber':  {'bg': (217, 119, 6, 255),  'border': (217, 119, 6, 255),  'text': (255, 255, 255, 255), 'dot': (254, 243, 199, 255)},
+        'purple': {'bg': (124, 58, 237, 255), 'border': (124, 58, 237, 255), 'text': (255, 255, 255, 255), 'dot': (237, 233, 254, 255)},
+        'slate':  {'bg': (71, 85, 105, 255),  'border': (71, 85, 105, 255),  'text': (255, 255, 255, 255), 'dot': (226, 232, 240, 255)},
+        'dark':   {'bg': (15, 23, 42, 255),   'border': (15, 23, 42, 255),   'text': (255, 255, 255, 255), 'dot': (0, 210, 255, 255)},
+    }
     
-    scheme = color_schemes_dark.get(theme, color_schemes_dark['blue']) if dark_mode else color_schemes_light.get(theme, color_schemes_light['blue'])
+    if solid:
+        scheme = color_schemes_solid.get(theme, color_schemes_solid['blue'])
+    elif dark_mode:
+        scheme = color_schemes_dark.get(theme, color_schemes_dark['blue'])
+    else:
+        scheme = color_schemes_light.get(theme, color_schemes_light['blue'])
     
     bbox = draw.textbbox((0, 0), text, font=font)
     tw = bbox[2] - bbox[0]
@@ -531,9 +547,9 @@ def make_slide_01():
     
     # 4. Floating Feature Callout Pills anchored to Mockups (Reference Style)
     draw = ImageDraw.Draw(base)
-    draw_pill_badge(draw, cx=1140, cy=185, text="0.2s VOICE DOCK", font=get_font(10.5, 'bold'), theme='cyan', pad_x=12, height=28)
-    draw_pill_badge(draw, cx=1640, cy=240, text="GOAL-SEEKING ENGINE", font=get_font(10.5, 'bold'), theme='amber', pad_x=12, height=28)
-    draw_pill_badge(draw, cx=1550, cy=780, text="65% CASH SAFETY GUARD", font=get_font(10.5, 'bold'), theme='green', pad_x=12, height=28)
+    draw_pill_badge(draw, cx=1140, cy=185, text="0.2s VOICE DOCK", font=get_font(10.5, 'bold'), theme='cyan', pad_x=12, height=28, solid=True)
+    draw_pill_badge(draw, cx=1640, cy=240, text="GOAL-SEEKING ENGINE", font=get_font(10.5, 'bold'), theme='amber', pad_x=12, height=28, solid=True)
+    draw_pill_badge(draw, cx=1550, cy=780, text="65% CASH SAFETY GUARD", font=get_font(10.5, 'bold'), theme='green', pad_x=12, height=28, solid=True)
     
     # 5. Bottom Simple & Clean Specification Strip (Reference Style, Clean 4 Columns)
     bar_y = 860
@@ -684,7 +700,7 @@ def make_slide_02():
     s_x = 125
     s_y = b_y + 65
     draw.rounded_rectangle([s_x, s_y, s_x + qw, s_y + qh], radius=10, fill=(236, 253, 245), outline=(167, 243, 208), width=1)
-    draw_pill_badge(draw, left_x=s_x + 14, cy=s_y + 24, text="Strength (강점)", font=get_font(10, 'bold'), theme='green', has_dot=False, pad_x=8, height=22)
+    draw_pill_badge(draw, left_x=s_x + 14, cy=s_y + 24, text="Strength (강점)", font=get_font(10, 'bold'), theme='green', has_dot=False, pad_x=10, height=24, solid=True)
     s_points = [
         "• 0.2초 음성 도크로 타이핑 제로화",
         "• 닫힌 형식 퀀트 방정식 즉시 역산",
@@ -699,7 +715,7 @@ def make_slide_02():
     w_x = s_x + qw + 10
     w_y = s_y
     draw.rounded_rectangle([w_x, w_y, w_x + qw, w_y + qh], radius=10, fill=(254, 242, 242), outline=(254, 202, 202), width=1)
-    draw_pill_badge(draw, left_x=w_x + 14, cy=w_y + 24, text="Weakness (약점)", font=get_font(10, 'bold'), theme='red', has_dot=False, pad_x=8, height=22)
+    draw_pill_badge(draw, left_x=w_x + 14, cy=w_y + 24, text="Weakness (약점)", font=get_font(10, 'bold'), theme='red', has_dot=False, pad_x=10, height=24, solid=True)
     w_points = [
         "• 초기 개인 개발자 브랜드 인지도",
         "• 증권사 계좌 API 실시간 직접 연동 부재",
@@ -714,7 +730,7 @@ def make_slide_02():
     o_x = s_x
     o_y = s_y + qh + 10
     draw.rounded_rectangle([o_x, o_y, o_x + qw, o_y + qh], radius=10, fill=(239, 246, 255), outline=(191, 219, 254), width=1)
-    draw_pill_badge(draw, left_x=o_x + 14, cy=o_y + 24, text="Opportunity (기회)", font=get_font(10, 'bold'), theme='blue', has_dot=False, pad_x=8, height=22)
+    draw_pill_badge(draw, left_x=o_x + 14, cy=o_y + 24, text="Opportunity (기회)", font=get_font(10, 'bold'), theme='blue', has_dot=False, pad_x=10, height=24, solid=True)
     o_points = [
         "• 변동성 장세 속 개인 물타기 수요 84.7%",
         "• 복잡한 수식 없는 직관적 모바일 도구 요구",
@@ -729,7 +745,7 @@ def make_slide_02():
     t_x = w_x
     t_y = o_y
     draw.rounded_rectangle([t_x, t_y, t_x + qw, t_y + qh], radius=10, fill=(254, 243, 199), outline=(253, 230, 138), width=1)
-    draw_pill_badge(draw, left_x=t_x + 14, cy=t_y + 24, text="Threat (위협)", font=get_font(10, 'bold'), theme='amber', has_dot=False, pad_x=8, height=22)
+    draw_pill_badge(draw, left_x=t_x + 14, cy=t_y + 24, text="Threat (위협)", font=get_font(10, 'bold'), theme='amber', has_dot=False, pad_x=10, height=24, solid=True)
     t_points = [
         "• 대형 증권사의 유사 퀀트 기능 복제",
         "• 급격한 하락장 장기화로 투자 심리 위축",
@@ -834,7 +850,7 @@ def make_slide_03():
     q1_x = grid_x + qw + 16
     q1_y = grid_y
     draw.rounded_rectangle([q1_x, q1_y, q1_x + qw - 8, q1_y + qh], radius=8, fill=(239, 246, 255), outline=(147, 197, 253), width=1)
-    draw_pill_badge(draw, left_x=q1_x + 10, cy=q1_y + 20, text="CORE TARGET", font=get_font(9, 'bold'), theme='blue', has_dot=True, pad_x=6, height=20)
+    draw_pill_badge(draw, left_x=q1_x + 10, cy=q1_y + 20, text="CORE TARGET", font=get_font(9, 'bold'), theme='blue', has_dot=True, pad_x=8, height=22, solid=True)
     draw.text((q1_x + 10, q1_y + 40), "실시간 모멘텀 퀀트", font=get_font(13, 'bold'), fill=(0, 82, 255))
     draw.text((q1_x + 10, q1_y + 64), "• 급변 호가 타이핑 스트레스 극심\n• 0.2초 음성 도크 & 역산 최우선 수용", font=get_font(11, 'regular'), fill=(51, 65, 85), spacing=2)
     
@@ -842,7 +858,7 @@ def make_slide_03():
     q2_x = q1_x
     q2_y = grid_y + qh + 16
     draw.rounded_rectangle([q2_x, q2_y, q2_x + qw - 8, q2_y + qh], radius=8, fill=(236, 253, 245), outline=(167, 243, 208), width=1)
-    draw_pill_badge(draw, left_x=q2_x + 10, cy=q2_y + 20, text="PRIMARY TARGET", font=get_font(9, 'bold'), theme='green', has_dot=True, pad_x=6, height=20)
+    draw_pill_badge(draw, left_x=q2_x + 10, cy=q2_y + 20, text="PRIMARY TARGET", font=get_font(9, 'bold'), theme='green', has_dot=True, pad_x=8, height=22, solid=True)
     draw.text((q2_x + 10, q2_y + 40), "안정 적립식 플래너", font=get_font(13, 'bold'), fill=(5, 150, 105))
     draw.text((q2_x + 10, q2_y + 64), "• 계획적 분할 매수 및 계좌 건전성 중시\n• 65% 예수금 안전 가드 적극 활용", font=get_font(11, 'regular'), fill=(51, 65, 85), spacing=2)
     
@@ -1350,7 +1366,7 @@ def make_slide_06():
     draw.rounded_rectangle([c1_x + 24, my, c1_x + c1_w - 24, my + 80], radius=12, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
     draw.text((c1_x + 40, my + 18), "예상 방어 평단가", font=get_font(11, 'bold'), fill=(0, 82, 255))
     draw.text((c1_x + 40, my + 44), "42,350 원", font=get_num_font(20, 'bold'), fill=(15, 23, 42))
-    draw_pill_badge(draw, cx=c1_x + c1_w - 85, cy=my + 40, text="-18.4% 절감", font=get_font(11, 'bold'), theme='green', has_dot=True, dark_mode=False, pad_x=10, height=28)
+    draw_pill_badge(draw, cx=c1_x + c1_w - 85, cy=my + 40, text="-18.4% 절감", font=get_font(11, 'bold'), theme='green', has_dot=True, dark_mode=False, pad_x=10, height=28, solid=True)
     
     # Column 2: Mobile Wireframe Chassis (Center)
     c2_x = 640
@@ -2376,7 +2392,7 @@ def make_slide_12():
     draw.text((144, cy + 22), "PROJECT CREDITS", font=get_font(12, "bold"), fill=(0, 210, 255))
     draw.text((270, cy + 22), "End-to-End Product Design  ·  Quant Mathematical Modeling  ·  Flutter Mobile Architecture", font=get_font(13.5, "medium"), fill=(255, 255, 255))
     
-    draw_pill_badge(draw, 1420, cy + 32, "GOOGLE PLAY STORE LIVE", font=get_font(10, "bold"), theme="green", has_dot=True, dark_mode=True, pad_x=12, height=26)
+    draw_pill_badge(draw, 1420, cy + 32, "GOOGLE PLAY STORE LIVE", font=get_font(10, "bold"), theme="green", has_dot=True, solid=True, pad_x=12, height=26)
     draw.text((1535, cy + 22), "100% Offline Engine · No Financial Logging", font=get_font(12, "medium"), fill=(148, 163, 184))
     
     base.save(f"{OUT_DIR}/slide_12.png")
