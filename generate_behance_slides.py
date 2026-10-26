@@ -564,17 +564,17 @@ def make_slide_01():
         draw.text((172, k_y + 25), k_desc, font=get_font(11.5, 'regular'), fill=(100, 116, 139))
         k_y += 66
         
-    # 3. Flagship iPhone Mockups (Centered-Right, Clean & Elegant)
+    # 3. Modern Flagship 19.5:9 Smartphone Mockups (Centered-Right, Clean & Elegant)
     phone_home = Image.open('portfolio/iphone_mockups/iphone_01_home.png').convert('RGBA')
     phone_target = Image.open('portfolio/iphone_mockups/iphone_03_target.png').convert('RGBA')
     
-    target_h = 620
+    target_h = 640
     target_w = int(round(target_h * (phone_home.width / phone_home.height)))
     
     p_front = phone_home.resize((target_w, target_h), Image.Resampling.LANCZOS)
     p_back = phone_target.resize((target_w, target_h), Image.Resampling.LANCZOS)
     
-    angle = -12.0
+    angle = -11.0
     rot_front = p_front.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC)
     rot_back = p_back.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC)
     
@@ -588,12 +588,12 @@ def make_slide_01():
     sh_back, pad_b = make_shadow(rot_back, blur=38, offset=(18, 32), alpha=60)
     sh_front, pad_f = make_shadow(rot_front, blur=44, offset=(22, 40), alpha=85)
     
-    # Beautiful spatial placement
-    p_back_x = 1260
-    p_back_y = 150
+    # Beautiful spatial placement (tuned for 19.5:9 slender profile)
+    p_back_x = 1310
+    p_back_y = 145
     
-    p_front_x = 980
-    p_front_y = 210
+    p_front_x = 1010
+    p_front_y = 200
     
     base.paste(sh_back, (p_back_x - pad_b[0], p_back_y - pad_b[1]), sh_back)
     base.paste(rot_back, (p_back_x, p_back_y), rot_back)
@@ -1718,178 +1718,184 @@ def make_slide_06():
         subtitle_kr="실제 Flutter 모바일 앱의 3대 핵심 화면(대시보드·계산기·음성도크)을 1:1 매칭한 와이어프레임 및 인체공학적 조작 설계"
     )
     
-    # UPPER SECTION: 3 MOBILE SCREEN WIREFRAME CHASSIS + ERGONOMIC CALLOUTS (y=190 to y=555)
+    # UPPER SECTION: 3 MOBILE SCREEN WIREFRAME CHASSIS + ERGONOMIC CALLOUTS (19.5:9 Modern Ratio)
     sec_y = 190
     sec_h = 365
     
-    # Screen Chassis Dimensions: 3 phones side-by-side
-    pw = 250
-    ph = 350
-    gap = 25
+    # Modern Flagship 19.5:9 Smartphone Chassis Dimensions (175 x 365, H/W = 2.086)
+    pw = 175
+    ph = 365
+    gap = 22
     
     # -----------------------------------------------------------------
     # Chassis 1: [SCR-DASH-01] 포트폴리오 대시보드 (Home Dashboard)
     # -----------------------------------------------------------------
     p1_x = 120
-    draw.rounded_rectangle([p1_x, sec_y, p1_x + pw, sec_y + ph], radius=20, fill=(255, 255, 255), outline=(15, 23, 42), width=2)
-    # Notch / Dynamic Island
-    draw.rounded_rectangle([p1_x + pw//2 - 28, sec_y + 8, p1_x + pw//2 + 28, sec_y + 18], radius=5, fill=(15, 23, 42))
+    draw.rounded_rectangle([p1_x, sec_y, p1_x + pw, sec_y + ph], radius=24, fill=(255, 255, 255), outline=(15, 23, 42), width=2)
+    # Dynamic Island Pill
+    draw.rounded_rectangle([p1_x + pw//2 - 20, sec_y + 7, p1_x + pw//2 + 20, sec_y + 16], radius=5, fill=(15, 23, 42))
     # Screen Title Badge
-    draw_pill_badge(draw, cx=p1_x + pw//2, cy=sec_y + 36, text="SCR-01 · 대시보드", font=get_font(9.5, 'bold'), theme='blue', has_dot=True, pad_x=8, height=20)
+    draw_pill_badge(draw, cx=p1_x + pw//2, cy=sec_y + 30, text="SCR-01 · 대시보드", font=get_font(9, 'bold'), theme='blue', has_dot=True, pad_x=6, height=18)
     
     # VIP One-Line Banner Mockup
-    v_y = sec_y + 52
-    draw.rounded_rectangle([p1_x + 14, v_y, p1_x + pw - 14, v_y + 24], radius=6, fill=(254, 243, 199), outline=(253, 230, 138), width=1)
-    draw.text((p1_x + 22, v_y + 6), "⚡ VIP 24h 광고제거 활성화", font=get_font(8.5, 'bold'), fill=(180, 83, 9))
-    draw.text((p1_x + pw - 22, v_y + 6), "23:59", font=get_num_font(8.5, 'bold'), fill=(217, 119, 6), anchor='ra')
+    v_y = sec_y + 44
+    draw.rounded_rectangle([p1_x + 10, v_y, p1_x + pw - 10, v_y + 20], radius=5, fill=(254, 243, 199), outline=(253, 230, 138), width=1)
+    draw.text((p1_x + 16, v_y + 4), "⚡ VIP 24h 광고제거", font=get_font(7.5, 'bold'), fill=(180, 83, 9))
+    draw.text((p1_x + pw - 16, v_y + 4), "23:59", font=get_num_font(7.5, 'bold'), fill=(217, 119, 6), anchor='ra')
     
     # Smart Portfolio Summary Card (_buildMembershipCard)
-    sc_y = v_y + 30
-    draw.rounded_rectangle([p1_x + 14, sc_y, p1_x + pw - 14, sc_y + 78], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-    draw.text((p1_x + 24, sc_y + 10), "스마트 포트폴리오 메인 요약", font=get_font(9, 'bold'), fill=(0, 81, 255))
-    draw.text((p1_x + 24, sc_y + 26), "₩ 12,500,000", font=get_num_font(13.5, 'black'), fill=(15, 23, 42))
-    draw.text((p1_x + 24, sc_y + 45), "평가손익 -₩2,150,000", font=get_font(9, 'bold'), fill=(239, 68, 68))
-    draw_pill_badge(draw, cx=p1_x + pw - 48, cy=sc_y + 51, text="-17.2%", font=get_num_font(8.5, 'bold'), theme='red', has_dot=False, pad_x=6, height=18, solid=True)
-    draw.text((p1_x + 24, sc_y + 62), "• 1차 분할매수 가이드 권장", font=get_font(8, 'medium'), fill=(100, 116, 139))
+    sc_y = v_y + 24
+    draw.rounded_rectangle([p1_x + 10, sc_y, p1_x + pw - 10, sc_y + 70], radius=8, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+    draw.text((p1_x + 18, sc_y + 8), "스마트 포트폴리오 메인 요약", font=get_font(8, 'bold'), fill=(0, 81, 255))
+    draw.text((p1_x + 18, sc_y + 22), "₩ 12,500,000", font=get_num_font(12, 'black'), fill=(15, 23, 42))
+    draw.text((p1_x + 18, sc_y + 39), "평가손익 -₩2,150,000", font=get_font(7.5, 'bold'), fill=(239, 68, 68))
+    draw_pill_badge(draw, cx=p1_x + pw - 34, cy=sc_y + 44, text="-17.2%", font=get_num_font(7.5, 'bold'), theme='red', has_dot=False, pad_x=5, height=15, solid=True)
+    draw.text((p1_x + 18, sc_y + 54), "• 1차 분할매수 가이드 권장", font=get_font(7, 'medium'), fill=(100, 116, 139))
     
     # 1-Line Hero Button (_buildSimulatorHeroButton)
-    hb_y = sc_y + 86
-    draw.rounded_rectangle([p1_x + 14, hb_y, p1_x + pw - 14, hb_y + 32], radius=8, fill=(0, 81, 255))
-    draw.text((p1_x + pw//2, hb_y + 16), "+ 물타기 계산기 실행 (DCA)", font=get_font(9.5, 'bold'), fill=(255, 255, 255), anchor='mm')
+    hb_y = sc_y + 76
+    draw.rounded_rectangle([p1_x + 10, hb_y, p1_x + pw - 10, hb_y + 26], radius=7, fill=(0, 81, 255))
+    draw.text((p1_x + pw//2, hb_y + 13), "+ 물타기 계산기 실행 (DCA)", font=get_font(8.5, 'bold'), fill=(255, 255, 255), anchor='mm')
     
     # 2x2 Quick Actions Grid (_buildQuickActions)
-    qg_y = hb_y + 38
-    qw = (pw - 28 - 8) // 2
-    qh = 26
+    qg_y = hb_y + 32
+    qw = (pw - 20 - 6) // 2
+    qh = 22
     quick_items = [("목표 역산", 0), ("MTS 복사", 1), ("시나리오", 2), ("수수료 계산", 3)]
     for q_txt, q_idx in quick_items:
-        qx = p1_x + 14 + (q_idx % 2) * (qw + 8)
-        qy = qg_y + (q_idx // 2) * (qh + 6)
-        draw.rounded_rectangle([qx, qy, qx + qw, qy + qh], radius=6, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-        draw.text((qx + qw//2, qy + qh//2), q_txt, font=get_font(8.5, 'medium'), fill=(71, 85, 105), anchor='mm')
+        qx = p1_x + 10 + (q_idx % 2) * (qw + 6)
+        qy = qg_y + (q_idx // 2) * (qh + 4)
+        draw.rounded_rectangle([qx, qy, qx + qw, qy + qh], radius=5, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        draw.text((qx + qw//2, qy + qh//2), q_txt, font=get_font(7.5, 'medium'), fill=(71, 85, 105), anchor='mm')
         
     # Asset List Card Item (_buildAssetCard)
-    ac_y = qg_y + 62
-    draw.rounded_rectangle([p1_x + 14, ac_y, p1_x + pw - 14, ac_y + 44], radius=8, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-    draw.text((p1_x + 22, ac_y + 8), "삼성전자 005930", font=get_font(9, 'bold'), fill=(15, 23, 42))
-    draw.text((p1_x + 22, ac_y + 24), "평단 ₩72,500 · 100주", font=get_font(8, 'medium'), fill=(100, 116, 139))
-    draw.text((p1_x + pw - 22, ac_y + 8), "₩59,200", font=get_num_font(9.5, 'bold'), fill=(15, 23, 42), anchor='ra')
-    draw.text((p1_x + pw - 22, ac_y + 24), "-18.3%", font=get_num_font(8.5, 'bold'), fill=(239, 68, 68), anchor='ra')
+    ac_y = qg_y + 54
+    draw.rounded_rectangle([p1_x + 10, ac_y, p1_x + pw - 10, ac_y + 36], radius=7, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw.text((p1_x + 16, ac_y + 6), "삼성전자 005930 · -18.3%", font=get_font(8, 'bold'), fill=(15, 23, 42))
+    draw.text((p1_x + 16, ac_y + 20), "평단 ₩72,500 · 100주", font=get_font(7, 'medium'), fill=(100, 116, 139))
     
-    # Bottom Bar with Voice FAB
-    bb_y = sec_y + ph - 38
-    draw.line([(p1_x + 14, bb_y), (p1_x + pw - 14, bb_y)], fill=(241, 245, 249), width=1)
-    draw.text((p1_x + 35, bb_y + 16), "포트폴리오", font=get_font(8, 'bold'), fill=(0, 81, 255), anchor='mm')
-    draw.text((p1_x + pw - 35, bb_y + 16), "시뮬레이터", font=get_font(8, 'medium'), fill=(100, 116, 139), anchor='mm')
+    # Bottom Bar with Voice FAB & Native Home Indicator
+    bb_y = sec_y + ph - 34
+    draw.line([(p1_x + 10, bb_y), (p1_x + pw - 10, bb_y)], fill=(241, 245, 249), width=1)
+    draw.text((p1_x + 28, bb_y + 12), "홈", font=get_font(7.5, 'bold'), fill=(0, 81, 255), anchor='mm')
+    draw.text((p1_x + pw - 28, bb_y + 12), "계산기", font=get_font(7.5, 'medium'), fill=(100, 116, 139), anchor='mm')
     # Center FAB
     fab_cx = p1_x + pw//2
-    fab_cy = bb_y + 16
-    draw.ellipse([fab_cx - 14, fab_cy - 14, fab_cx + 14, fab_cy + 14], fill=(0, 81, 255))
-    draw_mic_icon(draw, cx=fab_cx, cy=fab_cy, size=14, color=(255, 255, 255))
+    fab_cy = bb_y + 12
+    draw.ellipse([fab_cx - 12, fab_cy - 12, fab_cx + 12, fab_cy + 12], fill=(0, 81, 255))
+    draw_mic_icon(draw, cx=fab_cx, cy=fab_cy, size=11, color=(255, 255, 255))
+    # Native Home Indicator
+    draw.rounded_rectangle([p1_x + pw//2 - 20, sec_y + ph - 6, p1_x + pw//2 + 20, sec_y + ph - 3], radius=2, fill=(15, 23, 42))
     
     # -----------------------------------------------------------------
     # Chassis 2: [SCR-CALC-01] 물타기 계산기 & 스텝퍼 (DCA Simulator)
     # -----------------------------------------------------------------
     p2_x = p1_x + pw + gap
-    draw.rounded_rectangle([p2_x, sec_y, p2_x + pw, sec_y + ph], radius=20, fill=(255, 255, 255), outline=(15, 23, 42), width=2)
-    draw.rounded_rectangle([p2_x + pw//2 - 28, sec_y + 8, p2_x + pw//2 + 28, sec_y + 18], radius=5, fill=(15, 23, 42))
-    draw_pill_badge(draw, cx=p2_x + pw//2, cy=sec_y + 36, text="SCR-02 · 계산기 & 스텝퍼", font=get_font(9.5, 'bold'), theme='cyan', has_dot=True, pad_x=8, height=20)
+    draw.rounded_rectangle([p2_x, sec_y, p2_x + pw, sec_y + ph], radius=24, fill=(255, 255, 255), outline=(15, 23, 42), width=2)
+    draw.rounded_rectangle([p2_x + pw//2 - 20, sec_y + 7, p2_x + pw//2 + 20, sec_y + 16], radius=5, fill=(15, 23, 42))
+    draw_pill_badge(draw, cx=p2_x + pw//2, cy=sec_y + 30, text="SCR-02 · 계산기", font=get_font(9, 'bold'), theme='cyan', has_dot=True, pad_x=6, height=18)
     
     # Input 1: Current Price & Holdings
-    i1_y = sec_y + 54
-    draw.rounded_rectangle([p2_x + 14, i1_y, p2_x + pw - 14, i1_y + 44], radius=8, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-    draw.text((p2_x + 22, i1_y + 8), "현재 보유 평단가", font=get_font(8.5, 'bold'), fill=(100, 116, 139))
-    draw.text((p2_x + 22, i1_y + 24), "₩ 65,000", font=get_num_font(12, 'bold'), fill=(15, 23, 42))
-    draw.text((p2_x + pw - 22, i1_y + 24), "100주 보유", font=get_font(8.5, 'medium'), fill=(71, 85, 105), anchor='ra')
+    i1_y = sec_y + 44
+    draw.rounded_rectangle([p2_x + 10, i1_y, p2_x + pw - 10, i1_y + 38], radius=7, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+    draw.text((p2_x + 16, i1_y + 6), "현재 보유 평단가", font=get_font(7.5, 'bold'), fill=(100, 116, 139))
+    draw.text((p2_x + 16, i1_y + 20), "₩ 65,000", font=get_num_font(10.5, 'bold'), fill=(15, 23, 42))
+    draw.text((p2_x + pw - 16, i1_y + 20), "100주", font=get_font(7.5, 'medium'), fill=(71, 85, 105), anchor='ra')
     
     # Input 2: Additional Price & Stepper (_buildInputSection)
-    i2_y = i1_y + 50
-    draw.rounded_rectangle([p2_x + 14, i2_y, p2_x + pw - 14, i2_y + 58], radius=8, fill=(248, 250, 252), outline=(0, 81, 255), width=1)
-    draw.text((p2_x + 22, i2_y + 8), "추가 매수 단가 & 수량 조절", font=get_font(8.5, 'bold'), fill=(0, 81, 255))
-    draw.text((p2_x + 22, i2_y + 24), "₩ 55,000", font=get_num_font(11.5, 'bold'), fill=(15, 23, 42))
+    i2_y = i1_y + 44
+    draw.rounded_rectangle([p2_x + 10, i2_y, p2_x + pw - 10, i2_y + 50], radius=7, fill=(248, 250, 252), outline=(0, 81, 255), width=1)
+    draw.text((p2_x + 16, i2_y + 6), "추가 매수 단가 & 수량", font=get_font(7.5, 'bold'), fill=(0, 81, 255))
+    draw.text((p2_x + 16, i2_y + 20), "₩ 55,000", font=get_num_font(10.5, 'bold'), fill=(15, 23, 42))
     
-    # Stepper Control [ - ] 50주 [ + ]
-    st_y = i2_y + 30
-    draw.rounded_rectangle([p2_x + pw - 100, st_y, p2_x + pw - 22, st_y + 22], radius=6, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
-    draw.text((p2_x + pw - 90, st_y + 11), "-", font=get_font(11, 'bold'), fill=(0, 81, 255), anchor='mm')
-    draw.text((p2_x + pw - 61, st_y + 11), "50주", font=get_num_font(9.5, 'bold'), fill=(15, 23, 42), anchor='mm')
-    draw.text((p2_x + pw - 32, st_y + 11), "+", font=get_font(11, 'bold'), fill=(0, 81, 255), anchor='mm')
+    # Stepper Control [ - 50주 + ]
+    st_y = i2_y + 26
+    draw.rounded_rectangle([p2_x + pw - 82, st_y, p2_x + pw - 16, st_y + 18], radius=5, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
+    draw.text((p2_x + pw - 74, st_y + 9), "-", font=get_font(9.5, 'bold'), fill=(0, 81, 255), anchor='mm')
+    draw.text((p2_x + pw - 49, st_y + 9), "50주", font=get_num_font(8, 'bold'), fill=(15, 23, 42), anchor='mm')
+    draw.text((p2_x + pw - 24, st_y + 9), "+", font=get_font(9.5, 'bold'), fill=(0, 81, 255), anchor='mm')
     
-    # Preset Chips Row (_buildPresetRow)
-    pr_y = i2_y + 64
+    # Preset Chips Row
+    pr_y = i2_y + 56
     chips = ["-5%", "-10%", "+50주", "전액"]
-    c_x = p2_x + 14
+    c_x = p2_x + 10
     for cp in chips:
-        draw.rounded_rectangle([c_x, pr_y, c_x + 50, pr_y + 20], radius=5, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-        draw.text((c_x + 25, pr_y + 10), cp, font=get_font(8, 'bold'), fill=(0, 81, 255), anchor='mm')
-        c_x += 57
+        draw.rounded_rectangle([c_x, pr_y, c_x + 35, pr_y + 18], radius=4, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+        draw.text((c_x + 17, pr_y + 9), cp, font=get_font(7.5, 'bold'), fill=(0, 81, 255), anchor='mm')
+        c_x += 40
         
     # Result Summary Card (_buildResultSummaryCard)
-    res_y = pr_y + 26
-    draw.rounded_rectangle([p2_x + 14, res_y, p2_x + pw - 14, res_y + 88], radius=10, fill=(240, 246, 255), outline=(0, 81, 255), width=1)
-    draw.text((p2_x + 24, res_y + 10), "예상 신규 평단가", font=get_font(9, 'bold'), fill=(0, 81, 255))
-    draw.text((p2_x + 24, res_y + 26), "₩ 61,667", font=get_num_font(16, 'black'), fill=(15, 23, 42))
-    draw_pill_badge(draw, cx=p2_x + pw - 46, cy=res_y + 32, text="+5.1%p 회복", font=get_num_font(8, 'bold'), theme='green', has_dot=False, pad_x=6, height=18, solid=True)
-    draw.line([(p2_x + 24, res_y + 48), (p2_x + pw - 24, res_y + 48)], fill=(191, 219, 254), width=1)
-    draw.text((p2_x + 24, res_y + 56), "필요 예수금: ₩2,750,000", font=get_font(8.5, 'medium'), fill=(71, 85, 105))
-    draw.text((p2_x + 24, res_y + 70), "총 보유량: 150주 (평단 5.1% 인하)", font=get_font(8.5, 'medium'), fill=(71, 85, 105))
+    res_y = pr_y + 24
+    draw.rounded_rectangle([p2_x + 10, res_y, p2_x + pw - 10, res_y + 78], radius=8, fill=(240, 246, 255), outline=(0, 81, 255), width=1)
+    draw.text((p2_x + 18, res_y + 8), "예상 신규 평단가", font=get_font(8, 'bold'), fill=(0, 81, 255))
+    draw.text((p2_x + 18, res_y + 22), "₩ 61,667", font=get_num_font(14, 'black'), fill=(15, 23, 42))
+    draw_pill_badge(draw, cx=p2_x + pw - 34, cy=res_y + 26, text="+5.1%p", font=get_num_font(7, 'bold'), theme='green', has_dot=False, pad_x=4, height=15, solid=True)
+    draw.line([(p2_x + 18, res_y + 42), (p2_x + pw - 18, res_y + 42)], fill=(191, 219, 254), width=1)
+    draw.text((p2_x + 18, res_y + 48), "필요금: ₩2,750,000", font=get_font(7.5, 'medium'), fill=(71, 85, 105))
+    draw.text((p2_x + 18, res_y + 60), "총 150주 (평단 5.1% 인하)", font=get_font(7.5, 'medium'), fill=(71, 85, 105))
     
     # 1-Tap Copy Action Button (_buildActionButtons)
-    btn_y = res_y + 96
-    draw.rounded_rectangle([p2_x + 14, btn_y, p2_x + pw - 14, btn_y + 34], radius=8, fill=(0, 81, 255))
-    draw_copy_icon(draw, cx=p2_x + 36, cy=btn_y + 17, size=12, color=(255, 255, 255))
-    draw.text((p2_x + pw//2 + 6, btn_y + 17), "1-Tap MTS 주문 복사", font=get_font(9.5, 'bold'), fill=(255, 255, 255), anchor='mm')
+    btn_y = res_y + 84
+    draw.rounded_rectangle([p2_x + 10, btn_y, p2_x + pw - 10, btn_y + 28], radius=7, fill=(0, 81, 255))
+    draw_copy_icon(draw, cx=p2_x + 28, cy=btn_y + 14, size=10, color=(255, 255, 255))
+    draw.text((p2_x + pw//2 + 5, btn_y + 14), "1-Tap MTS 주문 복사", font=get_font(8.5, 'bold'), fill=(255, 255, 255), anchor='mm')
+    # Native Home Indicator
+    draw.rounded_rectangle([p2_x + pw//2 - 20, sec_y + ph - 6, p2_x + pw//2 + 20, sec_y + ph - 3], radius=2, fill=(15, 23, 42))
     
     # -----------------------------------------------------------------
     # Chassis 3: [SCR-VOICE-01] 0.2초 AI 음성 도크 시트 (Voice Dock Sheet)
     # -----------------------------------------------------------------
     p3_x = p2_x + pw + gap
-    draw.rounded_rectangle([p3_x, sec_y, p3_x + pw, sec_y + ph], radius=20, fill=(241, 245, 249), outline=(15, 23, 42), width=2)
-    draw.rounded_rectangle([p3_x + pw//2 - 28, sec_y + 8, p3_x + pw//2 + 28, sec_y + 18], radius=5, fill=(15, 23, 42))
+    draw.rounded_rectangle([p3_x, sec_y, p3_x + pw, sec_y + ph], radius=24, fill=(241, 245, 249), outline=(15, 23, 42), width=2)
+    draw.rounded_rectangle([p3_x + pw//2 - 20, sec_y + 7, p3_x + pw//2 + 20, sec_y + 16], radius=5, fill=(15, 23, 42))
     
     # Dimmed background representation
-    draw.rounded_rectangle([p3_x + 14, sec_y + 36, p3_x + pw - 14, sec_y + 105], radius=8, fill=(226, 232, 240))
-    draw.text((p3_x + 24, sec_y + 50), "배경: 시뮬레이터 (Dim 60%)", font=get_font(8.5, 'regular'), fill=(100, 116, 139))
+    draw.rounded_rectangle([p3_x + 10, sec_y + 30, p3_x + pw - 10, sec_y + 85], radius=7, fill=(226, 232, 240))
+    draw.text((p3_x + 16, sec_y + 44), "배경: 시뮬레이터 (Dim 60%)", font=get_font(7.5, 'regular'), fill=(100, 116, 139))
     
     # Bottom Sheet Container (Sliding up within phone bezel)
-    bs_y = sec_y + 100
+    bs_y = sec_y + 80
     draw.rounded_rectangle([p3_x + 2, bs_y, p3_x + pw - 2, sec_y + ph - 2], radius=18, fill=(255, 255, 255), outline=(0, 81, 255), width=2)
     # Drag Handle
-    draw.rounded_rectangle([p3_x + pw//2 - 18, bs_y + 8, p3_x + pw//2 + 18, bs_y + 12], radius=2, fill=(203, 213, 225))
+    draw.rounded_rectangle([p3_x + pw//2 - 14, bs_y + 6, p3_x + pw//2 + 14, bs_y + 10], radius=2, fill=(203, 213, 225))
     
     # Sheet Header
-    draw_pill_badge(draw, cx=p3_x + pw//2, cy=bs_y + 26, text="SCR-03 · 0.2초 음성 도크", font=get_font(9.5, 'bold'), theme='purple', has_dot=True, pad_x=8, height=20)
+    draw_pill_badge(draw, cx=p3_x + pw//2, cy=bs_y + 22, text="SCR-03 · 음성 도크", font=get_font(8.5, 'bold'), theme='purple', has_dot=True, pad_x=6, height=18)
     
     # Realtime 7-Bar Voice Waveform Animation
-    wv_y = bs_y + 52
-    wave_h = [10, 18, 28, 20, 32, 16, 12]
-    w_start_x = p3_x + pw//2 - (len(wave_h) * 12) // 2
+    wv_y = bs_y + 44
+    wave_h = [8, 14, 22, 16, 26, 13, 9]
+    w_start_x = p3_x + pw//2 - (len(wave_h) * 10) // 2
     for idx, wh in enumerate(wave_h):
-        wx = w_start_x + idx * 12
-        draw.rounded_rectangle([wx, wv_y - wh//2, wx + 6, wv_y + wh//2], radius=3, fill=(122, 34, 255))
+        wx = w_start_x + idx * 10
+        draw.rounded_rectangle([wx, wv_y - wh//2, wx + 5, wv_y + wh//2], radius=2, fill=(122, 34, 255))
         
     # Speech Bubble Mockup
-    sb_y = wv_y + 24
-    draw.rounded_rectangle([p3_x + 14, sb_y, p3_x + pw - 14, sb_y + 32], radius=8, fill=(245, 243, 255), outline=(221, 214, 254), width=1)
-    draw.text((p3_x + pw//2, sb_y + 16), "\"삼성전자 55,000원에 50주\"", font=get_font(9.5, 'bold'), fill=(109, 40, 217), anchor='mm')
+    sb_y = wv_y + 20
+    draw.rounded_rectangle([p3_x + 10, sb_y, p3_x + pw - 10, sb_y + 28], radius=6, fill=(245, 243, 255), outline=(221, 214, 254), width=1)
+    draw.text((p3_x + pw//2, sb_y + 14), '"삼성전자 55,000원에 50주"', font=get_font(8, 'bold'), fill=(109, 40, 217), anchor='mm')
     
     # Parsed Quant Tags Row
-    pt_y = sb_y + 38
+    pt_y = sb_y + 34
     tags = ["삼성전자", "₩55,000", "50주"]
-    tx_start = p3_x + 14
+    tx_start = p3_x + 10
     for tg in tags:
-        draw.rounded_rectangle([tx_start, pt_y, tx_start + 68, pt_y + 20], radius=5, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-        draw.text((tx_start + 34, pt_y + 10), tg, font=get_font(8, 'bold'), fill=(0, 81, 255), anchor='mm')
-        tx_start += 75
+        draw.rounded_rectangle([tx_start, pt_y, tx_start + 48, pt_y + 18], radius=4, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+        draw.text((tx_start + 24, pt_y + 9), tg, font=get_font(7, 'bold'), fill=(0, 81, 255), anchor='mm')
+        tx_start += 53
         
     # Auto Inject Button
-    inj_y = pt_y + 28
-    draw.rounded_rectangle([p3_x + 14, inj_y, p3_x + pw - 14, inj_y + 34], radius=8, fill=(122, 34, 255))
-    draw.text((p3_x + pw//2, inj_y + 17), "⚡ 계산기에 즉시 주입 (0.2s)", font=get_font(9.5, 'bold'), fill=(255, 255, 255), anchor='mm')
+    inj_y = pt_y + 26
+    draw.rounded_rectangle([p3_x + 10, inj_y, p3_x + pw - 10, inj_y + 28], radius=7, fill=(122, 34, 255))
+    draw.text((p3_x + pw//2, inj_y + 14), "⚡ 즉시 주입 (0.2s)", font=get_font(8.5, 'bold'), fill=(255, 255, 255), anchor='mm')
+    # Native Home Indicator
+    draw.rounded_rectangle([p3_x + pw//2 - 20, sec_y + ph - 6, p3_x + pw//2 + 20, sec_y + ph - 3], radius=2, fill=(15, 23, 42))
     
     # -----------------------------------------------------------------
-    # Column 4: Ergonomic Breakdown Callouts (Rightmost, x=955 to 1800)
+    # Column 4: Ergonomic Breakdown Callouts (Rightmost, x=725 to 1800)
     # -----------------------------------------------------------------
+    c4_x = p3_x + pw + 35
+    c4_w = 1800 - c4_x
     c4_x = p3_x + pw + 35
     c4_w = 1800 - c4_x
     draw.rounded_rectangle([c4_x, sec_y, c4_x + c4_w, sec_y + sec_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
@@ -2332,18 +2338,18 @@ def make_slide_08():
     draw.text((lx + 185, comp_y + 22), "수동 입력 vs 0.2초 음성 도크", font=get_font(14, 'bold'), fill=(15, 23, 42))
     draw.line([(lx + 24, comp_y + 50), (lx + lw - 24, comp_y + 50)], fill=(241, 245, 249), width=1)
     
-    # 2 Comparison Phone Mockups
+    # 2 Comparison Phone Mockups (19.5:9 Modern Slim Proportions)
     screen_home = Image.open('portfolio/iphone_mockups/iphone_01_home.png').convert('RGBA')
     screen_sim = Image.open('portfolio/iphone_mockups/iphone_02_sim.png').convert('RGBA')
     
-    s_w = 205
+    s_w = 170
     s_h = int(round(s_w * (screen_home.height / screen_home.width)))
     s1 = screen_home.resize((s_w, s_h), Image.Resampling.LANCZOS)
     s2 = screen_sim.resize((s_w, s_h), Image.Resampling.LANCZOS)
     
-    y_screen = comp_y + 70
-    x_s1 = lx + 24
-    x_s2 = lx + lw - 24 - s_w
+    y_screen = comp_y + 68
+    x_s1 = lx + 32
+    x_s2 = lx + lw - 32 - s_w
     
     draw_pill_badge(draw, cx=x_s1 + s_w//2, cy=y_screen + 14, text="직접 타이핑 입력", font=get_font(10, 'bold'), theme='slate', has_dot=False, pad_x=10, height=22)
     draw_pill_badge(draw, cx=x_s2 + s_w//2, cy=y_screen + 14, text="음성 도크 자동 파싱", font=get_font(10, 'bold'), theme='blue', has_dot=False, pad_x=10, height=22)
@@ -2357,25 +2363,25 @@ def make_slide_08():
         base.paste(simg, (sx, y_screen + 28), simg)
         
     draw = ImageDraw.Draw(base)
-    by_s1 = y_screen + 32 + s_h + 14
-    draw.rounded_rectangle([x_s1, by_s1, x_s1 + s_w, comp_y + comp_h - 20], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-    draw.text((x_s1 + 12, by_s1 + 10), "수동 키패드 타이핑", font=get_font(10.5, 'bold'), fill=(100, 116, 139))
-    draw.text((x_s1 + 12, by_s1 + 28), "• 4개 파라미터 (240초)\n• 하락장 긴박한 오타 빈발\n• 반복 수정 피로도 극심", font=get_font(10, 'regular'), fill=(100, 116, 139), spacing=4)
+    by_s1 = y_screen + 28 + s_h + 16
+    draw.rounded_rectangle([x_s1, by_s1, x_s1 + s_w, comp_y + comp_h - 18], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+    draw.text((x_s1 + 10, by_s1 + 10), "수동 키패드 타이핑", font=get_font(10, 'bold'), fill=(100, 116, 139))
+    draw.text((x_s1 + 10, by_s1 + 28), "• 4개 파라미터 (240초)\n• 하락장 긴박한 오타 빈발\n• 반복 수정 피로도 극심", font=get_font(9.5, 'regular'), fill=(100, 116, 139), spacing=4)
     
-    draw.rounded_rectangle([x_s2, by_s1, x_s2 + s_w, comp_y + comp_h - 20], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-    draw.text((x_s2 + 12, by_s1 + 10), "0.2초 음성 도크", font=get_font(10.5, 'bold'), fill=(0, 81, 255))
-    draw.text((x_s2 + 12, by_s1 + 28), "• 0.2초 즉각 분리 인계\n• 100% 온디바이스 연산\n• 오타 제로 실시간 주입", font=get_font(10, 'semibold'), fill=(0, 81, 255), spacing=4)
+    draw.rounded_rectangle([x_s2, by_s1, x_s2 + s_w, comp_y + comp_h - 18], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+    draw.text((x_s2 + 10, by_s1 + 10), "0.2초 음성 도크", font=get_font(10, 'bold'), fill=(0, 81, 255))
+    draw.text((x_s2 + 10, by_s1 + 28), "• 0.2초 즉각 분리 인계\n• 100% 온디바이스 연산\n• 오타 제로 실시간 주입", font=get_font(9.5, 'semibold'), fill=(0, 81, 255), spacing=4)
     
     # -------------------------------------------------------------
-    # 2. Center Column: Grand Hero Phone Mockup (x=635, w=370)
+    # 2. Center Column: Grand Hero Phone Mockup (19.5:9 Modern Ratio)
     # -------------------------------------------------------------
     phone_voice = Image.open('portfolio/iphone_mockups/iphone_08_voice.png').convert('RGBA')
-    pw = 360
-    ph = int(round(pw * (phone_voice.height / phone_voice.width)))
+    ph = 640
+    pw = int(round(ph * (phone_voice.width / phone_voice.height)))
     phone_v = phone_voice.resize((pw, ph), Image.Resampling.LANCZOS)
     
-    px = 635
-    py = 220
+    px = 670
+    py = 210
     
     sh_center = Image.new('RGBA', (W, H), (0,0,0,0))
     shc_draw = ImageDraw.Draw(sh_center)
@@ -2386,7 +2392,6 @@ def make_slide_08():
     base.paste(phone_v, (px, py), phone_v)
     draw = ImageDraw.Draw(base)
     
-    # -------------------------------------------------------------
     # 3. Right Column: 3 Distinct Grouped Feature Cards (x=1050, w=770)
     # -------------------------------------------------------------
     rx = 1050
@@ -2544,15 +2549,16 @@ def make_slide_09():
     draw.text((lx + 24, 892), "✓ Google Play 2026 금융 안전 가이드라인 및 오차율 0.00% 검증 통과", font=get_font(10.5, 'bold'), fill=(0, 81, 255))
     
     # -------------------------------------------------------------
-    # 2. Center Column: Grand Hero Phone Mockup (x=690, w=360)
+    # -------------------------------------------------------------
+    # 2. Center Column: Grand Hero Phone Mockup (19.5:9 Modern Slim Profile)
     # -------------------------------------------------------------
     screen_target = Image.open('portfolio/iphone_mockups/iphone_03_target.png').convert('RGBA')
-    pw = 360
-    ph = int(round(pw * (screen_target.height / screen_target.width)))
+    ph = 640
+    pw = int(round(ph * (screen_target.width / screen_target.height)))
     phone_t = screen_target.resize((pw, ph), Image.Resampling.LANCZOS)
     
-    px = 690
-    py = 220
+    px = 715
+    py = 210
     
     sh_center = Image.new('RGBA', (W, H), (0,0,0,0))
     shc_draw = ImageDraw.Draw(sh_center)
@@ -2565,7 +2571,6 @@ def make_slide_09():
     
     # -------------------------------------------------------------
     # 3. Right Column: 2-Step Verified Flow Card + Quant Telemetry Report Card (x=1100, w=720)
-    # (DIFFERENT LAYOUT: Step screens and verified report positioned on the right!)
     # -------------------------------------------------------------
     rx = 1100
     rw = 720
@@ -2579,17 +2584,17 @@ def make_slide_09():
     draw.text((rx + 220, step_y + 20), "2단계 목표 역산 & 리스크 검증 워크플로우", font=get_font(16, 'bold'), fill=(15, 23, 42))
     draw.line([(rx + 28, step_y + 52), (rx + rw - 28, step_y + 52)], fill=(241, 245, 249), width=1)
     
-    # 2 Step Phone Mockups side-by-side
+    # 2 Step Phone Mockups side-by-side (19.5:9 Modern Ratio)
     screen_report = Image.open('portfolio/iphone_mockups/iphone_04_report.png').convert('RGBA')
     
-    step_pw = 195
+    step_pw = 150
     step_ph = int(round(step_pw * (screen_target.height / screen_target.width)))
     m1 = screen_target.resize((step_pw, step_ph), Image.Resampling.LANCZOS)
     m2 = screen_report.resize((step_pw, step_ph), Image.Resampling.LANCZOS)
     
-    m_y = step_y + 70
-    x_m1 = rx + 38
-    x_m2 = rx + rw - 38 - step_pw
+    m_y = step_y + 60
+    x_m1 = rx + 45
+    x_m2 = rx + rw - 45 - step_pw
     
     draw_pill_badge(draw, cx=x_m1 + step_pw//2, cy=m_y + 12, text="STEP 01 · 목표 평단 지정", font=get_font(9.5, 'bold'), theme='slate', has_dot=False, pad_x=8, height=22)
     draw_pill_badge(draw, cx=x_m2 + step_pw//2, cy=m_y + 12, text="STEP 02 · 리스크 한도 점검", font=get_font(9.5, 'bold'), theme='blue', has_dot=False, pad_x=8, height=22)
@@ -2609,12 +2614,12 @@ def make_slide_09():
         
     draw = ImageDraw.Draw(base)
     # Step descriptions below
-    b_step_y = m_y + 24 + step_ph + 12
+    b_step_y = m_y + 24 + step_ph + 14
     draw.rounded_rectangle([x_m1, b_step_y, x_m1 + step_pw, step_y + step_h - 18], radius=8, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-    draw.text((x_m1 + 10, b_step_y + 8), "• 탈출 희망 평단 설정\n• 가용 예수금 실시간 연동", font=get_font(10, 'medium'), fill=(100, 116, 139), spacing=4)
+    draw.text((x_m1 + 8, b_step_y + 8), "• 탈출 희망 평단 설정\n• 가용 예수금 실시간 연동", font=get_font(9.5, 'medium'), fill=(100, 116, 139), spacing=4)
     
     draw.rounded_rectangle([x_m2, b_step_y, x_m2 + step_pw, step_y + step_h - 18], radius=8, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-    draw.text((x_m2 + 10, b_step_y + 8), "• 자산 쏠림도 및 비중 경고\n• 안전 매수 가이드 자동 제시", font=get_font(10, 'semibold'), fill=(0, 81, 255), spacing=4)
+    draw.text((x_m2 + 8, b_step_y + 8), "• 자산 쏠림도 및 비중 경고\n• 안전 매수 가이드 자동 제시", font=get_font(9.5, 'semibold'), fill=(0, 81, 255), spacing=4)
     
     # 3-B. Quant Telemetry & Engine Result Card (QUANT ENGINE CARD)
     rep_y = step_y + step_h + 20
@@ -2681,10 +2686,11 @@ def make_slide_10():
         ('portfolio/iphone_mockups/iphone_06_dark_settings.png', '06. 맞춤 환경 설정', '글로벌 7개 다국어', '& 100% 온디바이스')
     ]
     
-    pw = 236
-    phone_y = 235
-    pgap = 62
-    px = 97
+    # 6 Modern Flagship 19.5:9 Mobile Screens Grid
+    pw = 210
+    phone_y = 205
+    pgap = 80
+    px = 130
     
     for img_path, title, line1, line2 in screens:
         phone = Image.open(img_path).convert('RGBA')
@@ -2700,14 +2706,14 @@ def make_slide_10():
         
         draw = ImageDraw.Draw(base)
         
-        pill_y = phone_y + cur_ph + 16
+        pill_y = phone_y + cur_ph + 18
         # 21px bottom margin below badge
         draw_pill_badge(draw, px + pw // 2, pill_y + 14, title, font=get_font(11, 'bold'), pad_x=12, height=26)
         
-        w_l1 = draw.textlength(line1, font=get_font(11, 'medium'))
-        draw.text((px + (pw - w_l1) / 2, pill_y + 48), line1, font=get_font(11, 'medium'), fill=(100, 116, 139))
-        w_l2 = draw.textlength(line2, font=get_font(11, 'medium'))
-        draw.text((px + (pw - w_l2) / 2, pill_y + 65), line2, font=get_font(11, 'medium'), fill=(100, 116, 139))
+        w_l1 = draw.textlength(line1, font=get_font(10.5, 'medium'))
+        draw.text((px + (pw - w_l1) / 2, pill_y + 46), line1, font=get_font(10.5, 'medium'), fill=(100, 116, 139))
+        w_l2 = draw.textlength(line2, font=get_font(10.5, 'medium'))
+        draw.text((px + (pw - w_l2) / 2, pill_y + 64), line2, font=get_font(10.5, 'medium'), fill=(100, 116, 139))
         
         px += pw + pgap
         
@@ -3006,14 +3012,14 @@ def make_slide_12():
     rx = 1300
     rw = 520
     
-    # Grand Hero Phone Mockup (iphone_01_home.png with gorgeous 3D shadow)
+    # Grand Hero Phone Mockup (19.5:9 Modern Slim Profile with gorgeous 3D shadow)
     screen_home = Image.open('portfolio/iphone_mockups/iphone_01_home.png').convert('RGBA')
-    pw = 350
-    ph = int(round(pw * (screen_home.height / screen_home.width)))
+    ph = 640
+    pw = int(round(ph * (screen_home.width / screen_home.height)))
     phone_img = screen_home.resize((pw, ph), Image.Resampling.LANCZOS)
     
     px = rx + (rw - pw) // 2
-    py = 110
+    py = 145
     
     sh = Image.new('RGBA', (W, H), (0,0,0,0))
     shd = ImageDraw.Draw(sh)
