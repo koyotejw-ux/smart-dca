@@ -547,9 +547,9 @@ def make_slide_01():
     
     # 4. Floating Feature Callout Pills anchored to Mockups (Reference Style)
     draw = ImageDraw.Draw(base)
-    draw_pill_badge(draw, cx=1140, cy=185, text="0.2s VOICE DOCK", font=get_font(10.5, 'bold'), theme='cyan', pad_x=12, height=28, solid=True)
-    draw_pill_badge(draw, cx=1640, cy=240, text="GOAL-SEEKING ENGINE", font=get_font(10.5, 'bold'), theme='amber', pad_x=12, height=28, solid=True)
-    draw_pill_badge(draw, cx=1550, cy=780, text="65% CASH SAFETY GUARD", font=get_font(10.5, 'bold'), theme='green', pad_x=12, height=28, solid=True)
+    draw_pill_badge(draw, cx=1140, cy=160, text="0.2s VOICE DOCK", font=get_font(10.5, 'bold'), theme='cyan', pad_x=12, height=28, solid=True)
+    draw_pill_badge(draw, cx=1640, cy=200, text="GOAL-SEEKING ENGINE", font=get_font(10.5, 'bold'), theme='amber', pad_x=12, height=28, solid=True)
+    draw_pill_badge(draw, cx=1580, cy=815, text="65% CASH SAFETY GUARD", font=get_font(10.5, 'bold'), theme='green', pad_x=12, height=28, solid=True)
     
     # 5. Bottom Simple & Clean Specification Strip (Reference Style, Clean 4 Columns)
     bar_y = 860
@@ -631,7 +631,7 @@ def make_slide_02():
     draw.text((c2_x + 24, sy + 62), "급박한 순간의 타이핑 인지부하", font=get_font(16.5, 'bold'), fill=(15, 23, 42))
     draw.text((c2_x + 24, sy + 90), "호가가 급변하는 폭락장에서 8자리 단가를 직접 치다\n지지선을 놓치고 추가 손실(-6.4%)에 직면합니다.", font=get_font(12, 'regular'), fill=(100, 116, 139), spacing=4)
     
-    draw.text((c2_x + 24, sy + 148), "240s ➔ 4.2s", font=get_num_font(34, 'black'), fill=(217, 119, 6))
+    draw.text((c2_x + 24, sy + 148), "240s → 4.2s", font=get_num_font(34, 'black'), fill=(217, 119, 6))
     draw.text((c2_x + 24, sy + 190), "소요 시간 -98% 단축 (인지부하 인터뷰 N=428)", font=get_font(11, 'bold'), fill=(16, 185, 129))
     
     # Comparison Bar Graphic
@@ -1435,17 +1435,20 @@ def make_slide_06():
     draw.text((n_x + 320, ty_logo + 10), "[스마트 물타기]", font=get_font(28, 'bold'), fill=(15, 23, 42))
     
     # Detailed Description
-    desc_n = (
-        "기존 금융 시장에서 공포와 감정에 휩쓸려 무계획하게 행해지던 '물타기(Dollar Cost Averaging)'를 "
-        "수학적 가중평균과 폐쇄형 역산 알고리즘으로 '스마트(Smart)'하게 전환하여, "
-        "감정이 아닌 객관적 시나리오로 자산을 지킨다는 핵심 메시지를 담았습니다.\n\n"
-        "• Smart : 폐쇄형 퀀트 역산 엔진 & 0.2초 온디바이스 음성 AI 파싱\n"
-        "• DCA : 분할 매수를 통한 리스크 헷지 및 평단가 방어 철학"
-    )
-    d_lines = desc_n.split('\n')
-    dy = ty_logo + 70
+    desc_p1 = "기존 금융 시장에서 공포와 감정에 휩쓸려 무계획하게 행해지던 '물타기(Dollar Cost Averaging)'를 수학적 가중평균과 폐쇄형 역산 알고리즘으로 '스마트(Smart)'하게 전환하여, 감정이 아닌 객관적 시나리오로 자산을 지킨다는 핵심 메시지를 담았습니다."
+    d_lines = wrap_text_by_words(desc_p1, get_font(12, 'regular'), n_w - 64, draw)
+    dy = ty_logo + 65
     for line in d_lines:
         draw.text((n_x + 32, dy), line, font=get_font(12, 'regular'), fill=(71, 85, 105))
+        dy += 20
+        
+    dy += 8
+    bullets = [
+        "• Smart : 폐쇄형 퀀트 역산 엔진 & 0.2초 온디바이스 음성 AI 파싱",
+        "• DCA : 분할 매수를 통한 리스크 헷지 및 평단가 방어 철학"
+    ]
+    for b in bullets:
+        draw.text((n_x + 32, dy), b, font=get_font(12, 'semibold'), fill=(30, 41, 59))
         dy += 22
         
     # Right Card: Symbol
@@ -1842,10 +1845,12 @@ def make_slide_08():
     draw.text((100, 172), t2_a, font=font_title, fill=(15, 23, 42))
     draw.text((100 + w_t2_a, 172), t2_b, font=font_title, fill=(0, 82, 255))
     
-    desc1 = "급격히 하락하는 장세 속에서 긴박한 타이핑 실수(Fat-finger)를 원천 차단하기 위해 화면 하단에 0.2초 음성 도크를 배치했어요."
-    desc2 = "자연어 음성 발화 즉시 수치와 종목을 100% 로컬에서 분리·파싱해 계산기 모듈로 무지연 자동 입력합니다."
-    draw.text((100, 245), desc1, font=get_font(15, 'regular'), fill=(71, 85, 105))
-    draw.text((100, 275), desc2, font=get_font(15, 'regular'), fill=(71, 85, 105))
+    desc_text = "급격히 하락하는 장세 속에서 긴박한 타이핑 실수(Fat-finger)를 원천 차단하기 위해 화면 하단에 0.2초 음성 도크를 배치했어요. 자연어 음성 발화 즉시 수치와 종목을 100% 로컬에서 분리·파싱해 계산기 모듈로 무지연 자동 입력합니다."
+    desc_lines = wrap_text_by_words(desc_text, get_font(13.5, 'regular'), 450, draw)
+    dy = 224
+    for dl in desc_lines:
+        draw.text((100, dy), dl, font=get_font(13.5, 'regular'), fill=(71, 85, 105))
+        dy += 22
     
     # 2. Left Column: 2 Clean Comparison Previews
     card_l_w = 200
@@ -1859,12 +1864,12 @@ def make_slide_08():
     s2_h = int(round(s2_w * (screen_sim.height / screen_sim.width)))
     s2 = screen_sim.resize((s2_w, s2_h), Image.Resampling.LANCZOS)
     
-    y_screen = 375
+    y_screen = 335
     x_s1 = 100
     x_s2 = 330
     
-    draw.text((x_s1 + 55, y_screen - 36), "직접 타이핑 입력", font=get_font(13.5, 'bold'), fill=(100, 116, 139))
-    draw.text((x_s2 + 55, y_screen - 36), "음성 도크 자동 파싱", font=get_font(13.5, 'bold'), fill=(0, 82, 255))
+    draw.text((x_s1 + 45, y_screen - 28), "직접 타이핑 입력", font=get_font(13, 'bold'), fill=(100, 116, 139))
+    draw.text((x_s2 + 40, y_screen - 28), "음성 도크 자동 파싱", font=get_font(13, 'bold'), fill=(0, 82, 255))
     
     for sx, simg in [(x_s1, s1), (x_s2, s2)]:
         sh = Image.new('RGBA', (W, H), (0,0,0,0))
@@ -1875,17 +1880,17 @@ def make_slide_08():
         base.paste(simg, (sx, y_screen), simg)
         
     draw = ImageDraw.Draw(base)
-    draw.text((x_s1 + 25, y_screen + s1_h + 16), "• 4개 파라미터 수동 입력 (240초)\n• 하락장 긴박한 타이핑 오타 빈발", font=get_font(12, 'regular'), fill=(148, 163, 184), spacing=4)
-    draw.text((x_s2 + 25, y_screen + s2_h + 16), "• 자연어 발화 즉시 0.2초 분리 인계\n• 100% 온디바이스 로컬 연산", font=get_font(12, 'semibold'), fill=(0, 82, 255), spacing=4)
+    draw.text((x_s1 + 10, y_screen + s1_h + 16), "• 4개 파라미터 수동 입력 (240초)\n• 하락장 긴박한 타이핑 오타 빈발", font=get_font(11.5, 'regular'), fill=(148, 163, 184), spacing=4)
+    draw.text((x_s2 + 10, y_screen + s2_h + 16), "• 자연어 발화 즉시 0.2초 분리 인계\n• 100% 온디바이스 로컬 연산", font=get_font(11.5, 'semibold'), fill=(0, 82, 255), spacing=4)
     
-    # 3. Center Column: Grand Hero Phone Mockup
+    # 3. Center Column: Grand Hero Phone Mockup (Generous negative space)
     phone_voice = Image.open('portfolio/iphone_mockups/iphone_08_voice.png').convert('RGBA')
     pw = 350
     ph = int(round(pw * (phone_voice.height / phone_voice.width)))
     phone_v = phone_voice.resize((pw, ph), Image.Resampling.LANCZOS)
     
-    px = 640
-    py = 220
+    px = 650
+    py = 210
     
     sh_center = Image.new('RGBA', (W, H), (0,0,0,0))
     shc_draw = ImageDraw.Draw(sh_center)
@@ -1901,14 +1906,16 @@ def make_slide_08():
     r_w = 720
     
     # Callout 1: VOICE DOCK
-    draw_pill_badge(draw, rx + 65, 270, "VOICE DOCK", font=get_font(11, 'bold'), theme='blue', dark_mode=False, pad_x=12, height=26)
-    draw.text((rx, 305), "자연어 음성 즉각 인식 & 파라미터 분리", font=get_font(18, 'bold'), fill=(15, 23, 42))
-    draw.text((rx, 340), '"삼성전자 7만 원에 50주" 말하는 순간 종목, 단가, 수량을 자동으로 분리 인식해요.\n발화가 끝남과 동시에 시뮬레이터 수치가 채워져 실시간 호가 변동에 즉각 대응합니다.', font=get_font(14, 'regular'), fill=(71, 85, 105), spacing=5)
+    c1_y = 285
+    draw_pill_badge(draw, rx + 65, c1_y, "VOICE DOCK", font=get_font(11, 'bold'), theme='blue', dark_mode=False, pad_x=12, height=26)
+    draw.text((rx, c1_y + 30), "자연어 음성 즉각 인식 & 파라미터 분리", font=get_font(18, 'bold'), fill=(15, 23, 42))
+    draw.text((rx, c1_y + 62), '"삼성전자 7만 원에 50주" 말하는 순간 종목, 단가, 수량을 자동으로 분리 인식해요.\n발화가 끝남과 동시에 시뮬레이터 수치가 채워져 실시간 호가 변동에 즉각 대응합니다.', font=get_font(13.5, 'regular'), fill=(71, 85, 105), spacing=4)
     
     # Callout 2: PRESET CHIPS
-    draw_pill_badge(draw, rx + 75, 435, "PRESET CHIPS", font=get_font(11, 'bold'), theme='cyan', dark_mode=False, pad_x=12, height=26)
-    draw.text((rx, 470), "소음 환경을 위한 원터치 호가 프리셋 칩", font=get_font(18, 'bold'), fill=(15, 23, 42))
-    draw.text((rx, 505), "음성을 쓰기 어려운 대중교통이나 조용한 환경에서도 ±5%, ±10% 호가 칩으로\n손가락 1-Tap 터치만으로 0.1초 만에 즉시 추가 매수 시나리오를 계산해요.", font=get_font(14, 'regular'), fill=(71, 85, 105), spacing=5)
+    c2_y = 445
+    draw_pill_badge(draw, rx + 75, c2_y, "PRESET CHIPS", font=get_font(11, 'bold'), theme='cyan', dark_mode=False, pad_x=12, height=26)
+    draw.text((rx, c2_y + 30), "소음 환경을 위한 원터치 호가 프리셋 칩", font=get_font(18, 'bold'), fill=(15, 23, 42))
+    draw.text((rx, c2_y + 62), "음성을 쓰기 어려운 대중교통이나 조용한 환경에서도 ±5%, ±10% 호가 칩으로\n손가락 1-Tap 터치만으로 0.1초 만에 즉시 추가 매수 시나리오를 계산해요.", font=get_font(13.5, 'regular'), fill=(71, 85, 105), spacing=4)
     
     # Callout 3: AI LIVE PARSER CARD
     card_y = 600
@@ -1938,10 +1945,10 @@ def make_slide_08():
         draw.text((cx + 14, cy + 32), val, font=get_font(13.5, 'bold'), fill=c_col)
         cx += cw + 14
         
-    # Architectural Dotted Callouts linking Phone UI to Badges (Reference Image 5 Style)
-    draw_dotted_callout(draw, p1=(px + pw - 30, py + 620), p2=(rx - 15, 270), col=(0, 82, 255))
-    draw_dotted_callout(draw, p1=(px + pw - 30, py + 520), p2=(rx - 15, 435), col=(6, 182, 212))
-    draw_dotted_callout(draw, p1=(px + pw - 30, py + 380), p2=(rx - 15, 630), col=(124, 58, 237))
+    # Architectural Dotted Callouts linking Phone UI to Badges (Reference Image 5 Style - Clean Parallel Layout)
+    draw_dotted_callout(draw, p1=(px + pw - 20, c1_y), p2=(rx - 15, c1_y), col=(0, 82, 255))
+    draw_dotted_callout(draw, p1=(px + pw - 20, c2_y), p2=(rx - 15, c2_y), col=(6, 182, 212))
+    draw_dotted_callout(draw, p1=(px + pw - 20, card_y + 30), p2=(rx - 15, card_y + 30), col=(124, 58, 237))
         
     base.save(f'{OUT_DIR}/slide_08.png')
     print("SAVED slide_08.png (Voice Dock UI with Blueprint Dotted Callouts)")
@@ -1967,10 +1974,12 @@ def make_slide_09():
     draw.text((100, 172), t2_a, font=font_title, fill=(15, 23, 42))
     draw.text((100 + w_t2_a, 172), t2_b, font=font_title, fill=(0, 82, 255))
     
-    desc1 = "손익분기점 탈출을 위해 도달해야 하는 목표가를 설정하면, 몇 주를 얼마에 더 사야 하는지"
-    desc2 = "닫힌 형식(Closed-form) 퀀트 방정식으로 오차 없이 온디바이스에서 즉시 도출합니다."
-    draw.text((100, 245), desc1, font=get_font(15, 'regular'), fill=(71, 85, 105))
-    draw.text((100, 275), desc2, font=get_font(15, 'regular'), fill=(71, 85, 105))
+    desc_text = "손익분기점 탈출을 위해 도달해야 하는 목표가를 설정하면, 몇 주를 얼마에 더 사야 하는지 닫힌 형식(Closed-form) 퀀트 방정식으로 오차 없이 온디바이스에서 즉시 도출합니다."
+    desc_lines = wrap_text_by_words(desc_text, get_font(13.5, 'regular'), 450, draw)
+    dy = 224
+    for dl in desc_lines:
+        draw.text((100, dy), dl, font=get_font(13.5, 'regular'), fill=(71, 85, 105))
+        dy += 22
     
     # 2. Left Column: 2 Comparison / Step Screens
     card_l_w = 200
@@ -1984,12 +1993,12 @@ def make_slide_09():
     s2_h = int(round(s2_w * (screen_report.height / screen_report.width)))
     s2 = screen_report.resize((s2_w, s2_h), Image.Resampling.LANCZOS)
     
-    y_screen = 375
+    y_screen = 335
     x_s1 = 100
     x_s2 = 330
     
-    draw.text((x_s1 + 55, y_screen - 36), "목표 평단가 지정", font=get_font(13.5, 'bold'), fill=(100, 116, 139))
-    draw.text((x_s2 + 55, y_screen - 36), "리스크 한도 점검", font=get_font(13.5, 'bold'), fill=(0, 82, 255))
+    draw.text((x_s1 + 45, y_screen - 28), "목표 평단가 지정", font=get_font(13, 'bold'), fill=(100, 116, 139))
+    draw.text((x_s2 + 45, y_screen - 28), "리스크 한도 점검", font=get_font(13, 'bold'), fill=(0, 82, 255))
     
     for sx, simg in [(x_s1, s1), (x_s2, s2)]:
         sh = Image.new('RGBA', (W, H), (0,0,0,0))
@@ -2000,16 +2009,16 @@ def make_slide_09():
         base.paste(simg, (sx, y_screen), simg)
         
     draw = ImageDraw.Draw(base)
-    draw.text((x_s1 + 25, y_screen + s1_h + 16), "• 탈출 희망 평단 설정\n• 가용 예수금 실시간 연동", font=get_font(12, 'regular'), fill=(148, 163, 184), spacing=4)
-    draw.text((x_s2 + 25, y_screen + s2_h + 16), "• 자산 쏠림도 및 비중 경고\n• 안전 매수 가이드 제시", font=get_font(12, 'semibold'), fill=(0, 82, 255), spacing=4)
+    draw.text((x_s1 + 10, y_screen + s1_h + 16), "• 탈출 희망 평단 설정\n• 가용 예수금 실시간 연동", font=get_font(11.5, 'regular'), fill=(148, 163, 184), spacing=4)
+    draw.text((x_s2 + 10, y_screen + s2_h + 16), "• 자산 쏠림도 및 비중 경고\n• 안전 매수 가이드 제시", font=get_font(11.5, 'semibold'), fill=(0, 82, 255), spacing=4)
     
-    # 3. Center Column: Grand Hero Phone Mockup
+    # 3. Center Column: Grand Hero Phone Mockup (Generous negative space)
     pw = 350
     ph = int(round(pw * (screen_target.height / screen_target.width)))
     phone_t = screen_target.resize((pw, ph), Image.Resampling.LANCZOS)
     
-    px = 640
-    py = 220
+    px = 650
+    py = 210
     
     sh_center = Image.new('RGBA', (W, H), (0,0,0,0))
     shc_draw = ImageDraw.Draw(sh_center)
@@ -2025,14 +2034,16 @@ def make_slide_09():
     r_w = 720
     
     # Callout 1: CLOSED-FORM QUANT
-    draw_pill_badge(draw, rx + 105, 270, "CLOSED-FORM QUANT", font=get_font(11, 'bold'), theme='blue', dark_mode=False, pad_x=12, height=26)
-    draw.text((rx, 305), "수학적 폐쇄형 역산 알고리즘 (Zero-Latency)", font=get_font(18, 'bold'), fill=(15, 23, 42))
-    draw.text((rx, 340), "Q_add = Q_0 × (P_0 - P_target) / (P_target - P_add) 수식을 온디바이스에서 즉시 풀어내어\n복잡한 시행착오 반복 연산 없이 닫힌 형식으로 필요 수량과 자금을 즉시 산출해요.", font=get_font(14, 'regular'), fill=(71, 85, 105), spacing=5)
+    c1_y = 285
+    draw_pill_badge(draw, rx + 105, c1_y, "CLOSED-FORM QUANT", font=get_font(11, 'bold'), theme='blue', dark_mode=False, pad_x=12, height=26)
+    draw.text((rx, c1_y + 30), "수학적 폐쇄형 역산 알고리즘 (Zero-Latency)", font=get_font(18, 'bold'), fill=(15, 23, 42))
+    draw.text((rx, c1_y + 62), "Q_add = Q_0 × (P_0 - P_target) / (P_target - P_add) 수식을 온디바이스에서 즉시 풀어내어\n복잡한 시행착오 반복 연산 없이 닫힌 형식으로 필요 수량과 자금을 즉시 산출해요.", font=get_font(13.5, 'regular'), fill=(71, 85, 105), spacing=4)
     
     # Callout 2: BOUNDARY GUARD
-    draw_pill_badge(draw, rx + 95, 435, "BOUNDARY GUARD", font=get_font(11, 'bold'), theme='amber', dark_mode=False, pad_x=12, height=26)
-    draw.text((rx, 470), "비현실적 목표 사전 가드 & 대안 평단 제시", font=get_font(18, 'bold'), fill=(15, 23, 42))
-    draw.text((rx, 505), "현재 추가 매수가보다 낮은 비현실적 목표 입력 시 즉시 감지하여 안전 경고를 띄우고,\n현재 가용 예수금 범위 안에서 도달 가능한 최선의 방어 평단을 추천해요.", font=get_font(14, 'regular'), fill=(71, 85, 105), spacing=5)
+    c2_y = 445
+    draw_pill_badge(draw, rx + 95, c2_y, "BOUNDARY GUARD", font=get_font(11, 'bold'), theme='amber', dark_mode=False, pad_x=12, height=26)
+    draw.text((rx, c2_y + 30), "비현실적 목표 사전 가드 & 대안 평단 제시", font=get_font(18, 'bold'), fill=(15, 23, 42))
+    draw.text((rx, c2_y + 62), "현재 추가 매수가보다 낮은 비현실적 목표 입력 시 즉시 감지하여 안전 경고를 띄우고,\n현재 가용 예수금 범위 안에서 도달 가능한 최선의 방어 평단을 추천해요.", font=get_font(13.5, 'regular'), fill=(71, 85, 105), spacing=4)
     
     # Callout 3: QUANT ENGINE CARD
     card_y = 600
@@ -2062,10 +2073,10 @@ def make_slide_09():
         draw.text((cx + 14, cy + 32), val, font=get_font(13.5, 'bold'), fill=c_col)
         cx += cw + 14
         
-    # Architectural Dotted Callouts linking Phone UI to Badges (Reference Image 5 Style)
-    draw_dotted_callout(draw, p1=(px + pw - 30, py + 330), p2=(rx - 15, 270), col=(0, 82, 255))
-    draw_dotted_callout(draw, p1=(px + pw - 30, py + 410), p2=(rx - 15, 435), col=(217, 119, 6))
-    draw_dotted_callout(draw, p1=(px + pw - 30, py + 520), p2=(rx - 15, 630), col=(16, 185, 129))
+    # Architectural Dotted Callouts linking Phone UI to Badges (Reference Image 5 Style - Clean Parallel Layout)
+    draw_dotted_callout(draw, p1=(px + pw - 20, c1_y), p2=(rx - 15, c1_y), col=(0, 82, 255))
+    draw_dotted_callout(draw, p1=(px + pw - 20, c2_y), p2=(rx - 15, c2_y), col=(217, 119, 6))
+    draw_dotted_callout(draw, p1=(px + pw - 20, card_y + 30), p2=(rx - 15, card_y + 30), col=(16, 185, 129))
         
     base.save(f'{OUT_DIR}/slide_09.png')
     print("SAVED slide_09.png (Goal Seeking UI with Blueprint Dotted Callouts)")
@@ -2089,23 +2100,20 @@ def make_slide_10():
     draw.text((100, 175), desc, font=get_font(15, 'regular'), fill=(71, 85, 105))
     
     screens = [
-        ('portfolio/iphone_mockups/iphone_01_home.png', '01. 홈 대시보드', '자산 현황 한눈에 보기 & 음성 도크'),
-        ('portfolio/iphone_mockups/iphone_08_voice.png', '02. AI 음성 비서', '0.2초 음성 & 호가 프리셋 칩'),
-        ('portfolio/iphone_mockups/iphone_03_target.png', '03. 목표 역산 엔진', '손익분기점 탈출 필요 수량 도출'),
-        ('portfolio/iphone_mockups/iphone_04_report.png', '04. 리스크 진단 리포트', '자산 쏠림 경고 & 안전도 진단'),
-        ('portfolio/iphone_mockups/iphone_05_dark_home.png', '05. OLED 다크 테마', '야간 장세 최적화 초고대비 화면'),
-        ('portfolio/iphone_mockups/iphone_06_dark_settings.png', '06. 맞춤 환경 설정', '글로벌 7개 언어 & 24시간 무광고')
+        ('portfolio/iphone_mockups/iphone_01_home.png', '01. 홈 대시보드', '자산 현황 한눈에 보기', '& AI 음성 도크'),
+        ('portfolio/iphone_mockups/iphone_08_voice.png', '02. AI 음성 비서', '0.2초 자연어 음성 인식', '& 호가 프리셋 칩'),
+        ('portfolio/iphone_mockups/iphone_03_target.png', '03. 목표 역산 엔진', '손익분기점 탈출', '필요 수량·자금 즉시 역산'),
+        ('portfolio/iphone_mockups/iphone_04_report.png', '04. 리스크 진단 리포트', '자산 쏠림 경고', '& 안전 계좌 진단'),
+        ('portfolio/iphone_mockups/iphone_05_dark_home.png', '05. OLED 다크 테마', '야간 장세 최적화', '초고대비 다크 모드'),
+        ('portfolio/iphone_mockups/iphone_06_dark_settings.png', '06. 맞춤 환경 설정', '글로벌 7개 다국어', '& 100% 온디바이스')
     ]
     
-    pw = 230
+    pw = 236
     phone_y = 235
-    pgap = 68
-    px = 100
+    pgap = 62
+    px = 97
     
-    ref_phone = Image.open(screens[0][0])
-    ph = int(round(pw * (ref_phone.height / ref_phone.width)))
-    
-    for img_path, title, role in screens:
+    for img_path, title, line1, line2 in screens:
         phone = Image.open(img_path).convert('RGBA')
         cur_ph = int(round(pw * (phone.height / phone.width)))
         phone = phone.resize((pw, cur_ph), Image.Resampling.LANCZOS)
@@ -2122,8 +2130,10 @@ def make_slide_10():
         pill_y = phone_y + cur_ph + 20
         draw_pill_badge(draw, px + pw // 2, pill_y + 16, title, font=get_font(11.5, 'bold'), pad_x=12, height=30)
         
-        r_w = draw.textlength(role, font=get_font(11, 'medium'))
-        draw.text((px + (pw - r_w) / 2, pill_y + 42), role, font=get_font(11, 'medium'), fill=(100, 116, 139))
+        w_l1 = draw.textlength(line1, font=get_font(11, 'medium'))
+        draw.text((px + (pw - w_l1) / 2, pill_y + 40), line1, font=get_font(11, 'medium'), fill=(100, 116, 139))
+        w_l2 = draw.textlength(line2, font=get_font(11, 'medium'))
+        draw.text((px + (pw - w_l2) / 2, pill_y + 57), line2, font=get_font(11, 'medium'), fill=(100, 116, 139))
         
         px += pw + pgap
         
