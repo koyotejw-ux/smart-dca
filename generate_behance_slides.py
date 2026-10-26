@@ -2959,16 +2959,19 @@ def make_slide_12():
     
     # ---------------------------------------------------------
     # RIGHT: 4 STEP INTERACTIVE CARDS + MASTER LAUNCHER (x=800 to 1820, w=1020)
+    # Visual Hierarchy:
+    # 1. Tertiary: Subtle inline guide hint (no heavy boxes or loud badges)
+    # 2. Secondary: 4 Subdued Step Cards (dark glass, muted slate badges, ghost outline buttons)
+    # 3. PRIMARY HERO: Radiant Blue-Cyan Gradient Master Launcher with Ambient Glow
+    # 4. Supporting: Dark QR Code Plate & Hyperlink Area
     # ---------------------------------------------------------
     rx = 800
     rw = 1020
     
-    # Guide Banner - Dark Blue Glow Accent
-    draw.rounded_rectangle([rx, 205, rx + rw, 252], radius=10, fill=(15, 28, 48, 255), outline=(30, 58, 95), width=1)
-    draw_pill_badge(draw, left_x=rx + 16, cy=228, text="CLICK TO TEST", font=get_font(9, 'bold'), theme='cyan', dark_mode=True, has_dot=True, pad_x=8, height=20)
-    draw.text((rx + 140, 228), "PDF 문서 또는 브라우저에서 각 카드를 클릭하면 해당 화면으로 즉시 이동하여 터치 테스트할 수 있습니다.", font=get_font(11.5, 'bold'), fill=(56, 189, 248), anchor='lm')
+    # 1. Subtle, Un-emphasized Guide Hint (No loud box or bright badge)
+    draw.text((rx + 4, 212), "TIP · 원하는 단계 카드를 선택하거나, 아래 마스터 런처로 앱 전체 플로우를 직접 체험해 보세요.", font=get_font(11.5, 'regular'), fill=(115, 130, 150), anchor='lm')
     
-    # 4 Interactive Flow Cards
+    # 2. 4 Subdued Step Cards (Secondary Level)
     base_proto_url = os.environ.get("GITHUB_PAGES_BASE_URL", "https://coyote-dev.github.io/average_down_calculator")
     proto_entry_url = f"{base_proto_url}/prototype.html"
 
@@ -2976,76 +2979,122 @@ def make_slide_12():
         (
             "STEP 01", "01. 자산 현황 진단 대시보드",
             "보유 주식 수량 및 평균 매입가 입력 · 실시간 계좌 평가 손익 및 리스크 대시보드 진단",
-            f"{proto_entry_url}?flow=home",
-            "blue"
+            f"{proto_entry_url}?flow=home"
         ),
         (
             "STEP 02", "02. 0.2초 음성 도크 & 호가 프리셋 칩",
             "긴박한 하락장에서 말로 빠르게 입력하는 온디바이스 음성 바텀시트 모달 조작",
-            f"{proto_entry_url}?flow=voice",
-            "green"
+            f"{proto_entry_url}?flow=voice"
         ),
         (
             "STEP 03", "03. 목표 평단가 역산 엔진 (Closed-Form)",
             "탈출 희망 가격 입력 시 필요 수량과 소요 자금을 0.00% 오차로 즉시 역산 산출",
-            f"{proto_entry_url}?flow=target",
-            "cyan"
+            f"{proto_entry_url}?flow=target"
         ),
         (
             "STEP 04", "04. 최종 플랜 확정 & 안전 계좌 진단",
             "예수금 65% 안전 마진 점검 및 리스크 진단 리포트 기반 최종 분할 매수 플랜 확정",
-            f"{proto_entry_url}?flow=sim",
-            "purple"
+            f"{proto_entry_url}?flow=sim"
         )
     ]
     
-    sy = 265
-    sh_h = 92
-    sgap = 12
+    sy = 236
+    sh_h = 88
+    sgap = 10
     step_boxes = []
     
-    for badge, title, desc, url, theme_key in steps:
+    for badge, title, desc, url in steps:
         box_rect = [rx, sy, rx + rw, sy + sh_h]
         step_boxes.append((box_rect, url))
         
-        # Dark Card Box
-        draw.rounded_rectangle(box_rect, radius=12, fill=(17, 24, 39, 255), outline=(40, 53, 72), width=1)
-        stripe_color = {'blue': (0, 132, 255), 'green': (16, 185, 129), 'cyan': (6, 182, 212), 'purple': (168, 85, 247)}[theme_key]
-        draw.rounded_rectangle([rx, sy + 10, rx + 4, sy + sh_h - 10], radius=2, fill=stripe_color)
+        # Subdued Dark Glass Box (No bright stripes)
+        draw.rounded_rectangle(box_rect, radius=12, fill=(15, 20, 32, 230), outline=(32, 42, 58), width=1)
         
-        draw_pill_badge(draw, left_x=rx + 18, cy=sy + 26, text=badge, font=get_font(9.5, 'bold'), theme=theme_key, dark_mode=True, pad_x=8, height=20)
-        draw.text((rx + 115, sy + 26), title, font=get_font(15, 'bold'), fill=(255, 255, 255), anchor='lm')
-        draw.text((rx + 18, sy + 62), desc, font=get_font(11.5, 'regular'), fill=(148, 163, 184), anchor='lm')
+        # Muted Dark Slate Badge (Uniform and quiet)
+        draw_pill_badge(draw, left_x=rx + 18, cy=sy + 24, text=badge, font=get_font(9, 'bold'), theme='slate', dark_mode=True, has_dot=False, pad_x=8, height=20)
+        draw.text((rx + 90, sy + 24), title, font=get_font(14.5, 'bold'), fill=(226, 232, 240), anchor='lm')
+        draw.text((rx + 18, sy + 58), desc, font=get_font(11, 'regular'), fill=(105, 120, 140), anchor='lm')
         
-        # Right Click Button - Solid Pill
-        btn_x = rx + rw - 130
-        draw_pill_badge(draw, cx=btn_x + 50, cy=sy + 46, text="체험하기 ↗", font=get_font(11, 'bold'), theme=theme_key, solid=True, pad_x=14, height=32)
+        # Right Click Button - Subtle Ghost Outline Pill (Secondary)
+        btn_x = rx + rw - 120
+        draw_pill_badge(draw, cx=btn_x + 45, cy=sy + 44, text="바로가기 ↗", font=get_font(10.5, 'bold'), theme='slate', dark_mode=True, has_dot=False, pad_x=12, height=28)
         
         sy += sh_h + sgap
         
-    # Master Primary Launcher Banner (y=685 to 785, h=100) - Electric Blue High Contrast
-    my = 685
-    mh = 100
+    # ---------------------------------------------------------
+    # 3. PRIMARY HERO: MASTER LAUNCHER with Iconic Blue Gradient
+    # ---------------------------------------------------------
+    my = 638
+    mh = 120
     master_box = [rx, my, rx + rw, my + mh]
-    draw.rounded_rectangle(master_box, radius=14, fill=(13, 27, 50, 255), outline=(0, 132, 255), width=2)
     
-    draw_pill_badge(draw, left_x=rx + 24, cy=my + 28, text="MASTER LAUNCHER", font=get_font(9, 'bold'), theme='cyan', dark_mode=True, pad_x=8, height=20)
-    draw.text((rx + 160, my + 28), "모바일 목업 디바이스에서 전체 플로우 직접 실행하기 ↗", font=get_font(16, 'bold'), fill=(255, 255, 255), anchor='lm')
-    draw.text((rx + 24, my + 65), "불필요한 설명 문서 없이 실제 스마트폰 뷰포트에서 앱 전체를 터치 테스트할 수 있습니다.", font=get_font(12, 'regular'), fill=(148, 163, 184), anchor='lm')
+    # 3-A. Radiant Blue Ambient Glow Behind Card
+    m_glow = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    m_glow_d = ImageDraw.Draw(m_glow)
+    m_glow_d.rounded_rectangle([rx - 6, my - 2, rx + rw + 6, my + mh + 8], radius=24, fill=(0, 87, 255, 120))
+    m_glow = m_glow.filter(ImageFilter.GaussianBlur(24))
+    base = Image.alpha_composite(base, m_glow)
     
-    # Large Launch Pill
-    draw_pill_badge(draw, cx=rx + rw - 130, cy=my + 50, text="RUN PROTOTYPE ↗", font=get_font(12, 'bold'), theme='blue', solid=True, pad_x=18, height=42)
+    # 3-B. Generate Vibrant 135-degree Blue-to-Cyan Linear Gradient Box
+    t = np.linspace(0, 1, rw, endpoint=True, dtype=np.float32)
+    r_arr = (0 * (1 - t) + 0 * t).astype(np.uint8)
+    g_arr = (87 * (1 - t) + 195 * t).astype(np.uint8)
+    b_arr = (255 * (1 - t) + 245 * t).astype(np.uint8)
+    grad_arr = np.zeros((mh, rw, 4), dtype=np.uint8)
+    grad_arr[:, :, 0] = r_arr
+    grad_arr[:, :, 1] = g_arr
+    grad_arr[:, :, 2] = b_arr
+    grad_arr[:, :, 3] = 255
+    grad_box = Image.fromarray(grad_arr, 'RGBA')
     
-    # Bottom PDF Hyperlink Info & QR Code Area (y=800 to 980, h=180) - Dark Glass Box
-    qy = 800
-    qh = 180
-    draw.rounded_rectangle([rx, qy, rx + rw, qy + qh], radius=14, fill=(17, 24, 39, 255), outline=(40, 53, 72), width=1)
+    grad_mask = Image.new('L', (rw, mh), 0)
+    gmd = ImageDraw.Draw(grad_mask)
+    gmd.rounded_rectangle([0, 0, rw - 1, mh - 1], radius=16, fill=255)
     
-    draw_pill_badge(draw, left_x=rx + 24, cy=qy + 26, text="HYPERLINK & MOBILE QR SCAN", font=get_font(9, 'bold'), theme='green', has_dot=True, dark_mode=True, pad_x=8, height=20)
-    draw.text((rx + 24, qy + 58), "• PDF 원클릭 하이퍼링크 : PDF 뷰어에서 각 카드나 버튼 클릭 시 반응형 프로토타입 즉시 실행", font=get_font(11.5, 'medium'), fill=(203, 213, 225))
-    draw.text((rx + 24, qy + 84), "• 스마트폰 실물 QR 스캔 : 스마트폰 기본 카메라로 우측 QR 코드 스캔 시 모바일 전용 뷰 작동", font=get_font(11.5, 'medium'), fill=(203, 213, 225))
-    draw.text((rx + 24, qy + 110), "• GitHub Pages 상시 배포 : 전 세계 어디서든 무설치로 60fps 플러터 엔진 즉각 체험 가능", font=get_font(11.5, 'medium'), fill=(56, 189, 248))
-    draw.text((rx + 24, qy + 140), f"Live Web : {proto_entry_url}", font=get_num_font(11, 'bold'), fill=(148, 163, 184))
+    base.paste(grad_box, (rx, my), grad_mask)
+    draw = ImageDraw.Draw(base)
+    
+    # 3-C. Content Inside Radiant Gradient Card
+    # High-contrast deep navy pill badge with white border and text
+    badge_w = 145
+    draw.rounded_rectangle([rx + 24, my + 16, rx + 24 + badge_w, my + 38], radius=11, fill=(0, 36, 110, 190), outline=(255, 255, 255, 180), width=1)
+    draw.text((rx + 24 + badge_w // 2, my + 27), "MASTER LAUNCHER", font=get_font(9, 'bold'), fill=(255, 255, 255), anchor='mm')
+    
+    # Hero White Headline
+    draw.text((rx + 24, my + 63), "모바일 목업 디바이스에서 전체 플로우 직접 실행하기 ↗", font=get_font(18.5, 'extrabold'), fill=(255, 255, 255), anchor='lm')
+    # Hero Subtitle
+    draw.text((rx + 24, my + 94), "0.2초 음성 도크부터 목표 역산 엔진까지, 4대 핵심 여정을 실물 뷰포트에서 한 번에 체험하세요.", font=get_font(12, 'medium'), fill=(225, 242, 255), anchor='lm')
+    
+    # Large High-Contrast Pure White CTA Button
+    btn_w = 210
+    btn_h = 52
+    btn_rx = rx + rw - btn_w - 24
+    btn_ry = my + (mh - btn_h) // 2
+    
+    # Button soft drop shadow
+    sh_btn = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    sh_btn_d = ImageDraw.Draw(sh_btn)
+    sh_btn_d.rounded_rectangle([btn_rx - 2, btn_ry + 2, btn_rx + btn_w + 2, btn_ry + btn_h + 8], radius=26, fill=(0, 40, 120, 100))
+    sh_btn = sh_btn.filter(ImageFilter.GaussianBlur(8))
+    base = Image.alpha_composite(base, sh_btn)
+    draw = ImageDraw.Draw(base)
+    
+    # Pure white button with electric blue text
+    draw.rounded_rectangle([btn_rx, btn_ry, btn_rx + btn_w, btn_ry + btn_h], radius=26, fill=(255, 255, 255))
+    draw.text((btn_rx + btn_w // 2, btn_ry + btn_h // 2), "RUN PROTOTYPE ↗", font=get_font(13.5, 'bold'), fill=(0, 82, 255), anchor='mm')
+    
+    # ---------------------------------------------------------
+    # 4. SUPPORTING: Dark QR Code & Hyperlink Area (y=776 to 980, h=204)
+    # ---------------------------------------------------------
+    qy = 776
+    qh = 204
+    draw.rounded_rectangle([rx, qy, rx + rw, qy + qh], radius=14, fill=(14, 19, 30, 255), outline=(32, 42, 58), width=1)
+    
+    draw_pill_badge(draw, left_x=rx + 24, cy=qy + 28, text="HYPERLINK & MOBILE QR SCAN", font=get_font(9, 'bold'), theme='slate', has_dot=True, dark_mode=True, pad_x=8, height=20)
+    draw.text((rx + 24, qy + 64), "• PDF 원클릭 하이퍼링크 : PDF 뷰어에서 각 카드나 버튼 클릭 시 반응형 프로토타입 즉시 실행", font=get_font(11.5, 'medium'), fill=(180, 195, 215))
+    draw.text((rx + 24, qy + 92), "• 스마트폰 실물 QR 스캔 : 스마트폰 기본 카메라로 우측 QR 코드 스캔 시 모바일 전용 뷰 작동", font=get_font(11.5, 'medium'), fill=(180, 195, 215))
+    draw.text((rx + 24, qy + 120), "• GitHub Pages 상시 배포 : 전 세계 어디서든 무설치로 60fps 플러터 엔진 즉각 체험 가능", font=get_font(11.5, 'medium'), fill=(56, 189, 248))
+    draw.text((rx + 24, qy + 154), f"Live Web : {proto_entry_url}", font=get_num_font(11, 'bold'), fill=(130, 145, 170))
     
     # Generate High-Contrast QR Code on Crisp White Plate
     qr_url = proto_entry_url
@@ -3058,11 +3107,11 @@ def make_slide_12():
     qr.add_data(qr_url)
     qr.make(fit=True)
     qr_img = qr.make_image(fill_color=(11, 15, 23), back_color=(255, 255, 255)).convert('RGBA')
-    qr_size = 136
+    qr_size = 140
     qr_img = qr_img.resize((qr_size, qr_size), Image.Resampling.NEAREST)
     
     qr_x = rx + rw - qr_size - 28
-    qr_y = qy + 14
+    qr_y = qy + 18
     
     draw.rounded_rectangle([qr_x - 8, qr_y - 6, qr_x + qr_size + 8, qr_y + qr_size + 24], radius=10, fill=(255, 255, 255))
     base.paste(qr_img, (qr_x, qr_y), qr_img)
@@ -3070,7 +3119,7 @@ def make_slide_12():
     
     draw_slide_footer(draw, 12, dark_mode=True)
     base.save(f'{OUT_DIR}/slide_12.png')
-    print("SAVED slide_12.png (Premium Dark Finale Live Interactive Prototype Hub with Live QR Code)")
+    print("SAVED slide_12.png (High-Hierarchy Live Interactive Prototype Hub with Blue Gradient Master Launcher)")
     return {
         'step_boxes': step_boxes,
         'master_box': (master_box, proto_entry_url)

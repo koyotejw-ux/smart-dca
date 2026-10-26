@@ -86,12 +86,12 @@ def export_slides_to_pdf(base_url=None):
                 'uri': f"{base_url}/prototype.html"
             })
             
-            # 4 Step Flow Interactive Cards
+            # 4 Step Flow Interactive Cards (Mapped to exact 1920x1080 design coordinates)
             step_links = [
-                (fitz.Rect(800, 265, 1820, 357), f"{base_url}/prototype.html?flow=home"),
-                (fitz.Rect(800, 369, 1820, 461), f"{base_url}/prototype.html?flow=voice"),
-                (fitz.Rect(800, 473, 1820, 565), f"{base_url}/prototype.html?flow=target"),
-                (fitz.Rect(800, 577, 1820, 669), f"{base_url}/prototype.html?flow=sim")
+                (fitz.Rect(800, 236, 1820, 324), f"{base_url}/prototype.html?flow=home"),
+                (fitz.Rect(800, 334, 1820, 422), f"{base_url}/prototype.html?flow=voice"),
+                (fitz.Rect(800, 432, 1820, 520), f"{base_url}/prototype.html?flow=target"),
+                (fitz.Rect(800, 530, 1820, 618), f"{base_url}/prototype.html?flow=sim")
             ]
             for rect, url in step_links:
                 page.insert_link({
@@ -100,17 +100,17 @@ def export_slides_to_pdf(base_url=None):
                     'uri': url
                 })
                 
-            # Master Primary Launcher Banner
+            # Master Primary Hero Launcher Banner
             page.insert_link({
                 'kind': fitz.LINK_URI,
-                'from': fitz.Rect(800, 685, 1820, 785),
+                'from': fitz.Rect(800, 638, 1820, 758),
                 'uri': f"{base_url}/prototype.html"
             })
             
             # Bottom QR Code and Link Area
             page.insert_link({
                 'kind': fitz.LINK_URI,
-                'from': fitz.Rect(800, 800, 1820, 980),
+                'from': fitz.Rect(800, 776, 1820, 980),
                 'uri': f"{base_url}/prototype.html"
             })
             
