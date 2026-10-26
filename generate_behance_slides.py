@@ -249,52 +249,52 @@ def draw_pill_badge(draw, cx=None, cy=0, text="", font=None, theme='blue', has_d
         
     return bx1, by1, bx2, by2
 
-def draw_slide_header(draw, slide_num, category_en, title_black, title_blue, subtitle_kr, right_badge=None):
+def draw_slide_header(draw, slide_num, category_en, title_black, title_blue, subtitle_kr, right_badge=None, dark_mode=False):
     """
     Renders the unified, executive Behance editorial header across all portfolio slides.
     Standardizes top hairline, kicker badge, dual-color main headline, and subtitle.
     Guarantees a clean, comfortable bottom margin (25px) below the kicker badge.
+    Supports dark_mode for high-impact finale slides.
     """
-    # 1. Top Hairline Boundary
-    draw.line([(100, 52), (1820, 52)], fill=(226, 232, 240), width=1)
+    line_col = (40, 53, 72) if dark_mode else (226, 232, 240)
+    draw.line([(100, 52), (1820, 52)], fill=line_col, width=1)
     
-    # 2. Category Kicker Pill Badge (cy=78, height=26, bottom = 91)
     badge_text = f"{slide_num:02d} {category_en.upper()}"
-    draw_pill_badge(draw, left_x=100, cy=78, text=badge_text, font=get_font(10.5, 'bold'), theme='blue', has_dot=True, dark_mode=False, pad_x=10, height=26)
+    draw_pill_badge(draw, left_x=100, cy=78, text=badge_text, font=get_font(10.5, 'bold'), theme='blue', has_dot=True, dark_mode=dark_mode, pad_x=10, height=26)
     
-    # Optional Top-Right Badge
     if right_badge:
         txt, theme = right_badge
-        draw_pill_badge(draw, cx=1700, cy=78, text=txt, font=get_font(10.5, 'bold'), theme=theme, has_dot=True, dark_mode=False, pad_x=12, height=26)
+        draw_pill_badge(draw, cx=1700, cy=78, text=txt, font=get_font(10.5, 'bold'), theme=theme, solid=True, dark_mode=dark_mode, pad_x=14, height=28)
         
-    # 3. Dual-Color Conversational Headline (y=116, font 35 bold -> 25px bottom margin below badge!)
     font_title = get_font(35, 'bold')
     w_black = draw.textlength(title_black, font=font_title)
-    draw.text((100, 116), title_black, font=font_title, fill=(15, 23, 42))
-    draw.text((100 + w_black, 116), title_blue, font=font_title, fill=(0, 81, 255))
+    text_main_col = (255, 255, 255) if dark_mode else (15, 23, 42)
+    text_blue_col = (56, 189, 248) if dark_mode else (0, 81, 255)
+    draw.text((100, 116), title_black, font=font_title, fill=text_main_col)
+    draw.text((100 + w_black, 116), title_blue, font=font_title, fill=text_blue_col)
     
-    # 4. Subtitle / Description (y=164, font 14.5 regular)
-    draw.text((100, 164), subtitle_kr, font=get_font(14.5, 'regular'), fill=(71, 85, 105))
+    sub_col = (148, 163, 184) if dark_mode else (71, 85, 105)
+    draw.text((100, 164), subtitle_kr, font=get_font(14.5, 'regular'), fill=sub_col)
 
 
-def draw_slide_footer(draw, slide_num, total_slides=12):
+def draw_slide_footer(draw, slide_num, total_slides=12, dark_mode=False):
     """
     Renders the unified, executive Behance editorial footer strip across all portfolio slides.
     Standardizes bottom hairline, brand text, tech stack, and pagination.
+    Supports dark_mode for high-impact finale slides.
     """
-    # 1. Bottom Hairline Boundary
-    draw.line([(100, 995), (1820, 995)], fill=(226, 232, 240), width=1)
+    line_col = (40, 53, 72) if dark_mode else (226, 232, 240)
+    draw.line([(100, 995), (1820, 995)], fill=line_col, width=1)
     
-    # 2. Left Brand & Project Title
-    draw.text((100, 1018), "SMART DCA CALCULATOR", font=get_font(11, 'bold'), fill=(0, 81, 255))
-    draw.text((270, 1018), "·   Behance Enterprise Case Study  ·  Quant Inversion Engine", font=get_font(11, 'medium'), fill=(148, 163, 184))
+    brand_col = (56, 189, 248) if dark_mode else (0, 81, 255)
+    draw.text((100, 1018), "SMART DCA CALCULATOR", font=get_font(11, 'bold'), fill=brand_col)
+    meta_col = (100, 116, 139) if dark_mode else (148, 163, 184)
+    draw.text((270, 1018), "·   Behance Enterprise Case Study  ·  Quant Inversion Engine", font=get_font(11, 'medium'), fill=meta_col)
+    draw.text((960, 1018), "Flutter 3.38+ Mobile & Web  ·  Closed-Form Math  ·  Google Play Live", font=get_font(10.5, 'medium'), fill=meta_col, anchor='mt')
     
-    # 3. Center Architecture / Tech Pill
-    draw.text((960, 1018), "Flutter 3.38+ Mobile & Web  ·  Closed-Form Math  ·  Google Play Live", font=get_font(10.5, 'medium'), fill=(148, 163, 184), anchor='mt')
-    
-    # 4. Right Pagination Indicator
+    page_col = (148, 163, 184) if dark_mode else (100, 116, 139)
     page_str = f"PAGE {slide_num:02d} / {total_slides:02d}"
-    draw.text((1820, 1018), page_str, font=get_num_font(11.5, 'black'), fill=(100, 116, 139), anchor='rt')
+    draw.text((1820, 1018), page_str, font=get_num_font(11.5, 'black'), fill=page_col, anchor='rt')
 
 
 def draw_behavior_slider(draw, x, y, w, label, left_txt, right_txt, ratio, theme='blue'):
@@ -2897,17 +2897,20 @@ def make_slide_11():
 # SLIDE 12: Grand Finale Live Interactive Prototype Hub
 # ==============================================================
 def make_slide_12():
-    base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
+    # 1. Premium Obsidian Dark Background (#0B0F17)
+    base = Image.new('RGBA', (W, H), (11, 15, 23, 255))
     draw = ImageDraw.Draw(base)
     
+    # 2. Dark Header
     draw_slide_header(
         draw, 
         slide_num=12, 
-        category_en="LIVE PROTOTYPE | FLUTTER WEB ENGINE & INTERACTIVE HUB", 
+        category_en="LIVE INTERACTIVE PROTOTYPE | FLUTTER WEB ENGINE", 
         title_black="화면을 터치하듯, ", 
         title_blue="실제 플러터 웹 프로토타입을 직접 조작해 보세요.", 
         subtitle_kr="정적인 슬라이드를 넘어 스마트폰 뷰포트에서 4대 핵심 투자 여정을 직접 터치하고 검증할 수 있는 인터랙티브 허브입니다.",
-        right_badge=("LIVE ENGINE READY", "green")
+        right_badge=("LIVE ENGINE READY", "green"),
+        dark_mode=True
     )
     
     # ---------------------------------------------------------
@@ -2927,31 +2930,32 @@ def make_slide_12():
         pw_front = int(round(ph_front * (im_target.width / im_target.height)))
         im_target = im_target.resize((pw_front, ph_front), Image.Resampling.LANCZOS)
         
-        # Shadow for back phone
+        # Gorgeous Neon Glow & Shadows on Dark Background
         sh = Image.new('RGBA', (W, H), (0,0,0,0))
         shd = ImageDraw.Draw(sh)
-        shd.rounded_rectangle([130 + 10, 245 + 15, 130 + pw_back - 10, 245 + ph_back + 20], radius=32, fill=(0, 0, 0, 50))
+        shd.ellipse([110, 220, 130 + pw_back + 40, 245 + ph_back + 30], fill=(0, 60, 180, 50))
+        shd.rounded_rectangle([130 + 10, 245 + 15, 130 + pw_back - 10, 245 + ph_back + 20], radius=32, fill=(0, 0, 0, 140))
         sh = sh.filter(ImageFilter.GaussianBlur(24))
         base = Image.alpha_composite(base, sh)
         base.paste(im_voice, (130, 245), im_voice)
         
-        # Shadow & Ambient Glow for front phone
+        # Front phone glow
         sh2 = Image.new('RGBA', (W, H), (0,0,0,0))
         shd2 = ImageDraw.Draw(sh2)
-        shd2.ellipse([340 - 20, 215 + ph_front - 30, 340 + pw_front + 20, 215 + ph_front + 40], fill=(0, 82, 255, 45))
-        shd2.rounded_rectangle([340 + 12, 215 + 16, 340 + pw_front - 12, 215 + ph_front + 24], radius=36, fill=(0, 0, 0, 75))
+        shd2.ellipse([340 - 30, 215 + ph_front - 40, 340 + pw_front + 30, 215 + ph_front + 50], fill=(0, 110, 255, 90))
+        shd2.rounded_rectangle([340 + 12, 215 + 16, 340 + pw_front - 12, 215 + ph_front + 24], radius=36, fill=(0, 0, 0, 180))
         sh2 = sh2.filter(ImageFilter.GaussianBlur(28))
         base = Image.alpha_composite(base, sh2)
         base.paste(im_target, (340, 215), im_target)
         
         draw = ImageDraw.Draw(base)
     
-    # Left Bottom Spec Strip (x=100, y=865, w=660, h=115)
-    draw.rounded_rectangle([100, 865, 760, 980], radius=14, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-    draw_pill_badge(draw, left_x=120, cy=888, text="FLUTTER WEB PRODUCTION ENGINE", font=get_font(9, 'bold'), theme='blue', pad_x=8, height=20)
-    draw.text((120, 918), "• 60fps Native Web CanvasKit / SkWasm 렌더링 파이프라인 탑재", font=get_font(11, 'medium'), fill=(51, 65, 85))
-    draw.text((120, 938), "• 100% 온디바이스 퀀트 대수 역산 엔진 (외부 금융 API 무전송 보안)", font=get_font(11, 'medium'), fill=(51, 65, 85))
-    draw.text((120, 958), "• 반응형 모바일 뷰포트 시뮬레이터 & URL 딥링크 상태 복원 완벽 지원", font=get_font(11, 'medium'), fill=(0, 82, 255))
+    # Left Bottom Spec Strip (x=100, y=865, w=660, h=115) - Dark Glass Card
+    draw.rounded_rectangle([100, 865, 760, 980], radius=14, fill=(17, 24, 39, 255), outline=(40, 53, 72), width=1)
+    draw_pill_badge(draw, left_x=120, cy=888, text="FLUTTER WEB PRODUCTION ENGINE", font=get_font(9, 'bold'), theme='blue', dark_mode=True, pad_x=8, height=20)
+    draw.text((120, 918), "• 60fps Native Web CanvasKit / SkWasm 렌더링 파이프라인 탑재", font=get_font(11, 'medium'), fill=(203, 213, 225))
+    draw.text((120, 938), "• 100% 온디바이스 퀀트 대수 역산 엔진 (외부 금융 API 무전송 보안)", font=get_font(11, 'medium'), fill=(203, 213, 225))
+    draw.text((120, 958), "• 반응형 모바일 뷰포트 시뮬레이터 & URL 딥링크 상태 복원 완벽 지원", font=get_font(11, 'medium'), fill=(56, 189, 248))
     
     # ---------------------------------------------------------
     # RIGHT: 4 STEP INTERACTIVE CARDS + MASTER LAUNCHER (x=800 to 1820, w=1020)
@@ -2959,10 +2963,10 @@ def make_slide_12():
     rx = 800
     rw = 1020
     
-    # Guide Banner
-    draw.rounded_rectangle([rx, 205, rx + rw, 252], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-    draw_pill_badge(draw, left_x=rx + 16, cy=228, text="CLICK TO TEST", font=get_font(9, 'bold'), theme='blue', has_dot=True, pad_x=8, height=20)
-    draw.text((rx + 120, 228), "PDF 문서 또는 브라우저에서 각 카드를 클릭하면 해당 화면으로 즉시 이동하여 터치 테스트할 수 있습니다.", font=get_font(11.5, 'bold'), fill=(0, 82, 255), anchor='lm')
+    # Guide Banner - Dark Blue Glow Accent
+    draw.rounded_rectangle([rx, 205, rx + rw, 252], radius=10, fill=(15, 28, 48, 255), outline=(30, 58, 95), width=1)
+    draw_pill_badge(draw, left_x=rx + 16, cy=228, text="CLICK TO TEST", font=get_font(9, 'bold'), theme='cyan', dark_mode=True, has_dot=True, pad_x=8, height=20)
+    draw.text((rx + 140, 228), "PDF 문서 또는 브라우저에서 각 카드를 클릭하면 해당 화면으로 즉시 이동하여 터치 테스트할 수 있습니다.", font=get_font(11.5, 'bold'), fill=(56, 189, 248), anchor='lm')
     
     # 4 Interactive Flow Cards
     steps = [
@@ -3001,25 +3005,26 @@ def make_slide_12():
         box_rect = [rx, sy, rx + rw, sy + sh_h]
         step_boxes.append((box_rect, url))
         
-        draw.rounded_rectangle(box_rect, radius=12, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-        stripe_color = {'blue': (0, 82, 255), 'green': (16, 185, 129), 'cyan': (6, 182, 212), 'purple': (147, 51, 234)}[theme_key]
+        # Dark Card Box
+        draw.rounded_rectangle(box_rect, radius=12, fill=(17, 24, 39, 255), outline=(40, 53, 72), width=1)
+        stripe_color = {'blue': (0, 132, 255), 'green': (16, 185, 129), 'cyan': (6, 182, 212), 'purple': (168, 85, 247)}[theme_key]
         draw.rounded_rectangle([rx, sy + 10, rx + 4, sy + sh_h - 10], radius=2, fill=stripe_color)
         
-        draw_pill_badge(draw, left_x=rx + 18, cy=sy + 26, text=badge, font=get_font(9.5, 'bold'), theme=theme_key, pad_x=8, height=20)
-        draw.text((rx + 90, sy + 26), title, font=get_font(15, 'bold'), fill=(15, 23, 42), anchor='lm')
-        draw.text((rx + 18, sy + 62), desc, font=get_font(11.5, 'regular'), fill=(100, 116, 139), anchor='lm')
+        draw_pill_badge(draw, left_x=rx + 18, cy=sy + 26, text=badge, font=get_font(9.5, 'bold'), theme=theme_key, dark_mode=True, pad_x=8, height=20)
+        draw.text((rx + 115, sy + 26), title, font=get_font(15, 'bold'), fill=(255, 255, 255), anchor='lm')
+        draw.text((rx + 18, sy + 62), desc, font=get_font(11.5, 'regular'), fill=(148, 163, 184), anchor='lm')
         
-        # Right Click Button
+        # Right Click Button - Solid Pill
         btn_x = rx + rw - 130
         draw_pill_badge(draw, cx=btn_x + 50, cy=sy + 46, text="체험하기 ↗", font=get_font(11, 'bold'), theme=theme_key, solid=True, pad_x=14, height=32)
         
         sy += sh_h + sgap
         
-    # Master Primary Launcher Banner (y=685 to 785, h=100)
+    # Master Primary Launcher Banner (y=685 to 785, h=100) - Electric Blue High Contrast
     my = 685
     mh = 100
     master_box = [rx, my, rx + rw, my + mh]
-    draw.rounded_rectangle(master_box, radius=14, fill=(15, 23, 42), outline=(0, 82, 255), width=2)
+    draw.rounded_rectangle(master_box, radius=14, fill=(13, 27, 50, 255), outline=(0, 132, 255), width=2)
     
     draw_pill_badge(draw, left_x=rx + 24, cy=my + 28, text="MASTER LAUNCHER", font=get_font(9, 'bold'), theme='cyan', dark_mode=True, pad_x=8, height=20)
     draw.text((rx + 160, my + 28), "모바일 목업 디바이스에서 전체 플로우 직접 실행하기 ↗", font=get_font(16, 'bold'), fill=(255, 255, 255), anchor='lm')
@@ -3028,18 +3033,18 @@ def make_slide_12():
     # Large Launch Pill
     draw_pill_badge(draw, cx=rx + rw - 130, cy=my + 50, text="PROTOTYPE RUN 🚀", font=get_font(12, 'bold'), theme='blue', solid=True, pad_x=18, height=42)
     
-    # Bottom PDF Hyperlink Info & QR Code Area (y=800 to 980, h=180)
+    # Bottom PDF Hyperlink Info & QR Code Area (y=800 to 980, h=180) - Dark Glass Box
     qy = 800
     qh = 180
-    draw.rounded_rectangle([rx, qy, rx + rw, qy + qh], radius=14, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw.rounded_rectangle([rx, qy, rx + rw, qy + qh], radius=14, fill=(17, 24, 39, 255), outline=(40, 53, 72), width=1)
     
-    draw_pill_badge(draw, left_x=rx + 24, cy=qy + 26, text="HYPERLINK & MOBILE QR SCAN", font=get_font(9, 'bold'), theme='green', has_dot=True, pad_x=8, height=20)
-    draw.text((rx + 24, qy + 58), "• PDF 하이퍼링크 내장 : PDF 뷰어(Acrobat, Chrome, Edge)에서 위 버튼 클릭 시 새 탭 실행", font=get_font(11.5, 'medium'), fill=(51, 65, 85))
-    draw.text((rx + 24, qy + 84), "• 오프라인 모바일 스캔 : 종이 인쇄물이나 태블릿 발표 시 우측 QR 코드를 카메라로 스캔", font=get_font(11.5, 'medium'), fill=(51, 65, 85))
-    draw.text((rx + 24, qy + 110), "• 글로벌 웹 배포 호환 : GitHub Pages 및 포트폴리오 웹 사이트 딥링크 완벽 연동", font=get_font(11.5, 'medium'), fill=(0, 82, 255))
-    draw.text((rx + 24, qy + 140), "Direct URL : http://localhost:8080/prototype.html  (또는 온라인 포트폴리오 도메인)", font=get_num_font(11, 'bold'), fill=(100, 116, 139))
+    draw_pill_badge(draw, left_x=rx + 24, cy=qy + 26, text="HYPERLINK & MOBILE QR SCAN", font=get_font(9, 'bold'), theme='green', has_dot=True, dark_mode=True, pad_x=8, height=20)
+    draw.text((rx + 24, qy + 58), "• PDF 하이퍼링크 내장 : PDF 뷰어(Acrobat, Chrome, Edge)에서 위 버튼 클릭 시 새 탭 실행", font=get_font(11.5, 'medium'), fill=(203, 213, 225))
+    draw.text((rx + 24, qy + 84), "• 오프라인 모바일 스캔 : 종이 인쇄물이나 태블릿 발표 시 우측 QR 코드를 카메라로 스캔", font=get_font(11.5, 'medium'), fill=(203, 213, 225))
+    draw.text((rx + 24, qy + 110), "• 글로벌 웹 배포 호환 : GitHub Pages 및 포트폴리오 웹 사이트 딥링크 완벽 연동", font=get_font(11.5, 'medium'), fill=(56, 189, 248))
+    draw.text((rx + 24, qy + 140), "Direct URL : http://localhost:8080/prototype.html  (또는 온라인 포트폴리오 도메인)", font=get_num_font(11, 'bold'), fill=(148, 163, 184))
     
-    # Generate Real QR Code image and paste
+    # Generate High-Contrast QR Code on Crisp White Plate
     qr_url = "http://localhost:8080/prototype.html"
     qr = qrcode.QRCode(
         version=1,
@@ -3055,12 +3060,13 @@ def make_slide_12():
     
     qr_x = rx + rw - qr_size - 24
     qr_y = qy + (qh - qr_size) // 2
-    base.paste(qr_img, (qr_x, qr_y), qr_img)
-    draw.rectangle([qr_x - 1, qr_y - 1, qr_x + qr_size, qr_y + qr_size], outline=(226, 232, 240), width=1)
     
-    draw_slide_footer(draw, 12)
+    draw.rounded_rectangle([qr_x - 6, qr_y - 6, qr_x + qr_size + 6, qr_y + qr_size + 6], radius=8, fill=(255, 255, 255))
+    base.paste(qr_img, (qr_x, qr_y), qr_img)
+    
+    draw_slide_footer(draw, 12, dark_mode=True)
     base.save(f'{OUT_DIR}/slide_12.png')
-    print("SAVED slide_12.png (Grand Finale Live Interactive Prototype Hub)")
+    print("SAVED slide_12.png (Premium Dark Finale Live Interactive Prototype Hub)")
     return {
         'step_boxes': step_boxes,
         'master_box': (master_box, "http://localhost:8080/prototype.html")

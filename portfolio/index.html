@@ -6,6 +6,17 @@
   <title>스마트 물타기 계산기 (Smart DCA Calculator) - Behance Enterprise Case Study</title>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
   <link rel="stylesheet" href="style.css?v=20261026_grand_finale_v31">
+  <style>
+    .slide12-click-overlay {
+      cursor: pointer;
+      transition: background-color 0.18s ease, outline 0.18s ease;
+      outline: 2px solid transparent;
+    }
+    .slide12-click-overlay:hover {
+      background-color: rgba(0, 132, 255, 0.08);
+      outline: 2px solid rgba(0, 132, 255, 0.6);
+    }
+  </style>
 </head>
 <body>
 
@@ -126,57 +137,17 @@
       <img class="behance-slide-img" src="behance_slides/slide_11.png?v=20261027_consolidated_hub_v35" alt="Slide 11: Business Impact & Retrospective" loading="lazy">
     </section>
 
-<!-- INTERACTIVE PROTOTYPE SHOWCASE CARD (NEW TAB LAUNCHER) -->
-    <section class="proto-showcase-section" id="live-prototype">
-      <div class="proto-showcase-card">
-        <div class="proto-showcase-content">
-          <div class="proto-showcase-badge">
-            <span class="badge-dot"></span>
-            <span>LIVE INTERACTIVE PROTOTYPE</span>
-          </div>
-          <h2 class="proto-showcase-title">실제 앱 웹 실행 & 핵심 UX 플로우 체험</h2>
-          <p class="proto-showcase-desc">
-            정적인 슬라이드를 넘어 <strong>실제 플러터(Flutter) 웹 앱 엔진</strong>을 브라우저에 직접 구동하여, UI에서 기획한 <strong>[01. 자산 진단] ➔ [02. 0.2초 음성 도크] ➔ [03. 목표 평단가 역산] ➔ [04. 최종 플랜 확정]</strong> 핵심 구간을 실물 스마트폰 뷰포트에서 직접 조작해 보세요.
-          </p>
-          <div class="proto-section-pills">
-            <a href="prototype.html?flow=home" target="_blank" class="proto-section-btn" title="01 자산 진단 화면 테스트">
-              <span class="pill-badge">STEP 01</span>
-              <span class="pill-text">자산 현황 진단</span>
-              <span class="pill-icon">↗</span>
-            </a>
-            <a href="prototype.html?flow=voice" target="_blank" class="proto-section-btn" title="02 음성 도크 테스트">
-              <span class="pill-badge">STEP 02</span>
-              <span class="pill-text">0.2초 음성 도크</span>
-              <span class="pill-icon">↗</span>
-            </a>
-            <a href="prototype.html?flow=target" target="_blank" class="proto-section-btn" title="03 목표 역산 엔진 테스트">
-              <span class="pill-badge">STEP 03</span>
-              <span class="pill-text">목표 평단가 역산</span>
-              <span class="pill-icon">↗</span>
-            </a>
-            <a href="prototype.html?flow=sim" target="_blank" class="proto-section-btn" title="04 최종 플랜 확정 테스트">
-              <span class="pill-badge">STEP 04</span>
-              <span class="pill-text">최종 플랜 확정</span>
-              <span class="pill-icon">↗</span>
-            </a>
-          </div>
-
-          <div class="proto-showcase-cta">
-            <a href="prototype.html" target="_blank" rel="noopener noreferrer" class="btn-launch-proto" id="btn-open-proto-newtab">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-              </svg>
-              모바일 목업 디바이스에서 전체 플로우 실행 ↗
-            </a>
-            <span class="cta-hint">불필요한 설명 문서 없이 실제 스마트폰 목업 뷰포트에서 해당 구간을 직접 터치 테스트할 수 있습니다.</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Slide 12: Interactive Prototype Hub -->
-    <section class="behance-slide-container" id="slide-12" data-title="12. Interactive Prototype Hub">
-      <img class="behance-slide-img" src="behance_slides/slide_12.png?v=20261027_consolidated_hub_v35" alt="Slide 12: Interactive Prototype Hub" loading="lazy">
+    <!-- Slide 12: Live Interactive Prototype Finale (Unified Obsidian Dark Hub) -->
+    <section class="behance-slide-container" id="slide-12" data-title="12. Live Interactive Prototype Hub" style="position: relative; overflow: hidden; background-color: #0b0f17;">
+      <img class="behance-slide-img" src="behance_slides/slide_12.png?v=20261027_obsidian_dark_v36" alt="Slide 12: Live Interactive Prototype Hub" loading="lazy" style="display: block; width: 100%; height: auto;">
+      
+      <!-- Interactive Click Overlays (Mapped 1:1 to 1920x1080 Design Coordinates) -->
+      <a href="prototype.html?flow=home" target="_blank" rel="noopener noreferrer" class="slide12-click-overlay" style="position: absolute; left: 41.67%; top: 24.54%; width: 53.13%; height: 8.52%; border-radius: 12px;" title="STEP 01. 자산 현황 진단 대시보드 새 창 실행 ↗"></a>
+      <a href="prototype.html?flow=voice" target="_blank" rel="noopener noreferrer" class="slide12-click-overlay" style="position: absolute; left: 41.67%; top: 34.17%; width: 53.13%; height: 8.52%; border-radius: 12px;" title="STEP 02. 0.2초 음성 도크 & 호가 프리셋 칩 새 창 실행 ↗"></a>
+      <a href="prototype.html?flow=target" target="_blank" rel="noopener noreferrer" class="slide12-click-overlay" style="position: absolute; left: 41.67%; top: 43.80%; width: 53.13%; height: 8.52%; border-radius: 12px;" title="STEP 03. 목표 평단가 역산 엔진 새 창 실행 ↗"></a>
+      <a href="prototype.html?flow=sim" target="_blank" rel="noopener noreferrer" class="slide12-click-overlay" style="position: absolute; left: 41.67%; top: 53.43%; width: 53.13%; height: 8.52%; border-radius: 12px;" title="STEP 04. 최종 플랜 확정 & 안전 진단 새 창 실행 ↗"></a>
+      <a href="prototype.html" target="_blank" rel="noopener noreferrer" class="slide12-click-overlay" style="position: absolute; left: 41.67%; top: 63.43%; width: 53.13%; height: 9.26%; border-radius: 14px;" title="🚀 모바일 목업 디바이스에서 전체 플로우 실행 ↗"></a>
+      <a href="prototype.html" target="_blank" rel="noopener noreferrer" class="slide12-click-overlay" style="position: absolute; left: 5.21%; top: 18.98%; width: 34.38%; height: 71.76%; border-radius: 36px;" title="📱 모바일 스마트폰 뷰포트 시뮬레이터 직접 조작하기 ↗"></a>
     </section>
   </main>
 
