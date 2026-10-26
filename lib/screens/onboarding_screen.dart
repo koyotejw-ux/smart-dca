@@ -98,36 +98,42 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 28,
-                        height: 28,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: TMembershipColors.primaryBlue.withOpacity(0.3),
-                              blurRadius: 8,
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: TMembershipColors.primaryBlue.withOpacity(0.3),
+                                blurRadius: 8,
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset('assets/app_icon.png', fit: BoxFit.cover),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            L10n.s(lang, 'app_title'),
+                            style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 14,
+                              color: textPrimary,
+                              letterSpacing: -0.3,
                             ),
-                          ],
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.asset('assets/app_icon.png', fit: BoxFit.cover),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        L10n.s(lang, 'app_title'),
-                        style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w900,
-                          fontSize: 14,
-                          color: textPrimary,
-                          letterSpacing: -0.3,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   TextButton(
                     onPressed: _onFinish,
