@@ -2641,55 +2641,94 @@ def make_slide_09():
     # 2 Step Phone Mockups side-by-side (19.5:9 Modern Ratio)
     screen_report = Image.open('portfolio/iphone_mockups/iphone_04_report.png').convert('RGBA')
     
-    step_pw = 150
+    step_pw = 142
     step_ph = int(round(step_pw * (screen_target.height / screen_target.width)))
     m1 = screen_target.resize((step_pw, step_ph), Image.Resampling.LANCZOS)
     m2 = screen_report.resize((step_pw, step_ph), Image.Resampling.LANCZOS)
     
-    # Two Compact Stage Pods (Left: STEP 01, Right: STEP 02) to eliminate empty void
-    p_w = 330
-    p_h = 398
-    p_y = step_y + 62
-    p1_x = rx + 20
-    p2_x = rx + rw - 20 - p_w
+    # Two Balanced Stage Pods (Left: STEP 01, Right: STEP 02) with even LTR layout
+    p_w = 326
+    p_h = 400
+    p_y = step_y + 60
+    p1_x = rx + 24
+    p2_x = rx + rw - 24 - p_w
     
-    # Left Pod (STEP 01)
+    # ---------------------------------------------------------
+    # LEFT POD: STEP 01 (목표 평단 역산 지정)
+    # ---------------------------------------------------------
     draw.rounded_rectangle([p1_x, p_y, p1_x + p_w, p_y + p_h], radius=14, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
     draw_pill_badge(draw, left_x=p1_x + 14, cy=p_y + 20, text="STEP 01", font=get_font(9, 'bold'), theme='slate', has_dot=False, pad_x=8, height=20)
     draw.text((p1_x + 82, p_y + 20), "목표 평단 역산 지정", font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
     draw.line([(p1_x + 14, p_y + 36), (p1_x + p_w - 14, p_y + 36)], fill=(226, 232, 240), width=1)
     
-    # Left Spec Info Card (Inside Pod 1)
-    spec1_x = p1_x + 14
-    spec1_w = 138
-    spec1_y = p_y + 48
-    draw.rounded_rectangle([spec1_x, spec1_y, spec1_x + spec1_w, p_y + p_h - 14], radius=10, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-    draw_pill_badge(draw, left_x=spec1_x + 10, cy=spec1_y + 18, text="CORE QUANT", font=get_font(8, 'bold'), theme='blue', pad_x=6, height=18)
-    draw.text((spec1_x + 10, spec1_y + 44), "탈출 희망 평단 설정\n가용 예수금 실시간 연동\n닫힌 형식 대수 전개 도출", font=get_font(9.5, 'medium'), fill=(71, 85, 105), spacing=7)
-    draw_pill_badge(draw, cx=spec1_x + spec1_w // 2, cy=p_y + p_h - 32, text="오차율 0.00% 무결성", font=get_font(8.5, 'bold'), theme='green', has_dot=True, pad_x=8, height=22)
-    
-    # Phone 1 Mockup (Right side of Pod 1, facing Center)
-    phone1_x = p1_x + p_w - 14 - step_pw
+    # Phone 1 Mockup (Left side of Pod 1)
+    phone1_x = p1_x + 14
     phone1_y = p_y + 48
     
-    # Right Pod (STEP 02)
+    # Step 1 Data Column (Right side of Pod 1)
+    d1_x = phone1_x + step_pw + 12
+    d1_w = p1_x + p_w - 14 - d1_x
+    
+    draw_pill_badge(draw, left_x=d1_x, cy=p_y + 58, text="CORE QUANT", font=get_font(8.5, 'bold'), theme='blue', pad_x=8, height=20)
+    
+    # Step 1: 3 Rich Parameter Tiles (No empty void!)
+    t1_y = p_y + 74
+    t_h = 70
+    draw.rounded_rectangle([d1_x, t1_y, d1_x + d1_w, t1_y + t_h], radius=8, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw.text((d1_x + 10, t1_y + 8), "희망 목표가", font=get_font(9.5, 'bold'), fill=(100, 116, 139))
+    draw.text((d1_x + 10, t1_y + 26), "₩ 70,000", font=get_font(14, 'bold'), fill=(0, 81, 255))
+    draw.text((d1_x + 10, t1_y + 50), "원금 회복 탈출선", font=get_font(8.5, 'medium'), fill=(148, 163, 184))
+    
+    t2_y = t1_y + t_h + 10
+    draw.rounded_rectangle([d1_x, t2_y, d1_x + d1_w, t2_y + t_h], radius=8, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw.text((d1_x + 10, t2_y + 8), "필요 매수량", font=get_font(9.5, 'bold'), fill=(100, 116, 139))
+    draw.text((d1_x + 10, t2_y + 26), "+42.5 주", font=get_font(14, 'bold'), fill=(5, 150, 105))
+    draw.text((d1_x + 10, t2_y + 50), "0.00% 닫힌 공식", font=get_font(8.5, 'medium'), fill=(16, 185, 129))
+    
+    t3_y = t2_y + t_h + 10
+    draw.rounded_rectangle([d1_x, t3_y, d1_x + d1_w, t3_y + t_h], radius=8, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw.text((d1_x + 10, t3_y + 8), "소요 예수금", font=get_font(9.5, 'bold'), fill=(100, 116, 139))
+    draw.text((d1_x + 10, t3_y + 26), "₩ 2,762,500", font=get_font(12.5, 'bold'), fill=(217, 119, 6))
+    draw.text((d1_x + 10, t3_y + 50), "가용 자금 내 분할", font=get_font(8.5, 'medium'), fill=(148, 163, 184))
+    
+    v1_y = t3_y + t_h + 12
+    draw_pill_badge(draw, cx=d1_x + d1_w // 2, cy=v1_y + 14, text="✓ 오차율 0.00% 무결성", font=get_font(8.5, 'bold'), theme='green', has_dot=True, pad_x=8, height=28)
+    
+    # ---------------------------------------------------------
+    # RIGHT POD: STEP 02 (리스크 한도 자동 점검)
+    # ---------------------------------------------------------
     draw.rounded_rectangle([p2_x, p_y, p2_x + p_w, p_y + p_h], radius=14, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
     draw_pill_badge(draw, left_x=p2_x + 14, cy=p_y + 20, text="STEP 02", font=get_font(9, 'bold'), theme='blue', has_dot=False, pad_x=8, height=20)
     draw.text((p2_x + 82, p_y + 20), "리스크 한도 자동 점검", font=get_font(13.5, 'bold'), fill=(0, 81, 255), anchor='lm')
     draw.line([(p2_x + 14, p_y + 36), (p2_x + p_w - 14, p_y + 36)], fill=(191, 219, 254), width=1)
     
-    # Phone 2 Mockup (Left side of Pod 2, facing Center)
+    # Phone 2 Mockup (Left side of Pod 2)
     phone2_x = p2_x + 14
     phone2_y = p_y + 48
     
-    # Right Spec Info Card (Inside Pod 2)
-    spec2_x = p2_x + 14 + step_pw + 14
-    spec2_w = 138
-    spec2_y = p_y + 48
-    draw.rounded_rectangle([spec2_x, spec2_y, spec2_x + spec2_w, p_y + p_h - 14], radius=10, fill=(255, 255, 255), outline=(191, 219, 254), width=1)
-    draw_pill_badge(draw, left_x=spec2_x + 10, cy=spec2_y + 18, text="SAFETY GUARD", font=get_font(8, 'bold'), theme='green', pad_x=6, height=18)
-    draw.text((spec2_x + 10, spec2_y + 44), "자산 쏠림도 비중 경고\n안전 매수 가이드 자동화\n예수금 65% 안전 마진", font=get_font(9.5, 'medium'), fill=(71, 85, 105), spacing=7)
-    draw_pill_badge(draw, cx=spec2_x + spec2_w // 2, cy=p_y + p_h - 32, text="안전 가이드 적합 판정", font=get_font(8.5, 'bold'), theme='blue', has_dot=True, pad_x=8, height=22)
+    # Step 2 Data Column (Right side of Pod 2)
+    d2_x = phone2_x + step_pw + 12
+    d2_w = p2_x + p_w - 14 - d2_x
+    
+    draw_pill_badge(draw, left_x=d2_x, cy=p_y + 58, text="SAFETY GUARD", font=get_font(8.5, 'bold'), theme='green', pad_x=8, height=20)
+    
+    # Step 2: 3 Rich Parameter Tiles (No empty void!)
+    draw.rounded_rectangle([d2_x, t1_y, d2_x + d2_w, t1_y + t_h], radius=8, fill=(255, 255, 255), outline=(191, 219, 254), width=1)
+    draw.text((d2_x + 10, t1_y + 8), "자산 쏠림도", font=get_font(9.5, 'bold'), fill=(100, 116, 139))
+    draw.text((d2_x + 10, t1_y + 26), "42.5 %", font=get_font(14, 'bold'), fill=(0, 81, 255))
+    draw.text((d2_x + 10, t1_y + 50), "위험 기준(65%) 이하", font=get_font(8.5, 'medium'), fill=(16, 185, 129))
+    
+    draw.rounded_rectangle([d2_x, t2_y, d2_x + d2_w, t2_y + t_h], radius=8, fill=(255, 255, 255), outline=(191, 219, 254), width=1)
+    draw.text((d2_x + 10, t2_y + 8), "현금 안전 마진", font=get_font(9.5, 'bold'), fill=(100, 116, 139))
+    draw.text((d2_x + 10, t2_y + 26), "65.0 %", font=get_font(14, 'bold'), fill=(5, 150, 105))
+    draw.text((d2_x + 10, t2_y + 50), "추가 대응 버퍼 보존", font=get_font(8.5, 'medium'), fill=(16, 185, 129))
+    
+    draw.rounded_rectangle([d2_x, t3_y, d2_x + d2_w, t3_y + t_h], radius=8, fill=(255, 255, 255), outline=(191, 219, 254), width=1)
+    draw.text((d2_x + 10, t3_y + 8), "뇌동매매 방어", font=get_font(9.5, 'bold'), fill=(100, 116, 139))
+    draw.text((d2_x + 10, t3_y + 26), "가드 엔진 통과", font=get_font(12.5, 'bold'), fill=(15, 23, 42))
+    draw.text((d2_x + 10, t3_y + 50), "비정상 주문 원천 차단", font=get_font(8.5, 'medium'), fill=(148, 163, 184))
+    
+    draw_pill_badge(draw, cx=d2_x + d2_w // 2, cy=v1_y + 14, text="✓ 안전 가이드 적합 판정", font=get_font(8.5, 'bold'), theme='blue', has_dot=True, pad_x=8, height=28)
     
     # Soft Shadows behind both phones
     for sx, simg in [(phone1_x, m1), (phone2_x, m2)]:
@@ -2702,8 +2741,8 @@ def make_slide_09():
         
     draw = ImageDraw.Draw(base)
     
-    # Center Pipeline Connector (Tight 48px gap between Phone 1 and Phone 2)
-    center_cx = (phone1_x + step_pw + phone2_x) // 2
+    # Pipeline Connector between Step 1 Pod and Step 2 Pod
+    center_cx = (p1_x + p_w + p2_x) // 2
     center_cy = phone1_y + step_ph // 2
     
     # Ambient Glow behind center button
@@ -2715,9 +2754,9 @@ def make_slide_09():
     draw = ImageDraw.Draw(base)
     
     # Dotted connection line across the seam
-    draw.line([(phone1_x + step_pw + 4, center_cy), (phone2_x - 4, center_cy)], fill=(0, 81, 255), width=2)
+    draw.line([(p1_x + p_w, center_cy), (p2_x, center_cy)], fill=(0, 81, 255), width=2)
     draw.ellipse([center_cx - 16, center_cy - 16, center_cx + 16, center_cy + 16], fill=(0, 81, 255))
-    draw.polygon([(center_cx - 5, center_cy - 7), (center_cx + 6, center_cy), (center_cx - 5, center_cy + 7)], fill=(255, 255, 255))
+    draw.polygon([(center_cx - 4, center_cy - 6), (center_cx + 6, center_cy), (center_cx - 4, center_cy + 6)], fill=(255, 255, 255))
     
     draw_pill_badge(draw, cx=center_cx, cy=center_cy - 28, text="실시간 연동", font=get_font(8, 'bold'), theme='blue', pad_x=6, height=18)
     draw_pill_badge(draw, cx=center_cx, cy=center_cy + 28, text="0ms 무손실", font=get_font(8, 'bold'), theme='slate', pad_x=6, height=18)
