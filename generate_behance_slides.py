@@ -1281,180 +1281,327 @@ def make_slide_05():
     draw_slide_header(
         draw, 
         slide_num=5, 
-        category_en="SERVICE UX PLANNING | USER JOURNEY & DECISION BLUEPRINT", 
-        title_black="사용자 관점으로 설계된 ", 
-        title_blue="5단계 서비스 UX 여정 블루프린트", 
-        subtitle_kr="긴급한 하락장 속 투자자의 심리적 불안을 해소하고, 직관적인 인터랙션으로 최적의 탈출 플랜을 확정하는 서비스 기획 흐름입니다."
+        category_en="SERVICE UX FLOWCHART | USER JOURNEY & DECISION LOGIC", 
+        title_black="사용자 경험 중심으로 다듬어진 ", 
+        title_blue="5단계 서비스 UX 프로세스 플로우차트", 
+        subtitle_kr="하락장 속 페르소나의 심리적 불안을 해소하고 직관적 인터랙션으로 최적 플랜을 확정하는 서비스 기획 기반 유저 플로우"
     )
     
-    # TOP-RIGHT: Service UX Planning Framework Badge
+    # TOP-RIGHT: 서비스 UX 플로우차트 기호 범례 (Clean UX Flow Legend)
     leg_x = 1180
     leg_y = 66
     leg_w = 640
-    leg_h = 100
+    leg_h = 96
     draw.rounded_rectangle([leg_x, leg_y, leg_x + leg_w, leg_y + leg_h], radius=12, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-    draw_pill_badge(draw, left_x=leg_x + 16, cy=leg_y + 24, text="SERVICE UX FRAMEWORK", font=get_font(8.5, 'bold'), theme='blue', has_dot=True, pad_x=8, height=20)
-    draw.text((leg_x + 195, leg_y + 24), "사용자 중심 4개 계층 인터랙션 기획 구조", font=get_font(12, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw_pill_badge(draw, left_x=leg_x + 16, cy=leg_y + 22, text="UX FLOW LEGEND", font=get_font(8.5, 'bold'), theme='blue', has_dot=True, pad_x=8, height=20)
+    draw.text((leg_x + 165, leg_y + 22), "서비스 UX 기획 기호 표기 범례", font=get_font(12, 'bold'), fill=(15, 23, 42), anchor='lm')
     
-    # 4 Architecture Layer Badges
-    layers = [
-        ("1. 심리 & 고충", "amber"),
-        ("2. UX 솔루션", "blue"),
-        ("3. 화면 & 트리거", "slate"),
-        ("4. 정량적 가치", "green")
-    ]
-    layer_w = (leg_w - 32 - 24) // 4
-    for idx, (lname, ltheme) in enumerate(layers):
-        lx = leg_x + 16 + idx * (layer_w + 8)
-        draw_pill_badge(draw, cx=lx + layer_w // 2, cy=leg_y + 68, text=lname, font=get_font(9.5, 'bold'), theme=ltheme, pad_x=6, height=26)
-        
+    # 4 Clean UX Flowchart Legend Elements
+    # 1. 화면/UI (Screen)
+    draw.rounded_rectangle([leg_x + 16, leg_y + 52, leg_x + 72, leg_y + 76], radius=5, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
+    draw.text((leg_x + 44, leg_y + 64), "Screen", font=get_font(8, 'bold'), fill=(15, 23, 42), anchor='mm')
+    draw.text((leg_x + 80, leg_y + 64), "화면 / UI", font=get_font(10, 'medium'), fill=(71, 85, 105), anchor='lm')
+    
+    # 2. 사용자 행동 (Action)
+    draw.rounded_rectangle([leg_x + 155, leg_y + 52, leg_x + 215, leg_y + 76], radius=5, fill=(240, 246, 255), outline=(0, 82, 255), width=1)
+    draw.text((leg_x + 185, leg_y + 64), "Action", font=get_font(8, 'bold'), fill=(0, 82, 255), anchor='mm')
+    draw.text((leg_x + 224, leg_y + 64), "사용자 행동", font=get_font(10, 'medium'), fill=(71, 85, 105), anchor='lm')
+    
+    # 3. UX 가드 분기 (Decision)
+    draw.rounded_rectangle([leg_x + 310, leg_y + 52, leg_x + 366, leg_y + 76], radius=5, fill=(254, 243, 199), outline=(217, 119, 6), width=1)
+    draw.text((leg_x + 338, leg_y + 64), "Guard", font=get_font(8, 'bold'), fill=(180, 83, 9), anchor='mm')
+    draw.text((leg_x + 375, leg_y + 64), "UX 가드 분기", font=get_font(10, 'medium'), fill=(71, 85, 105), anchor='lm')
+    
+    # 4. 시스템 피드백 (Feedback)
+    draw.rounded_rectangle([leg_x + 475, leg_y + 52, leg_x + 535, leg_y + 76], radius=5, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
+    draw.text((leg_x + 505, leg_y + 64), "Feedback", font=get_font(7.5, 'bold'), fill=(22, 101, 52), anchor='mm')
+    draw.text((leg_x + 544, leg_y + 64), "시스템 피드백", font=get_font(10, 'medium'), fill=(71, 85, 105), anchor='lm')
+    
     # 5 STAGE PROGRESSION GRID (cw = 328, cgap = 20)
     cw = 328
     cgap = 20
     cols_x = [100 + i * (cw + cgap) for i in range(5)]
+    col_centers = [cx + cw // 2 for cx in cols_x]  # [264, 612, 960, 1308, 1656]
     
-    stages_data = [
-        {
-            "code": "STAGE 01",
-            "title": "01. 인지 & 자산 총괄 진단",
-            "en": "Awareness & Portfolio Audit",
-            "quote": "“급락장에 내 계좌가 얼마나 깨졌지?\n어디서부터 손대야 할지 막막해.”",
-            "pain": "분산된 종목 손실률과 계좌 총 피해를 즉시 파악하기 어려움",
-            "sol_title": "원터치 계좌 총괄 진단 대시보드",
-            "bullets": [
-                "• 홈 화면 진입 즉시 1초 만에 계좌 손익 조망",
-                "• 손실 상위 종목 시각 카드 자동 정렬",
-                "• 0ms 파라미터 번들 역산 엔진 즉시 인계"
-            ],
-            "screen": "홈 대시보드 (Home Dashboard)",
-            "trigger": "종목 카드 탭 ➔ 시뮬레이터 즉시 로드",
-            "value_badge": "1초 손익 파악 · 인지 부하 0%",
-            "value_desc": "분산된 금융 정보 일원화 요약 진단",
-            "theme": "blue"
-        },
-        {
-            "code": "STAGE 02",
-            "title": "02. 스트레스-프리 빠른 입력",
-            "en": "Frictionless Multi-modal Input",
-            "quote": "“주가가 1초마다 급락하는데,\n언제 키패드로 숫자 하나하나 쳐?”",
-            "pain": "긴급 매매 상황에서 텐키 오타 및 복잡한 입력 피로도 극심",
-            "sol_title": "3-Way 멀티모달 인터랙션 도크",
-            "bullets": [
-                "• 엄지 영역(Thumb Zone) 최적화 바텀시트",
-                "• 0.2초 온디바이스 음성 STT 파싱 주입",
-                "• 원터치 호가 프리셋(±5%, ±10%) 원격 주입"
-            ],
-            "screen": "0.2초 스마트 음성 & 호가 도크",
-            "trigger": "마이크 버튼 탭 & 홀드 ➔ 음성 파싱",
-            "value_badge": "입력 시간 84% 단축 · 오타 0건",
-            "value_desc": "하락장 조작 스트레스 및 지연 원천 차단",
-            "theme": "blue"
-        },
-        {
-            "code": "STAGE 03",
-            "title": "03. 목표 역산 & 퀀트 엔진",
-            "en": "Closed-Form Quant Inversion",
-            "quote": "“원하는 평단까지 낮추려면,\n몇 주를 얼마에 사야 본전 탈출이지?”",
-            "pain": "단순 물타기 계산기의 시행착오 반복 입력으로 인한 시간 낭비",
-            "sol_title": "닫힌 형식(Closed-Form) 대수 역산",
-            "bullets": [
-                "• 희망 탈출 평단 입력 시 필요 수량 즉시 도출",
-                "• 반복 루프 없는 단일 수식 0ms 연산 종결",
-                "• 비현실적 목표 시 햅틱 가드 & 대안 제시"
-            ],
-            "screen": "목표 평단 역산 시뮬레이터 뷰",
-            "trigger": "목표가 입력 ➔ 실시간 슬라이더 반응",
-            "value_badge": "0ms 즉각 역산 · 오차율 0.00%",
-            "value_desc": "수학적 완전성으로 불필요한 계산 피로 해소",
-            "theme": "blue"
-        },
-        {
-            "code": "STAGE 04",
-            "title": "04. 리스크 검증 & 안전선 가드",
-            "en": "65% Cash Safety Guardrail",
-            "quote": "“무리하게 물타기 했다가\n남은 예수금마저 털리면 어쩌지?”",
-            "pain": "물타기 후 계좌 과밀 쏠림 및 예수금 고갈(깡통) 공포",
-            "sol_title": "지능형 리스크 안전선 가드레일",
-            "bullets": [
-                "• 가용 예수금 65% 안전 마진 실시간 점검",
-                "• 과밀 쏠림 감지 시 즉각 경보 & 분할 권고",
-                "• 시장 급락(-10%~-30%) 스트레스 테스트"
-            ],
-            "screen": "포트폴리오 리스크 리포트 시트",
-            "trigger": "역산 완료 ➔ 리스크 검증 자동 전개",
-            "value_badge": "예수금 고갈 방지 · 객관적 방어선",
-            "value_desc": "뇌동매매를 방지하고 심리적 안정감 제공",
-            "theme": "blue"
-        },
-        {
-            "code": "STAGE 05",
-            "title": "05. 확정 플랜 체결 & 보안",
-            "en": "1-Tap MTS Execution & Privacy",
-            "quote": "“계산 끝났으니 증권사 앱에서\n바로 주문하고 기록도 남겨야지.”",
-            "pain": "산출 결과를 수기로 옮겨 적다 실수하거나 금융 정보 유출 우려",
-            "sol_title": "1-Tap MTS 복사 & 로컬 암호화",
-            "bullets": [
-                "• 종목명·희망가·주문수량 원터치 클립보드 복사",
-                "• 증권사 MTS 전환 시 주문 번들 즉시 붙여넣기",
-                "• 100% 온디바이스 SQLite 로컬 암호화 저장"
-            ],
-            "screen": "최종 플랜 확정 모달 & 스낵바",
-            "trigger": "‘주문 정보 복사’ 1-Tap ➔ 즉시 인계",
-            "value_badge": "0.1초 원터치 체결 · 완전한 보안",
-            "value_desc": "외부 서버 전송 0건 온디바이스 무결성",
-            "theme": "blue"
-        }
+    stages_info = [
+        ("STAGE 01", "진입 & 자산 총괄 진단", "Launch & Portfolio Audit"),
+        ("STAGE 02", "3대 멀티모달 입력 도크", "Multi-modal Input Dock"),
+        ("STAGE 03", "목표 역산 & 퀀트 엔진", "Closed-Form Quant Engine"),
+        ("STAGE 04", "리스크 검증 & 안전선 가드", "65% Cash Safety Guard"),
+        ("STAGE 05", "1-Tap MTS 체결 & 보안", "1-Tap MTS & Privacy Sync")
     ]
     
-    # Draw 5 Stage Cards
-    for i, s in enumerate(stages_data):
+    # Stage Headers (y=184 to 238, h=54)
+    for i, (st_code, st_name, st_en) in enumerate(stages_info):
         cx = cols_x[i]
-        
-        # 1. Stage Header Card (y=188 to 258, h=70)
-        draw.rounded_rectangle([cx, 188, cx + cw, 258], radius=12, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-        draw_pill_badge(draw, left_x=cx + 12, cy=206, text=s["code"], font=get_font(8.5, 'bold'), theme='blue', pad_x=6, height=18)
-        draw.text((cx + 78, 206), s["title"], font=get_font(12, 'bold'), fill=(15, 23, 42), anchor='lm')
-        draw.text((cx + 14, 234), s["en"], font=get_font(9.5, 'medium'), fill=(100, 116, 139), anchor='lm')
+        draw.rounded_rectangle([cx, 184, cx + cw, 238], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+        draw_pill_badge(draw, left_x=cx + 12, cy=202, text=st_code, font=get_font(8.5, 'bold'), theme='blue', pad_x=6, height=18)
+        draw.text((cx + 78, 202), st_name, font=get_font(11.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+        draw.text((cx + 14, 224), st_en, font=get_font(9, 'medium'), fill=(100, 116, 139), anchor='lm')
         
         # Inter-stage advance arrow
         if i < 4:
             arrow_start_x = cx + cw
             arrow_end_x = cols_x[i + 1]
-            draw_arrow(draw, (arrow_start_x + 2, 223), (arrow_end_x - 2, 223), col=(0, 82, 255), width=2, arrow_size=4)
+            draw_arrow(draw, (arrow_start_x + 2, 211), (arrow_end_x - 2, 211), col=(0, 82, 255), width=2, arrow_size=4)
             
-        # 2. Layer 1: User Mindset & Pain Point (y=268 to 386, h=118)
-        draw.rounded_rectangle([cx, 268, cx + cw, 386], radius=10, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-        draw_pill_badge(draw, left_x=cx + 12, cy=284, text="USER MINDSET", font=get_font(8, 'bold'), theme='amber', pad_x=6, height=18)
-        draw.text((cx + 12, 312), s["quote"], font=get_font(9.5, 'bold'), fill=(180, 83, 9), spacing=4)
-        draw.text((cx + 12, 362), f"• 고충: {s['pain']}", font=get_font(8.5, 'medium'), fill=(100, 116, 139))
+    # -------------------------------------------------------------
+    # 4-TIER SERVICE UX FLOWCHART MATRIX (y=256 to 626)
+    # -------------------------------------------------------------
+    
+    # Node Data for 5 Columns
+    stages_flow = [
+        {
+            # Stage 01
+            "screen": {
+                "title": "홈 대시보드 화면 로드",
+                "sub": "계좌 총 자산 · 보유 손실 종목 1초 조망",
+                "has_start": True
+            },
+            "action": {
+                "title": "손실 종목 카드 원터치 탭",
+                "line2": "긴급 대응 우선순위 종목 선택",
+                "line3": "현재가 P0 · 보유량 Q0 자동 바인딩"
+            },
+            "guard": {
+                "title": "종목 탐색 방식 분기",
+                "cond": "기존 보유 손실 종목 vs 신규 종목 검색",
+                "yes_text": "• 보유 종목 → 0ms 계좌 연동 즉시 진입",
+                "no_text": "• 신규 종목 → 실시간 종목 검색창 전개"
+            },
+            "feedback": {
+                "title": "파라미터 번들 0ms 연동 완료",
+                "sub": "현재 평단가·수량 무손실 인계 완료"
+            },
+            "handover": "연동 →",
+            "value": [
+                "• 1초 만에 계좌 손익 조망 및 우선순위 식별",
+                "• 분산된 계좌 정보를 한 화면에 일원화",
+                "• 인지 부하 0%로 즉각적인 후속 대응 유도"
+            ]
+        },
+        {
+            # Stage 02
+            "screen": {
+                "title": "0.2초 스마트 입력 시트 전개",
+                "sub": "엄지 조작 영역(Thumb Zone) 최적화 바텀시트",
+                "has_start": False
+            },
+            "action": {
+                "title": "3대 멀티모달 입력 채널 선택",
+                "line2": "상황 긴급도별 최적 채널 즉시 주입",
+                "line3": "AI 음성(0.2초) / 원터치 호가칩 / 텐키패드"
+            },
+            "guard": {
+                "title": "입력값 실시간 유효성 가드",
+                "cond": "결측치 방어 및 음수/오입력 차단",
+                "yes_text": "• 정상 수치 → 실시간 정규화 엔진 인계",
+                "no_text": "• 오입력 감지 → 햅틱 진동 피드백 및 재입력 유도"
+            },
+            "feedback": {
+                "title": "실시간 데이터 정규화 완료",
+                "sub": "호가 단위 자동 변환 및 엔진 전송 완료"
+            },
+            "handover": "연산 →",
+            "value": [
+                "• 입력 소요 시간 84% 단축 (< 1.5초 완결)",
+                "• 긴급 하락장에서 오타 및 조작 스트레스 0%",
+                "• 엄지 조작 최적화로 한 손 매매 경험 제공"
+            ]
+        },
+        {
+            # Stage 03
+            "screen": {
+                "title": "목표 역산 시뮬레이터 뷰",
+                "sub": "실시간 대수 역산 슬라이더 & 반응형 수치 뷰",
+                "has_start": False
+            },
+            "action": {
+                "title": "희망 탈출 목표 평단가 입력",
+                "line2": "목표 평단 주입 즉시 0ms 대수 역산 가동",
+                "line3": "필요 추가 매수 수량 및 소요 자금 즉각 산출"
+            },
+            "guard": {
+                "title": "목표가 실현 가능성 판정",
+                "cond": "추가매수가 < 목표가 < 현재평단 검증",
+                "yes_text": "• 유효 범위 → 오차 0.00% 즉시 시뮬레이션 승인",
+                "no_text": "• 비현실적 목표 → 햅틱 경고 및 도달 가능 평단 추천"
+            },
+            "feedback": {
+                "title": "차수별 분할 매수 분배 완료",
+                "sub": "1차~N차 분할 가중치 & 계좌 방어율 도출"
+            },
+            "handover": "검증 →",
+            "value": [
+                "• 시행착오 없는 0ms 즉각 목표 역산 도출",
+                "• 연산 오차율 0.00% 수학적 무결성 검증",
+                "• 탈출로 명확화로 투자자 심리적 안정 확보"
+            ]
+        },
+        {
+            # Stage 04
+            "screen": {
+                "title": "포트폴리오 리스크 시트 전개",
+                "sub": "추가 매수 후 계좌 쏠림도 & 잔여 예수금 조망",
+                "has_start": False
+            },
+            "action": {
+                "title": "하락 스트레스 테스트 검증",
+                "line2": "시장 -10% ~ -30% 급락 충격도 점검",
+                "line3": "차수별 계좌 방어율 및 최대 손실 한도 확인"
+            },
+            "guard": {
+                "title": "65% 예수금 안전선 판정",
+                "cond": "소요 예수금 > 가용 자산 65% ?",
+                "yes_text": "• 안전 범위 (≤65%) → 리스크 검증 승인 통과",
+                "no_text": "• 한도 초과 (>65%) → 자금 고갈 주의 & 분할 권고"
+            },
+            "feedback": {
+                "title": "안전 가이드 적합 최종 승인",
+                "sub": "객관적 리스크 한도 내 최적 매수안 확정"
+            },
+            "handover": "체결 →",
+            "value": [
+                "• 65% 예수금 고갈 사전 경보 안전 가드",
+                "• 감정적 뇌동매매 및 몰빵 과밀 원천 차단",
+                "• 객관적 리스크 한도 내 안전 마진 확보"
+            ]
+        },
+        {
+            # Stage 05
+            "screen": {
+                "title": "최종 플랜 확정 모달",
+                "sub": "MTS 원터치 인계 및 로컬 보안 저장 승인",
+                "has_start": False
+            },
+            "action": {
+                "title": "1-Tap MTS 주문 복사 실행",
+                "line2": "종목명·희망가·주문수량 클립보드 복사",
+                "line3": "증권사 앱 실행 즉시 원터치 붙여넣기 인계"
+            },
+            "guard": {
+                "title": "온디바이스 데이터 무결성 검증",
+                "cond": "외부 서버 전송 0건 & 로컬 암호화",
+                "yes_text": "• 무결성 승인 → SQLite AES-256 로컬 암호화",
+                "no_text": "• 네트워크 → 개인 금융 정보 외부 유출 원천 차단"
+            },
+            "feedback": {
+                "title": "MTS 전환 스낵바 및 체결 완료",
+                "sub": "Finish : 최적 플랜 체결 완료",
+                "is_finish": True
+            },
+            "handover": "",
+            "value": [
+                "• 0.1초 원터치 MTS 실매매 즉시 체결",
+                "• 외부 유출 및 트래킹 0건 온디바이스 무결성",
+                "• 전 과정 3.2초 완결로 골든타임 확보"
+            ]
+        }
+    ]
+    
+    # 4 Y-coordinates for the tiers
+    y_screen_top = 256
+    y_screen_h = 68
+    y_screen_bot = y_screen_top + y_screen_h  # 324
+    
+    y_action_top = 340
+    y_action_h = 82
+    y_action_bot = y_action_top + y_action_h  # 422
+    
+    y_guard_top = 438
+    y_guard_h = 86
+    y_guard_bot = y_guard_top + y_guard_h    # 524
+    
+    y_feedback_top = 540
+    y_feedback_h = 68
+    y_feedback_bot = y_feedback_top + y_feedback_h  # 608
+    
+    y_value_top = 626
+    y_value_h = 138
+    y_value_bot = y_value_top + y_value_h    # 764
+    
+    for i, st in enumerate(stages_flow):
+        cx = cols_x[i]
+        cc = col_centers[i]
         
-        # 3. Layer 2: UX Planning Solution (y=396 to 536, h=140)
-        draw.rounded_rectangle([cx, 396, cx + cw, 536], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-        draw_pill_badge(draw, left_x=cx + 12, cy=412, text="UX SOLUTION", font=get_font(8, 'bold'), theme='blue', pad_x=6, height=18)
-        draw.text((cx + 96, 412), s["sol_title"], font=get_font(10.5, 'bold'), fill=(0, 82, 255), anchor='lm')
-        draw.line([(cx + 12, 428), (cx + cw - 12, 428)], fill=(226, 232, 240), width=1)
-        for b_idx, b_text in enumerate(s["bullets"]):
-            draw.text((cx + 12, 442 + b_idx * 28), b_text, font=get_font(9.5, 'medium'), fill=(51, 65, 85))
+        # ---------------------------------------------------------
+        # TIER 1: SCREEN (y=256 to 324)
+        # ---------------------------------------------------------
+        draw.rounded_rectangle([cx, y_screen_top, cx + cw, y_screen_bot], radius=8, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
+        draw_pill_badge(draw, left_x=cx + 12, cy=y_screen_top + 16, text="SCREEN", font=get_font(7.5, 'bold'), theme='slate', pad_x=4, height=16)
+        if st["screen"].get("has_start"):
+            draw_pill_badge(draw, left_x=cx + 70, cy=y_screen_top + 16, text="Start : 앱 실행", font=get_font(7.5, 'bold'), theme='blue', pad_x=5, height=16)
+        draw.text((cx + 12, y_screen_top + 38), st["screen"]["title"], font=get_font(10.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+        draw.text((cx + 12, y_screen_top + 54), st["screen"]["sub"], font=get_font(8.5, 'medium'), fill=(100, 116, 139), anchor='lm')
+        
+        # Down Arrow from Tier 1 to Tier 2
+        draw_arrow(draw, (cc, y_screen_bot), (cc, y_action_top), col=(0, 82, 255), width=2, arrow_size=4)
+        
+        # Horizontal journey arrow between Tier 1 screens
+        if i < 4:
+            draw_arrow(draw, (cx + cw + 2, y_screen_top + 34), (cols_x[i+1] - 2, y_screen_top + 34), col=(148, 163, 184), width=1, arrow_size=3)
             
-        # 4. Layer 3: Screen & Trigger (y=546 to 656, h=110)
-        draw.rounded_rectangle([cx, 546, cx + cw, 656], radius=10, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-        draw_pill_badge(draw, left_x=cx + 12, cy=562, text="SCREEN & TRIGGER", font=get_font(8, 'bold'), theme='slate', pad_x=6, height=18)
-        draw.text((cx + 12, 592), s["screen"], font=get_font(10.5, 'bold'), fill=(15, 23, 42))
-        draw.text((cx + 12, 624), f"트리거: {s['trigger']}", font=get_font(9, 'medium'), fill=(0, 82, 255))
+        # ---------------------------------------------------------
+        # TIER 2: ACTION (y=340 to 422)
+        # ---------------------------------------------------------
+        draw.rounded_rectangle([cx, y_action_top, cx + cw, y_action_bot], radius=8, fill=(240, 246, 255), outline=(0, 82, 255), width=1)
+        draw_pill_badge(draw, left_x=cx + 12, cy=y_action_top + 15, text="ACTION", font=get_font(7.5, 'bold'), theme='blue', pad_x=4, height=16)
+        draw.text((cx + 66, y_action_top + 15), st["action"]["title"], font=get_font(10.5, 'bold'), fill=(0, 82, 255), anchor='lm')
+        draw.text((cx + 12, y_action_top + 38), st["action"]["line2"], font=get_font(9, 'bold'), fill=(15, 23, 42), anchor='lm')
+        draw.text((cx + 12, y_action_top + 58), st["action"]["line3"], font=get_font(8.5, 'medium'), fill=(71, 85, 105), anchor='lm')
         
-        # 5. Layer 4: Stage UX Value & Benefit (y=666 to 780, h=114)
-        draw.rounded_rectangle([cx, 666, cx + cw, 780], radius=10, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
-        draw_pill_badge(draw, left_x=cx + 12, cy=682, text="STAGE VALUE", font=get_font(8, 'bold'), theme='green', has_dot=True, pad_x=6, height=18)
-        draw.text((cx + 12, 714), s["value_badge"], font=get_font(10, 'bold'), fill=(22, 101, 52))
-        draw.text((cx + 12, 746), s["value_desc"], font=get_font(9, 'medium'), fill=(74, 222, 128))
+        # Down Arrow from Tier 2 to Tier 3
+        draw_arrow(draw, (cc, y_action_bot), (cc, y_guard_top), col=(0, 82, 255), width=2, arrow_size=4)
+        
+        # ---------------------------------------------------------
+        # TIER 3: UX GUARD & DECISION (y=438 to 524)
+        # ---------------------------------------------------------
+        draw.rounded_rectangle([cx, y_guard_top, cx + cw, y_guard_bot], radius=8, fill=(255, 251, 235), outline=(217, 119, 6), width=1)
+        draw_pill_badge(draw, left_x=cx + 12, cy=y_guard_top + 15, text="UX GUARD", font=get_font(7.5, 'bold'), theme='amber', pad_x=4, height=16)
+        draw.text((cx + 80, y_guard_top + 15), st["guard"]["title"], font=get_font(10, 'bold'), fill=(180, 83, 9), anchor='lm')
+        draw.text((cx + 12, y_guard_top + 35), f"[판정] {st['guard']['cond']}", font=get_font(8.5, 'bold'), fill=(146, 64, 14), anchor='lm')
+        draw.text((cx + 12, y_guard_top + 52), st["guard"]["yes_text"], font=get_font(8, 'medium'), fill=(15, 23, 42), anchor='lm')
+        draw.text((cx + 12, y_guard_top + 68), st["guard"]["no_text"], font=get_font(8, 'medium'), fill=(180, 83, 9), anchor='lm')
+        
+        # Down Arrow from Tier 3 to Tier 4
+        draw_arrow(draw, (cc, y_guard_bot), (cc, y_feedback_top), col=(0, 82, 255), width=2, arrow_size=4)
+        
+        # ---------------------------------------------------------
+        # TIER 4: SYSTEM FEEDBACK (y=540 to 608)
+        # ---------------------------------------------------------
+        draw.rounded_rectangle([cx, y_feedback_top, cx + cw, y_feedback_bot], radius=8, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
+        draw_pill_badge(draw, left_x=cx + 12, cy=y_feedback_top + 16, text="FEEDBACK", font=get_font(7.5, 'bold'), theme='green', pad_x=4, height=16)
+        if st["feedback"].get("is_finish"):
+            draw_pill_badge(draw, left_x=cx + 80, cy=y_feedback_top + 16, text="Finish : 최종 체결", font=get_font(7.5, 'bold'), theme='blue', pad_x=5, height=16)
+        draw.text((cx + 12, y_feedback_top + 38), st["feedback"]["title"], font=get_font(10.5, 'bold'), fill=(22, 101, 52), anchor='lm')
+        draw.text((cx + 12, y_feedback_top + 54), st["feedback"]["sub"], font=get_font(8.5, 'medium'), fill=(21, 128, 61), anchor='lm')
+        
+        # Inter-stage Handover Arrow at Feedback Level
+        if st["handover"] and i < 4:
+            arrow_sx = cx + cw
+            arrow_ex = cols_x[i + 1]
+            draw_arrow(draw, (arrow_sx + 2, y_feedback_top + 34), (arrow_ex - 2, y_feedback_top + 34), col=(0, 82, 255), width=2, arrow_size=4)
+            draw.text(((arrow_sx + arrow_ex) // 2, y_feedback_top + 20), st["handover"].replace("→", "→"), font=get_font(8, 'bold'), fill=(0, 82, 255), anchor='mm')
+            
+        # Down Arrow from Tier 4 to Tier 5 (Value Pod)
+        draw_arrow(draw, (cc, y_feedback_bot), (cc, y_value_top), col=(148, 163, 184), width=1, arrow_size=3)
+        
+        # ---------------------------------------------------------
+        # TIER 5: STAGE UX VALUE POD (y=626 to 764)
+        # ---------------------------------------------------------
+        draw.rounded_rectangle([cx, y_value_top, cx + cw, y_value_bot], radius=10, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+        draw_pill_badge(draw, left_x=cx + 12, cy=y_value_top + 18, text=f"STAGE 0{i+1} VALUE", font=get_font(8, 'bold'), theme='blue', pad_x=6, height=18)
+        draw.text((cx + 12, y_value_top + 46), st["value"][0], font=get_font(9, 'medium'), fill=(51, 65, 85))
+        draw.text((cx + 12, y_value_top + 72), st["value"][1], font=get_font(9, 'medium'), fill=(51, 65, 85))
+        draw.text((cx + 12, y_value_top + 98), st["value"][2], font=get_font(9, 'bold'), fill=(0, 82, 255))
         
     # -------------------------------------------------------------
-    # BOTTOM: Unified UX Emotional Journey & Enterprise KPIs (y=794 to 948, h=154)
+    # BOTTOM: Unified UX Emotional Journey & Enterprise KPIs (y=780 to 948, h=168)
     # -------------------------------------------------------------
     bar_x = 100
-    bar_y = 794
+    bar_y = 780
     bar_w = 1720
-    bar_h = 154
+    bar_h = 168
     draw.rounded_rectangle([bar_x, bar_y, bar_x + bar_w, bar_y + bar_h], radius=14, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
     
     # Left Half: Emotional Curve (w = 880)
@@ -1471,14 +1618,16 @@ def make_slide_05():
         ("STAGE 05", "확신 & 즉시 체결", "green")
     ]
     node_w = 150
-    node_y = bar_y + 82
+    node_y = bar_y + 86
     for e_idx, (ecode, ename, etheme) in enumerate(emotions):
         nx = bar_x + 20 + e_idx * (node_w + 24)
-        draw.rounded_rectangle([nx, node_y, nx + node_w, node_y + 54], radius=8, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        draw.rounded_rectangle([nx, node_y, nx + node_w, node_y + 56], radius=8, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
         draw_pill_badge(draw, left_x=nx + 8, cy=node_y + 16, text=ecode, font=get_font(7.5, 'bold'), theme=etheme, pad_x=4, height=16)
-        draw.text((nx + 8, node_y + 38), ename, font=get_font(10, 'bold'), fill=(15, 23, 42))
+        draw.text((nx + 8, node_y + 40), ename, font=get_font(10, 'bold'), fill=(15, 23, 42))
         if e_idx < 4:
-            draw.text((nx + node_w + 6, node_y + 27), "➔", font=get_font(11, 'bold'), fill=(148, 163, 184), anchor='lm')
+            arrow_sx = nx + node_w + 3
+            arrow_ex = nx + node_w + 21
+            draw_arrow(draw, (arrow_sx, node_y + 28), (arrow_ex, node_y + 28), col=(148, 163, 184), width=1, arrow_size=3)
             
     # Vertical Divider Line
     draw.line([(bar_x + 910, bar_y + 16), (bar_x + 910, bar_y + bar_h - 16)], fill=(226, 232, 240), width=1)
@@ -1491,21 +1640,22 @@ def make_slide_05():
     
     kpis = [
         ("총 소요 시간", "< 3.2초", "기존 대비 84% 단축", "blue"),
-        ("인터랙션 단계", "7단계 ➔ 2단계", "엄지 영역 통합 설계", "green"),
+        ("인터랙션 단계", "7단계 → 2단계", "엄지 영역 통합 설계", "green"),
         ("역산 연산 지연", "0ms 즉시", "폐쇄형 대수 공식 완결", "blue"),
         ("개인 금융 보안", "100% 로컬", "외부 유출 0건 온디바이스", "slate")
     ]
     kw = (bar_w - 950 - 20) // 4
     for kidx, (klabel, kval, ksub, kcol) in enumerate(kpis):
         kx = kpi_x + kidx * (kw + 10)
-        draw.rounded_rectangle([kx, node_y, kx + kw, node_y + 54], radius=8, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+        draw.rounded_rectangle([kx, node_y, kx + kw, node_y + 56], radius=8, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
         draw.text((kx + 10, node_y + 14), klabel, font=get_font(9, 'bold'), fill=(100, 116, 139))
         draw.text((kx + 10, node_y + 34), kval, font=get_font(13.5, 'bold'), fill=(0, 82, 255))
-        draw.text((kx + 10, node_y + 48), ksub, font=get_font(8, 'medium'), fill=(71, 85, 105))
+        draw.text((kx + 10, node_y + 49), ksub, font=get_font(8, 'medium'), fill=(71, 85, 105))
         
     draw_slide_footer(draw, 5)
     base.save(f'{OUT_DIR}/slide_05.png')
-    print("SAVED slide_05.png (Senior Service UX Planning Blueprint with 5 Journey Stages)")
+    print("SAVED slide_05.png (4-Tier Structured Service UX Flowchart with 5 Journey Stages)")
+
 
 
 # Helper: Gradient Bar for Design System Tokens
