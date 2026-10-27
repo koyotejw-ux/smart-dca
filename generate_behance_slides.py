@@ -86,7 +86,11 @@ def draw_database_node(draw, cx, cy, w, h, fill=(240, 246, 255), outline=(0, 82,
     draw.line([(cx + ew // 2, top_y + eh // 2), (cx + ew // 2, bot_y - eh // 2)], fill=outline, width=width)
     draw.ellipse([cx - ew // 2, top_y, cx + ew // 2, top_y + eh], fill=fill, outline=outline, width=width)
 
-def draw_dashed_line(draw, p1, p2, col=(0, 82, 255), width=2, dash_len=4, gap_len=3):
+def draw_dashed_line(draw, p1, p2, col=(0, 82, 255), width=2, dash_len=4, gap_len=3, dash=None, gap=None):
+    if dash is not None:
+        dash_len = dash
+    if gap is not None:
+        gap_len = gap
     width = int(round(width))
     x1, y1 = p1
     x2, y2 = p2
@@ -114,7 +118,11 @@ def draw_dashed_rounded_rect(draw, bbox, radius=8, fill=(240, 246, 255), outline
     draw_dashed_line(draw, (x2 - radius, y2), (x1 + radius, y2), outline, width, dash_len, gap_len)
     draw_dashed_line(draw, (x1, y2 - radius), (x1, y1 + radius), outline, width, dash_len, gap_len)
 
-def draw_dashed_arrow(draw, p1, p2, col=(0, 82, 255), width=2, dash_len=4, gap_len=3, arrow_size=5):
+def draw_dashed_arrow(draw, p1, p2, col=(0, 82, 255), width=2, dash_len=4, gap_len=3, arrow_size=5, dash=None, gap=None):
+    if dash is not None:
+        dash_len = dash
+    if gap is not None:
+        gap_len = gap
     draw_dashed_line(draw, p1, p2, col, width, dash_len, gap_len)
     x1, y1 = p1
     x2, y2 = p2
@@ -609,8 +617,8 @@ def make_slide_01():
     draw_pill_badge(draw, cx=1580, cy=815, text="65% CASH SAFETY GUARD", font=get_font(10.5, 'bold'), theme='green', pad_x=12, height=28, solid=True)
     
     # 5. Bottom Simple & Clean Specification Strip (Reference Style, Clean 4 Columns)
-    bar_y = 860
-    bar_h = 100
+    bar_y = 856
+    bar_h = 108
     draw.rounded_rectangle([100, bar_y, 1820, bar_y + bar_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     
     col_w = (1720) // 4
@@ -652,7 +660,7 @@ def make_slide_02():
     # 1. TOP: 3 Horizontal Market Trend Cards (Donut, H-Bar, V-Bar)
     # ==============================================================
     card_w = 546
-    card_h = 220
+    card_h = 226
     gap = 40
     sy = 215
     
@@ -1206,23 +1214,22 @@ def make_slide_04():
     for i, (dom_code, dom_name, dom_desc, containers) in enumerate(domains_data):
         cx = cols_x[i]
         
-        # Level 1 Domain Header Card (y=330 to 396, h=66)
-        # Generous inner padding: 18px left/right, 12px top
-        draw.rounded_rectangle([cx, 330, cx + cw, 396], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+        # Level 1 Domain Header Card (y=330 to 402, h=72, generous bottom margin)
+        draw.rounded_rectangle([cx, 330, cx + cw, 402], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
         draw.text((cx + 18, 344), dom_code, font=get_font(9.5, 'bold'), fill=(0, 82, 255))
         draw.text((cx + 18, 363), dom_name, font=get_font(13, 'bold'), fill=(15, 23, 42))
         draw.text((cx + 18, 382), dom_desc, font=get_font(8.5, 'medium'), fill=(100, 116, 139))
         
         # Vertical Tree Line
         tree_x = cx + 16
-        draw.line([(tree_x, 396), (tree_x, 660)], fill=(0, 82, 255, 100), width=2)
+        draw.line([(tree_x, 402), (tree_x, 670)], fill=(0, 82, 255, 100), width=2)
         
-        # 3 L2 Cards with generous inner padding (card_h = 78, gap = 12)
+        # 3 L2 Cards with generous inner padding (card_h = 82, gap = 10)
         card_w = cw - 32
         card_x = cx + 32
-        cy = 410
-        card_h = 78
-        gap = 12
+        cy = 414
+        card_h = 82
+        gap = 10
         
         for scr_id, view_type, title, desc, is_new in containers:
             # Tree branch line
@@ -1233,26 +1240,25 @@ def make_slide_04():
             card_bd = (226, 232, 240) if not is_new else (191, 219, 254)
             draw.rounded_rectangle([card_x, cy, card_x + card_w, cy + card_h], radius=8, fill=card_bg, outline=card_bd, width=1)
             
-            # Generous Inner Margins: left=18, right=18, top=12
+            # Generous Inner Margins: left=18, right=18, top=12, bottom=16
             # Row 1: SCR ID & Type tag + NEW badge
-            draw.text((card_x + 18, cy + 13), f"{scr_id}  ·  [{view_type}]", font=get_font(8.5, 'bold'), fill=(100, 116, 139), anchor='lm')
+            draw.text((card_x + 18, cy + 14), f"{scr_id}  ·  [{view_type}]", font=get_font(8.5, 'bold'), fill=(100, 116, 139), anchor='lm')
             if is_new:
-                draw_pill_badge(draw, cx=card_x + card_w - 24, cy=cy + 13, text="NEW", font=get_font(7.5, 'bold'), theme='blue', has_dot=False, pad_x=5, height=16)
+                draw_pill_badge(draw, cx=card_x + card_w - 24, cy=cy + 14, text="NEW", font=get_font(7.5, 'bold'), theme='blue', has_dot=False, pad_x=5, height=16)
                 
             # Row 2: Title with breathing room
-            draw.text((card_x + 18, cy + 37), title, font=get_font(11.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+            draw.text((card_x + 18, cy + 38), title, font=get_font(11.5, 'bold'), fill=(15, 23, 42), anchor='lm')
             
-            # Row 3: Description (Clean, concise)
-            draw.text((card_x + 18, cy + 59), desc, font=get_font(9.5, 'medium'), fill=(71, 85, 105), anchor='lm')
+            # Row 3: Description (Clean, concise, 15px bottom margin)
+            draw.text((card_x + 18, cy + 61), desc, font=get_font(9.5, 'medium'), fill=(71, 85, 105), anchor='lm')
             
             cy += card_h + gap
             
-    # Clean Bottom Architecture Highlights Strip (y=704 to 818, h=114)
-    # Generous margin from cards (cy ended at 664, gap is 40px)
+    # Clean Bottom Architecture Highlights Strip (y=702 to 828, h=126)
     bar_x = 100
-    bar_y = 704
+    bar_y = 702
     bar_w = 1720
-    bar_h = 114
+    bar_h = 126
     draw.rounded_rectangle([bar_x, bar_y, bar_x + bar_w, bar_y + bar_h], radius=12, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
     
     draw_pill_badge(draw, left_x=bar_x + 24, cy=bar_y + 24, text="CORE ARCHITECTURE", font=get_font(8.5, 'bold'), theme='blue', has_dot=True, pad_x=8, height=20)
@@ -1266,67 +1272,17 @@ def make_slide_04():
         ("04. 100% 로컬 보안 무결성", "외부 통신 0건, 개인 금융 자산 데이터를 온디바이스 SQLite로 완벽히 암호화합니다.", "green")
     ]
     pw = (bar_w - 48 - 36) // 4
-    py = bar_y + 50
+    py = bar_y + 48
     for pidx, (ptitle, pdesc, pcol) in enumerate(pillars):
         px = bar_x + 24 + pidx * (pw + 12)
-        draw.rounded_rectangle([px, py, px + pw, py + 50], radius=8, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-        # Inner padding inside pillar cards: 16px left, 12px top
-        draw.text((px + 16, py + 15), ptitle, font=get_font(10, 'bold'), fill=(0, 82, 255) if pcol == 'blue' else (15, 23, 42))
-        draw.text((px + 16, py + 33), pdesc, font=get_font(8.5, 'medium'), fill=(71, 85, 105))
+        draw.rounded_rectangle([px, py, px + pw, py + 62], radius=8, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        # Inner padding inside pillar cards: 16px left, 15px top, 15px bottom breathing room
+        draw.text((px + 16, py + 16), ptitle, font=get_font(10, 'bold'), fill=(0, 82, 255) if pcol == 'blue' else (15, 23, 42))
+        draw.text((px + 16, py + 36), pdesc, font=get_font(8.5, 'medium'), fill=(71, 85, 105))
         
     draw_slide_footer(draw, 4)
     base.save(f'{OUT_DIR}/slide_04.png')
     print("SAVED perfect Slide 04 successfully!")
-
-def draw_diamond(draw, cx, cy, w, h, fill, outline, width=2):
-    pts = [
-        (cx, cy - h // 2),
-        (cx + w // 2, cy),
-        (cx, cy + h // 2),
-        (cx - w // 2, cy)
-    ]
-    draw.polygon(pts, fill=fill, outline=outline)
-
-def draw_database_node(draw, cx, cy, w, h, fill, outline, width=1):
-    x1 = cx - w // 2
-    x2 = cx + w // 2
-    y1 = cy - h // 2
-    y2 = cy + h // 2
-    draw.rounded_rectangle([x1, y1, x2, y2], radius=8, fill=fill, outline=outline, width=width)
-    draw.line([(x1 + 10, y1 + 5), (x2 - 10, y1 + 5)], fill=outline, width=1)
-    draw.line([(x1 + 10, y1 + 9), (x2 - 10, y1 + 9)], fill=outline, width=1)
-
-def draw_dashed_line(draw, p1, p2, col=(180, 83, 9), width=1, dash=5, gap=4):
-    import math
-    x1, y1 = p1
-    x2, y2 = p2
-    dx = x2 - x1
-    dy = y2 - y1
-    dist = math.hypot(dx, dy)
-    if dist == 0:
-        return
-    vx = dx / dist
-    vy = dy / dist
-    curr = 0
-    while curr < dist:
-        end = min(curr + dash, dist)
-        draw.line([(x1 + vx * curr, y1 + vy * curr), (x1 + vx * end, y1 + vy * end)], fill=col, width=width)
-        curr += dash + gap
-
-def draw_dashed_arrow(draw, p1, p2, col=(180, 83, 9), width=1, dash=5, gap=4, arrow_size=4):
-    draw_dashed_line(draw, p1, p2, col, width, dash, gap)
-    x1, y1 = p1
-    x2, y2 = p2
-    if x1 == x2:
-        if y2 > y1:
-            draw.polygon([(x2 - arrow_size, y2 - arrow_size * 1.5), (x2 + arrow_size, y2 - arrow_size * 1.5), (x2, y2)], fill=col)
-        else:
-            draw.polygon([(x2 - arrow_size, y2 + arrow_size * 1.5), (x2 + arrow_size, y2 + arrow_size * 1.5), (x2, y2)], fill=col)
-    elif y1 == y2:
-        if x2 > x1:
-            draw.polygon([(x2 - arrow_size * 1.5, y2 - arrow_size), (x2 - arrow_size * 1.5, y2 + arrow_size), (x2, y2)], fill=col)
-        else:
-            draw.polygon([(x2 + arrow_size * 1.5, y2 - arrow_size), (x2 + arrow_size * 1.5, y2 + arrow_size), (x2, y2)], fill=col)
 
 def make_slide_05():
     base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
@@ -1453,11 +1409,11 @@ def make_slide_05():
     draw.text((c0, 595), "물타기 계산/역산 모드 진입 (P0·Q0 자동 주입)", font=get_font(8, 'medium'), fill=(71, 85, 105), anchor='mm')
     draw_arrow(draw, (c0, 608), (c0, 626), col=(0, 82, 255), width=2, arrow_size=4)
     
-    # 6. Feedback: 파라미터 번들 0ms 연동 (y=626 to 668, h=42)
-    draw.rounded_rectangle([c0 - nw // 2, 626, c0 + nw // 2, 668], radius=6, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
+    # 6. Feedback: 파라미터 번들 0ms 연동 (y=626 to 672, h=46)
+    draw.rounded_rectangle([c0 - nw // 2, 626, c0 + nw // 2, 672], radius=6, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
     draw_pill_badge(draw, left_x=c0 - 114, cy=640, text="FEEDBACK", font=get_font(6.5, 'bold'), theme='green', pad_x=4, height=14)
     draw.text((c0 - 44, 640), "파라미터 번들 0ms 연동 완료", font=get_font(9, 'bold'), fill=(22, 101, 52), anchor='lm')
-    draw.text((c0, 655), "현재 평단가 P0 · 수량 Q0 무손실 인계", font=get_font(7.5, 'medium'), fill=(21, 128, 61), anchor='mm')
+    draw.text((c0, 656), "현재 평단가 P0 · 수량 Q0 무손실 인계", font=get_font(7.5, 'medium'), fill=(21, 128, 61), anchor='mm')
     
     # Inter-Stage Handover Arrow to Stage 02
     draw_arrow(draw, (cols_x[0] + cw, 647), (cols_x[1], 647), col=(0, 82, 255), width=2, arrow_size=4)
@@ -1475,8 +1431,8 @@ def make_slide_05():
     draw.text((c1, 331), "엄지 조작 영역(Thumb Zone) 최적화 바텀시트", font=get_font(8, 'medium'), fill=(100, 116, 139), anchor='mm')
     draw_arrow(draw, (c1, 344), (c1, 360), col=(0, 82, 255), width=2, arrow_size=4)
     
-    # 2. Decision Container: 3대 멀티모달 입력 채널 (y=360 to 460, h=100)
-    draw.rounded_rectangle([c1 - nw // 2, 360, c1 + nw // 2, 460], radius=6, fill=(250, 252, 255), outline=(191, 219, 254), width=1)
+    # 2. Decision Container: 3대 멀티모달 입력 채널 (y=360 to 464, h=104)
+    draw.rounded_rectangle([c1 - nw // 2, 360, c1 + nw // 2, 464], radius=6, fill=(250, 252, 255), outline=(191, 219, 254), width=1)
     draw_pill_badge(draw, left_x=c1 - 114, cy=374, text="DECISION", font=get_font(6.5, 'bold'), theme='amber', pad_x=4, height=14)
     draw.text((c1 - 48, 374), "3대 멀티모달 입력 채널 선택", font=get_font(8.5, 'bold'), fill=(180, 83, 9), anchor='lm')
     
@@ -1492,7 +1448,7 @@ def make_slide_05():
     draw.rounded_rectangle([c1 - 114, 435, c1 + 114, 456], radius=4, fill=(255, 255, 255), outline=(191, 219, 254), width=1)
     draw_pill_badge(draw, left_x=c1 - 110, cy=445, text="키패드", font=get_font(6.5, 'bold'), theme='slate', pad_x=3, height=12)
     draw.text((c1 - 68, 445), "정밀 텐키패드 목표 평단가 직접 입력", font=get_font(7.5, 'bold'), fill=(15, 23, 42), anchor='lm')
-    draw_arrow(draw, (c1, 460), (c1, 478), col=(0, 82, 255), width=2, arrow_size=4)
+    draw_arrow(draw, (c1, 464), (c1, 478), col=(0, 82, 255), width=2, arrow_size=4)
     
     # 3. Action: 파라미터 주입 (y=478 to 522, h=44)
     draw.rounded_rectangle([c1 - nw // 2, 478, c1 + nw // 2, 522], radius=6, fill=(240, 246, 255), outline=(0, 82, 255), width=1)
@@ -1508,9 +1464,9 @@ def make_slide_05():
     
     # Branch No (Left loop)
     draw_dashed_line(draw, (c1 - 98, 566), (cols_x[1] + 16, 566), col=(244, 63, 94), width=1)
-    draw_dashed_arrow(draw, (cols_x[1] + 16, 566), (cols_x[1] + 16, 522), col=(244, 63, 94), width=1, arrow_size=3)
-    draw.rounded_rectangle([cols_x[1] + 4, 496, cols_x[1] + 80, 522], radius=5, fill=(254, 242, 242), outline=(244, 63, 94), width=1)
-    draw.text((cols_x[1] + 42, 509), "햅틱 진동 피드백", font=get_font(7, 'bold'), fill=(153, 27, 27), anchor='mm')
+    draw_dashed_arrow(draw, (cols_x[1] + 16, 566), (cols_x[1] + 16, 524), col=(244, 63, 94), width=1, arrow_size=3)
+    draw.rounded_rectangle([cols_x[1] + 4, 496, cols_x[1] + 80, 524], radius=5, fill=(254, 242, 242), outline=(244, 63, 94), width=1)
+    draw.text((cols_x[1] + 42, 510), "햅틱 진동 피드백", font=get_font(7, 'bold'), fill=(153, 27, 27), anchor='mm')
     draw_dashed_line(draw, (cols_x[1] + 42, 496), (cols_x[1] + 42, 482), col=(244, 63, 94), width=1)
     draw_dashed_arrow(draw, (cols_x[1] + 42, 482), (c1 - nw // 2, 482), col=(244, 63, 94), width=1, arrow_size=3)
     
@@ -1518,11 +1474,11 @@ def make_slide_05():
     draw_arrow(draw, (c1, 592), (c1, 626), col=(0, 82, 255), width=2, arrow_size=4)
     draw.text((c1 + 32, 609), "Yes (정상)", font=get_font(7.5, 'bold'), fill=(5, 150, 105), anchor='mm')
     
-    # 5. Feedback: 데이터 정규화 완료 (y=626 to 668, h=42)
-    draw.rounded_rectangle([c1 - nw // 2, 626, c1 + nw // 2, 668], radius=6, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
+    # 5. Feedback: 데이터 정규화 완료 (y=626 to 672, h=46)
+    draw.rounded_rectangle([c1 - nw // 2, 626, c1 + nw // 2, 672], radius=6, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
     draw_pill_badge(draw, left_x=c1 - 114, cy=640, text="FEEDBACK", font=get_font(6.5, 'bold'), theme='green', pad_x=4, height=14)
     draw.text((c1 - 44, 640), "실시간 데이터 정규화 완료", font=get_font(9, 'bold'), fill=(22, 101, 52), anchor='lm')
-    draw.text((c1, 655), "호가 단위 자동 변환 및 엔진 즉시 전송", font=get_font(7.5, 'medium'), fill=(21, 128, 61), anchor='mm')
+    draw.text((c1, 656), "호가 단위 자동 변환 및 엔진 즉시 전송", font=get_font(7.5, 'medium'), fill=(21, 128, 61), anchor='mm')
     
     # Inter-Stage Handover Arrow to Stage 03
     draw_arrow(draw, (cols_x[1] + cw, 647), (cols_x[2], 647), col=(0, 82, 255), width=2, arrow_size=4)
@@ -1547,11 +1503,11 @@ def make_slide_05():
     
     # Branch No (Left loop)
     draw_dashed_line(draw, (c2 - 108, 390), (cols_x[2] + 16, 390), col=(244, 63, 94), width=1)
-    draw_dashed_arrow(draw, (cols_x[2] + 16, 390), (cols_x[2] + 16, 420), col=(244, 63, 94), width=1, arrow_size=3)
-    draw.rounded_rectangle([cols_x[2] + 4, 420, cols_x[2] + 80, 448], radius=5, fill=(254, 242, 242), outline=(244, 63, 94), width=1)
-    draw.text((cols_x[2] + 42, 430), "비정상 목표 경고", font=get_font(7, 'bold'), fill=(153, 27, 27), anchor='mm')
+    draw_dashed_arrow(draw, (cols_x[2] + 16, 390), (cols_x[2] + 16, 416), col=(244, 63, 94), width=1, arrow_size=3)
+    draw.rounded_rectangle([cols_x[2] + 4, 416, cols_x[2] + 80, 452], radius=5, fill=(254, 242, 242), outline=(244, 63, 94), width=1)
+    draw.text((cols_x[2] + 42, 428), "비정상 목표 경고", font=get_font(7, 'bold'), fill=(153, 27, 27), anchor='mm')
     draw.text((cols_x[2] + 42, 440), "대안 평단 자동 제안", font=get_font(6.5, 'medium'), fill=(153, 27, 27), anchor='mm')
-    draw_dashed_line(draw, (cols_x[2] + 42, 448), (cols_x[2] + 42, 474), col=(244, 63, 94), width=1)
+    draw_dashed_line(draw, (cols_x[2] + 42, 452), (cols_x[2] + 42, 474), col=(244, 63, 94), width=1)
     draw_dashed_arrow(draw, (cols_x[2] + 42, 474), (cols_x[1] + cw - 10, 474), col=(244, 63, 94), width=1, arrow_size=3)
     draw.text(((cols_x[2] + 42 + cols_x[1] + cw) // 2, 464), "재설정", font=get_font(7, 'bold'), fill=(220, 38, 38), anchor='mm')
     
@@ -1573,11 +1529,11 @@ def make_slide_05():
     draw.text((c2, 549), "1차~N차 분할 가중치 & 목표 평단가 시뮬레이션", font=get_font(7.5, 'medium'), fill=(71, 85, 105), anchor='mm')
     draw_arrow(draw, (c2, 562), (c2, 626), col=(0, 82, 255), width=2, arrow_size=4)
     
-    # 5. Feedback: 분할 매수 확정 (y=626 to 668, h=42)
-    draw.rounded_rectangle([c2 - nw // 2, 626, c2 + nw // 2, 668], radius=6, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
+    # 5. Feedback: 분할 매수 확정 (y=626 to 672, h=46)
+    draw.rounded_rectangle([c2 - nw // 2, 626, c2 + nw // 2, 672], radius=6, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
     draw_pill_badge(draw, left_x=c2 - 114, cy=640, text="FEEDBACK", font=get_font(6.5, 'bold'), theme='green', pad_x=4, height=14)
     draw.text((c2 - 44, 640), "차수별 분할 매수 분배 완료", font=get_font(9, 'bold'), fill=(22, 101, 52), anchor='lm')
-    draw.text((c2, 655), "1차~N차 분할 가중치 & 계좌 방어율 매핑", font=get_font(7.5, 'medium'), fill=(21, 128, 61), anchor='mm')
+    draw.text((c2, 656), "1차~N차 분할 가중치 & 계좌 방어율 매핑", font=get_font(7.5, 'medium'), fill=(21, 128, 61), anchor='mm')
     
     # Inter-Stage Handover Arrow to Stage 04
     draw_arrow(draw, (cols_x[2] + cw, 647), (cols_x[3], 647), col=(0, 82, 255), width=2, arrow_size=4)
@@ -1602,11 +1558,11 @@ def make_slide_05():
     
     # Branch Yes (Left warning)
     draw_dashed_line(draw, (c3 - 108, 390), (cols_x[3] + 16, 390), col=(244, 63, 94), width=1)
-    draw_dashed_arrow(draw, (cols_x[3] + 16, 390), (cols_x[3] + 16, 420), col=(244, 63, 94), width=1, arrow_size=3)
-    draw.rounded_rectangle([cols_x[3] + 4, 420, cols_x[3] + 80, 448], radius=5, fill=(254, 242, 242), outline=(244, 63, 94), width=1)
-    draw.text((cols_x[3] + 42, 430), "자금 고갈 주의", font=get_font(7, 'bold'), fill=(153, 27, 27), anchor='mm')
+    draw_dashed_arrow(draw, (cols_x[3] + 16, 390), (cols_x[3] + 16, 416), col=(244, 63, 94), width=1, arrow_size=3)
+    draw.rounded_rectangle([cols_x[3] + 4, 416, cols_x[3] + 80, 452], radius=5, fill=(254, 242, 242), outline=(244, 63, 94), width=1)
+    draw.text((cols_x[3] + 42, 428), "자금 고갈 주의", font=get_font(7, 'bold'), fill=(153, 27, 27), anchor='mm')
     draw.text((cols_x[3] + 42, 440), "분할 차수 확대 권고", font=get_font(6.5, 'medium'), fill=(153, 27, 27), anchor='mm')
-    draw_dashed_line(draw, (cols_x[3] + 42, 448), (cols_x[3] + 42, 474), col=(244, 63, 94), width=1)
+    draw_dashed_line(draw, (cols_x[3] + 42, 452), (cols_x[3] + 42, 474), col=(244, 63, 94), width=1)
     draw_dashed_arrow(draw, (cols_x[3] + 42, 474), (c3 - nw // 2, 474), col=(244, 63, 94), width=1, arrow_size=3)
     
     # Branch No (Down: Safe)
@@ -1627,11 +1583,11 @@ def make_slide_05():
     draw_arrow(draw, (c3, 576), (c3, 626), col=(0, 82, 255), width=2, arrow_size=4)
     draw.text((c3 + 30, 601), "승인 완료", font=get_font(7.5, 'bold'), fill=(0, 82, 255), anchor='mm')
     
-    # 5. Feedback: 최종 승인 완료 (y=626 to 668, h=42)
-    draw.rounded_rectangle([c3 - nw // 2, 626, c3 + nw // 2, 668], radius=6, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
+    # 5. Feedback: 최종 승인 완료 (y=626 to 672, h=46)
+    draw.rounded_rectangle([c3 - nw // 2, 626, c3 + nw // 2, 672], radius=6, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
     draw_pill_badge(draw, left_x=c3 - 114, cy=640, text="FEEDBACK", font=get_font(6.5, 'bold'), theme='green', pad_x=4, height=14)
     draw.text((c3 - 44, 640), "안전 가이드 적합 최종 승인", font=get_font(9, 'bold'), fill=(22, 101, 52), anchor='lm')
-    draw.text((c3, 655), "리스크 검증 완료 및 최종 분할 매수안 확정", font=get_font(7.5, 'medium'), fill=(21, 128, 61), anchor='mm')
+    draw.text((c3, 656), "리스크 검증 완료 및 최종 분할 매수안 확정", font=get_font(7.5, 'medium'), fill=(21, 128, 61), anchor='mm')
     
     # Inter-Stage Handover Arrow to Stage 05
     draw_arrow(draw, (cols_x[3] + cw, 647), (cols_x[4], 647), col=(0, 82, 255), width=2, arrow_size=4)
@@ -1679,15 +1635,17 @@ def make_slide_05():
     # Generous margin from diagram (cy ended at 668, gap = 38px)
     # -------------------------------------------------------------
     bar_x = 100
-    bar_y = 706
+    # -------------------------------------------------------------
+    bar_x = 100
+    bar_y = 698
     bar_w = 1720
-    bar_h = 120
+    bar_h = 142
     draw.rounded_rectangle([bar_x, bar_y, bar_x + bar_w, bar_y + bar_h], radius=12, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
     
     # Left Half: Emotional Curve (w = 860) with generous internal padding
-    draw_pill_badge(draw, left_x=bar_x + 24, cy=bar_y + 22, text="USER MINDSET", font=get_font(8, 'bold'), theme='amber', has_dot=True, pad_x=7, height=18)
-    draw.text((bar_x + 150, bar_y + 22), "5단계 심리 변화 여정 (불안에서 확신까지)", font=get_font(11.5, 'bold'), fill=(15, 23, 42), anchor='lm')
-    draw.text((bar_x + 24, bar_y + 44), "급락장 패닉 상태의 투자자가 객관적 퀀트 가이드를 통해 평정심을 되찾고 매매를 체결하는 여정", font=get_font(8.5, 'regular'), fill=(100, 116, 139))
+    draw_pill_badge(draw, left_x=bar_x + 24, cy=bar_y + 20, text="USER MINDSET", font=get_font(8, 'bold'), theme='amber', has_dot=True, pad_x=7, height=18)
+    draw.text((bar_x + 150, bar_y + 20), "5단계 심리 변화 여정 (불안에서 확신까지)", font=get_font(11.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((bar_x + 24, bar_y + 40), "급락장 패닉 상태의 투자자가 객관적 퀀트 가이드를 통해 평정심을 되찾고 매매를 체결하는 여정", font=get_font(8.5, 'regular'), fill=(100, 116, 139))
     
     emotions = [
         ("STAGE 01", "불안 & 막막함", "red"),
@@ -1697,26 +1655,27 @@ def make_slide_05():
         ("STAGE 05", "확신 & 즉시 체결", "green")
     ]
     node_w = 145
-    node_y = bar_y + 64
+    node_y = bar_y + 58
+    node_h = 68
     for e_idx, (ecode, ename, etheme) in enumerate(emotions):
         nx = bar_x + 24 + e_idx * (node_w + 22)
-        draw.rounded_rectangle([nx, node_y, nx + node_w, node_y + 46], radius=6, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-        # Inner padding inside emotion node: 10px left, 12px top
-        draw_pill_badge(draw, left_x=nx + 10, cy=node_y + 14, text=ecode, font=get_font(7, 'bold'), theme=etheme, pad_x=3, height=14)
-        draw.text((nx + 10, node_y + 33), ename, font=get_font(9, 'bold'), fill=(15, 23, 42))
+        draw.rounded_rectangle([nx, node_y, nx + node_w, node_y + node_h], radius=8, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        # Inner padding inside emotion node: 12px left, 12px top, generous 15px bottom margin
+        draw_pill_badge(draw, left_x=nx + 12, cy=node_y + 18, text=ecode, font=get_font(7.5, 'bold'), theme=etheme, pad_x=4, height=16)
+        draw.text((nx + 12, node_y + 42), ename, font=get_font(9.5, 'bold'), fill=(15, 23, 42))
         if e_idx < 4:
             arrow_sx = nx + node_w + 2
             arrow_ex = nx + node_w + 20
-            draw_arrow(draw, (arrow_sx, node_y + 23), (arrow_ex, node_y + 23), col=(148, 163, 184), width=1, arrow_size=3)
+            draw_arrow(draw, (arrow_sx, node_y + node_h // 2), (arrow_ex, node_y + node_h // 2), col=(148, 163, 184), width=1, arrow_size=3)
             
     # Vertical Divider Line
     draw.line([(bar_x + 890, bar_y + 14), (bar_x + 890, bar_y + bar_h - 14)], fill=(226, 232, 240), width=1)
     
     # Right Half: Enterprise UX KPIs (w = 800) with generous internal padding
     kpi_x = bar_x + 914
-    draw_pill_badge(draw, left_x=kpi_x, cy=bar_y + 22, text="UX IMPACT", font=get_font(8, 'bold'), theme='blue', has_dot=True, pad_x=7, height=18)
-    draw.text((kpi_x + 120, bar_y + 22), "정량적 서비스 기획 성과 지표", font=get_font(11.5, 'bold'), fill=(15, 23, 42), anchor='lm')
-    draw.text((kpi_x, bar_y + 44), "실제 프로덕션 배포 및 태스크 기반 검증 완료 지표", font=get_font(8.5, 'regular'), fill=(100, 116, 139))
+    draw_pill_badge(draw, left_x=kpi_x, cy=bar_y + 20, text="UX IMPACT", font=get_font(8, 'bold'), theme='blue', has_dot=True, pad_x=7, height=18)
+    draw.text((kpi_x + 120, bar_y + 20), "정량적 서비스 기획 성과 지표", font=get_font(11.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((kpi_x, bar_y + 40), "실제 프로덕션 배포 및 태스크 기반 검증 완료 지표", font=get_font(8.5, 'regular'), fill=(100, 116, 139))
     
     kpis = [
         ("총 소요 시간", "< 3.2초", "기존 대비 84% 단축", "blue"),
@@ -1727,11 +1686,11 @@ def make_slide_05():
     kw = (bar_w - 938 - 24) // 4
     for kidx, (klabel, kval, ksub, kcol) in enumerate(kpis):
         kx = kpi_x + kidx * (kw + 10)
-        draw.rounded_rectangle([kx, node_y, kx + kw, node_y + 46], radius=6, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-        # Inner padding inside KPI card: 12px left, 12px top
-        draw.text((kx + 12, node_y + 12), klabel, font=get_font(8, 'bold'), fill=(100, 116, 139))
-        draw.text((kx + 12, node_y + 27), kval, font=get_font(11.5, 'bold'), fill=(0, 82, 255))
-        draw.text((kx + 12, node_y + 39), ksub, font=get_font(7, 'medium'), fill=(71, 85, 105))
+        draw.rounded_rectangle([kx, node_y, kx + kw, node_y + node_h], radius=8, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+        # Inner padding inside KPI card: 14px left, 13px top, and generous 13px bottom margin
+        draw.text((kx + 14, node_y + 13), klabel, font=get_font(8.5, 'bold'), fill=(100, 116, 139))
+        draw.text((kx + 14, node_y + 28), kval, font=get_font(12, 'bold'), fill=(0, 82, 255))
+        draw.text((kx + 14, node_y + 46), ksub, font=get_font(7.5, 'medium'), fill=(71, 85, 105))
         
     draw_slide_footer(draw, 5)
     base.save(f'{OUT_DIR}/slide_05.png')
@@ -2008,7 +1967,7 @@ def make_slide_06():
     ]
     cy_sub = sec_y + 90
     for c_title, c_desc in callouts:
-        draw.rounded_rectangle([c4_x + 24, cy_sub, c4_x + c4_w - 24, cy_sub + 56], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        draw.rounded_rectangle([c4_x + 24, cy_sub, c4_x + c4_w - 24, cy_sub + 58], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
         draw.text((c4_x + 38, cy_sub + 14), c_title, font=get_font(12, 'bold'), fill=(0, 81, 255))
         draw.text((c4_x + 38, cy_sub + 33), c_desc, font=get_font(10.5, 'regular'), fill=(71, 85, 105))
         cy_sub += 64
@@ -2211,13 +2170,13 @@ def make_slide_07():
         draw.text((left_x + left_w - 46, ry + 9), t_sample, font=get_num_font(12, 'bold') if is_mono else get_font(11, 'semibold'), fill=(15, 23, 42), anchor='ra')
         
     # OpenType Tabular Figures & Spatial Tokens Box
-    sp_box_y = ty_start + len(t_rows) * 40 + 10
-    draw.rounded_rectangle([left_x + 32, sp_box_y, left_x + left_w - 32, row2_y + row2_h - 18], radius=12, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+    sp_box_y = ty_start + len(t_rows) * 40 + 8
+    draw.rounded_rectangle([left_x + 32, sp_box_y, left_x + left_w - 32, row2_y + row2_h - 12], radius=12, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
     
-    draw.text((left_x + 48, sp_box_y + 12), "OpenType `FontFeature.tabularFigures()` 타뷸라 넘버 & 4/8pt 그리드", font=get_font(12, 'bold'), fill=(0, 81, 255))
-    draw.text((left_x + 48, sp_box_y + 32), "• Tabular Numbers : 실시간 호가 및 시세 변동 시 숫자 폭의 떨림(Jitter)을 방지하는 고정폭 숫자 규격 적용", font=get_font(10, 'regular'), fill=(71, 85, 105))
-    draw.text((left_x + 48, sp_box_y + 49), "• Spatial System   : 4pt/8pt 그리드 (`space-4` ~ `space-32`) · 코너 라운딩 `r-8`, `r-12`, `r-16`, `r-24`, `r-full`", font=get_font(10, 'regular'), fill=(71, 85, 105))
-    draw.text((left_x + 48, sp_box_y + 66), "• Elevation Tokens : Level 1 (카드 Diffuse 2dp) · Level 2 (모달 8dp) · Level 3 (0.2s 음성 도크 FAB 16dp)", font=get_font(10, 'regular'), fill=(71, 85, 105))
+    draw.text((left_x + 48, sp_box_y + 11), "OpenType `FontFeature.tabularFigures()` 타뷸라 넘버 & 4/8pt 그리드", font=get_font(12, 'bold'), fill=(0, 81, 255))
+    draw.text((left_x + 48, sp_box_y + 30), "• Tabular Numbers : 실시간 호가 및 시세 변동 시 숫자 폭의 떨림(Jitter)을 방지하는 고정폭 숫자 규격 적용", font=get_font(10, 'regular'), fill=(71, 85, 105))
+    draw.text((left_x + 48, sp_box_y + 47), "• Spatial System   : 4pt/8pt 그리드 (`space-4` ~ `space-32`) · 코너 라운딩 `r-8`, `r-12`, `r-16`, `r-24`, `r-full`", font=get_font(10, 'regular'), fill=(71, 85, 105))
+    draw.text((left_x + 48, sp_box_y + 64), "• Elevation Tokens : Level 1 (카드 Diffuse 2dp) · Level 2 (모달 8dp) · Level 3 (0.2s 음성 도크 FAB 16dp)", font=get_font(10, 'regular'), fill=(71, 85, 105))
     
     # =========================================================================
     # CARD B1 (Top Right): REAL APP UI COMPONENTS 01 (DASHBOARD & INPUTS)
@@ -2307,21 +2266,21 @@ def make_slide_07():
     draw.line([(right_x + 32, row2_y + 60), (right_x + right_w - 32, row2_y + 60)], fill=(241, 245, 249), width=1)
     
     # Component 5: Real Result Summary Card (_buildResultSummaryCard)
-    res_card_y = row2_y + 72
+    res_card_y = row2_y + 70
     res_card_w = right_w - 64
-    draw.rounded_rectangle([right_x + 32, res_card_y, right_x + 32 + res_card_w, res_card_y + 88], radius=14, fill=(240, 246, 255), outline=(0, 81, 255), width=1)
+    draw.rounded_rectangle([right_x + 32, res_card_y, right_x + 32 + res_card_w, res_card_y + 92], radius=14, fill=(240, 246, 255), outline=(0, 81, 255), width=1)
     
     draw.text((right_x + 50, res_card_y + 14), "실시간 가중평균 계산 결과 요약", font=get_font(12, 'bold'), fill=(0, 81, 255))
     draw.text((right_x + 50, res_card_y + 36), "예상 신규 평단 ₩ 61,667", font=get_num_font(18, 'black'), fill=(15, 23, 42))
     draw_pill_badge(draw, cx=right_x + 380, cy=res_card_y + 44, text="평단 방어율 +5.1%p 회복", font=get_num_font(10, 'bold'), theme='green', has_dot=True, pad_x=10, height=24, solid=True)
     
-    # Metrics columns inside Result Card
-    draw.text((right_x + 50, res_card_y + 66), "필요 예수금 : ₩ 2,750,000", font=get_font(11, 'bold'), fill=(71, 85, 105))
-    draw.text((right_x + 280, res_card_y + 66), "총 수량 : 150 주 (+50주 추가)", font=get_font(11, 'medium'), fill=(71, 85, 105))
-    draw.text((right_x + res_card_w - 30, res_card_y + 66), "본전 탈출 목표가: ₩61,667", font=get_font(11, 'bold'), fill=(0, 81, 255), anchor='ra')
+    # Metrics columns inside Result Card (generous 12px bottom margin)
+    draw.text((right_x + 50, res_card_y + 67), "필요 예수금 : ₩ 2,750,000", font=get_font(11, 'bold'), fill=(71, 85, 105))
+    draw.text((right_x + 280, res_card_y + 67), "총 수량 : 150 주 (+50주 추가)", font=get_font(11, 'medium'), fill=(71, 85, 105))
+    draw.text((right_x + res_card_w - 30, res_card_y + 67), "본전 탈출 목표가: ₩61,667", font=get_font(11, 'bold'), fill=(0, 81, 255), anchor='ra')
     
     # Component 6: Real CTA Action Buttons Row (_buildSimulatorHeroButton & Action Buttons)
-    cta_y = res_card_y + 100
+    cta_y = res_card_y + 102
     # Primary CTA Button
     draw.rounded_rectangle([right_x + 32, cta_y, right_x + 245, cta_y + 44], radius=12, fill=(0, 81, 255))
     draw.text((right_x + 138, cta_y + 22), "+ 물타기 계산 실행", font=get_font(12, 'bold'), fill=(255, 255, 255), anchor='mm')
@@ -2342,7 +2301,7 @@ def make_slide_07():
     draw.text((right_x + 670 + vip_w//2, cta_y + 30), "남은 시간 23:59:42", font=get_num_font(9.5, 'bold'), fill=(217, 119, 6), anchor='mm')
     
     # Component 7: Real AI Voice Dock Component Panel (AiVoicePanel)
-    v_dock_y = cta_y + 56
+    v_dock_y = cta_y + 54
     v_dock_w = right_w - 64
     draw.rounded_rectangle([right_x + 32, v_dock_y, right_x + 32 + v_dock_w, v_dock_y + 82], radius=14, fill=(245, 243, 255), outline=(221, 214, 254), width=1)
     
@@ -2357,14 +2316,14 @@ def make_slide_07():
         draw.rounded_rectangle([vw_x, v_dock_y + 41 - wh//2, vw_x + 4, v_dock_y + 41 + wh//2], radius=2, fill=(122, 34, 255))
         vw_x += 9
         
-    # Speech Bubble
+    # Speech Bubble (generous 12px bottom padding)
     sb_x = vw_x + 15
-    draw.rounded_rectangle([sb_x, v_dock_y + 16, sb_x + 310, v_dock_y + 66], radius=10, fill=(255, 255, 255), outline=(221, 214, 254), width=1)
-    draw.text((sb_x + 14, v_dock_y + 28), "\"삼성전자 55,000원에 50주\"", font=get_font(12, 'bold'), fill=(109, 40, 217))
-    draw.text((sb_x + 14, v_dock_y + 48), "0.2s 음성 STT 파싱 완료 → 3개 파라미터 자동 추출", font=get_font(9.5, 'regular'), fill=(100, 116, 139))
+    draw.rounded_rectangle([sb_x, v_dock_y + 12, sb_x + 310, v_dock_y + 70], radius=10, fill=(255, 255, 255), outline=(221, 214, 254), width=1)
+    draw.text((sb_x + 14, v_dock_y + 24), "\"삼성전자 55,000원에 50주\"", font=get_font(12, 'bold'), fill=(109, 40, 217))
+    draw.text((sb_x + 14, v_dock_y + 46), "0.2s 음성 STT 파싱 완료 → 3개 파라미터 자동 추출", font=get_font(9.5, 'regular'), fill=(100, 116, 139))
     
     # Auto Inject Button
-    draw.rounded_rectangle([sb_x + 325, v_dock_y + 24, right_x + 32 + v_dock_w - 20, v_dock_y + 58], radius=10, fill=(122, 34, 255))
+    draw.rounded_rectangle([sb_x + 325, v_dock_y + 20, right_x + 32 + v_dock_w - 20, v_dock_y + 62], radius=10, fill=(122, 34, 255))
     draw.text((sb_x + 325 + (right_x + 32 + v_dock_w - 20 - (sb_x + 325))//2, v_dock_y + 41), "계산기에 즉시 주입", font=get_font(11, 'bold'), fill=(255, 255, 255), anchor='mm')
     
     # Component 8: 6 Semantic Status Badges
@@ -2544,14 +2503,14 @@ def make_slide_08():
     ch_w = (rw - 56 - 36) // 4
     for idx, (label, val, sub_txt, c_col) in enumerate(chips):
         cx = rx + 28 + idx * (ch_w + 12)
-        draw.rounded_rectangle([cx, ch_y, cx + ch_w, ch_y + 90], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        draw.rounded_rectangle([cx, ch_y, cx + ch_w, ch_y + 92], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
         draw.text((cx + 14, ch_y + 12), label, font=get_font(10.5, 'bold'), fill=(100, 116, 139))
         draw.text((cx + 14, ch_y + 36), val, font=get_num_font(15, 'bold'), fill=c_col)
         draw.text((cx + 14, ch_y + 64), sub_txt, font=get_font(9.5, 'medium'), fill=(71, 85, 105))
         
     # Technical Architecture Audit Footer inside Card 3
     tf_y = ch_y + 106
-    draw.rounded_rectangle([rx + 28, tf_y, rx + rw - 28, c3_y + c3_h - 20], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+    draw.rounded_rectangle([rx + 28, tf_y, rx + rw - 28, c3_y + c3_h - 18], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
     draw.text((rx + 44, tf_y + 14), "온디바이스 음성 파싱 보안 & 무결성 검증 (Privacy Guarantee):", font=get_font(11, 'bold'), fill=(0, 81, 255))
     draw.text((rx + 44, tf_y + 34), "• 외부 클라우드 전송 0건 : 사용자 음성 및 주식 거래 데이터는 기기 외부로 절대 유출되지 않는 100% 로컬 연산", font=get_font(10.5, 'regular'), fill=(71, 85, 105))
     draw.text((rx + 44, tf_y + 52), "• 무지연 0ms 파라미터 주입 : 파싱된 수치가 플러터 상태 관리자(Provider)로 즉시 바인딩되어 계산기에 실시간 반영", font=get_font(10.5, 'regular'), fill=(71, 85, 105))
@@ -2775,11 +2734,11 @@ def make_slide_09():
     draw.line([(rx + 28, rep_y + 52), (rx + rw - 28, rep_y + 52)], fill=(241, 245, 249), width=1)
     
     # Solved Banner Box
-    sol_y = rep_y + 66
-    draw.rounded_rectangle([rx + 28, sol_y, rx + rw - 28, sol_y + 68], radius=12, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+    sol_y = rep_y + 64
+    draw.rounded_rectangle([rx + 28, sol_y, rx + rw - 28, sol_y + 72], radius=12, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
     draw_pill_badge(draw, left_x=rx + 48, cy=sol_y + 24, text="SOLVED 0.00% ERROR", font=get_font(9.5, 'bold'), theme='green', has_dot=True, dark_mode=False, pad_x=8, height=22)
     draw.text((rx + 235, sol_y + 14), "목표 탈출가 ₩70,000 도달을 위해 42.5주 필요", font=get_font(16, 'bold'), fill=(0, 81, 255))
-    draw.text((rx + 48, sol_y + 44), "100% 로컬 닫힌 형식 퀀트 알고리즘 연산 완료 (연산 오차 0.00% · 실시간 무손실 인계)", font=get_font(11, 'regular'), fill=(100, 116, 139))
+    draw.text((rx + 48, sol_y + 46), "100% 로컬 닫힌 형식 퀀트 알고리즘 연산 완료 (연산 오차 0.00% · 실시간 무손실 인계)", font=get_font(11, 'regular'), fill=(100, 116, 139))
     
     # 4 Metric Chips
     rep_chips = [
@@ -2788,13 +2747,13 @@ def make_slide_09():
         ("필요 수량 (Q_add)", "+42.5 주", (0, 180, 90)),
         ("필요 자금 (Total)", "₩ 2,762,500", (217, 119, 6))
     ]
-    rc_y = sol_y + 80
+    rc_y = sol_y + 84
     rc_w = (rw - 56 - 36) // 4
     for idx, (label, val, c_col) in enumerate(rep_chips):
         rc_x = rx + 28 + idx * (rc_w + 12)
-        draw.rounded_rectangle([rc_x, rc_y, rc_x + rc_w, rc_y + 64], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-        draw.text((rc_x + 14, rc_y + 12), label, font=get_font(10, 'bold'), fill=(100, 116, 139))
-        draw.text((rc_x + 14, rc_y + 34), val, font=get_num_font(14.5, 'bold'), fill=c_col)
+        draw.rounded_rectangle([rc_x, rc_y, rc_x + rc_w, rc_y + 68], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        draw.text((rc_x + 14, rc_y + 13), label, font=get_font(10, 'bold'), fill=(100, 116, 139))
+        draw.text((rc_x + 14, rc_y + 36), val, font=get_num_font(14.5, 'bold'), fill=c_col)
         
     # Dotted connector callout lines from Hero phone to left and right cards (Natural UI anchors)
     draw_dotted_callout(draw, p1=(px + 15, 360), p2=(lx + lw + 10, q1_y + 40), col=(0, 81, 255))
@@ -2920,9 +2879,9 @@ def make_slide_11():
     ]
     ry = card_y + 114
     for label, val, val_col in b_rows:
-        draw.rounded_rectangle([cx1 + 24, ry, cx1 + card_w - 24, ry + 44], radius=8, fill=(254, 242, 242), outline=(254, 202, 202), width=1)
-        draw.text((cx1 + 38, ry + 22), label, font=get_font(11.5, 'bold'), fill=(100, 116, 139), anchor='lm')
-        draw.text((cx1 + 210, ry + 22), val, font=get_font(12.5, 'bold'), fill=val_col, anchor='lm')
+        draw.rounded_rectangle([cx1 + 24, ry, cx1 + card_w - 24, ry + 46], radius=8, fill=(254, 242, 242), outline=(254, 202, 202), width=1)
+        draw.text((cx1 + 38, ry + 23), label, font=get_font(11.5, 'bold'), fill=(100, 116, 139), anchor='lm')
+        draw.text((cx1 + 210, ry + 23), val, font=get_font(12.5, 'bold'), fill=val_col, anchor='lm')
         ry += 52
         
     # Right Card: Smart Quant DCA Inversion (After)
@@ -2942,9 +2901,9 @@ def make_slide_11():
     ]
     ry = card_y + 114
     for label, val, val_col in a_rows:
-        draw.rounded_rectangle([cx2 + 24, ry, cx2 + card_w - 24, ry + 44], radius=8, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-        draw.text((cx2 + 38, ry + 22), label, font=get_font(11.5, 'bold'), fill=(100, 116, 139), anchor='lm')
-        draw.text((cx2 + 210, ry + 22), val, font=get_font(12.5, 'bold'), fill=val_col, anchor='lm')
+        draw.rounded_rectangle([cx2 + 24, ry, cx2 + card_w - 24, ry + 46], radius=8, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+        draw.text((cx2 + 38, ry + 23), label, font=get_font(11.5, 'bold'), fill=(100, 116, 139), anchor='lm')
+        draw.text((cx2 + 210, ry + 23), val, font=get_font(12.5, 'bold'), fill=val_col, anchor='lm')
         ry += 52
         
     # MIDDLE 4 TELEMETRY METRICS CARDS (y=570 to 740, h=170)
@@ -3093,12 +3052,12 @@ def make_slide_12():
         
         draw = ImageDraw.Draw(base)
     
-    # Left Bottom Spec Strip (x=100, y=865, w=660, h=115) - Dark Glass Card
-    draw.rounded_rectangle([100, 865, 760, 980], radius=14, fill=(17, 24, 39, 255), outline=(40, 53, 72), width=1)
-    draw_pill_badge(draw, left_x=120, cy=888, text="FLUTTER WEB PRODUCTION ENGINE", font=get_font(9, 'bold'), theme='blue', dark_mode=True, pad_x=8, height=20)
-    draw.text((120, 918), "• 60fps Native Web CanvasKit / SkWasm 렌더링 파이프라인 탑재", font=get_font(11, 'medium'), fill=(203, 213, 225))
-    draw.text((120, 938), "• 100% 온디바이스 퀀트 대수 역산 엔진 (외부 금융 API 무전송 보안)", font=get_font(11, 'medium'), fill=(203, 213, 225))
-    draw.text((120, 958), "• 반응형 모바일 뷰포트 시뮬레이터 & URL 딥링크 상태 복원 완벽 지원", font=get_font(11, 'medium'), fill=(56, 189, 248))
+    # Left Bottom Spec Strip (x=100, y=856, w=660, h=124) - Dark Glass Card
+    draw.rounded_rectangle([100, 856, 760, 980], radius=14, fill=(17, 24, 39, 255), outline=(40, 53, 72), width=1)
+    draw_pill_badge(draw, left_x=120, cy=880, text="FLUTTER WEB PRODUCTION ENGINE", font=get_font(9, 'bold'), theme='blue', dark_mode=True, pad_x=8, height=20)
+    draw.text((120, 908), "• 60fps Native Web CanvasKit / SkWasm 렌더링 파이프라인 탑재", font=get_font(11, 'medium'), fill=(203, 213, 225))
+    draw.text((120, 930), "• 100% 온디바이스 퀀트 대수 역산 엔진 (외부 금융 API 무전송 보안)", font=get_font(11, 'medium'), fill=(203, 213, 225))
+    draw.text((120, 952), "• 반응형 모바일 뷰포트 시뮬레이터 & URL 딥링크 상태 복원 완벽 지원", font=get_font(11, 'medium'), fill=(56, 189, 248))
     
     # ---------------------------------------------------------
     # RIGHT: MASTER LAUNCHER + 4 STEPS + TIP + QR CODE (x=800 to 1820, w=1020)
@@ -3259,9 +3218,9 @@ def make_slide_12():
     qr_x = rx + rw - qr_size - 28
     qr_y = qy + 24
     
-    draw.rounded_rectangle([qr_x - 8, qr_y - 6, qr_x + qr_size + 8, qr_y + qr_size + 24], radius=10, fill=(255, 255, 255))
+    draw.rounded_rectangle([qr_x - 8, qr_y - 6, qr_x + qr_size + 8, qr_y + qr_size + 28], radius=10, fill=(255, 255, 255))
     base.paste(qr_img, (qr_x, qr_y), qr_img)
-    draw.text((qr_x + qr_size // 2, qr_y + qr_size + 8), "SCAN FOR MOBILE TEST", font=get_font(8.5, 'bold'), fill=(11, 15, 23), anchor='mm')
+    draw.text((qr_x + qr_size // 2, qr_y + qr_size + 10), "SCAN FOR MOBILE TEST", font=get_font(8.5, 'bold'), fill=(11, 15, 23), anchor='mm')
     
     draw_slide_footer(draw, 12, dark_mode=True)
     base.save(f'{OUT_DIR}/slide_12.png')
