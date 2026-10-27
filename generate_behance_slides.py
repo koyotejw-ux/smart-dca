@@ -1273,6 +1273,60 @@ def make_slide_04():
     base.save(f'{OUT_DIR}/slide_04.png')
     print("SAVED diverse Slide 04 (Senior Enterprise IA & Architecture Notation) successfully!")
 
+# Helper: Draw Decision Diamond for Flowchart Diagram
+def draw_diamond(draw, cx, cy, w, h, fill, outline, width=2):
+    pts = [
+        (cx, cy - h // 2),
+        (cx + w // 2, cy),
+        (cx, cy + h // 2),
+        (cx - w // 2, cy)
+    ]
+    draw.polygon(pts, fill=fill, outline=outline)
+
+# Helper: Draw Storage Database Node for Flowchart Diagram
+def draw_database_node(draw, cx, cy, w, h, fill, outline, width=1):
+    x1 = cx - w // 2
+    x2 = cx + w // 2
+    y1 = cy - h // 2
+    y2 = cy + h // 2
+    draw.rounded_rectangle([x1, y1, x2, y2], radius=8, fill=fill, outline=outline, width=width)
+    draw.line([(x1 + 10, y1 + 5), (x2 - 10, y1 + 5)], fill=outline, width=1)
+    draw.line([(x1 + 10, y1 + 9), (x2 - 10, y1 + 9)], fill=outline, width=1)
+
+# Helper: Draw Dashed Line
+def draw_dashed_line(draw, p1, p2, col=(180, 83, 9), width=1, dash=5, gap=4):
+    import math
+    x1, y1 = p1
+    x2, y2 = p2
+    dx = x2 - x1
+    dy = y2 - y1
+    dist = math.hypot(dx, dy)
+    if dist == 0:
+        return
+    vx = dx / dist
+    vy = dy / dist
+    curr = 0
+    while curr < dist:
+        end = min(curr + dash, dist)
+        draw.line([(x1 + vx * curr, y1 + vy * curr), (x1 + vx * end, y1 + vy * end)], fill=col, width=width)
+        curr += dash + gap
+
+# Helper: Draw Dashed Arrow
+def draw_dashed_arrow(draw, p1, p2, col=(180, 83, 9), width=1, dash=5, gap=4, arrow_size=4):
+    draw_dashed_line(draw, p1, p2, col, width, dash, gap)
+    x1, y1 = p1
+    x2, y2 = p2
+    if x1 == x2:
+        if y2 > y1:
+            draw.polygon([(x2 - arrow_size, y2 - arrow_size * 1.5), (x2 + arrow_size, y2 - arrow_size * 1.5), (x2, y2)], fill=col)
+        else:
+            draw.polygon([(x2 - arrow_size, y2 + arrow_size * 1.5), (x2 + arrow_size, y2 + arrow_size * 1.5), (x2, y2)], fill=col)
+    elif y1 == y2:
+        if x2 > x1:
+            draw.polygon([(x2 - arrow_size * 1.5, y2 - arrow_size), (x2 - arrow_size * 1.5, y2 + arrow_size), (x2, y2)], fill=col)
+        else:
+            draw.polygon([(x2 + arrow_size * 1.5, y2 - arrow_size), (x2 + arrow_size * 1.5, y2 + arrow_size), (x2, y2)], fill=col)
+
 def make_slide_05():
     base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
     draw = ImageDraw.Draw(base)
@@ -1281,319 +1335,361 @@ def make_slide_05():
     draw_slide_header(
         draw, 
         slide_num=5, 
-        category_en="SERVICE UX FLOWCHART | USER JOURNEY & DECISION LOGIC", 
-        title_black="사용자 경험 중심으로 다듬어진 ", 
-        title_blue="5단계 서비스 UX 프로세스 플로우차트", 
-        subtitle_kr="하락장 속 페르소나의 심리적 불안을 해소하고 직관적 인터랙션으로 최적 플랜을 확정하는 서비스 기획 기반 유저 플로우"
+        category_en="SERVICE UX FLOWCHART DIAGRAM | END-TO-END INTERACTION", 
+        title_black="사용자 경험 중심으로 설계된 ", 
+        title_blue="엔드투엔드 서비스 UX 플로우 다이어그램", 
+        subtitle_kr="앱 진입·온보딩부터 3대 멀티모달 입력, 목표 역산 엔진, 리스크 검증 가드, 1-Tap MTS 체결까지 이어지는 전체 상호작용 다이어그램"
     )
     
-    # TOP-RIGHT: 서비스 UX 플로우차트 기호 범례 (Clean UX Flow Legend)
-    leg_x = 1180
+    # TOP-RIGHT: 서비스 UX 플로우 다이어그램 기호 범례 (Flowchart Diagram Legend)
+    leg_x = 1140
     leg_y = 66
-    leg_w = 640
+    leg_w = 680
     leg_h = 96
     draw.rounded_rectangle([leg_x, leg_y, leg_x + leg_w, leg_y + leg_h], radius=12, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-    draw_pill_badge(draw, left_x=leg_x + 16, cy=leg_y + 22, text="UX FLOW LEGEND", font=get_font(8.5, 'bold'), theme='blue', has_dot=True, pad_x=8, height=20)
-    draw.text((leg_x + 165, leg_y + 22), "서비스 UX 기획 기호 표기 범례", font=get_font(12, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw_pill_badge(draw, left_x=leg_x + 16, cy=leg_y + 22, text="DIAGRAM NOTATION", font=get_font(8.5, 'bold'), theme='blue', has_dot=True, pad_x=8, height=20)
+    draw.text((leg_x + 180, leg_y + 22), "서비스 UX 플로우차트 기호 표기 범례", font=get_font(11.5, 'bold'), fill=(15, 23, 42), anchor='lm')
     
-    # 4 Clean UX Flowchart Legend Elements
-    # 1. 화면/UI (Screen)
-    draw.rounded_rectangle([leg_x + 16, leg_y + 52, leg_x + 72, leg_y + 76], radius=5, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
-    draw.text((leg_x + 44, leg_y + 64), "Screen", font=get_font(8, 'bold'), fill=(15, 23, 42), anchor='mm')
-    draw.text((leg_x + 80, leg_y + 64), "화면 / UI", font=get_font(10, 'medium'), fill=(71, 85, 105), anchor='lm')
+    # 5 Diagram Legend Elements
+    # 1. 시작/종료 (Terminal)
+    draw.rounded_rectangle([leg_x + 16, leg_y + 52, leg_x + 76, leg_y + 76], radius=12, fill=(0, 82, 255))
+    draw.text((leg_x + 46, leg_y + 64), "Start/End", font=get_font(7.5, 'bold'), fill=(255, 255, 255), anchor='mm')
+    draw.text((leg_x + 84, leg_y + 64), "시작/종료", font=get_font(9.5, 'medium'), fill=(71, 85, 105), anchor='lm')
     
-    # 2. 사용자 행동 (Action)
-    draw.rounded_rectangle([leg_x + 155, leg_y + 52, leg_x + 215, leg_y + 76], radius=5, fill=(240, 246, 255), outline=(0, 82, 255), width=1)
-    draw.text((leg_x + 185, leg_y + 64), "Action", font=get_font(8, 'bold'), fill=(0, 82, 255), anchor='mm')
-    draw.text((leg_x + 224, leg_y + 64), "사용자 행동", font=get_font(10, 'medium'), fill=(71, 85, 105), anchor='lm')
+    # 2. 화면/접점 (Screen)
+    draw.rounded_rectangle([leg_x + 145, leg_y + 52, leg_x + 200, leg_y + 76], radius=5, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
+    draw.text((leg_x + 172, leg_y + 64), "Screen", font=get_font(7.5, 'bold'), fill=(15, 23, 42), anchor='mm')
+    draw.text((leg_x + 208, leg_y + 64), "화면/접점", font=get_font(9.5, 'medium'), fill=(71, 85, 105), anchor='lm')
     
-    # 3. UX 가드 분기 (Decision)
-    draw.rounded_rectangle([leg_x + 310, leg_y + 52, leg_x + 366, leg_y + 76], radius=5, fill=(254, 243, 199), outline=(217, 119, 6), width=1)
-    draw.text((leg_x + 338, leg_y + 64), "Guard", font=get_font(8, 'bold'), fill=(180, 83, 9), anchor='mm')
-    draw.text((leg_x + 375, leg_y + 64), "UX 가드 분기", font=get_font(10, 'medium'), fill=(71, 85, 105), anchor='lm')
+    # 3. 사용자 행동 (Action)
+    draw.rounded_rectangle([leg_x + 275, leg_y + 52, leg_x + 328, leg_y + 76], radius=5, fill=(240, 246, 255), outline=(0, 82, 255), width=1)
+    draw.text((leg_x + 301, leg_y + 64), "Action", font=get_font(7.5, 'bold'), fill=(0, 82, 255), anchor='mm')
+    draw.text((leg_x + 336, leg_y + 64), "사용자 행동", font=get_font(9.5, 'medium'), fill=(71, 85, 105), anchor='lm')
     
-    # 4. 시스템 피드백 (Feedback)
-    draw.rounded_rectangle([leg_x + 475, leg_y + 52, leg_x + 535, leg_y + 76], radius=5, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
-    draw.text((leg_x + 505, leg_y + 64), "Feedback", font=get_font(7.5, 'bold'), fill=(22, 101, 52), anchor='mm')
-    draw.text((leg_x + 544, leg_y + 64), "시스템 피드백", font=get_font(10, 'medium'), fill=(71, 85, 105), anchor='lm')
+    # 4. 판단 분기 (Decision Diamond)
+    draw_diamond(draw, cx=leg_x + 425, cy=leg_y + 64, w=38, h=24, fill=(254, 243, 199), outline=(217, 119, 6), width=1)
+    draw.text((leg_x + 425, leg_y + 64), "Decide", font=get_font(7, 'bold'), fill=(180, 83, 9), anchor='mm')
+    draw.text((leg_x + 452, leg_y + 64), "판단 분기", font=get_font(9.5, 'medium'), fill=(71, 85, 105), anchor='lm')
     
-    # 5 STAGE PROGRESSION GRID (cw = 328, cgap = 20)
+    # 5. 피드백/결과 (Feedback)
+    draw.rounded_rectangle([leg_x + 520, leg_y + 52, leg_x + 575, leg_y + 76], radius=5, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
+    draw.text((leg_x + 547, leg_y + 64), "Feedback", font=get_font(7, 'bold'), fill=(22, 101, 52), anchor='mm')
+    draw.text((leg_x + 583, leg_y + 64), "피드백/결과", font=get_font(9.5, 'medium'), fill=(71, 85, 105), anchor='lm')
+    
+    # 5 STAGE COLUMNS
     cw = 328
     cgap = 20
     cols_x = [100 + i * (cw + cgap) for i in range(5)]
     col_centers = [cx + cw // 2 for cx in cols_x]  # [264, 612, 960, 1308, 1656]
     
     stages_info = [
-        ("STAGE 01", "진입 & 자산 총괄 진단", "Launch & Portfolio Audit"),
-        ("STAGE 02", "3대 멀티모달 입력 도크", "Multi-modal Input Dock"),
-        ("STAGE 03", "목표 역산 & 퀀트 엔진", "Closed-Form Quant Engine"),
-        ("STAGE 04", "리스크 검증 & 안전선 가드", "65% Cash Safety Guard"),
-        ("STAGE 05", "1-Tap MTS 체결 & 보안", "1-Tap MTS & Privacy Sync")
+        ("STAGE 01", "진입 & 온보딩 플로우", "Launch & Onboarding"),
+        ("STAGE 02", "3대 멀티모달 입력 플로우", "Multi-Modal Input Dock"),
+        ("STAGE 03", "퀀트 목표 역산 엔진 플로우", "Goal Inversion Engine"),
+        ("STAGE 04", "리스크 검증 & 안전 가드", "65% Cash Safety Guard"),
+        ("STAGE 05", "1-Tap MTS 체결 & 보안", "1-Tap MTS & Local Sync")
     ]
     
-    # Stage Headers (y=184 to 238, h=54)
+    # Stage Headers (y=184 to 234, h=50)
     for i, (st_code, st_name, st_en) in enumerate(stages_info):
         cx = cols_x[i]
-        draw.rounded_rectangle([cx, 184, cx + cw, 238], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-        draw_pill_badge(draw, left_x=cx + 12, cy=202, text=st_code, font=get_font(8.5, 'bold'), theme='blue', pad_x=6, height=18)
-        draw.text((cx + 78, 202), st_name, font=get_font(11.5, 'bold'), fill=(15, 23, 42), anchor='lm')
-        draw.text((cx + 14, 224), st_en, font=get_font(9, 'medium'), fill=(100, 116, 139), anchor='lm')
+        draw.rounded_rectangle([cx, 184, cx + cw, 234], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+        draw_pill_badge(draw, left_x=cx + 10, cy=200, text=st_code, font=get_font(8, 'bold'), theme='blue', pad_x=5, height=18)
+        draw.text((cx + 74, 200), st_name, font=get_font(11, 'bold'), fill=(15, 23, 42), anchor='lm')
+        draw.text((cx + 12, 222), st_en, font=get_font(8.5, 'medium'), fill=(100, 116, 139), anchor='lm')
         
         # Inter-stage advance arrow
         if i < 4:
             arrow_start_x = cx + cw
             arrow_end_x = cols_x[i + 1]
-            draw_arrow(draw, (arrow_start_x + 2, 211), (arrow_end_x - 2, 211), col=(0, 82, 255), width=2, arrow_size=4)
+            draw_arrow(draw, (arrow_start_x + 2, 209), (arrow_end_x - 2, 209), col=(0, 82, 255), width=2, arrow_size=4)
             
-    # -------------------------------------------------------------
-    # 4-TIER SERVICE UX FLOWCHART MATRIX (y=256 to 626)
-    # -------------------------------------------------------------
+    # =============================================================
+    # DIAGRAM TRACK 1: STAGE 01 (Center: 264) - 진입 & 온보딩
+    # =============================================================
+    c0 = col_centers[0]
     
-    # Node Data for 5 Columns
-    stages_flow = [
-        {
-            # Stage 01
-            "screen": {
-                "title": "홈 대시보드 화면 로드",
-                "sub": "계좌 총 자산 · 보유 손실 종목 1초 조망",
-                "has_start": True
-            },
-            "action": {
-                "title": "손실 종목 카드 원터치 탭",
-                "line2": "긴급 대응 우선순위 종목 선택",
-                "line3": "현재가 P0 · 보유량 Q0 자동 바인딩"
-            },
-            "guard": {
-                "title": "종목 탐색 방식 분기",
-                "cond": "기존 보유 손실 종목 vs 신규 종목 검색",
-                "yes_text": "• 보유 종목 → 0ms 계좌 연동 즉시 진입",
-                "no_text": "• 신규 종목 → 실시간 종목 검색창 전개"
-            },
-            "feedback": {
-                "title": "파라미터 번들 0ms 연동 완료",
-                "sub": "현재 평단가·수량 무손실 인계 완료"
-            },
-            "handover": "연동 →",
-            "value": [
-                "• 1초 만에 계좌 손익 조망 및 우선순위 식별",
-                "• 분산된 계좌 정보를 한 화면에 일원화",
-                "• 인지 부하 0%로 즉각적인 후속 대응 유도"
-            ]
-        },
-        {
-            # Stage 02
-            "screen": {
-                "title": "0.2초 스마트 입력 시트 전개",
-                "sub": "엄지 조작 영역(Thumb Zone) 최적화 바텀시트",
-                "has_start": False
-            },
-            "action": {
-                "title": "3대 멀티모달 입력 채널 선택",
-                "line2": "상황 긴급도별 최적 채널 즉시 주입",
-                "line3": "AI 음성(0.2초) / 원터치 호가칩 / 텐키패드"
-            },
-            "guard": {
-                "title": "입력값 실시간 유효성 가드",
-                "cond": "결측치 방어 및 음수/오입력 차단",
-                "yes_text": "• 정상 수치 → 실시간 정규화 엔진 인계",
-                "no_text": "• 오입력 감지 → 햅틱 진동 피드백 및 재입력 유도"
-            },
-            "feedback": {
-                "title": "실시간 데이터 정규화 완료",
-                "sub": "호가 단위 자동 변환 및 엔진 전송 완료"
-            },
-            "handover": "연산 →",
-            "value": [
-                "• 입력 소요 시간 84% 단축 (< 1.5초 완결)",
-                "• 긴급 하락장에서 오타 및 조작 스트레스 0%",
-                "• 엄지 조작 최적화로 한 손 매매 경험 제공"
-            ]
-        },
-        {
-            # Stage 03
-            "screen": {
-                "title": "목표 역산 시뮬레이터 뷰",
-                "sub": "실시간 대수 역산 슬라이더 & 반응형 수치 뷰",
-                "has_start": False
-            },
-            "action": {
-                "title": "희망 탈출 목표 평단가 입력",
-                "line2": "목표 평단 주입 즉시 0ms 대수 역산 가동",
-                "line3": "필요 추가 매수 수량 및 소요 자금 즉각 산출"
-            },
-            "guard": {
-                "title": "목표가 실현 가능성 판정",
-                "cond": "추가매수가 < 목표가 < 현재평단 검증",
-                "yes_text": "• 유효 범위 → 오차 0.00% 즉시 시뮬레이션 승인",
-                "no_text": "• 비현실적 목표 → 햅틱 경고 및 도달 가능 평단 추천"
-            },
-            "feedback": {
-                "title": "차수별 분할 매수 분배 완료",
-                "sub": "1차~N차 분할 가중치 & 계좌 방어율 도출"
-            },
-            "handover": "검증 →",
-            "value": [
-                "• 시행착오 없는 0ms 즉각 목표 역산 도출",
-                "• 연산 오차율 0.00% 수학적 무결성 검증",
-                "• 탈출로 명확화로 투자자 심리적 안정 확보"
-            ]
-        },
-        {
-            # Stage 04
-            "screen": {
-                "title": "포트폴리오 리스크 시트 전개",
-                "sub": "추가 매수 후 계좌 쏠림도 & 잔여 예수금 조망",
-                "has_start": False
-            },
-            "action": {
-                "title": "하락 스트레스 테스트 검증",
-                "line2": "시장 -10% ~ -30% 급락 충격도 점검",
-                "line3": "차수별 계좌 방어율 및 최대 손실 한도 확인"
-            },
-            "guard": {
-                "title": "65% 예수금 안전선 판정",
-                "cond": "소요 예수금 > 가용 자산 65% ?",
-                "yes_text": "• 안전 범위 (≤65%) → 리스크 검증 승인 통과",
-                "no_text": "• 한도 초과 (>65%) → 자금 고갈 주의 & 분할 권고"
-            },
-            "feedback": {
-                "title": "안전 가이드 적합 최종 승인",
-                "sub": "객관적 리스크 한도 내 최적 매수안 확정"
-            },
-            "handover": "체결 →",
-            "value": [
-                "• 65% 예수금 고갈 사전 경보 안전 가드",
-                "• 감정적 뇌동매매 및 몰빵 과밀 원천 차단",
-                "• 객관적 리스크 한도 내 안전 마진 확보"
-            ]
-        },
-        {
-            # Stage 05
-            "screen": {
-                "title": "최종 플랜 확정 모달",
-                "sub": "MTS 원터치 인계 및 로컬 보안 저장 승인",
-                "has_start": False
-            },
-            "action": {
-                "title": "1-Tap MTS 주문 복사 실행",
-                "line2": "종목명·희망가·주문수량 클립보드 복사",
-                "line3": "증권사 앱 실행 즉시 원터치 붙여넣기 인계"
-            },
-            "guard": {
-                "title": "온디바이스 데이터 무결성 검증",
-                "cond": "외부 서버 전송 0건 & 로컬 암호화",
-                "yes_text": "• 무결성 승인 → SQLite AES-256 로컬 암호화",
-                "no_text": "• 네트워크 → 개인 금융 정보 외부 유출 원천 차단"
-            },
-            "feedback": {
-                "title": "MTS 전환 스낵바 및 체결 완료",
-                "sub": "Finish : 최적 플랜 체결 완료",
-                "is_finish": True
-            },
-            "handover": "",
-            "value": [
-                "• 0.1초 원터치 MTS 실매매 즉시 체결",
-                "• 외부 유출 및 트래킹 0건 온디바이스 무결성",
-                "• 전 과정 3.2초 완결로 골든타임 확보"
-            ]
-        }
+    # 1. Start Capsule (y=254 to 284)
+    draw.rounded_rectangle([c0 - 80, 254, c0 + 80, 284], radius=15, fill=(0, 82, 255))
+    draw.text((c0, 269), "Start : 앱 실행 (Launch)", font=get_font(9.5, 'bold'), fill=(255, 255, 255), anchor='mm')
+    draw_arrow(draw, (c0, 284), (c0, 304), col=(0, 82, 255), width=2, arrow_size=4)
+    
+    # 2. Screen: 스플래시 화면 로드 (y=304 to 348)
+    draw.rounded_rectangle([c0 - 135, 304, c0 + 135, 348], radius=6, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
+    draw_pill_badge(draw, left_x=c0 - 127, cy=318, text="SCREEN", font=get_font(7, 'bold'), theme='slate', pad_x=4, height=14)
+    draw.text((c0 - 66, 318), "스플래시 & 로컬 환경 동기화", font=get_font(9.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((c0, 336), "SQLite 로컬 DB 로드 및 환경설정 바인딩", font=get_font(8, 'medium'), fill=(100, 116, 139), anchor='mm')
+    draw_arrow(draw, (c0, 348), (c0, 368), col=(0, 82, 255), width=2, arrow_size=4)
+    
+    # 3. Decision Diamond: 최초 실행 여부? (cy=402, w=180, h=56)
+    draw_diamond(draw, cx=c0, cy=402, w=180, h=56, fill=(254, 243, 199), outline=(217, 119, 6), width=2)
+    draw.text((c0, 402), "최초 실행 여부?", font=get_font(10, 'bold'), fill=(180, 83, 9), anchor='mm')
+    
+    # Branch Yes (Right -> Onboarding guide loop)
+    draw_dashed_line(draw, (c0 + 90, 402), (cols_x[0] + cw - 16, 402), col=(244, 63, 94), width=1)
+    draw.text(((c0 + 90 + cols_x[0] + cw - 16) // 2, 392), "Yes (신규)", font=get_font(7.5, 'bold'), fill=(220, 38, 38), anchor='mm')
+    draw_dashed_arrow(draw, (cols_x[0] + cw - 16, 402), (cols_x[0] + cw - 16, 442), col=(244, 63, 94), width=1, arrow_size=3)
+    draw.rounded_rectangle([cols_x[0] + cw - 92, 442, cols_x[0] + cw - 6, 474], radius=5, fill=(254, 242, 242), outline=(244, 63, 94), width=1)
+    draw.text((cols_x[0] + cw - 49, 453), "온보딩 4단계 안내", font=get_font(7.5, 'bold'), fill=(153, 27, 27), anchor='mm')
+    draw.text((cols_x[0] + cw - 49, 465), "핵심 인터랙션 가이드", font=get_font(7, 'medium'), fill=(153, 27, 27), anchor='mm')
+    draw_dashed_line(draw, (cols_x[0] + cw - 49, 474), (cols_x[0] + cw - 49, 506), col=(244, 63, 94), width=1)
+    draw_dashed_arrow(draw, (cols_x[0] + cw - 49, 506), (c0 + 135, 506), col=(244, 63, 94), width=1, arrow_size=3)
+    
+    # Branch No (Straight down -> Home Dashboard)
+    draw_arrow(draw, (c0, 430), (c0, 484), col=(0, 82, 255), width=2, arrow_size=4)
+    draw.text((c0 - 32, 457), "No (기존)", font=get_font(8, 'bold'), fill=(0, 82, 255), anchor='mm')
+    
+    # 4. Screen: 홈 대시보드 화면 로드 (y=484 to 536)
+    draw.rounded_rectangle([c0 - 135, 484, c0 + 135, 536], radius=6, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
+    draw_pill_badge(draw, left_x=c0 - 127, cy=498, text="SCREEN", font=get_font(7, 'bold'), theme='slate', pad_x=4, height=14)
+    draw.text((c0 - 66, 498), "홈 대시보드 화면 로드", font=get_font(9.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((c0, 520), "총 자산 · 계좌 손익률 · 보유 종목 1초 조망", font=get_font(8, 'medium'), fill=(100, 116, 139), anchor='mm')
+    draw_arrow(draw, (c0, 536), (c0, 556), col=(0, 82, 255), width=2, arrow_size=4)
+    
+    # 5. Action: 손실 종목 카드 원터치 탭 (y=556 to 610)
+    draw.rounded_rectangle([c0 - 135, 556, c0 + 135, 610], radius=6, fill=(240, 246, 255), outline=(0, 82, 255), width=1)
+    draw_pill_badge(draw, left_x=c0 - 127, cy=571, text="ACTION", font=get_font(7, 'bold'), theme='blue', pad_x=4, height=14)
+    draw.text((c0 - 66, 571), "손실 종목 카드 원터치 탭", font=get_font(9.5, 'bold'), fill=(0, 82, 255), anchor='lm')
+    draw.text((c0, 594), "물타기 계산/역산 모드 진입 (P0·Q0 자동 주입)", font=get_font(8, 'medium'), fill=(71, 85, 105), anchor='mm')
+    draw_arrow(draw, (c0, 610), (c0, 630), col=(0, 82, 255), width=2, arrow_size=4)
+    
+    # 6. Feedback: 파라미터 번들 자동 연동 (y=630 to 678)
+    draw.rounded_rectangle([c0 - 135, 630, c0 + 135, 678], radius=6, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
+    draw_pill_badge(draw, left_x=c0 - 127, cy=644, text="FEEDBACK", font=get_font(7, 'bold'), theme='green', pad_x=4, height=14)
+    draw.text((c0 - 58, 644), "파라미터 번들 0ms 연동 완료", font=get_font(9.5, 'bold'), fill=(22, 101, 52), anchor='lm')
+    draw.text((c0, 664), "현재가 P0 · 보유량 Q0 0ms 무손실 즉시 인계", font=get_font(8, 'medium'), fill=(21, 128, 61), anchor='mm')
+    
+    # Inter-Stage Handover Arrow to Stage 02
+    draw_arrow(draw, (cols_x[0] + cw, 654), (cols_x[1], 654), col=(0, 82, 255), width=2, arrow_size=4)
+    draw.text(((cols_x[0] + cw + cols_x[1]) // 2, 642), "연동 →", font=get_font(8, 'bold'), fill=(0, 82, 255), anchor='mm')
+    
+    # =============================================================
+    # DIAGRAM TRACK 2: STAGE 02 (Center: 612) - 3대 멀티모달 입력
+    # =============================================================
+    c1 = col_centers[1]
+    
+    # 1. Screen: 바텀시트 전개 (y=254 to 302)
+    draw.rounded_rectangle([c1 - 135, 254, c1 + 135, 302], radius=6, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
+    draw_pill_badge(draw, left_x=c1 - 127, cy=268, text="SCREEN", font=get_font(7, 'bold'), theme='slate', pad_x=4, height=14)
+    draw.text((c1 - 66, 268), "0.2초 스마트 입력 시트 전개", font=get_font(9.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((c1, 288), "엄지 조작 영역(Thumb Zone) 최적화 바텀시트", font=get_font(8, 'medium'), fill=(100, 116, 139), anchor='mm')
+    draw_arrow(draw, (c1, 302), (c1, 322), col=(0, 82, 255), width=2, arrow_size=4)
+    
+    # 2. Decision Container: 3대 멀티모달 입력 채널 (y=322 to 438, h=116)
+    draw.rounded_rectangle([c1 - 135, 322, c1 + 135, 438], radius=8, fill=(250, 252, 255), outline=(191, 219, 254), width=1)
+    draw_pill_badge(draw, left_x=c1 - 127, cy=336, text="DECISION", font=get_font(7, 'bold'), theme='amber', pad_x=4, height=14)
+    draw.text((c1 - 60, 336), "사용자 긴급도별 3대 입력 채널 선택", font=get_font(9, 'bold'), fill=(180, 83, 9), anchor='lm')
+    
+    # 3 Parallel Channels Inside
+    draw.rounded_rectangle([c1 - 125, 350, c1 + 125, 374], radius=4, fill=(255, 255, 255), outline=(191, 219, 254), width=1)
+    draw_pill_badge(draw, left_x=c1 - 120, cy=362, text="음성", font=get_font(7, 'bold'), theme='blue', pad_x=3, height=13)
+    draw.text((c1 - 80, 362), "AI 음성 STT '15,000원에 100주' 0.2초 발화", font=get_font(8, 'bold'), fill=(15, 23, 42), anchor='lm')
+    
+    draw.rounded_rectangle([c1 - 125, 378, c1 + 125, 402], radius=4, fill=(255, 255, 255), outline=(191, 219, 254), width=1)
+    draw_pill_badge(draw, left_x=c1 - 120, cy=390, text="호가칩", font=get_font(7, 'bold'), theme='cyan', pad_x=3, height=13)
+    draw.text((c1 - 76, 390), "원터치 호가 프리셋(±5%, ±10%) 주입", font=get_font(8, 'bold'), fill=(15, 23, 42), anchor='lm')
+    
+    draw.rounded_rectangle([c1 - 125, 406, c1 + 125, 430], radius=4, fill=(255, 255, 255), outline=(191, 219, 254), width=1)
+    draw_pill_badge(draw, left_x=c1 - 120, cy=418, text="키패드", font=get_font(7, 'bold'), theme='slate', pad_x=3, height=13)
+    draw.text((c1 - 76, 418), "정밀 텐키패드 목표 평단가 직접 입력", font=get_font(8, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw_arrow(draw, (c1, 438), (c1, 458), col=(0, 82, 255), width=2, arrow_size=4)
+    
+    # 3. Action: 파라미터 확정 주입 (y=458 to 510)
+    draw.rounded_rectangle([c1 - 135, 458, c1 + 135, 510], radius=6, fill=(240, 246, 255), outline=(0, 82, 255), width=1)
+    draw_pill_badge(draw, left_x=c1 - 127, cy=472, text="ACTION", font=get_font(7, 'bold'), theme='blue', pad_x=4, height=14)
+    draw.text((c1 - 66, 472), "추가 매수가 & 목표단가 주입", font=get_font(9.5, 'bold'), fill=(0, 82, 255), anchor='lm')
+    draw.text((c1, 495), "1-Tap 또는 발화 종료 즉시 입력 번들 완성", font=get_font(8, 'medium'), fill=(71, 85, 105), anchor='mm')
+    draw_arrow(draw, (c1, 510), (c1, 530), col=(0, 82, 255), width=2, arrow_size=4)
+    
+    # 4. Diamond Decision Node: 입력값 유효성 검증? (cy=560, w=200, h=60)
+    draw_diamond(draw, cx=c1, cy=560, w=200, h=60, fill=(254, 243, 199), outline=(217, 119, 6), width=2)
+    draw.text((c1, 553), "입력값 유효성 검증?", font=get_font(9.5, 'bold'), fill=(180, 83, 9), anchor='mm')
+    draw.text((c1, 568), "결측치 & 음수/0 방어", font=get_font(7.5, 'medium'), fill=(146, 64, 14), anchor='mm')
+    
+    # Branch No (Left loop: 햅틱 진동 경고)
+    draw_dashed_line(draw, (c1 - 100, 560), (cols_x[1] + 16, 560), col=(244, 63, 94), width=1)
+    draw_dashed_arrow(draw, (cols_x[1] + 16, 560), (cols_x[1] + 16, 510), col=(244, 63, 94), width=1, arrow_size=3)
+    draw.rounded_rectangle([cols_x[1] + 4, 480, cols_x[1] + 80, 510], radius=5, fill=(254, 242, 242), outline=(244, 63, 94), width=1)
+    draw.text((cols_x[1] + 42, 495), "햅틱 진동 피드백", font=get_font(7.5, 'bold'), fill=(153, 27, 27), anchor='mm')
+    draw_dashed_line(draw, (cols_x[1] + 42, 480), (cols_x[1] + 42, 465), col=(244, 63, 94), width=1)
+    draw_dashed_arrow(draw, (cols_x[1] + 42, 465), (c1 - 135, 465), col=(244, 63, 94), width=1, arrow_size=3)
+    
+    # Branch Yes (Down)
+    draw_arrow(draw, (c1, 590), (c1, 630), col=(0, 82, 255), width=2, arrow_size=4)
+    draw.text((c1 + 32, 610), "Yes (정상)", font=get_font(8, 'bold'), fill=(5, 150, 105), anchor='mm')
+    
+    # 5. Feedback: 데이터 정규화 완료 (y=630 to 678)
+    draw.rounded_rectangle([c1 - 135, 630, c1 + 135, 678], radius=6, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
+    draw_pill_badge(draw, left_x=c1 - 127, cy=644, text="FEEDBACK", font=get_font(7, 'bold'), theme='green', pad_x=4, height=14)
+    draw.text((c1 - 58, 644), "실시간 데이터 정규화 완료", font=get_font(9.5, 'bold'), fill=(22, 101, 52), anchor='lm')
+    draw.text((c1, 664), "단위 자동 변환 및 퀀트 엔진 즉시 전송", font=get_font(8, 'medium'), fill=(21, 128, 61), anchor='mm')
+    
+    # Inter-Stage Handover Arrow to Stage 03
+    draw_arrow(draw, (cols_x[1] + cw, 654), (cols_x[2], 654), col=(0, 82, 255), width=2, arrow_size=4)
+    draw.text(((cols_x[1] + cw + cols_x[2]) // 2, 642), "연산 →", font=get_font(8, 'bold'), fill=(0, 82, 255), anchor='mm')
+    
+    # =============================================================
+    # DIAGRAM TRACK 3: STAGE 03 (Center: 960) - 목표 역산 & 퀀트 엔진
+    # =============================================================
+    c2 = col_centers[2]
+    
+    # 1. Quant Engine Process (y=254 to 302)
+    draw.rounded_rectangle([c2 - 135, 254, c2 + 135, 302], radius=6, fill=(239, 246, 255), outline=(0, 82, 255), width=2)
+    draw_pill_badge(draw, left_x=c2 - 127, cy=268, text="QUANT", font=get_font(7, 'bold'), theme='blue', pad_x=4, height=14)
+    draw.text((c2 - 68, 268), "폐쇄형 퀀트 역산 가동 (Zero-Latency)", font=get_font(9.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((c2, 288), "단일 수식 대수 전개로 필요 수량 0ms 즉시 산출", font=get_font(8, 'medium'), fill=(0, 82, 255), anchor='mm')
+    draw_arrow(draw, (c2, 302), (c2, 324), col=(0, 82, 255), width=2, arrow_size=4)
+    
+    # 2. Decision Diamond: 목표가 실현 가능 범위? (cy=358, w=220, h=66)
+    draw_diamond(draw, cx=c2, cy=358, w=220, h=66, fill=(254, 243, 199), outline=(217, 119, 6), width=2)
+    draw.text((c2, 350), "목표가 실현 가능 범위?", font=get_font(9.5, 'bold'), fill=(180, 83, 9), anchor='mm')
+    draw.text((c2, 366), "추가매수가 < 목표가 < 현재평단", font=get_font(7.5, 'medium'), fill=(146, 64, 14), anchor='mm')
+    
+    # Branch No (Left loop: 비정상 목표 경고)
+    draw_dashed_line(draw, (c2 - 110, 358), (cols_x[2] + 16, 358), col=(244, 63, 94), width=1)
+    draw_dashed_arrow(draw, (cols_x[2] + 16, 358), (cols_x[2] + 16, 396), col=(244, 63, 94), width=1, arrow_size=3)
+    draw.rounded_rectangle([cols_x[2] + 4, 396, cols_x[2] + 82, 426], radius=5, fill=(254, 242, 242), outline=(244, 63, 94), width=1)
+    draw.text((cols_x[2] + 43, 406), "비정상 목표 경고", font=get_font(7.5, 'bold'), fill=(153, 27, 27), anchor='mm')
+    draw.text((cols_x[2] + 43, 417), "대안 평단 자동 제안", font=get_font(7, 'medium'), fill=(153, 27, 27), anchor='mm')
+    draw_dashed_line(draw, (cols_x[2] + 43, 426), (cols_x[2] + 43, 452), col=(244, 63, 94), width=1)
+    draw_dashed_arrow(draw, (cols_x[2] + 43, 452), (cols_x[1] + cw - 10, 452), col=(244, 63, 94), width=1, arrow_size=3)
+    draw.text(((cols_x[2] + 43 + cols_x[1] + cw) // 2, 442), "재설정", font=get_font(7, 'bold'), fill=(220, 38, 38), anchor='mm')
+    
+    # Branch Yes (Down)
+    draw_arrow(draw, (c2, 391), (c2, 436), col=(0, 82, 255), width=2, arrow_size=4)
+    draw.text((c2 + 32, 414), "Yes (통과)", font=get_font(8, 'bold'), fill=(0, 82, 255), anchor='mm')
+    
+    # 3. Screen: 역산 결과 시뮬레이션 뷰 (y=436 to 488)
+    draw.rounded_rectangle([c2 - 135, 436, c2 + 135, 488], radius=6, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
+    draw_pill_badge(draw, left_x=c2 - 127, cy=450, text="SCREEN", font=get_font(7, 'bold'), theme='slate', pad_x=4, height=14)
+    draw.text((c2 - 66, 450), "목표 역산 시뮬레이터 뷰", font=get_font(9.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((c2, 472), "필요 매수 수량 & 소요 자금 오차 0.00% 산출", font=get_font(8, 'medium'), fill=(100, 116, 139), anchor='mm')
+    draw_arrow(draw, (c2, 488), (c2, 510), col=(0, 82, 255), width=2, arrow_size=4)
+    
+    # 4. Action: 차수별 분할 매수 비중 조절 (y=510 to 562)
+    draw.rounded_rectangle([c2 - 135, 510, c2 + 135, 562], radius=6, fill=(240, 246, 255), outline=(0, 82, 255), width=1)
+    draw_pill_badge(draw, left_x=c2 - 127, cy=524, text="ACTION", font=get_font(7, 'bold'), theme='blue', pad_x=4, height=14)
+    draw.text((c2 - 66, 524), "차수별 분할 매수 비중 조절", font=get_font(9.5, 'bold'), fill=(0, 82, 255), anchor='lm')
+    draw.text((c2, 547), "1차~N차 분할 가중치 & 목표 평단가 시뮬레이션", font=get_font(8, 'medium'), fill=(71, 85, 105), anchor='mm')
+    draw_arrow(draw, (c2, 562), (c2, 584), col=(0, 82, 255), width=2, arrow_size=4)
+    
+    # 5. Feedback: 차수별 분할 매수 시나리오 확정 (y=584 to 632)
+    draw.rounded_rectangle([c2 - 135, 584, c2 + 135, 632], radius=6, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
+    draw_pill_badge(draw, left_x=c2 - 127, cy=598, text="FEEDBACK", font=get_font(7, 'bold'), theme='green', pad_x=4, height=14)
+    draw.text((c2 - 58, 598), "차수별 분할 매수 분배 완료", font=get_font(9.5, 'bold'), fill=(22, 101, 52), anchor='lm')
+    draw.text((c2, 618), "1차~N차 분할 가중치 & 계좌 방어율 자동 매핑", font=get_font(8, 'medium'), fill=(21, 128, 61), anchor='mm')
+    
+    # Inter-Stage Handover Arrow to Stage 04
+    draw_arrow(draw, (cols_x[2] + cw, 608), (cols_x[3], 608), col=(0, 82, 255), width=2, arrow_size=4)
+    draw.text(((cols_x[2] + cw + cols_x[3]) // 2, 596), "검증 →", font=get_font(8, 'bold'), fill=(0, 82, 255), anchor='mm')
+    
+    # =============================================================
+    # DIAGRAM TRACK 4: STAGE 04 (Center: 1308) - 리스크 검증 & 안전선 가드
+    # =============================================================
+    c3 = col_centers[3]
+    
+    # 1. Screen: 포트폴리오 리스크 시뮬레이션 (y=254 to 302)
+    draw.rounded_rectangle([c3 - 135, 254, c3 + 135, 302], radius=6, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
+    draw_pill_badge(draw, left_x=c3 - 127, cy=268, text="SCREEN", font=get_font(7, 'bold'), theme='slate', pad_x=4, height=14)
+    draw.text((c3 - 66, 268), "포트폴리오 리스크 시뮬레이션", font=get_font(9.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((c3, 288), "추가 매수 후 단일 종목 계좌 쏠림도 산출", font=get_font(8, 'medium'), fill=(100, 116, 139), anchor='mm')
+    draw_arrow(draw, (c3, 302), (c3, 324), col=(0, 82, 255), width=2, arrow_size=4)
+    
+    # 2. Decision Diamond: 65% 예수금 안전선 판정 (cy=358, w=220, h=66)
+    draw_diamond(draw, cx=c3, cy=358, w=220, h=66, fill=(254, 243, 199), outline=(217, 119, 6), width=2)
+    draw.text((c3, 350), "예수금 안전선 판정 (Risk Guard)", font=get_font(9.5, 'bold'), fill=(180, 83, 9), anchor='mm')
+    draw.text((c3, 366), "소요 예수금 > 가용 자산 65% ?", font=get_font(7.5, 'medium'), fill=(146, 64, 14), anchor='mm')
+    
+    # Branch Yes (Left warning: 자금 고갈 주의)
+    draw_dashed_line(draw, (c3 - 110, 358), (cols_x[3] + 16, 358), col=(244, 63, 94), width=1)
+    draw_dashed_arrow(draw, (cols_x[3] + 16, 358), (cols_x[3] + 16, 396), col=(244, 63, 94), width=1, arrow_size=3)
+    draw.rounded_rectangle([cols_x[3] + 4, 396, cols_x[3] + 82, 426], radius=5, fill=(254, 242, 242), outline=(244, 63, 94), width=1)
+    draw.text((cols_x[3] + 43, 406), "자금 고갈 주의", font=get_font(7.5, 'bold'), fill=(153, 27, 27), anchor='mm')
+    draw.text((cols_x[3] + 43, 417), "분할 차수 확대 권고", font=get_font(7, 'medium'), fill=(153, 27, 27), anchor='mm')
+    draw_dashed_line(draw, (cols_x[3] + 43, 426), (cols_x[3] + 43, 452), col=(244, 63, 94), width=1)
+    draw_dashed_arrow(draw, (cols_x[3] + 43, 452), (c3 - 135, 452), col=(244, 63, 94), width=1, arrow_size=3)
+    
+    # Branch No (Down: Safe)
+    draw_arrow(draw, (c3, 391), (c3, 436), col=(0, 82, 255), width=2, arrow_size=4)
+    draw.text((c3 + 32, 414), "No (안전)", font=get_font(8, 'bold'), fill=(5, 150, 105), anchor='mm')
+    
+    # 3. Action: 하락 스트레스 테스트 검증 (y=436 to 488)
+    draw.rounded_rectangle([c3 - 135, 436, c3 + 135, 488], radius=6, fill=(240, 246, 255), outline=(0, 82, 255), width=1)
+    draw_pill_badge(draw, left_x=c3 - 127, cy=450, text="ACTION", font=get_font(7, 'bold'), theme='blue', pad_x=4, height=14)
+    draw.text((c3 - 66, 450), "하락 스트레스 테스트 검증", font=get_font(9.5, 'bold'), fill=(0, 82, 255), anchor='lm')
+    draw.text((c3, 472), "시장 -10%~-30% 급락 시 계좌 충격도 점검", font=get_font(8, 'medium'), fill=(71, 85, 105), anchor='mm')
+    draw_arrow(draw, (c3, 488), (c3, 510), col=(0, 82, 255), width=2, arrow_size=4)
+    
+    # 4. Decision Diamond: 리스크 허용 한도 승인? (cy=542, w=200, h=60)
+    draw_diamond(draw, cx=c3, cy=542, w=200, h=60, fill=(254, 243, 199), outline=(217, 119, 6), width=2)
+    draw.text((c3, 535), "리스크 허용 한도 승인?", font=get_font(9.5, 'bold'), fill=(180, 83, 9), anchor='mm')
+    draw.text((c3, 550), "객관적 방어선 충족 판정", font=get_font(7.5, 'medium'), fill=(146, 64, 14), anchor='mm')
+    draw_arrow(draw, (c3, 572), (c3, 604), col=(0, 82, 255), width=2, arrow_size=4)
+    draw.text((c3 + 32, 588), "승인 완료", font=get_font(8, 'bold'), fill=(0, 82, 255), anchor='mm')
+    
+    # 5. Feedback: 안전 가이드 적합 승인 완료 (y=604 to 652)
+    draw.rounded_rectangle([c3 - 135, 604, c3 + 135, 652], radius=6, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
+    draw_pill_badge(draw, left_x=c3 - 127, cy=618, text="FEEDBACK", font=get_font(7, 'bold'), theme='green', pad_x=4, height=14)
+    draw.text((c3 - 58, 618), "안전 가이드 적합 승인 완료", font=get_font(9.5, 'bold'), fill=(22, 101, 52), anchor='lm')
+    draw.text((c3, 638), "리스크 검증 완료 및 최종 분할 매수안 확정", font=get_font(8, 'medium'), fill=(21, 128, 61), anchor='mm')
+    
+    # Inter-Stage Handover Arrow to Stage 05
+    draw_arrow(draw, (cols_x[3] + cw, 628), (cols_x[4], 628), col=(0, 82, 255), width=2, arrow_size=4)
+    draw.text(((cols_x[3] + cw + cols_x[4]) // 2, 616), "승인 →", font=get_font(8, 'bold'), fill=(0, 82, 255), anchor='mm')
+    
+    # =============================================================
+    # DIAGRAM TRACK 5: STAGE 05 (Center: 1656) - 1-Tap MTS 체결 & 로컬 보안
+    # =============================================================
+    c4 = col_centers[4]
+    
+    # 1. Action: 1-Tap 주문 복사 (y=254 to 302)
+    draw.rounded_rectangle([c4 - 135, 254, c4 + 135, 302], radius=6, fill=(239, 246, 255), outline=(0, 82, 255), width=2)
+    draw_pill_badge(draw, left_x=c4 - 127, cy=268, text="ACTION", font=get_font(7, 'bold'), theme='blue', pad_x=4, height=14)
+    draw.text((c4 - 66, 268), "1-Tap MTS 주문 복사 (클립보드)", font=get_font(9.5, 'bold'), fill=(0, 82, 255), anchor='lm')
+    draw.text((c4, 288), "종목명, 희망가, 주문 수량 클립보드 원터치 복사", font=get_font(8, 'medium'), fill=(15, 23, 42), anchor='mm')
+    draw_arrow(draw, (c4, 302), (c4, 324), col=(0, 82, 255), width=2, arrow_size=4)
+    
+    # 2. Feedback: MTS 전환 스낵바 (y=324 to 372)
+    draw.rounded_rectangle([c4 - 135, 324, c4 + 135, 372], radius=6, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
+    draw_pill_badge(draw, left_x=c4 - 127, cy=338, text="FEEDBACK", font=get_font(7, 'bold'), theme='green', pad_x=4, height=14)
+    draw.text((c4 - 58, 338), "MTS 전환 스낵바 인터랙션", font=get_font(9.5, 'bold'), fill=(22, 101, 52), anchor='lm')
+    draw.text((c4, 358), "증권사 앱 실행 즉시 원터치 붙여넣기 인계", font=get_font(8, 'medium'), fill=(21, 128, 61), anchor='mm')
+    draw_arrow(draw, (c4, 372), (c4, 396), col=(0, 82, 255), width=2, arrow_size=4)
+    
+    # 3. Decision Diamond: 온디바이스 데이터 무결성 검증 (cy=430, w=220, h=66)
+    draw_diamond(draw, cx=c4, cy=430, w=220, h=66, fill=(254, 243, 199), outline=(217, 119, 6), width=2)
+    draw.text((c4, 422), "온디바이스 데이터 무결성 검증?", font=get_font(9, 'bold'), fill=(180, 83, 9), anchor='mm')
+    draw.text((c4, 438), "외부 서버 전송 0건 & 로컬 암호화", font=get_font(7.5, 'medium'), fill=(146, 64, 14), anchor='mm')
+    draw_arrow(draw, (c4, 463), (c4, 506), col=(0, 82, 255), width=2, arrow_size=4)
+    draw.text((c4 + 32, 484), "100% 무결", font=get_font(8, 'bold'), fill=(5, 150, 105), anchor='mm')
+    
+    # 4. Storage Node (y=506 to 558)
+    draw_database_node(draw, cx=c4, cy=532, w=270, h=52, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
+    draw_pill_badge(draw, left_x=c4 - 127, cy=524, text="STORAGE", font=get_font(7, 'bold'), theme='slate', pad_x=4, height=14)
+    draw.text((c4 - 60, 524), "100% 온디바이스 로컬 암호화 저장", font=get_font(9.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((c4, 544), "외부 서버 전송 0건, 개인 금융 데이터 완전 보호", font=get_font(8, 'medium'), fill=(100, 116, 139), anchor='mm')
+    draw_arrow(draw, (c4, 558), (c4, 592), col=(0, 82, 255), width=2, arrow_size=4)
+    
+    # 5. Finish Terminal Capsule (y=592 to 628)
+    draw.rounded_rectangle([c4 - 95, 592, c4 + 95, 628], radius=18, fill=(0, 82, 255))
+    draw.text((c4, 610), "Finish : 최적 플랜 체결 완료", font=get_font(10.5, 'bold'), fill=(255, 255, 255), anchor='mm')
+    
+    # -------------------------------------------------------------
+    # STAGE UX VALUE PODS (y=696 to 768, h=72)
+    # -------------------------------------------------------------
+    stage_values = [
+        ("STAGE 01 VALUE", "1초 자산 조망 · 인지 부하 0%", "분산된 계좌 정보를 한 화면에 일원화", "blue"),
+        ("STAGE 02 VALUE", "입력 소요 시간 84% 단축 (<1.5초)", "긴급 하락장에서 오타 및 조작 스트레스 0%", "cyan"),
+        ("STAGE 03 VALUE", "0ms 즉각 역산 · 오차율 0.00%", "시행착오 없는 수학적 폐쇄형 완결", "blue"),
+        ("STAGE 04 VALUE", "65% 예수금 방어선 · 뇌동매매 차단", "객관적 리스크 한도 내 안전 마진 확보", "amber"),
+        ("STAGE 05 VALUE", "0.1초 원터치 체결 · 100% 로컬 보안", "외부 유출 0건 온디바이스 완전 무결성", "green")
     ]
-    
-    # 4 Y-coordinates for the tiers
-    y_screen_top = 256
-    y_screen_h = 68
-    y_screen_bot = y_screen_top + y_screen_h  # 324
-    
-    y_action_top = 340
-    y_action_h = 82
-    y_action_bot = y_action_top + y_action_h  # 422
-    
-    y_guard_top = 438
-    y_guard_h = 86
-    y_guard_bot = y_guard_top + y_guard_h    # 524
-    
-    y_feedback_top = 540
-    y_feedback_h = 68
-    y_feedback_bot = y_feedback_top + y_feedback_h  # 608
-    
-    y_value_top = 626
-    y_value_h = 138
-    y_value_bot = y_value_top + y_value_h    # 764
-    
-    for i, st in enumerate(stages_flow):
-        cx = cols_x[i]
-        cc = col_centers[i]
-        
-        # ---------------------------------------------------------
-        # TIER 1: SCREEN (y=256 to 324)
-        # ---------------------------------------------------------
-        draw.rounded_rectangle([cx, y_screen_top, cx + cw, y_screen_bot], radius=8, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
-        draw_pill_badge(draw, left_x=cx + 12, cy=y_screen_top + 16, text="SCREEN", font=get_font(7.5, 'bold'), theme='slate', pad_x=4, height=16)
-        if st["screen"].get("has_start"):
-            draw_pill_badge(draw, left_x=cx + 70, cy=y_screen_top + 16, text="Start : 앱 실행", font=get_font(7.5, 'bold'), theme='blue', pad_x=5, height=16)
-        draw.text((cx + 12, y_screen_top + 38), st["screen"]["title"], font=get_font(10.5, 'bold'), fill=(15, 23, 42), anchor='lm')
-        draw.text((cx + 12, y_screen_top + 54), st["screen"]["sub"], font=get_font(8.5, 'medium'), fill=(100, 116, 139), anchor='lm')
-        
-        # Down Arrow from Tier 1 to Tier 2
-        draw_arrow(draw, (cc, y_screen_bot), (cc, y_action_top), col=(0, 82, 255), width=2, arrow_size=4)
-        
-        # Horizontal journey arrow between Tier 1 screens
-        if i < 4:
-            draw_arrow(draw, (cx + cw + 2, y_screen_top + 34), (cols_x[i+1] - 2, y_screen_top + 34), col=(148, 163, 184), width=1, arrow_size=3)
-            
-        # ---------------------------------------------------------
-        # TIER 2: ACTION (y=340 to 422)
-        # ---------------------------------------------------------
-        draw.rounded_rectangle([cx, y_action_top, cx + cw, y_action_bot], radius=8, fill=(240, 246, 255), outline=(0, 82, 255), width=1)
-        draw_pill_badge(draw, left_x=cx + 12, cy=y_action_top + 15, text="ACTION", font=get_font(7.5, 'bold'), theme='blue', pad_x=4, height=16)
-        draw.text((cx + 66, y_action_top + 15), st["action"]["title"], font=get_font(10.5, 'bold'), fill=(0, 82, 255), anchor='lm')
-        draw.text((cx + 12, y_action_top + 38), st["action"]["line2"], font=get_font(9, 'bold'), fill=(15, 23, 42), anchor='lm')
-        draw.text((cx + 12, y_action_top + 58), st["action"]["line3"], font=get_font(8.5, 'medium'), fill=(71, 85, 105), anchor='lm')
-        
-        # Down Arrow from Tier 2 to Tier 3
-        draw_arrow(draw, (cc, y_action_bot), (cc, y_guard_top), col=(0, 82, 255), width=2, arrow_size=4)
-        
-        # ---------------------------------------------------------
-        # TIER 3: UX GUARD & DECISION (y=438 to 524)
-        # ---------------------------------------------------------
-        draw.rounded_rectangle([cx, y_guard_top, cx + cw, y_guard_bot], radius=8, fill=(255, 251, 235), outline=(217, 119, 6), width=1)
-        draw_pill_badge(draw, left_x=cx + 12, cy=y_guard_top + 15, text="UX GUARD", font=get_font(7.5, 'bold'), theme='amber', pad_x=4, height=16)
-        draw.text((cx + 80, y_guard_top + 15), st["guard"]["title"], font=get_font(10, 'bold'), fill=(180, 83, 9), anchor='lm')
-        draw.text((cx + 12, y_guard_top + 35), f"[판정] {st['guard']['cond']}", font=get_font(8.5, 'bold'), fill=(146, 64, 14), anchor='lm')
-        draw.text((cx + 12, y_guard_top + 52), st["guard"]["yes_text"], font=get_font(8, 'medium'), fill=(15, 23, 42), anchor='lm')
-        draw.text((cx + 12, y_guard_top + 68), st["guard"]["no_text"], font=get_font(8, 'medium'), fill=(180, 83, 9), anchor='lm')
-        
-        # Down Arrow from Tier 3 to Tier 4
-        draw_arrow(draw, (cc, y_guard_bot), (cc, y_feedback_top), col=(0, 82, 255), width=2, arrow_size=4)
-        
-        # ---------------------------------------------------------
-        # TIER 4: SYSTEM FEEDBACK (y=540 to 608)
-        # ---------------------------------------------------------
-        draw.rounded_rectangle([cx, y_feedback_top, cx + cw, y_feedback_bot], radius=8, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
-        draw_pill_badge(draw, left_x=cx + 12, cy=y_feedback_top + 16, text="FEEDBACK", font=get_font(7.5, 'bold'), theme='green', pad_x=4, height=16)
-        if st["feedback"].get("is_finish"):
-            draw_pill_badge(draw, left_x=cx + 80, cy=y_feedback_top + 16, text="Finish : 최종 체결", font=get_font(7.5, 'bold'), theme='blue', pad_x=5, height=16)
-        draw.text((cx + 12, y_feedback_top + 38), st["feedback"]["title"], font=get_font(10.5, 'bold'), fill=(22, 101, 52), anchor='lm')
-        draw.text((cx + 12, y_feedback_top + 54), st["feedback"]["sub"], font=get_font(8.5, 'medium'), fill=(21, 128, 61), anchor='lm')
-        
-        # Inter-stage Handover Arrow at Feedback Level
-        if st["handover"] and i < 4:
-            arrow_sx = cx + cw
-            arrow_ex = cols_x[i + 1]
-            draw_arrow(draw, (arrow_sx + 2, y_feedback_top + 34), (arrow_ex - 2, y_feedback_top + 34), col=(0, 82, 255), width=2, arrow_size=4)
-            draw.text(((arrow_sx + arrow_ex) // 2, y_feedback_top + 20), st["handover"].replace("→", "→"), font=get_font(8, 'bold'), fill=(0, 82, 255), anchor='mm')
-            
-        # Down Arrow from Tier 4 to Tier 5 (Value Pod)
-        draw_arrow(draw, (cc, y_feedback_bot), (cc, y_value_top), col=(148, 163, 184), width=1, arrow_size=3)
-        
-        # ---------------------------------------------------------
-        # TIER 5: STAGE UX VALUE POD (y=626 to 764)
-        # ---------------------------------------------------------
-        draw.rounded_rectangle([cx, y_value_top, cx + cw, y_value_bot], radius=10, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-        draw_pill_badge(draw, left_x=cx + 12, cy=y_value_top + 18, text=f"STAGE 0{i+1} VALUE", font=get_font(8, 'bold'), theme='blue', pad_x=6, height=18)
-        draw.text((cx + 12, y_value_top + 46), st["value"][0], font=get_font(9, 'medium'), fill=(51, 65, 85))
-        draw.text((cx + 12, y_value_top + 72), st["value"][1], font=get_font(9, 'medium'), fill=(51, 65, 85))
-        draw.text((cx + 12, y_value_top + 98), st["value"][2], font=get_font(9, 'bold'), fill=(0, 82, 255))
+    for v_idx, (v_badge, v_h1, v_h2, v_theme) in enumerate(stage_values):
+        vx = cols_x[v_idx]
+        draw.rounded_rectangle([vx, 696, vx + cw, 768], radius=8, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+        draw_pill_badge(draw, left_x=vx + 10, cy=712, text=v_badge, font=get_font(7.5, 'bold'), theme=v_theme, pad_x=5, height=16)
+        draw.text((vx + 10, 734), v_h1, font=get_font(9.5, 'bold'), fill=(15, 23, 42))
+        draw.text((vx + 10, 752), v_h2, font=get_font(8, 'medium'), fill=(100, 116, 139))
         
     # -------------------------------------------------------------
     # BOTTOM: Unified UX Emotional Journey & Enterprise KPIs (y=780 to 948, h=168)
@@ -1654,7 +1750,7 @@ def make_slide_05():
         
     draw_slide_footer(draw, 5)
     base.save(f'{OUT_DIR}/slide_05.png')
-    print("SAVED slide_05.png (4-Tier Structured Service UX Flowchart with 5 Journey Stages)")
+    print("SAVED slide_05.png as authentic Flowchart Diagram with real decision diamonds!")
 
 
 
