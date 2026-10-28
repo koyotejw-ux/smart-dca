@@ -514,7 +514,7 @@ def make_slide_01():
     # Top Kicker & Metadata
     draw_pill_badge(draw, left_x=100, cy=78, text="DCA QUANT LAB · 2026 CASE STUDY", font=get_font(11.5, 'bold'), theme='blue', has_dot=True, pad_x=12, height=28)
     
-    meta_txt = "Personal Project · UI/UX Product Design & Fullstack Engineering"
+    meta_txt = "Solo Production · Android App Live (v2.0) · UI/UX Design & Fullstack Engineering"
     w_meta = draw.textlength(meta_txt, font=get_font(13.5, 'medium'))
     draw.text((1820 - w_meta, 70), meta_txt, font=get_font(13.5, 'medium'), fill=(100, 116, 139))
     
@@ -534,12 +534,12 @@ def make_slide_01():
     draw.text((100, 290), sub1, font=get_font(16.5, 'regular'), fill=(71, 85, 105))
     draw.text((100, 318), sub2, font=get_font(16.5, 'semibold'), fill=(30, 41, 59))
     
-    # 4 Status Badges (Clean Pastel Theme)
+    # 4 Status Badges (Clean Pastel Theme - Reflecting v2.0 & Android Production)
     badges = [
-        ("SOLO 100% DESIGN & DEV", "blue"),
-        ("GOOGLE PLAY STORE LIVE", "green"),
-        ("0.2s VOICE DOCK", "cyan"),
-        ("CLOSED-FORM QUANT", "purple")
+        ("SOLO PO & FULLSTACK 100%", "blue"),
+        ("GOOGLE PLAY (ANDROID) LIVE", "green"),
+        ("v2.0 MAJOR UPDATE (2026.10)", "purple"),
+        ("0.2s VOICE & CLOSED-FORM", "cyan")
     ]
     bx = 100
     for b_text, b_theme in badges:
@@ -623,10 +623,10 @@ def make_slide_01():
     
     col_w = (1720) // 4
     specs = [
-        ("PROJECT ROLE", "100% Solo Contribution", "기획(PM) · UI/UX 디자인 · Flutter 풀스택 개발"),
-        ("PERIOD & SPRINT", "2026.02 - 2026.04", "6주 집중 스프린트 상용 프로덕션 배포 완료"),
-        ("TECH STACK", "Flutter 3.x · Riverpod", "Dart · Riverpod · Python Quant · GitHub"),
-        ("PLATFORM RELEASE", "Google Play Live & Web", "Android 상용 출시 & 실시간 인터랙티브 웹")
+        ("PROJECT ROLE", "PO & Solo Fullstack", "기획(PM) · UI/UX 디자인 · Flutter 풀스택 · v2.0 운영"),
+        ("PERIOD & SPRINT", "2026.02 - 2026.10 (v2.0)", "v1.0 런칭(4월) ➔ v2.0 고도화 배포(10월, 운영 중)"),
+        ("TECH STACK", "Flutter 3.x · Riverpod", "Dart · 온디바이스 STT · Python 퀀트 · Android Native"),
+        ("PLATFORM RELEASE", "Google Play Live (Android)", "Android 단독 상용 정식 출시 (실서비스 운영) & Web 데모")
     ]
     
     for i, (cat, val_bold, val_desc) in enumerate(specs):
