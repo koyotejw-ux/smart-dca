@@ -32,6 +32,16 @@ def get_font(size, weight='bold'):
 def get_num_font(size, weight='black'):
     return get_font(size, weight)
 
+FLUTTER_MATERIAL_FONT = r"C:\flutter\bin\cache\artifacts\material_fonts\MaterialIcons-Regular.otf"
+
+def get_material_icon_font(size):
+    if os.path.exists(FLUTTER_MATERIAL_FONT):
+        try:
+            return ImageFont.truetype(FLUTTER_MATERIAL_FONT, int(round(size)))
+        except:
+            pass
+    return get_font(size, 'bold')
+
 def wrap_text_by_words(text, font, max_width, draw):
     lines = []
     paragraphs = text.split('\n')
@@ -2221,7 +2231,7 @@ def make_slide_07():
         category_en="DESIGN SYSTEM | BRAND IDENTITY & COMPONENT ARCHITECTURE", 
         title_black="브랜드 정체성과 정밀함을 규정하는 ", 
         title_blue="비주얼 아이덴티티 & 디자인 시스템", 
-        subtitle_kr="디자인 철학 3대 원칙, 앱 아이콘 황금 그리드 조형 원리, 24dp 금융 라인 아이코노그라피, 그리고 토큰 & 아토믹 컴포넌트 킷"
+        subtitle_kr="디자인 철학 3대 원칙, 앱 아이콘 황금 그리드 조형 원리, Flutter Material Rounded 24dp 아이코노그라피, 그리고 토큰 & 아토믹 컴포넌트 킷"
     )
     
     # Coordinates
@@ -2313,33 +2323,34 @@ def make_slide_07():
     draw.text((col2_x + col2_w // 2, r1_y + r1_h - 26), "Google Play 512×512 Master · Squircle 22.5% Radius · 0.618 Golden Ratio", font=get_num_font(9, 'bold'), fill=(71, 85, 105), anchor='mm')
     
     # -------------------------------------------------------------
-    # CARD 03 (Upper Right): 24dp ICONOGRAPHY SYSTEM
+    # CARD 03 (Upper Right): 24dp ICONOGRAPHY SYSTEM (FLUTTER MATERIAL)
     # -------------------------------------------------------------
     draw.rounded_rectangle([col3_x, r1_y, col3_x + col3_w, r1_y + r1_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     b3_box = draw_pill_badge(draw, left_x=col3_x + 24, cy=r1_y + 30, text="FOUNDATION 03", font=get_font(9.5, 'bold'), theme='cyan', has_dot=True, pad_x=8, height=22)
-    draw.text((b3_box[2] + 14, r1_y + 30), "24dp 금융 라인 아이코노그라피 시스템", font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((b3_box[2] + 14, r1_y + 30), "Flutter Material Rounded 24dp 아이코노그라피", font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
     draw.line([(col3_x + 24, r1_y + 52), (col3_x + col3_w - 24, r1_y + 52)], fill=(241, 245, 249), width=1)
     
     # Spec Sub-strip
-    draw.text((col3_x + 24, r1_y + 64), "Grid 24×24dp  ·  Live Area 20×20dp (2dp Pad)  ·  1.5dp Uniform Stroke  ·  2dp Corner Radius", font=get_num_font(9, 'bold'), fill=(0, 81, 255))
+    draw.text((col3_x + 24, r1_y + 64), "Grid 24×24dp  ·  Optical Center  ·  Production Flutter Icons.*_rounded 토큰 1:1 바인딩", font=get_font(9, 'bold'), fill=(0, 81, 255))
     
-    # 8 Icon Cards (4 columns x 2 rows)
+    # 8 Official Flutter Production Icons (4 columns x 2 rows)
     icons_data = [
-        ("차트/추세", "ic_chart_dca", draw_line_chart_icon),
-        ("목표 역산", "ic_target_inv", draw_line_target_icon),
-        ("음성 도크", "ic_voice_dock", draw_line_mic_icon),
-        ("리스크 가드", "ic_risk_guard", draw_line_shield_icon),
-        ("포트폴리오", "ic_portfolio", draw_line_wallet_icon),
-        ("퀀트 계산", "ic_quant_calc", draw_line_calc_icon),
-        ("로컬 보안", "ic_local_sec", draw_line_lock_icon),
-        ("호가 프리셋", "ic_preset_chip", draw_line_tag_icon),
+        ("차트/물타기 분석", "Icons.show_chart_rounded", 0xf0174),
+        ("퀀트 역산 계산기", "Icons.calculate_rounded", 0xf5fd),
+        ("0.2s 음성 도크", "Icons.mic_rounded", 0xf8bd),
+        ("리스크 가드레일", "Icons.shield_outlined", 0xf379),
+        ("스마트 포트폴리오", "Icons.account_balance_wallet", 0xf520),
+        ("VIP 무광고 세션", "Icons.stars_rounded", 0xf01d5),
+        ("시나리오 히스토리", "Icons.history_toggle_off", 0xf7f0),
+        ("1-Tap 플랜 저장", "Icons.bookmark_added", 0xf5ce),
     ]
     
     ic_start_y = r1_y + 86
     ic_w = (col3_w - 48 - 30) // 4  # 128px
-    ic_h = 92
+    ic_h = 96
+    mat_font_icon = get_material_icon_font(23)
     
-    for idx, (iname, itoken, idraw_fn) in enumerate(icons_data):
+    for idx, (iname, itoken, icp) in enumerate(icons_data):
         row = idx // 4
         col = idx % 4
         ix = col3_x + 24 + col * (ic_w + 10)
@@ -2348,15 +2359,16 @@ def make_slide_07():
         draw.rounded_rectangle([ix, iy, ix + ic_w, iy + ic_h], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
         
         icx = ix + ic_w // 2
-        icy = iy + 28
-        draw.rounded_rectangle([icx - 18, icy - 18, icx + 18, icy + 18], radius=8, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-        idraw_fn(draw, icx, icy, size=22, color=(0, 81, 255))
+        icy = iy + 26
+        draw.rounded_rectangle([icx - 17, icy - 17, icx + 17, icy + 17], radius=8, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
+        draw.text((icx, icy), chr(icp), font=mat_font_icon, fill=(0, 81, 255), anchor='mm')
         
-        draw.text((icx, iy + 58), iname, font=get_font(10, 'bold'), fill=(15, 23, 42), anchor='mm')
-        draw.text((icx, iy + 75), itoken, font=get_num_font(8.5, 'medium'), fill=(100, 116, 139), anchor='mm')
+        draw.text((icx, iy + 53), iname, font=get_font(10, 'bold'), fill=(15, 23, 42), anchor='mm')
+        draw.text((icx, iy + 68), itoken, font=get_font(7.5, 'bold'), fill=(0, 81, 255), anchor='mm')
+        draw.text((icx, iy + 82), f"{hex(icp)} · 24dp", font=get_font(7.5, 'regular'), fill=(100, 116, 139), anchor='mm')
         
     draw.rounded_rectangle([col3_x + 24, r1_y + r1_h - 38, col3_x + col3_w - 24, r1_y + r1_h - 14], radius=6, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-    draw.text((col3_x + col3_w // 2, r1_y + r1_h - 26), "광학적 시각 보정(Optical Alignment) 및 일관된 1.5dp 금융 라인 스타일", font=get_font(9.5, 'medium'), fill=(0, 81, 255), anchor='mm')
+    draw.text((col3_x + col3_w // 2, r1_y + r1_h - 26), "Flutter 런타임 MaterialIcons-Regular.otf 실기기 렌더링 및 코드 토큰 100% 동기화", font=get_font(9.5, 'medium'), fill=(0, 81, 255), anchor='mm')
 
     # -------------------------------------------------------------
     # LOWER ROW (y=594 to 970, h=376): 2 WIDE COLUMNS
@@ -2474,9 +2486,10 @@ def make_slide_07():
     draw_pill_badge(draw, cx=colB_x + 28 + k1_w - 40, cy=k1_y + 26, text="ACTIVE", font=get_font(8, 'bold'), theme='blue', has_dot=False, pad_x=5, height=18)
     
     draw.rounded_rectangle([colB_x + 40, k1_y + 50, colB_x + 28 + k1_w - 12, k1_y + 72], radius=5, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
-    draw.text((colB_x + 58, k1_y + 61), "-", font=get_font(12, 'bold'), fill=(0, 81, 255), anchor='mm')
+    mat_font_btn = get_material_icon_font(15)
+    draw.text((colB_x + 58, k1_y + 61), chr(0xf00f1), font=mat_font_btn, fill=(0, 81, 255), anchor='mm') # Icons.remove_rounded
     draw.text((colB_x + 28 + k1_w // 2, k1_y + 61), "100주 (수량 가감 조절)", font=get_font(9.5, 'bold'), fill=(15, 23, 42), anchor='mm')
-    draw.text((colB_x + 28 + k1_w - 28, k1_y + 61), "+", font=get_font(12, 'bold'), fill=(0, 81, 255), anchor='mm')
+    draw.text((colB_x + 28 + k1_w - 28, k1_y + 61), chr(0xf537), font=mat_font_btn, fill=(0, 81, 255), anchor='mm') # Icons.add_rounded
     
     # Portfolio Summary & Currency Toggle Box
     k2_x = colB_x + 28 + k1_w + 20
@@ -2510,21 +2523,30 @@ def make_slide_07():
         draw.text((cur_ch_x + 41, ch_y + 13), p_txt, font=get_font(9.5, 'bold'), fill=p_col, anchor='mm')
         cur_ch_x += 89
         
-    # Micro-Component 4: CTAs Button Row (Fixed to "1-Tap 플랜 저장"!)
+    # Micro-Component 4: CTAs Button Row (Production Flutter Material Widgets)
     cta_y = ch_y + 38
+    mat_font_cta = get_material_icon_font(15)
+    
+    # 1. Calculate Button
     draw.rounded_rectangle([colB_x + 28, cta_y, colB_x + 230, cta_y + 40], radius=10, fill=(0, 81, 255))
-    draw.text((colB_x + 129, cta_y + 20), "+ 물타기 계산 실행", font=get_font(11, 'bold'), fill=(255, 255, 255), anchor='mm')
+    draw.text((colB_x + 50, cta_y + 20), chr(0xf5fd), font=mat_font_cta, fill=(255, 255, 255), anchor='mm') # Icons.calculate_rounded
+    draw.text((colB_x + 138, cta_y + 20), "물타기 계산 실행", font=get_font(11, 'bold'), fill=(255, 255, 255), anchor='mm')
     
+    # 2. Target Reverse Goal Button
     draw.rounded_rectangle([colB_x + 242, cta_y, colB_x + 432, cta_y + 40], radius=10, fill=(240, 246, 255), outline=(0, 81, 255), width=1)
-    draw.text((colB_x + 337, cta_y + 20), "목표 평단가 역산", font=get_font(11, 'bold'), fill=(0, 81, 255), anchor='mm')
+    draw.text((colB_x + 264, cta_y + 20), chr(0xf0204), font=mat_font_cta, fill=(0, 81, 255), anchor='mm') # Icons.sync_alt_rounded
+    draw.text((colB_x + 347, cta_y + 20), "목표 평단가 역산", font=get_font(11, 'bold'), fill=(0, 81, 255), anchor='mm')
     
+    # 3. Plan Save Button
     draw.rounded_rectangle([colB_x + 444, cta_y, colB_x + 614, cta_y + 40], radius=10, fill=(248, 250, 252), outline=(203, 213, 225), width=1)
-    draw_copy_icon(draw, cx=colB_x + 466, cy=cta_y + 20, size=13, color=(51, 65, 85))
-    draw.text((colB_x + 534, cta_y + 20), "1-Tap 플랜 저장", font=get_font(10.5, 'bold'), fill=(51, 65, 85), anchor='mm')
+    draw.text((colB_x + 466, cta_y + 20), chr(0xf5ce), font=mat_font_cta, fill=(51, 65, 85), anchor='mm') # Icons.bookmark_added_rounded
+    draw.text((colB_x + 538, cta_y + 20), "1-Tap 플랜 저장", font=get_font(10.5, 'bold'), fill=(51, 65, 85), anchor='mm')
     
+    # 4. VIP Session Banner
     draw.rounded_rectangle([colB_x + 626, cta_y, colB_x + colB_w - 28, cta_y + 40], radius=10, fill=(254, 243, 199), outline=(253, 230, 138), width=1)
-    draw.text((colB_x + 626 + (colB_w - 28 - 626)//2, cta_y + 12), "VIP 24h 무광고 세션", font=get_font(8.5, 'bold'), fill=(180, 83, 9), anchor='mm')
-    draw.text((colB_x + 626 + (colB_w - 28 - 626)//2, cta_y + 26), "남은 시간 23:59:42", font=get_font(8.5, 'bold'), fill=(217, 119, 6), anchor='mm')
+    draw.text((colB_x + 648, cta_y + 20), chr(0xf01d5), font=get_material_icon_font(18), fill=(217, 119, 6), anchor='mm') # Icons.stars_rounded
+    draw.text((colB_x + 664 + (colB_w - 28 - 664)//2, cta_y + 12), "VIP 24h 무광고 세션", font=get_font(8.5, 'bold'), fill=(180, 83, 9), anchor='mm')
+    draw.text((colB_x + 664 + (colB_w - 28 - 664)//2, cta_y + 26), "남은 시간 23:59:42", font=get_font(8.5, 'bold'), fill=(217, 119, 6), anchor='mm')
     
     # Micro-Component 5: Status Badges Row
     bdg_y = cta_y + 50
@@ -2542,7 +2564,7 @@ def make_slide_07():
         _, _, b_end, _ = draw_pill_badge(draw, left_x=cur_bx, cy=bdg_y + 14, text=b_txt, font=get_font(9.5, 'bold'), theme=b_thm, has_dot=b_dt, dark_mode=False, pad_x=8, height=24)
         cur_bx = b_end + 8
         
-    draw.text((colB_x + 28, r2_y + r2_h - 18), "• Flutter 실제 컴포넌트 트리 1:1 바인딩 (app_colors.dart & simulator_screen.dart)", font=get_font(9, 'regular'), fill=(100, 116, 139))
+    draw.text((colB_x + 28, r2_y + r2_h - 18), "• Flutter 실제 위젯 트리 1:1 바인딩 (app_colors.dart · simulator_screen.dart · MaterialIcons)", font=get_font(9, 'regular'), fill=(100, 116, 139))
     
     draw_slide_footer(draw, 7)
     base.save(f'{OUT_DIR}/slide_07.png')
