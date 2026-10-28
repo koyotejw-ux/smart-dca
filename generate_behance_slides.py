@@ -1295,7 +1295,7 @@ def make_slide_05():
         category_en="USER FLOW | SERVICE INTERACTION FLOWCHART", 
         title_black="사용자 행동과 판단을 이끄는 ", 
         title_blue="5단계 서비스 UX 플로우차트", 
-        subtitle_kr="진입 온보딩부터 멀티모달 입력, 퀀트 역산, 리스크 가드, MTS 체결까지 이어지는 핵심 사용자 여정"
+        subtitle_kr="진입 온보딩부터 멀티모달 입력, 퀀트 역산, 리스크 가드, 포트폴리오 저장까지 이어지는 핵심 사용자 여정"
     )
     
     # Top-Right Legend: Compact Diagram Notation (w=540, h=78)
@@ -1338,7 +1338,7 @@ def make_slide_05():
         ("STAGE 02", "멀티모달 입력", "Multi-Modal Input"),
         ("STAGE 03", "퀀트 목표 역산", "Goal Inversion"),
         ("STAGE 04", "리스크 안전 가드", "Risk Guardrail"),
-        ("STAGE 05", "1-Tap MTS 체결", "1-Tap MTS Execution")
+        ("STAGE 05", "플랜 확정 & 저장", "Plan Finalize & Save")
     ]
     
     # Stage Headers (y=234 to 284, h=50) - Generous 52px whitespace below subtitle!
@@ -1598,18 +1598,18 @@ def make_slide_05():
     # =============================================================
     c4 = col_centers[4]
     
-    # 1. Action: 1-Tap 주문 복사 (y=300 to 344, h=44)
+    # 1. Action: 1-Tap 포트폴리오 저장 (y=300 to 344, h=44)
     draw.rounded_rectangle([c4 - nw // 2, 300, c4 + nw // 2, 344], radius=6, fill=(239, 246, 255), outline=(0, 82, 255), width=2)
     draw_pill_badge(draw, left_x=c4 - 114, cy=314, text="ACTION", font=get_font(6.5, 'bold'), theme='blue', pad_x=4, height=14)
-    draw.text((c4 - 54, 314), "1-Tap MTS 주문 복사", font=get_font(9, 'bold'), fill=(0, 82, 255), anchor='lm')
-    draw.text((c4, 331), "종목명, 희망가, 주문 수량 클립보드 원터치 복사", font=get_font(7.5, 'medium'), fill=(15, 23, 42), anchor='mm')
+    draw.text((c4 - 54, 314), "1-Tap 포트폴리오 저장", font=get_font(9, 'bold'), fill=(0, 82, 255), anchor='lm')
+    draw.text((c4, 331), "최적 매수 플랜 & 시나리오를 내 자산에 즉시 반영", font=get_font(7.5, 'medium'), fill=(15, 23, 42), anchor='mm')
     draw_arrow(draw, (c4, 344), (c4, 362), col=(0, 82, 255), width=2, arrow_size=4)
     
-    # 2. Feedback: MTS 전환 스낵바 (y=362 to 406, h=44)
+    # 2. Feedback: 저장 완료 스낵바 (y=362 to 406, h=44)
     draw.rounded_rectangle([c4 - nw // 2, 362, c4 + nw // 2, 406], radius=6, fill=(240, 253, 244), outline=(187, 247, 208), width=1)
     draw_pill_badge(draw, left_x=c4 - 114, cy=376, text="FEEDBACK", font=get_font(6.5, 'bold'), theme='green', pad_x=4, height=14)
-    draw.text((c4 - 44, 376), "MTS 전환 스낵바 인터랙션", font=get_font(9, 'bold'), fill=(22, 101, 52), anchor='lm')
-    draw.text((c4, 393), "증권사 앱 실행 즉시 원터치 붙여넣기 인계", font=get_font(7.5, 'medium'), fill=(21, 128, 61), anchor='mm')
+    draw.text((c4 - 44, 376), "저장 완료 스낵바 & 자산 연동", font=get_font(9, 'bold'), fill=(22, 101, 52), anchor='lm')
+    draw.text((c4, 393), "포트폴리오 자산 등록 및 목표 평단가 트래킹 개시", font=get_font(7.5, 'medium'), fill=(21, 128, 61), anchor='mm')
     draw_arrow(draw, (c4, 406), (c4, 426), col=(0, 82, 255), width=2, arrow_size=4)
     
     # 3. Decision Diamond: 데이터 무결성 검증 (cy=454, w=206, h=56)
@@ -1628,7 +1628,7 @@ def make_slide_05():
     
     # 5. Finish Terminal Capsule (y=586 to 622, h=36)
     draw.rounded_rectangle([c4 - 90, 586, c4 + 90, 622], radius=18, fill=(0, 82, 255))
-    draw.text((c4, 604), "Finish : 최적 플랜 체결 완료", font=get_font(10, 'bold'), fill=(255, 255, 255), anchor='mm')
+    draw.text((c4, 604), "Finish : 최적 방어 플랜 저장", font=get_font(10, 'bold'), fill=(255, 255, 255), anchor='mm')
     
     # -------------------------------------------------------------
     # SIMPLIFIED BOTTOM SUMMARY STRIP (y=706 to 826, h=120)
@@ -1645,14 +1645,14 @@ def make_slide_05():
     # Left Half: Emotional Curve (w = 860) with generous internal padding
     draw_pill_badge(draw, left_x=bar_x + 24, cy=bar_y + 20, text="USER MINDSET", font=get_font(8, 'bold'), theme='amber', has_dot=True, pad_x=7, height=18)
     draw.text((bar_x + 150, bar_y + 20), "5단계 심리 변화 여정 (불안에서 확신까지)", font=get_font(11.5, 'bold'), fill=(15, 23, 42), anchor='lm')
-    draw.text((bar_x + 24, bar_y + 40), "급락장 패닉 상태의 투자자가 객관적 퀀트 가이드를 통해 평정심을 되찾고 매매를 체결하는 여정", font=get_font(8.5, 'regular'), fill=(100, 116, 139))
+    draw.text((bar_x + 24, bar_y + 40), "급락장 패닉 상태의 투자자가 객관적 퀀트 가이드를 통해 평정심을 되찾고 최적 플랜을 확정하는 여정", font=get_font(8.5, 'regular'), fill=(100, 116, 139))
     
     emotions = [
         ("STAGE 01", "불안 & 막막함", "red"),
         ("STAGE 02", "긴박 & 촉박", "amber"),
         ("STAGE 03", "명확한 목표 발견", "blue"),
         ("STAGE 04", "안도 & 통제감 회복", "cyan"),
-        ("STAGE 05", "확신 & 즉시 체결", "green")
+        ("STAGE 05", "확신 & 플랜 확정", "green")
     ]
     node_w = 145
     node_y = bar_y + 58
