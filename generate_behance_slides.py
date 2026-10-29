@@ -2313,72 +2313,87 @@ def make_slide_07():
     R = S / 2.0 # 68px
     r_in = R * 0.425 # 28.9px
     r_mid = math.sqrt(2) * r_in # 40.87px
-    ext = 11
+    ext = 18 # 18px extension to fill drafting box edges
     
     grid_line_color = (100, 116, 139)
     
     # -------------------------------------------------------------
-    # BACKGROUND KEYLINE GRID (Exact form of attached reference guide)
+    # 1. BACKGROUND KEYLINE GRID (Exact form of attached reference guide)
     # -------------------------------------------------------------
-    # 1. 45-degree & 135-degree Diagonals (Extended past corners)
+    # Diagonals (Extended past corners)
     draw.line([(cx - R - ext, cy - R - ext), (cx + R + ext, cy + R + ext)], fill=grid_line_color, width=1)
     draw.line([(cx - R - ext, cy + R + ext), (cx + R + ext, cy - R - ext)], fill=grid_line_color, width=1)
     
-    # 2. 5 Horizontal lines (Outer lines extended past corners to form tick crosses)
+    # 5 Horizontal lines
     draw.line([(cx - R - ext, cy - R), (cx + R + ext, cy - R)], fill=grid_line_color, width=1) # top outer
     draw.line([(cx - R, cy - r_in), (cx + R, cy - r_in)], fill=grid_line_color, width=1) # top inner
     draw.line([(cx - R, cy), (cx + R, cy)], fill=grid_line_color, width=1) # center horizontal
     draw.line([(cx - R, cy + r_in), (cx + R, cy + r_in)], fill=grid_line_color, width=1) # bottom inner
     draw.line([(cx - R - ext, cy + R), (cx + R + ext, cy + R)], fill=grid_line_color, width=1) # bottom outer
     
-    # 3. 5 Vertical lines (Outer lines extended past corners to form tick crosses)
+    # 5 Vertical lines
     draw.line([(cx - R, cy - R - ext), (cx - R, cy + R + ext)], fill=grid_line_color, width=1) # left outer
     draw.line([(cx - r_in, cy - R), (cx - r_in, cy + R)], fill=grid_line_color, width=1) # left inner
     draw.line([(cx, cy - R), (cx, cy + R)], fill=grid_line_color, width=1) # center vertical
     draw.line([(cx + r_in, cy - R), (cx + r_in, cy + R)], fill=grid_line_color, width=1) # right inner
     draw.line([(cx + R, cy - R - ext), (cx + R, cy + R + ext)], fill=grid_line_color, width=1) # right outer
     
-    # 4. 3 Concentric Circles (Inner, Middle, Outer)
+    # 3 Concentric Circles
     draw.ellipse([cx - r_in, cy - r_in, cx + r_in, cy + r_in], outline=grid_line_color, width=1)
     draw.ellipse([cx - r_mid, cy - r_mid, cx + r_mid, cy + r_mid], outline=grid_line_color, width=1)
     draw.ellipse([cx - R, cy - R, cx + R, cy + R], outline=grid_line_color, width=1)
     
-    # 5. Continuous Squircle Outer Border (R22.5%)
+    # Continuous Squircle Outer Border (R22.5%)
     r_corner = int(round(S * 0.225))
     draw.rounded_rectangle([cx - R, cy - R, cx + R, cy + R], radius=r_corner, outline=grid_line_color, width=1)
     
     # -------------------------------------------------------------
-    # APP ICON PLACED ON TOP OF GRID (With Elevation Drop Shadow)
+    # 2. APP ICON PLACED IN EXACT DEAD CENTER (Fitted to 640x640 squircle bounds)
     # -------------------------------------------------------------
     try:
-        raw_icon = Image.open('assets/app_icon.png')
-        bbox = raw_icon.getbbox()
-        bcx = (bbox[0] + bbox[2]) // 2
-        bcy = (bbox[1] + bbox[3]) // 2
-        bsize = max(bbox[2] - bbox[0], bbox[3] - bbox[1])
-        cropped = raw_icon.crop((bcx - bsize//2, bcy - bsize//2, bcx + bsize//2, bcy + bsize//2))
+        raw_icon = Image.open('assets/app_icon.png').convert('RGBA')
+        # Exactly crop the 640x640 solid squircle (bounds: 192, 192, 832, 832)
+        cropped = raw_icon.crop((192, 192, 832, 832))
         resized = cropped.resize((S, S), Image.Resampling.LANCZOS)
         
         # Soft elevation shadow behind icon
         s_layer = Image.new('RGBA', (W, H), (0, 0, 0, 0))
         sdraw = ImageDraw.Draw(s_layer)
-        sdraw.rounded_rectangle([cx - S//2 + 2, cy - S//2 + 5, cx + S//2 + 2, cy + S//2 + 7], radius=r_corner + 2, fill=(15, 23, 42, 45))
-        s_layer = s_layer.filter(ImageFilter.GaussianBlur(6))
+        sdraw.rounded_rectangle([cx - S//2 + 2, cy - S//2 + 4, cx + S//2 + 2, cy + S//2 + 6], radius=r_corner + 2, fill=(15, 23, 42, 45))
+        s_layer = s_layer.filter(ImageFilter.GaussianBlur(5))
         base = Image.alpha_composite(base, s_layer)
         
-        # Translucent app icon (86% opacity) so the exact attached grid shows through!
-        cr_rgba = resized.convert('RGBA')
-        r, g, b, a = cr_rgba.split()
-        a = a.point(lambda p: int(p * 0.86))
-        cr_rgba.putalpha(a)
-        
+        # Paste centered icon
         icon_layer = Image.new('RGBA', (W, H), (0, 0, 0, 0))
-        icon_layer.paste(cr_rgba, (cx - S//2, cy - S//2))
+        icon_layer.paste(resized, (cx - S//2, cy - S//2))
         base = Image.alpha_composite(base, icon_layer)
         draw = ImageDraw.Draw(base)
         
-        # Crisp 1px boundary stroke around the icon
-        draw.rounded_rectangle([cx - S//2, cy - S//2, cx + S//2, cy + S//2], radius=r_corner, outline=(0, 81, 255, 120), width=1)
+        # -------------------------------------------------------------
+        # 3. LUMINOUS KEYLINE GRID OVERLAY (Locks onto the icon elements!)
+        # -------------------------------------------------------------
+        grid_white = (255, 255, 255, 175)
+        # Diagonals across icon (cuts right through the 45° rising arrow!)
+        draw.line([(cx - R, cy - R), (cx + R, cy + R)], fill=grid_white, width=1)
+        draw.line([(cx - R, cy + R), (cx + R, cy - R)], fill=grid_white, width=1)
+        
+        # Horizontals across icon
+        draw.line([(cx - R, cy - r_in), (cx + R, cy - r_in)], fill=grid_white, width=1)
+        draw.line([(cx - R, cy), (cx + R, cy)], fill=grid_white, width=1)
+        draw.line([(cx - R, cy + r_in), (cx + R, cy + r_in)], fill=grid_white, width=1)
+        
+        # Verticals across icon (aligning with the DCA bars!)
+        draw.line([(cx - r_in, cy - R), (cx - r_in, cy + R)], fill=grid_white, width=1)
+        draw.line([(cx, cy - R), (cx, cy + R)], fill=grid_white, width=1)
+        draw.line([(cx + r_in, cy - R), (cx + r_in, cy + R)], fill=grid_white, width=1)
+        
+        # 3 Concentric Circles across icon
+        draw.ellipse([cx - r_in, cy - r_in, cx + r_in, cy + r_in], outline=grid_white, width=1)
+        draw.ellipse([cx - r_mid, cy - r_mid, cx + r_mid, cy + r_mid], outline=grid_white, width=1)
+        draw.ellipse([cx - R, cy - R, cx + R, cy + R], outline=grid_white, width=1)
+        
+        # Crisp outer squircle boundary matching icon contour
+        draw.rounded_rectangle([cx - S//2, cy - S//2, cx + S//2, cy + S//2], radius=r_corner, outline=(255, 255, 255, 220), width=1)
     except Exception as e:
         print("Icon paste error:", e)
         
@@ -2478,7 +2493,7 @@ def make_slide_07():
     # -------------------------------------------------------------
     draw.rounded_rectangle([colA_x, r2_y, colA_x + colA_w, r2_y + r2_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     b4_box = draw_pill_badge(draw, left_x=colA_x + 28, cy=r2_y + 32, text="FOUNDATION 04", font=get_font(9.5, 'bold'), theme='blue', has_dot=True, pad_x=8, height=22)
-    draw.text((b4_box[2] + 14, r2_y + 32), "AppColors 토큰 & Pretendard 타이포그래피", font=get_font(14, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((b4_box[2] + 14, r2_y + 32), "시맨틱 컬러 시스템 & Pretendard 타이포그래피", font=get_font(14, 'bold'), fill=(15, 23, 42), anchor='lm')
     draw.line([(colA_x + 28, r2_y + 54), (colA_x + colA_w - 28, r2_y + 54)], fill=(241, 245, 249), width=1)
     
     col_w_inner = (colA_w - 56 - 20) // 2  # 382px
@@ -2487,7 +2502,7 @@ def make_slide_07():
     hb_y = r2_y + 68
     draw.rounded_rectangle([colA_x + 28, hb_y, colA_x + 28 + col_w_inner, hb_y + 64], radius=10, fill=(0, 81, 255))
     draw.text((colA_x + 42, hb_y + 14), "PRIMARY ELECTRIC BLUE", font=get_font(12.5, 'bold'), fill=(255, 255, 255))
-    draw.text((colA_x + 42, hb_y + 32), "AppColors.primaryBlue  ·  #0051FF", font=get_num_font(9.5, 'medium'), fill=(191, 219, 254))
+    draw.text((colA_x + 42, hb_y + 32), "Color / Brand / Primary  ·  #0051FF", font=get_num_font(9.5, 'medium'), fill=(191, 219, 254))
     draw.text((colA_x + 42, hb_y + 46), "투자의 확신과 신뢰를 상징하는 시그니처 퀀트 블루", font=get_font(8.5, 'regular'), fill=(224, 242, 254))
     draw_pill_badge(draw, cx=colA_x + 28 + col_w_inner - 50, cy=hb_y + 32, text="8.4:1 AAA", font=get_font(9, 'bold'), theme='green', has_dot=False, pad_x=8, height=22)
     
@@ -2511,12 +2526,12 @@ def make_slide_07():
         
     # Gradients Row
     gr_y = sw_y + 78
-    draw.text((colA_x + 28, gr_y), "Signature App Gradients:", font=get_font(9.5, 'bold'), fill=(71, 85, 105))
+    draw.text((colA_x + 28, gr_y), "시그니처 브랜드 그라디언트 (Brand Gradients):", font=get_font(9.5, 'bold'), fill=(71, 85, 105))
     gradients_data = [
-        ("primaryGradient", (0, 81, 255), (0, 210, 255)),
-        ("cardTealBlue", (10, 37, 64), (19, 62, 104)),
-        ("vipGoldGradient", (255, 179, 0), (255, 109, 0)),
-        ("voiceWaveGradient", (0, 210, 255), (122, 34, 255)),
+        ("Primary Gradient", (0, 81, 255), (0, 210, 255)),
+        ("Obsidian Teal", (10, 37, 64), (19, 62, 104)),
+        ("VIP Gold Metallic", (255, 179, 0), (255, 109, 0)),
+        ("Voice Wave Accent", (0, 210, 255), (122, 34, 255)),
     ]
     gr_w = (col_w_inner - 24) // 4
     for idx, (g_name, g_c1, g_c2) in enumerate(gradients_data):
@@ -2552,12 +2567,12 @@ def make_slide_07():
     # OpenType Spec Box
     sp_box_y = ty_start + len(t_rows) * 32 + 8
     draw.rounded_rectangle([ty_x, sp_box_y, ty_x + ty_w, r2_y + r2_h - 20], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-    draw.text((ty_x + 14, sp_box_y + 10), "OpenType `tabularFigures()` & 4/8pt Grid", font=get_font(10, 'bold'), fill=(0, 81, 255))
-    draw.text((ty_x + 14, sp_box_y + 28), "• Tabular Numbers: 실시간 호가 변동 시 숫자 떨림 방지", font=get_font(8.5, 'regular'), fill=(71, 85, 105))
-    draw.text((ty_x + 14, sp_box_y + 44), "• Spatial System : 4pt/8pt 기반 스페이싱 및 r-8/12/16 라운딩", font=get_font(8.5, 'regular'), fill=(71, 85, 105))
-    draw.text((ty_x + 14, sp_box_y + 60), "• Elevation : Level 1 (2dp), Level 2 (8dp), Level 3 (16dp FAB)", font=get_font(8.5, 'regular'), fill=(71, 85, 105))
+    draw.text((ty_x + 14, sp_box_y + 10), "고정폭 숫자 정렬 (Tabular Figures) & 4/8pt 스케일", font=get_font(10, 'bold'), fill=(0, 81, 255))
+    draw.text((ty_x + 14, sp_box_y + 28), "• 고정폭 숫자 (Tabular Figures): 실시간 주가/평단가 변동 시 글자 떨림 방지", font=get_font(8.5, 'regular'), fill=(71, 85, 105))
+    draw.text((ty_x + 14, sp_box_y + 44), "• 스페이싱 시스템 (Spatial Scale): 4pt/8pt 베이스라인 그리드 및 R8/R12/R16 곡률", font=get_font(8.5, 'regular'), fill=(71, 85, 105))
+    draw.text((ty_x + 14, sp_box_y + 60), "• 타이포그래피 위계 (Type Scale): Display 28부터 Caption 11까지 체계적 정보 위계", font=get_font(8.5, 'regular'), fill=(71, 85, 105))
     
-    draw.text((colA_x + 28, r2_y + r2_h - 18), "• WCAG 2.1 AAA 7:1+ 초고대비율 엄격 준수 · AppColors 싱글톤 토큰 시스템", font=get_font(9, 'regular'), fill=(100, 116, 139))
+    draw.text((colA_x + 28, r2_y + r2_h - 18), "• WCAG 2.1 AAA 8.4:1 초고대비율 준수 · 디자인 시스템 시맨틱 컬러 토큰 아키텍처", font=get_font(9, 'regular'), fill=(100, 116, 139))
     
     # -------------------------------------------------------------
     # CARD 05 (Lower Right): ATOMIC UI COMPONENT KIT
