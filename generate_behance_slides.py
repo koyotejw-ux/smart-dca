@@ -2231,7 +2231,7 @@ def make_slide_07():
         category_en="DESIGN SYSTEM | BRAND IDENTITY & COMPONENT ARCHITECTURE", 
         title_black="브랜드 정체성과 정밀함을 규정하는 ", 
         title_blue="비주얼 아이덴티티 & 디자인 시스템", 
-        subtitle_kr="프로덕트 UX 3대 원칙, Google Play 앱 아이콘 조형 규격, Flutter Material Rounded 24dp 아이코노그라피, 그리고 토큰 & 아토믹 킷"
+        subtitle_kr="디자인 3대 핵심 가치(심미성·일관성·독창성), 앱 아이콘 기하학 와이어프레임 그리드, Material 24dp 아이코노그라피, 토큰 & 아토믹 킷"
     )
     
     # Coordinates
@@ -2249,17 +2249,23 @@ def make_slide_07():
     col3_w = 590
     
     # -------------------------------------------------------------
-    # CARD 01 (Upper Left): PRODUCT DESIGN PHILOSOPHY & UX PRINCIPLES
+    # CARD 01 (Upper Left): DESIGN CORE CONCEPT (심미성 · 일관성 · 독창성)
     # -------------------------------------------------------------
     draw.rounded_rectangle([col1_x, r1_y, col1_x + col1_w, r1_y + r1_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     b1_box = draw_pill_badge(draw, left_x=col1_x + 24, cy=r1_y + 30, text="FOUNDATION 01", font=get_font(9.5, 'bold'), theme='amber', has_dot=True, pad_x=8, height=22)
-    draw.text((b1_box[2] + 14, r1_y + 30), "프로덕트 디자인 철학 & UX 3대 원칙", font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((b1_box[2] + 14, r1_y + 30), "디자인 핵심 가치 (심미성 · 일관성 · 독창성)", font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
     draw.line([(col1_x + 24, r1_y + 52), (col1_x + col1_w - 24, r1_y + 52)], fill=(241, 245, 249), width=1)
     
     principles = [
-        ("01. Rational Information Clarity", "급락장 위기 상황에서 패닉을 막기 위해 시각적 노이즈를 배제하고,\n핵심 지표(목표 평단/필요자금)를 1초 내 식별하는 고정폭 Tabular 레이아웃", "blue", (0, 81, 255)),
-        ("02. Emotional Relief & Trustworthy UI", "손실의 붉은 공포를 중화하고 냉철한 퀀트 판단을 유도하는\n시그니처 Electric Blue(#0051FF)와 WCAG 2.1 AAA 8.4:1 초고대비 접근성 설계", "green", (5, 150, 105)),
-        ("03. Frictionless Thumb Ergonomics", "엄지 조작 반경(Thumb-Zone 48dp) 중심의 하단 인터랙션 도크와\n급박한 순간 텍스트 입력 허들을 제거하는 0.2초 온디바이스 음성 인터페이스", "purple", (122, 34, 255))
+        ("01. 심미성 (Aesthetics) · 정서적 안정과 평정심", 
+         "하락장 공포를 완화하는 딥 옵시디언 캔버스(#0D1117)와 시그니처 퀀트 블루\n글래스모피즘 미학을 적용하여 감정적 뇌동매매를 차단하고 냉철한 이성 유도", 
+         "blue", (0, 81, 255)),
+        ("02. 일관성 (Consistency) · 엄격한 시스템 규격", 
+         "8dp 베이스라인 그리드, R12/R16 일관된 스쿼클 곡률, Tabular 고정폭 타이포그래피로\n모든 컴포넌트와 화면이 단 하나의 디자인 시스템 규칙 아래 한 치 오차 없이 작동", 
+         "green", (5, 150, 105)),
+        ("03. 독창성 (Originality) · 차별화된 퀀트 메타포", 
+         "기존의 딱딱한 계산기를 완전히 파괴한 '마인드 케어 퀀트 솔루션' 아이덴티티와\n'하락을 기회로 바꾸는 반등의 호(Arc)', 엄지 조작 반경 중심 0.2초 음성 도크 인터랙션", 
+         "purple", (122, 34, 255))
     ]
     py_start = r1_y + 64
     for p_title, p_desc, p_theme, p_accent in principles:
@@ -2273,98 +2279,160 @@ def make_slide_07():
         py_start += 76
         
     draw.rounded_rectangle([col1_x + 24, r1_y + r1_h - 38, col1_x + col1_w - 24, r1_y + r1_h - 14], radius=6, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-    draw.text((col1_x + col1_w // 2, r1_y + r1_h - 26), "Design Core Mood: Rational Quantitative Calmness (차분한 이성과 정밀한 시각 위계)", font=get_font(9.5, 'bold'), fill=(0, 81, 255), anchor='mm')
+    draw.text((col1_x + col1_w // 2, r1_y + r1_h - 26), "Design Core Value: Aesthetic Calm · Strict Consistency · Original Metaphor", font=get_font(9.2, 'bold'), fill=(0, 81, 255), anchor='mm')
     
     # -------------------------------------------------------------
-    # CARD 02 (Upper Center): GOOGLE PLAY ICON GUIDELINES & METAPHOR
+    # CARD 02 (Upper Center): APP ICON GEOMETRIC WIREFRAME GRID & SPEC
     # -------------------------------------------------------------
     draw.rounded_rectangle([col2_x, r1_y, col2_x + col2_w, r1_y + r1_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     b2_box = draw_pill_badge(draw, left_x=col2_x + 24, cy=r1_y + 30, text="FOUNDATION 02", font=get_font(9.5, 'bold'), theme='blue', has_dot=True, pad_x=8, height=22)
-    draw.text((b2_box[2] + 14, r1_y + 30), "Google Play 앱 아이콘 가이드라인 규격", font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((b2_box[2] + 14, r1_y + 30), "앱 아이콘 기하학 와이어프레임 & 조형 규격", font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
     draw.line([(col2_x + 24, r1_y + 52), (col2_x + col2_w - 24, r1_y + 52)], fill=(241, 245, 249), width=1)
     
-    # Left side: Google Play Icon Keyline Grid Blueprint (175x175)
-    ic_box_x = col2_x + 24
-    ic_box_y = r1_y + 64
-    ic_box_size = 175
-    draw.rounded_rectangle([ic_box_x, ic_box_y, ic_box_x + ic_box_size, ic_box_y + ic_box_size], radius=12, fill=(15, 23, 42), outline=(30, 41, 59), width=1)
+    # Technical Drafting Blueprint Canvas Box
+    ic_box_x = col2_x + 22
+    ic_box_y = r1_y + 62
+    ic_box_size = 178
     
-    # Authentic Google Material Icon Construction Grid
-    scale = 135.0 / 512.0
+    # Blueprint base with subtle technical styling
+    draw.rounded_rectangle([ic_box_x, ic_box_y, ic_box_x + ic_box_size, ic_box_y + ic_box_size], radius=12, fill=(8, 14, 26), outline=(30, 48, 80), width=1)
+    
     cx = ic_box_x + ic_box_size // 2
     cy = ic_box_y + ic_box_size // 2
-    bs = int(round(512 * scale)) # 135px
+    
+    # Blueprint Subgrid (16dp & 32dp equivalent lines across entire box)
+    subgrid_step = 14
+    for gx in range(ic_box_x + 7, ic_box_x + ic_box_size, subgrid_step):
+        draw.line([(gx, ic_box_y + 4), (gx, ic_box_y + ic_box_size - 4)], fill=(16, 32, 58), width=1)
+    for gy in range(ic_box_y + 7, ic_box_y + ic_box_size, subgrid_step):
+        draw.line([(ic_box_x + 4, gy), (ic_box_x + ic_box_size - 4, gy)], fill=(16, 32, 58), width=1)
+        
+    # Scale to fit standard 512dp canvas inside 136px
+    scale = 136.0 / 512.0
+    bs = int(round(512 * scale)) # 136px
     bx1, by1 = cx - bs // 2, cy - bs // 2
     bx2, by2 = bx1 + bs, by1 + bs
     
-    # 1. 64dp Subgrid
-    for g in range(0, 513, 64):
-        gx = bx1 + int(round(g * scale))
-        draw.line([(gx, by1), (gx, by2)], fill=(30, 41, 59), width=1)
-        gy = by1 + int(round(g * scale))
-        draw.line([(bx1, gy), (bx2, gy)], fill=(30, 41, 59), width=1)
+    # Background Construction Wireframe (Overlapping Circles & Diagonals behind icon)
+    # 1. 45-degree & 135-degree construction axes
+    draw.line([(ic_box_x + 10, ic_box_y + 10), (ic_box_x + ic_box_size - 10, ic_box_y + ic_box_size - 10)], fill=(0, 180, 255, 70), width=1)
+    draw.line([(ic_box_x + 10, ic_box_y + ic_box_size - 10), (ic_box_x + ic_box_size - 10, ic_box_y + 10)], fill=(0, 180, 255, 70), width=1)
+    
+    # 2. Keyline Diagonals on 512 canvas
+    draw.line([(bx1, by1), (bx2, by2)], fill=(0, 210, 255, 100), width=1)
+    draw.line([(bx1, by2), (bx2, by1)], fill=(0, 210, 255, 100), width=1)
+    
+    # 3. Outer Circle Guide (Ø512dp)
+    draw.ellipse([bx1, by1, bx2, by2], outline=(0, 150, 255, 90), width=1)
+    
+    # 4. Tangent corner circles (Golden ratio corner drafting circles)
+    cr_corner = int(round(96 * scale)) # 25px
+    for c_ox, c_oy in [(bx1 + cr_corner, by1 + cr_corner), (bx2 - cr_corner, by1 + cr_corner),
+                       (bx1 + cr_corner, by2 - cr_corner), (bx2 - cr_corner, by2 - cr_corner)]:
+        draw.ellipse([c_ox - cr_corner, c_oy - cr_corner, c_ox + cr_corner, c_oy + cr_corner], outline=(56, 189, 248, 70), width=1)
         
-    # 2. 45° Keyline Diagonals
-    draw.line([(bx1, by1), (bx2, by2)], fill=(56, 189, 248, 80), width=1)
-    draw.line([(bx1, by2), (bx2, by1)], fill=(56, 189, 248, 80), width=1)
-    
-    # 3. Center Crosshairs
-    draw.line([(bx1 - 8, cy), (bx2 + 8, cy)], fill=(0, 210, 255, 140), width=1) # X axis
-    draw.line([(cx, by1 - 8), (cx, by2 + 8)], fill=(0, 210, 255, 140), width=1) # Y axis
-    
-    # 4. Safe Zone Square (384x384dp)
+    # 5. Overlapping Center Concentric Circles (Golden Ratio & Google Play Keylines)
+    for dp_dia, col_rgba, w_px in [
+        (440, (0, 230, 255, 180), 1),
+        (384, (0, 180, 255, 140), 1),
+        (288, (56, 189, 248, 110), 1),
+        (192, (0, 210, 255, 120), 1),
+        (96, (56, 189, 248, 100), 1)
+    ]:
+        dia_px = int(round(dp_dia * scale))
+        draw.ellipse([cx - dia_px//2, cy - dia_px//2, cx + dia_px//2, cy + dia_px//2], outline=col_rgba, width=w_px)
+        
+    # 6. Safe Zone Square (384x384dp) & Rectangles
     sz = int(round(384 * scale))
-    draw.rectangle([cx - sz//2, cy - sz//2, cx + sz//2, cy + sz//2], outline=(0, 210, 255, 110), width=1)
+    draw.rectangle([cx - sz//2, cy - sz//2, cx + sz//2, cy + sz//2], outline=(0, 200, 255, 90), width=1)
     
-    # 5. Circle Keyline (Ø440dp - Main Google Material Circle)
-    cr440 = int(round(440 * scale))
-    draw.ellipse([cx - cr440//2, cy - cr440//2, cx + cr440//2, cy + cr440//2], outline=(56, 189, 248, 160), width=1)
-    
-    # 6. Real App Icon with 20% Squircle Mask
-    r_mask = int(round(bs * 0.20))
+    # Paste Real App Icon with 20% Squircle Mask
+    r_mask = int(round(bs * 0.20)) # 27px
     try:
         raw_icon = Image.open('assets/app_icon.png').convert('RGBA')
         raw_resized = raw_icon.resize((bs, bs), Image.Resampling.LANCZOS)
+        
         mask = Image.new('L', (bs, bs), 0)
         mdraw = ImageDraw.Draw(mask)
-        mdraw.rounded_rectangle([0, 0, bs, bs], radius=r_mask, fill=225)
-        base.paste(raw_resized, (bx1, by1), mask)
+        mdraw.rounded_rectangle([0, 0, bs, bs], radius=r_mask, fill=235)
+        
+        icon_layer = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+        icon_layer.paste(raw_resized, (bx1, by1), mask)
+        base = Image.alpha_composite(base, icon_layer)
+        draw = ImageDraw.Draw(base)
     except Exception as e:
         print("Icon paste error:", e)
         
-    # Crisp Google Play 20% Squircle Boundary Line on Top
-    draw.rounded_rectangle([bx1, by1, bx2, by2], radius=r_mask, outline=(255, 255, 255, 240), width=2)
+    # -------------------------------------------------------------------------
+    # FOREGROUND LUMINOUS WIREFRAME OVERLAY (On Top of Icon)
+    # -------------------------------------------------------------------------
+    # 1. Google Play 20% Squircle Boundary (Crisp White / Electric Blue)
+    draw.rounded_rectangle([bx1, by1, bx2, by2], radius=r_mask, outline=(255, 255, 255, 220), width=2)
     
-    # Blueprint Callout Text below Box
-    draw.text((cx, ic_box_y + ic_box_size + 14), "Google Play 512×512 Keyline Grid", font=get_font(8.5, 'bold'), fill=(0, 81, 255), anchor='mm')
-    draw.text((cx, ic_box_y + ic_box_size + 27), "Safe Zone 384dp · Ø440dp Keyline · R96dp (20%)", font=get_font(7.5, 'medium'), fill=(100, 116, 139), anchor='mm')
+    # 2. Foreground Keyline Circles (Glowing Cyan Wireframe)
+    cr440 = int(round(440 * scale))
+    draw.ellipse([cx - cr440//2, cy - cr440//2, cx + cr440//2, cy + cr440//2], outline=(0, 240, 255, 230), width=1)
+    
+    cr384 = int(round(384 * scale))
+    draw.ellipse([cx - cr384//2, cy - cr384//2, cx + cr384//2, cy + cr384//2], outline=(56, 189, 248, 180), width=1)
+    
+    cr192 = int(round(192 * scale))
+    draw.ellipse([cx - cr192//2, cy - cr192//2, cx + cr192//2, cy + cr192//2], outline=(0, 230, 255, 170), width=1)
+    
+    # 3. Precision Center Crosshairs (Extended through the icon with tick marks)
+    draw.line([(bx1 - 10, cy), (bx2 + 10, cy)], fill=(0, 240, 255, 230), width=1)
+    draw.line([(cx, by1 - 10), (cx, by2 + 10)], fill=(0, 240, 255, 230), width=1)
+    
+    for tick_x in [bx1 - 10, bx2 + 10]:
+        draw.line([(tick_x, cy - 4), (tick_x, cy + 4)], fill=(0, 240, 255, 230), width=1)
+    for tick_y in [by1 - 10, by2 + 10]:
+        draw.line([(cx - 4, tick_y), (cx + 4, tick_y)], fill=(0, 240, 255, 230), width=1)
+        
+    # 4. 45-degree Diagonal Guide crossing the icon
+    diag_len = int(round(cr440 / 2.0 / math.sqrt(2)))
+    draw.line([(cx - diag_len, cy - diag_len), (cx + diag_len, cy + diag_len)], fill=(56, 189, 248, 170), width=1)
+    draw.line([(cx - diag_len, cy + diag_len), (cx + diag_len, cy - diag_len)], fill=(56, 189, 248, 170), width=1)
+    
+    # 5. Tangent Anchor Pin Dots on Keyline intersections
+    pin_dots = [
+        (cx, cy - cr440//2), (cx, cy + cr440//2),
+        (cx - cr440//2, cy), (cx + cr440//2, cy),
+        (cx - diag_len, cy - diag_len), (cx + diag_len, cy + diag_len),
+        (cx - diag_len, cy + diag_len), (cx + diag_len, cy - diag_len),
+        (cx, cy)
+    ]
+    for px, py in pin_dots:
+        draw.ellipse([px - 2, py - 2, px + 2, py + 2], fill=(0, 255, 255, 255), outline=(10, 16, 28, 255), width=1)
+        
+    # Technical Dimension Labels below box
+    draw.text((cx, ic_box_y + ic_box_size + 13), "Google Play 512×512 Construction Grid", font=get_font(8.5, 'bold'), fill=(0, 81, 255), anchor='mm')
+    draw.text((cx, ic_box_y + ic_box_size + 27), "Safe Zone 384dp · Keyline Ø440dp · R96dp (20%)", font=get_font(7.5, 'medium'), fill=(100, 116, 139), anchor='mm')
     
     # Right side: Google Play Design Guidelines & Metaphor Breakdown
-    m_x = ic_box_x + ic_box_size + 18
+    m_x = ic_box_x + ic_box_size + 16
     specs = [
-        ("01. Google Play 512×512 규격 준수", "외곽 512dp 캔버스, Safe Zone 384dp, Ø440dp Keyline 서클 엄격 준수로 스토어 등록 시 크롭 왜곡 방지"),
-        ("02. 20% Dynamic Squircle Masking", "Android Adaptive Icon 런처 마스크 및 Google Play 스토어 20% 라운딩(R96dp)에 최적화된 곡률 설계"),
-        ("03. 조형 메타포 & Zero Baked Shadow", "DCA 분할매수 기둥 · 본전 탈출 반등 아크 · 구글 알고리즘이 앰비언트 섀도우를 자동 합성하므로 인위적 그림자 배제")
+        ("01. 기하학 동심원 & 16dp 모듈러 그리드", 
+         "동심원(Ø440, Ø384, Ø192) 및 45° 대각선, 16dp 그리드 교차로",
+         "시각적 무게중심과 조형적 황금비(Golden Ratio) 정밀 구축"),
+        ("02. 20% Dynamic Squircle Masking", 
+         "Android Adaptive Icon 런처 마스크 및 Google Play 스토어",
+         "20% 라운딩(R96dp)에 최적화된 곡률 설계로 크롭 왜곡 방지"),
+        ("03. 물타기(DCA) 조형 메타포 & Zero Shadow", 
+         "DCA 분할매수 기둥(Bar)과 본전 탈출 상승 아크(Arc)의",
+         "수학적 접선 결합 및 구글 앰비언트 라이팅 규격 100% 준수")
     ]
     
     sy = r1_y + 64
-    for title, desc in specs:
+    for title, l1, l2 in specs:
         draw.text((m_x, sy), title, font=get_font(10, 'bold'), fill=(0, 81, 255) if "01" in title else (15, 23, 42))
-        words = desc.split(' ')
-        l1, l2 = '', ''
-        for w in words:
-            if len(l1 + ' ' + w) < 25:
-                l1 = (l1 + ' ' + w).strip()
-            else:
-                l2 = (l2 + ' ' + w).strip()
-        draw.text((m_x, sy + 18), l1, font=get_font(8.3, 'regular'), fill=(71, 85, 105))
-        if l2:
-            draw.text((m_x, sy + 32), l2, font=get_font(8.3, 'regular'), fill=(71, 85, 105))
+        draw.text((m_x, sy + 18), l1, font=get_font(8.5, 'regular'), fill=(71, 85, 105))
+        draw.text((m_x, sy + 32), l2, font=get_font(8.5, 'regular'), fill=(71, 85, 105))
         sy += 54
         
     # Bottom Spec Pill
     draw.rounded_rectangle([col2_x + 24, r1_y + r1_h - 38, col2_x + col2_w - 24, r1_y + r1_h - 14], radius=6, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-    draw.text((col2_x + col2_w // 2, r1_y + r1_h - 26), "Google Play Store Icon Specification & Android Adaptive Icon Compliant", font=get_font(9, 'bold'), fill=(71, 85, 105), anchor='mm')
+    draw.text((col2_x + col2_w // 2, r1_y + r1_h - 26), "Google Play Store Icon Specification & Geometric Wireframe Grid Compliant", font=get_font(8.8, 'bold'), fill=(71, 85, 105), anchor='mm')
+
 
     
     # -------------------------------------------------------------
