@@ -2231,7 +2231,7 @@ def make_slide_07():
         category_en="DESIGN SYSTEM | BRAND IDENTITY & COMPONENT ARCHITECTURE", 
         title_black="브랜드 정체성과 정밀함을 규정하는 ", 
         title_blue="비주얼 아이덴티티 & 디자인 시스템", 
-        subtitle_kr="디자인 철학 3대 원칙, 앱 아이콘 황금 그리드 조형 원리, Flutter Material Rounded 24dp 아이코노그라피, 그리고 토큰 & 아토믹 컴포넌트 킷"
+        subtitle_kr="프로덕트 UX 3대 원칙, Google Play 앱 아이콘 조형 규격, Flutter Material Rounded 24dp 아이코노그라피, 그리고 토큰 & 아토믹 킷"
     )
     
     # Coordinates
@@ -2249,78 +2249,123 @@ def make_slide_07():
     col3_w = 590
     
     # -------------------------------------------------------------
-    # CARD 01 (Upper Left): BRAND IDENTITY & DESIGN PHILOSOPHY
+    # CARD 01 (Upper Left): PRODUCT DESIGN PHILOSOPHY & UX PRINCIPLES
     # -------------------------------------------------------------
     draw.rounded_rectangle([col1_x, r1_y, col1_x + col1_w, r1_y + r1_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     b1_box = draw_pill_badge(draw, left_x=col1_x + 24, cy=r1_y + 30, text="FOUNDATION 01", font=get_font(9.5, 'bold'), theme='amber', has_dot=True, pad_x=8, height=22)
-    draw.text((b1_box[2] + 14, r1_y + 30), "디자인 철학과 3대 핵심 원칙", font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((b1_box[2] + 14, r1_y + 30), "프로덕트 디자인 철학 & UX 3대 원칙", font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
     draw.line([(col1_x + 24, r1_y + 52), (col1_x + col1_w - 24, r1_y + 52)], fill=(241, 245, 249), width=1)
     
     principles = [
-        ("01. Quantitative Precision", "오차 0.00% 폐쇄형 수학 공식과 흔들림 없는 고정폭 타뷸라 넘버 규격 적용", "blue", (0, 81, 255)),
-        ("02. Psychological Relief", "급락장 패닉 상태의 불안을 이성적 판단으로 전환하는 차분한 쿨 블루(#0051FF)", "green", (5, 150, 105)),
-        ("03. Instant Velocity", "엄지 조작 반경(Thumb-Zone 48dp) 중심 설계와 0.2초 음성 도크, 1-Tap 즉각 확정", "purple", (122, 34, 255))
+        ("01. Rational Information Clarity", "급락장 위기 상황에서 패닉을 막기 위해 시각적 노이즈를 배제하고,\n핵심 지표(목표 평단/필요자금)를 1초 내 식별하는 고정폭 Tabular 레이아웃", "blue", (0, 81, 255)),
+        ("02. Emotional Relief & Trustworthy UI", "손실의 붉은 공포를 중화하고 냉철한 퀀트 판단을 유도하는\n시그니처 Electric Blue(#0051FF)와 WCAG 2.1 AAA 8.4:1 초고대비 접근성 설계", "green", (5, 150, 105)),
+        ("03. Frictionless Thumb Ergonomics", "엄지 조작 반경(Thumb-Zone 48dp) 중심의 하단 인터랙션 도크와\n급박한 순간 텍스트 입력 허들을 제거하는 0.2초 온디바이스 음성 인터페이스", "purple", (122, 34, 255))
     ]
     py_start = r1_y + 64
     for p_title, p_desc, p_theme, p_accent in principles:
         draw.rounded_rectangle([col1_x + 24, py_start, col1_x + col1_w - 24, py_start + 68], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
         draw.rounded_rectangle([col1_x + 24, py_start + 8, col1_x + 28, py_start + 60], radius=2, fill=p_accent)
-        draw.text((col1_x + 38, py_start + 18), p_title, font=get_font(11, 'bold'), fill=p_accent)
-        draw.text((col1_x + 38, py_start + 40), p_desc, font=get_font(9.5, 'regular'), fill=(71, 85, 105))
+        draw.text((col1_x + 38, py_start + 16), p_title, font=get_font(10.5, 'bold'), fill=p_accent)
+        lines = p_desc.split('\n')
+        draw.text((col1_x + 38, py_start + 35), lines[0], font=get_font(8.8, 'regular'), fill=(71, 85, 105))
+        if len(lines) > 1:
+            draw.text((col1_x + 38, py_start + 49), lines[1], font=get_font(8.8, 'regular'), fill=(71, 85, 105))
         py_start += 76
         
     draw.rounded_rectangle([col1_x + 24, r1_y + r1_h - 38, col1_x + col1_w - 24, r1_y + r1_h - 14], radius=6, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-    draw.text((col1_x + col1_w // 2, r1_y + r1_h - 26), "Brand Mood: Modern Quantitative Editorial (신뢰성과 정밀성)", font=get_font(9.5, 'bold'), fill=(0, 81, 255), anchor='mm')
+    draw.text((col1_x + col1_w // 2, r1_y + r1_h - 26), "Design Core Mood: Rational Quantitative Calmness (차분한 이성과 정밀한 시각 위계)", font=get_font(9.5, 'bold'), fill=(0, 81, 255), anchor='mm')
     
     # -------------------------------------------------------------
-    # CARD 02 (Upper Center): APP ICON & SYMBOLIC GEOMETRY
+    # CARD 02 (Upper Center): GOOGLE PLAY ICON GUIDELINES & METAPHOR
     # -------------------------------------------------------------
     draw.rounded_rectangle([col2_x, r1_y, col2_x + col2_w, r1_y + r1_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     b2_box = draw_pill_badge(draw, left_x=col2_x + 24, cy=r1_y + 30, text="FOUNDATION 02", font=get_font(9.5, 'bold'), theme='blue', has_dot=True, pad_x=8, height=22)
-    draw.text((b2_box[2] + 14, r1_y + 30), "앱 아이콘 조형 원리와 황금 그리드", font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((b2_box[2] + 14, r1_y + 30), "Google Play 앱 아이콘 가이드라인 규격", font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
     draw.line([(col2_x + 24, r1_y + 52), (col2_x + col2_w - 24, r1_y + 52)], fill=(241, 245, 249), width=1)
     
-    # Left side: Real App Icon with Construction Grid
+    # Left side: Google Play Icon Keyline Grid Blueprint (175x175)
     ic_box_x = col2_x + 24
-    ic_box_y = r1_y + 68
+    ic_box_y = r1_y + 64
     ic_box_size = 175
-    draw.rounded_rectangle([ic_box_x, ic_box_y, ic_box_x + ic_box_size, ic_box_y + ic_box_size], radius=14, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+    draw.rounded_rectangle([ic_box_x, ic_box_y, ic_box_x + ic_box_size, ic_box_y + ic_box_size], radius=12, fill=(15, 23, 42), outline=(30, 41, 59), width=1)
     
-    # Paste actual app icon
+    # Authentic Google Material Icon Construction Grid
+    scale = 135.0 / 512.0
+    cx = ic_box_x + ic_box_size // 2
+    cy = ic_box_y + ic_box_size // 2
+    bs = int(round(512 * scale)) # 135px
+    bx1, by1 = cx - bs // 2, cy - bs // 2
+    bx2, by2 = bx1 + bs, by1 + bs
+    
+    # 1. 64dp Subgrid
+    for g in range(0, 513, 64):
+        gx = bx1 + int(round(g * scale))
+        draw.line([(gx, by1), (gx, by2)], fill=(30, 41, 59), width=1)
+        gy = by1 + int(round(g * scale))
+        draw.line([(bx1, gy), (bx2, gy)], fill=(30, 41, 59), width=1)
+        
+    # 2. 45° Keyline Diagonals
+    draw.line([(bx1, by1), (bx2, by2)], fill=(56, 189, 248, 80), width=1)
+    draw.line([(bx1, by2), (bx2, by1)], fill=(56, 189, 248, 80), width=1)
+    
+    # 3. Center Crosshairs
+    draw.line([(bx1 - 8, cy), (bx2 + 8, cy)], fill=(0, 210, 255, 140), width=1) # X axis
+    draw.line([(cx, by1 - 8), (cx, by2 + 8)], fill=(0, 210, 255, 140), width=1) # Y axis
+    
+    # 4. Safe Zone Square (384x384dp)
+    sz = int(round(384 * scale))
+    draw.rectangle([cx - sz//2, cy - sz//2, cx + sz//2, cy + sz//2], outline=(0, 210, 255, 110), width=1)
+    
+    # 5. Circle Keyline (Ø440dp - Main Google Material Circle)
+    cr440 = int(round(440 * scale))
+    draw.ellipse([cx - cr440//2, cy - cr440//2, cx + cr440//2, cy + cr440//2], outline=(56, 189, 248, 160), width=1)
+    
+    # 6. Real App Icon with 20% Squircle Mask
+    r_mask = int(round(bs * 0.20))
     try:
         raw_icon = Image.open('assets/app_icon.png').convert('RGBA')
-        icon_resized = raw_icon.resize((140, 140), Image.Resampling.LANCZOS)
-        base.paste(icon_resized, (ic_box_x + (ic_box_size - 140)//2, ic_box_y + (ic_box_size - 140)//2), icon_resized)
+        raw_resized = raw_icon.resize((bs, bs), Image.Resampling.LANCZOS)
+        mask = Image.new('L', (bs, bs), 0)
+        mdraw = ImageDraw.Draw(mask)
+        mdraw.rounded_rectangle([0, 0, bs, bs], radius=r_mask, fill=225)
+        base.paste(raw_resized, (bx1, by1), mask)
     except Exception as e:
         print("Icon paste error:", e)
         
-    # Draw golden ratio grid lines overlay
-    gcx = ic_box_x + ic_box_size // 2
-    gcy = ic_box_y + ic_box_size // 2
-    draw.ellipse([gcx - 65, gcy - 65, gcx + 65, gcy + 65], outline=(0, 81, 255, 120), width=1)
-    draw.ellipse([gcx - 40, gcy - 40, gcx + 40, gcy + 40], outline=(0, 210, 255, 120), width=1)
-    draw.line([(ic_box_x + 10, gcy), (ic_box_x + ic_box_size - 10, gcy)], fill=(0, 81, 255, 80), width=1)
-    draw.line([(gcx, ic_box_y + 10), (gcx, ic_box_y + ic_box_size - 10)], fill=(0, 81, 255, 80), width=1)
-    draw.line([(ic_box_x + 15, ic_box_y + 15), (ic_box_x + ic_box_size - 15, ic_box_y + ic_box_size - 15)], fill=(0, 210, 255, 80), width=1)
+    # Crisp Google Play 20% Squircle Boundary Line on Top
+    draw.rounded_rectangle([bx1, by1, bx2, by2], radius=r_mask, outline=(255, 255, 255, 240), width=2)
     
-    draw.text((gcx, ic_box_y + ic_box_size + 14), "1:1 Squircle · Golden Grid", font=get_num_font(9, 'bold'), fill=(100, 116, 139), anchor='mm')
+    # Blueprint Callout Text below Box
+    draw.text((cx, ic_box_y + ic_box_size + 14), "Google Play 512×512 Keyline Grid", font=get_font(8.5, 'bold'), fill=(0, 81, 255), anchor='mm')
+    draw.text((cx, ic_box_y + ic_box_size + 27), "Safe Zone 384dp · Ø440dp Keyline · R96dp (20%)", font=get_font(7.5, 'medium'), fill=(100, 116, 139), anchor='mm')
     
-    # Right side: Metaphor Explanation
+    # Right side: Google Play Design Guidelines & Metaphor Breakdown
     m_x = ic_box_x + ic_box_size + 18
-    metaphors = [
-        ("• 분할매수 기둥 (DCA Pillars)", "차수별 매수 가중치 및 평단가 하향 안정화 형상화"),
-        ("• 상승 반등 곡선 (Turnaround Arc)", "손실 구간 극복과 본전 탈출 및 수익 전환 상승 모멘텀"),
-        ("• 신뢰 & 에너지 그라디언트", "Electric Blue(#0051FF) → Dynamic Magenta(#FF007A)")
+    specs = [
+        ("01. Google Play 512×512 규격 준수", "외곽 512dp 캔버스, Safe Zone 384dp, Ø440dp Keyline 서클 엄격 준수로 스토어 등록 시 크롭 왜곡 방지"),
+        ("02. 20% Dynamic Squircle Masking", "Android Adaptive Icon 런처 마스크 및 Google Play 스토어 20% 라운딩(R96dp)에 최적화된 곡률 설계"),
+        ("03. 조형 메타포 & Zero Baked Shadow", "DCA 분할매수 기둥 · 본전 탈출 반등 아크 · 구글 알고리즘이 앰비언트 섀도우를 자동 합성하므로 인위적 그림자 배제")
     ]
-    my_start = r1_y + 72
-    for m_title, m_desc in metaphors:
-        draw.text((m_x, my_start), m_title, font=get_font(10.5, 'bold'), fill=(0, 81, 255) if "그라디언트" in m_title else (15, 23, 42))
-        draw.text((m_x, my_start + 18), m_desc, font=get_font(8.5, 'regular'), fill=(71, 85, 105))
-        my_start += 52
+    
+    sy = r1_y + 64
+    for title, desc in specs:
+        draw.text((m_x, sy), title, font=get_font(10, 'bold'), fill=(0, 81, 255) if "01" in title else (15, 23, 42))
+        words = desc.split(' ')
+        l1, l2 = '', ''
+        for w in words:
+            if len(l1 + ' ' + w) < 25:
+                l1 = (l1 + ' ' + w).strip()
+            else:
+                l2 = (l2 + ' ' + w).strip()
+        draw.text((m_x, sy + 18), l1, font=get_font(8.3, 'regular'), fill=(71, 85, 105))
+        if l2:
+            draw.text((m_x, sy + 32), l2, font=get_font(8.3, 'regular'), fill=(71, 85, 105))
+        sy += 54
         
     # Bottom Spec Pill
     draw.rounded_rectangle([col2_x + 24, r1_y + r1_h - 38, col2_x + col2_w - 24, r1_y + r1_h - 14], radius=6, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-    draw.text((col2_x + col2_w // 2, r1_y + r1_h - 26), "Google Play 512×512 Master · Squircle 22.5% Radius · 0.618 Golden Ratio", font=get_num_font(9, 'bold'), fill=(71, 85, 105), anchor='mm')
+    draw.text((col2_x + col2_w // 2, r1_y + r1_h - 26), "Google Play Store Icon Specification & Android Adaptive Icon Compliant", font=get_font(9, 'bold'), fill=(71, 85, 105), anchor='mm')
+
     
     # -------------------------------------------------------------
     # CARD 03 (Upper Right): 24dp ICONOGRAPHY SYSTEM (FLUTTER MATERIAL)
