@@ -2249,63 +2249,71 @@ def make_slide_07():
     col3_w = 590
     
     # -------------------------------------------------------------
-    # CARD 01 (Upper Left): DESIGN CORE CONCEPT (심미성 · 일관성 · 독창성)
+    # CARD 01 (Upper Left): DESIGN CORE CONCEPT (UX & GUI Cohesion)
     # -------------------------------------------------------------
     draw.rounded_rectangle([col1_x, r1_y, col1_x + col1_w, r1_y + r1_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     b1_box = draw_pill_badge(draw, left_x=col1_x + 24, cy=r1_y + 30, text="FOUNDATION 01", font=get_font(9.5, 'bold'), theme='amber', has_dot=True, pad_x=8, height=22)
-    draw.text((b1_box[2] + 14, r1_y + 30), "디자인 핵심 가치 (심미성 · 일관성 · 독창성)", font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((b1_box[2] + 14, r1_y + 30), "디자인 핵심 컨셉 (UX & GUI 설계)", font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
     draw.line([(col1_x + 24, r1_y + 52), (col1_x + col1_w - 24, r1_y + 52)], fill=(241, 245, 249), width=1)
     
     principles = [
-        ("01. 심미성 (Aesthetics) · 정서적 안정과 평정심", 
-         "하락장 공포를 완화하는 딥 옵시디언 캔버스(#0D1117)와 시그니처 퀀트 블루\n글래스모피즘 미학을 적용하여 감정적 뇌동매매를 차단하고 냉철한 이성 유도", 
-         "blue", (0, 81, 255)),
+        ("01. 심미성 (Aesthetics) · 정서적 안정 & 신뢰성", 
+         "하락장 패닉 방지 및 평정심 유지, 1초 내 주요 지표 식별과 인지 부하 감소",
+         "딥 옵시디언 다크(#0D1117) & 퀀트 블루 AAA 고대비 배색, 글래스모피즘", 
+         (0, 81, 255)),
         ("02. 일관성 (Consistency) · 엄격한 시스템 규격", 
-         "8dp 베이스라인 그리드, R12/R16 일관된 스쿼클 곡률, Tabular 고정폭 타이포그래피로\n모든 컴포넌트와 화면이 단 하나의 디자인 시스템 규칙 아래 한 치 오차 없이 작동", 
-         "green", (5, 150, 105)),
-        ("03. 독창성 (Originality) · 차별화된 퀀트 메타포", 
-         "기존의 딱딱한 계산기를 완전히 파괴한 '마인드 케어 퀀트 솔루션' 아이덴티티와\n'하락을 기회로 바꾸는 반등의 호(Arc)', 엄지 조작 반경 중심 0.2초 음성 도크 인터랙션", 
-         "purple", (122, 34, 255))
+         "화면 전환 간 시선 분산 방지, 인지 관성을 유도하여 학습 비용 제로(0초) 달성",
+         "8dp 베이스라인 그리드, R12/R16 일관된 스쿼클 곡률, Tabular 고정폭 타이포", 
+         (5, 150, 105)),
+        ("03. 독창성 (Originality) · 퀀트 메타포 & 조작성", 
+         "엄지 조작 반경(Thumb-Zone) 내 한 손 0.2초 음성 도크 제어 인터랙션 실현",
+         "하락을 반등으로 전환하는 상승 아크(Arc) 조형 메타포 & 네온 펄스 레이어", 
+         (122, 34, 255))
     ]
     py_start = r1_y + 64
-    for p_title, p_desc, p_theme, p_accent in principles:
-        draw.rounded_rectangle([col1_x + 24, py_start, col1_x + col1_w - 24, py_start + 68], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-        draw.rounded_rectangle([col1_x + 24, py_start + 8, col1_x + 28, py_start + 60], radius=2, fill=p_accent)
-        draw.text((col1_x + 38, py_start + 16), p_title, font=get_font(10.5, 'bold'), fill=p_accent)
-        lines = p_desc.split('\n')
-        draw.text((col1_x + 38, py_start + 35), lines[0], font=get_font(8.8, 'regular'), fill=(71, 85, 105))
-        if len(lines) > 1:
-            draw.text((col1_x + 38, py_start + 49), lines[1], font=get_font(8.8, 'regular'), fill=(71, 85, 105))
-        py_start += 76
+    for p_title, ux_text, gui_text, p_accent in principles:
+        draw.rounded_rectangle([col1_x + 24, py_start, col1_x + col1_w - 24, py_start + 70], radius=10, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        draw.rounded_rectangle([col1_x + 24, py_start + 6, col1_x + 28, py_start + 64], radius=2, fill=p_accent)
+        draw.text((col1_x + 36, py_start + 13), p_title, font=get_font(10.5, 'bold'), fill=p_accent)
+        
+        # UX Concept Row
+        draw.text((col1_x + 36, py_start + 32), "[UX 컨셉]", font=get_font(8.2, 'bold'), fill=(15, 23, 42))
+        draw.text((col1_x + 88, py_start + 32), ux_text, font=get_font(8.2, 'regular'), fill=(71, 85, 105))
+        
+        # GUI Concept Row
+        draw.text((col1_x + 36, py_start + 49), "[GUI 컨셉]", font=get_font(8.2, 'bold'), fill=(15, 23, 42))
+        draw.text((col1_x + 88, py_start + 49), gui_text, font=get_font(8.2, 'regular'), fill=(71, 85, 105))
+        
+        py_start += 78
         
     draw.rounded_rectangle([col1_x + 24, r1_y + r1_h - 38, col1_x + col1_w - 24, r1_y + r1_h - 14], radius=6, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-    draw.text((col1_x + col1_w // 2, r1_y + r1_h - 26), "Design Core Value: Aesthetic Calm · Strict Consistency · Original Metaphor", font=get_font(9.2, 'bold'), fill=(0, 81, 255), anchor='mm')
+    draw.text((col1_x + col1_w // 2, r1_y + r1_h - 26), "Core Principles: UX Cognitive Ease · GUI Obsidian & Squircle System", font=get_font(9.0, 'bold'), fill=(0, 81, 255), anchor='mm')
     
     # -------------------------------------------------------------
-    # CARD 02 (Upper Center): APP ICON GEOMETRIC WIREFRAME GRID & SPEC
+    # CARD 02 (Upper Center): APP ICON GEOMETRIC DRAFTING GRID & SPEC
     # -------------------------------------------------------------
     draw.rounded_rectangle([col2_x, r1_y, col2_x + col2_w, r1_y + r1_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     b2_box = draw_pill_badge(draw, left_x=col2_x + 24, cy=r1_y + 30, text="FOUNDATION 02", font=get_font(9.5, 'bold'), theme='blue', has_dot=True, pad_x=8, height=22)
     draw.text((b2_box[2] + 14, r1_y + 30), "앱 아이콘 기하학 와이어프레임 & 조형 규격", font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
     draw.line([(col2_x + 24, r1_y + 52), (col2_x + col2_w - 24, r1_y + 52)], fill=(241, 245, 249), width=1)
     
-    # Technical Drafting Blueprint Canvas Box
+    # Technical Drafting Blueprint Canvas Box (CLEAN LIGHT BACKGROUND - NO BLACK)
     ic_box_x = col2_x + 22
     ic_box_y = r1_y + 62
     ic_box_size = 178
     
-    # Blueprint base with subtle technical styling
-    draw.rounded_rectangle([ic_box_x, ic_box_y, ic_box_x + ic_box_size, ic_box_y + ic_box_size], radius=12, fill=(8, 14, 26), outline=(30, 48, 80), width=1)
+    # Clean drafting canvas base
+    draw.rounded_rectangle([ic_box_x, ic_box_y, ic_box_x + ic_box_size, ic_box_y + ic_box_size], radius=12, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
     
     cx = ic_box_x + ic_box_size // 2
     cy = ic_box_y + ic_box_size // 2
     
-    # Blueprint Subgrid (16dp & 32dp equivalent lines across entire box)
+    # Blueprint Subgrid (16dp equivalent faint lines across entire drafting box)
     subgrid_step = 14
     for gx in range(ic_box_x + 7, ic_box_x + ic_box_size, subgrid_step):
-        draw.line([(gx, ic_box_y + 4), (gx, ic_box_y + ic_box_size - 4)], fill=(16, 32, 58), width=1)
+        draw.line([(gx, ic_box_y + 4), (gx, ic_box_y + ic_box_size - 4)], fill=(226, 232, 240), width=1)
     for gy in range(ic_box_y + 7, ic_box_y + ic_box_size, subgrid_step):
-        draw.line([(ic_box_x + 4, gy), (ic_box_x + ic_box_size - 4, gy)], fill=(16, 32, 58), width=1)
+        draw.line([(ic_box_x + 4, gy), (ic_box_x + ic_box_size - 4, gy)], fill=(226, 232, 240), width=1)
         
     # Scale to fit standard 512dp canvas inside 136px
     scale = 136.0 / 512.0
@@ -2313,96 +2321,90 @@ def make_slide_07():
     bx1, by1 = cx - bs // 2, cy - bs // 2
     bx2, by2 = bx1 + bs, by1 + bs
     
-    # Background Construction Wireframe (Overlapping Circles & Diagonals behind icon)
-    # 1. 45-degree & 135-degree construction axes
-    draw.line([(ic_box_x + 10, ic_box_y + 10), (ic_box_x + ic_box_size - 10, ic_box_y + ic_box_size - 10)], fill=(0, 180, 255, 70), width=1)
-    draw.line([(ic_box_x + 10, ic_box_y + ic_box_size - 10), (ic_box_x + ic_box_size - 10, ic_box_y + 10)], fill=(0, 180, 255, 70), width=1)
+    # -------------------------------------------------------------
+    # BACKGROUND CONSTRUCTION KEYLINE GRID (Spread Elegantly Behind Icon)
+    # -------------------------------------------------------------
+    # 1. 45-degree & 135-degree construction axes (Across entire box)
+    draw.line([(ic_box_x + 8, ic_box_y + 8), (ic_box_x + ic_box_size - 8, ic_box_y + ic_box_size - 8)], fill=(0, 81, 255, 65), width=1)
+    draw.line([(ic_box_x + 8, ic_box_y + ic_box_size - 8), (ic_box_x + ic_box_size - 8, ic_box_y + 8)], fill=(0, 81, 255, 65), width=1)
     
     # 2. Keyline Diagonals on 512 canvas
-    draw.line([(bx1, by1), (bx2, by2)], fill=(0, 210, 255, 100), width=1)
-    draw.line([(bx1, by2), (bx2, by1)], fill=(0, 210, 255, 100), width=1)
+    draw.line([(bx1, by1), (bx2, by2)], fill=(0, 81, 255, 85), width=1)
+    draw.line([(bx1, by2), (bx2, by1)], fill=(0, 81, 255, 85), width=1)
     
-    # 3. Outer Circle Guide (Ø512dp)
-    draw.ellipse([bx1, by1, bx2, by2], outline=(0, 150, 255, 90), width=1)
+    # 3. Outer Canvas Circle Guide (Ø512dp)
+    draw.ellipse([bx1, by1, bx2, by2], outline=(0, 81, 255, 75), width=1)
     
-    # 4. Tangent corner circles (Golden ratio corner drafting circles)
+    # 4. Tangent corner circles (Golden ratio corner drafting circles - R96dp)
     cr_corner = int(round(96 * scale)) # 25px
     for c_ox, c_oy in [(bx1 + cr_corner, by1 + cr_corner), (bx2 - cr_corner, by1 + cr_corner),
                        (bx1 + cr_corner, by2 - cr_corner), (bx2 - cr_corner, by2 - cr_corner)]:
-        draw.ellipse([c_ox - cr_corner, c_oy - cr_corner, c_ox + cr_corner, c_oy + cr_corner], outline=(56, 189, 248, 70), width=1)
+        draw.ellipse([c_ox - cr_corner, c_oy - cr_corner, c_ox + cr_corner, c_oy + cr_corner], outline=(56, 189, 248, 80), width=1)
         
-    # 5. Overlapping Center Concentric Circles (Golden Ratio & Google Play Keylines)
+    # 5. Overlapping Center Concentric Circles (Google Play Keylines)
     for dp_dia, col_rgba, w_px in [
-        (440, (0, 230, 255, 180), 1),
-        (384, (0, 180, 255, 140), 1),
-        (288, (56, 189, 248, 110), 1),
-        (192, (0, 210, 255, 120), 1),
-        (96, (56, 189, 248, 100), 1)
+        (440, (0, 81, 255, 120), 1),
+        (384, (0, 81, 255, 100), 1),
+        (288, (56, 189, 248, 90), 1),
+        (192, (0, 81, 255, 80), 1),
+        (96, (56, 189, 248, 70), 1)
     ]:
         dia_px = int(round(dp_dia * scale))
         draw.ellipse([cx - dia_px//2, cy - dia_px//2, cx + dia_px//2, cy + dia_px//2], outline=col_rgba, width=w_px)
         
-    # 6. Safe Zone Square (384x384dp) & Rectangles
+    # 6. Safe Zone Square (384x384dp)
     sz = int(round(384 * scale))
-    draw.rectangle([cx - sz//2, cy - sz//2, cx + sz//2, cy + sz//2], outline=(0, 200, 255, 90), width=1)
+    draw.rectangle([cx - sz//2, cy - sz//2, cx + sz//2, cy + sz//2], outline=(0, 81, 255, 85), width=1)
     
-    # Paste Real App Icon with 20% Squircle Mask
-    r_mask = int(round(bs * 0.20)) # 27px
-    try:
-        raw_icon = Image.open('assets/app_icon.png').convert('RGBA')
-        raw_resized = raw_icon.resize((bs, bs), Image.Resampling.LANCZOS)
+    # 7. Precision Center Crosshairs extending to box edges with border tick marks
+    draw.line([(ic_box_x + 6, cy), (ic_box_x + ic_box_size - 6, cy)], fill=(0, 81, 255, 120), width=1)
+    draw.line([(cx, ic_box_y + 6), (cx, ic_box_y + ic_box_size - 6)], fill=(0, 81, 255, 120), width=1)
+    for tick_x in [ic_box_x + 6, ic_box_x + ic_box_size - 6]:
+        draw.line([(tick_x, cy - 4), (tick_x, cy + 4)], fill=(0, 81, 255, 160), width=1)
+    for tick_y in [ic_box_y + 6, ic_box_y + ic_box_size - 6]:
+        draw.line([(cx - 4, tick_y), (cx + 4, tick_y)], fill=(0, 81, 255, 160), width=1)
         
-        mask = Image.new('L', (bs, bs), 0)
-        mdraw = ImageDraw.Draw(mask)
-        mdraw.rounded_rectangle([0, 0, bs, bs], radius=r_mask, fill=235)
-        
-        icon_layer = Image.new('RGBA', (W, H), (0, 0, 0, 0))
-        icon_layer.paste(raw_resized, (bx1, by1), mask)
-        base = Image.alpha_composite(base, icon_layer)
-        draw = ImageDraw.Draw(base)
-    except Exception as e:
-        print("Icon paste error:", e)
-        
-    # -------------------------------------------------------------------------
-    # FOREGROUND LUMINOUS WIREFRAME OVERLAY (On Top of Icon)
-    # -------------------------------------------------------------------------
-    # 1. Google Play 20% Squircle Boundary (Crisp White / Electric Blue)
-    draw.rounded_rectangle([bx1, by1, bx2, by2], radius=r_mask, outline=(255, 255, 255, 220), width=2)
-    
-    # 2. Foreground Keyline Circles (Glowing Cyan Wireframe)
+    # 8. Tangent Anchor Pin Dots on Keyline intersections
     cr440 = int(round(440 * scale))
-    draw.ellipse([cx - cr440//2, cy - cr440//2, cx + cr440//2, cy + cr440//2], outline=(0, 240, 255, 230), width=1)
-    
-    cr384 = int(round(384 * scale))
-    draw.ellipse([cx - cr384//2, cy - cr384//2, cx + cr384//2, cy + cr384//2], outline=(56, 189, 248, 180), width=1)
-    
-    cr192 = int(round(192 * scale))
-    draw.ellipse([cx - cr192//2, cy - cr192//2, cx + cr192//2, cy + cr192//2], outline=(0, 230, 255, 170), width=1)
-    
-    # 3. Precision Center Crosshairs (Extended through the icon with tick marks)
-    draw.line([(bx1 - 10, cy), (bx2 + 10, cy)], fill=(0, 240, 255, 230), width=1)
-    draw.line([(cx, by1 - 10), (cx, by2 + 10)], fill=(0, 240, 255, 230), width=1)
-    
-    for tick_x in [bx1 - 10, bx2 + 10]:
-        draw.line([(tick_x, cy - 4), (tick_x, cy + 4)], fill=(0, 240, 255, 230), width=1)
-    for tick_y in [by1 - 10, by2 + 10]:
-        draw.line([(cx - 4, tick_y), (cx + 4, tick_y)], fill=(0, 240, 255, 230), width=1)
-        
-    # 4. 45-degree Diagonal Guide crossing the icon
     diag_len = int(round(cr440 / 2.0 / math.sqrt(2)))
-    draw.line([(cx - diag_len, cy - diag_len), (cx + diag_len, cy + diag_len)], fill=(56, 189, 248, 170), width=1)
-    draw.line([(cx - diag_len, cy + diag_len), (cx + diag_len, cy - diag_len)], fill=(56, 189, 248, 170), width=1)
-    
-    # 5. Tangent Anchor Pin Dots on Keyline intersections
     pin_dots = [
         (cx, cy - cr440//2), (cx, cy + cr440//2),
         (cx - cr440//2, cy), (cx + cr440//2, cy),
         (cx - diag_len, cy - diag_len), (cx + diag_len, cy + diag_len),
         (cx - diag_len, cy + diag_len), (cx + diag_len, cy - diag_len),
-        (cx, cy)
     ]
     for px, py in pin_dots:
-        draw.ellipse([px - 2, py - 2, px + 2, py + 2], fill=(0, 255, 255, 255), outline=(10, 16, 28, 255), width=1)
+        draw.ellipse([px - 2, py - 2, px + 2, py + 2], fill=(0, 81, 255, 200), outline=(255, 255, 255, 255), width=1)
+
+    # -------------------------------------------------------------
+    # APP ICON PLACED ON TOP OF GRID (With Elevation Drop Shadow)
+    # -------------------------------------------------------------
+    r_mask = int(round(bs * 0.20)) # 27px
+    try:
+        # Soft elevation shadow behind icon
+        shadow_layer = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+        sdraw = ImageDraw.Draw(shadow_layer)
+        sdraw.rounded_rectangle([bx1 + 2, by1 + 5, bx2 + 2, by2 + 7], radius=r_mask + 2, fill=(15, 23, 42, 45))
+        shadow_layer = shadow_layer.filter(ImageFilter.GaussianBlur(6))
+        base = Image.alpha_composite(base, shadow_layer)
+        
+        # Real App Icon with 20% Squircle Mask
+        raw_icon = Image.open('assets/app_icon.png').convert('RGBA')
+        raw_resized = raw_icon.resize((bs, bs), Image.Resampling.LANCZOS)
+        
+        mask = Image.new('L', (bs, bs), 0)
+        mdraw = ImageDraw.Draw(mask)
+        mdraw.rounded_rectangle([0, 0, bs, bs], radius=r_mask, fill=255)
+        
+        icon_layer = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+        icon_layer.paste(raw_resized, (bx1, by1), mask)
+        base = Image.alpha_composite(base, icon_layer)
+        draw = ImageDraw.Draw(base)
+        
+        # Crisp 1px boundary stroke around the icon
+        draw.rounded_rectangle([bx1, by1, bx2, by2], radius=r_mask, outline=(0, 81, 255, 120), width=1)
+    except Exception as e:
+        print("Icon paste error:", e)
         
     # Technical Dimension Labels below box
     draw.text((cx, ic_box_y + ic_box_size + 13), "Google Play 512×512 Construction Grid", font=get_font(8.5, 'bold'), fill=(0, 81, 255), anchor='mm')
@@ -2431,7 +2433,7 @@ def make_slide_07():
         
     # Bottom Spec Pill
     draw.rounded_rectangle([col2_x + 24, r1_y + r1_h - 38, col2_x + col2_w - 24, r1_y + r1_h - 14], radius=6, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-    draw.text((col2_x + col2_w // 2, r1_y + r1_h - 26), "Google Play Store Icon Specification & Geometric Wireframe Grid Compliant", font=get_font(8.8, 'bold'), fill=(71, 85, 105), anchor='mm')
+    draw.text((col2_x + col2_w // 2, r1_y + r1_h - 26), "Google Play Store Icon Specification & Geometric Drafting Grid Compliant", font=get_font(8.8, 'bold'), fill=(71, 85, 105), anchor='mm')
 
 
     
