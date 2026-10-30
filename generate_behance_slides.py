@@ -3480,7 +3480,7 @@ def make_slide_12():
     # ---------------------------------------------------------
     rx = 800
     rw = 1020
-    base_proto_url = os.environ.get("GITHUB_PAGES_BASE_URL", "https://coyote-dev.github.io/average_down_calculator")
+    base_proto_url = os.environ.get("GITHUB_PAGES_BASE_URL", "https://koyotejw-ux.github.io/smart-dca/portfolio")
     proto_entry_url = f"{base_proto_url}/prototype.html"
     
     # ---------------------------------------------------------

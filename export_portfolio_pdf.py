@@ -3,7 +3,7 @@ import fitz  # PyMuPDF
 
 def export_slides_to_pdf(base_url=None):
     if base_url is None:
-        base_url = os.environ.get("GITHUB_PAGES_BASE_URL", "https://coyote-dev.github.io/average_down_calculator")
+        base_url = os.environ.get("GITHUB_PAGES_BASE_URL", "https://koyotejw-ux.github.io/smart-dca/portfolio")
     slide_dir = 'portfolio/behance_slides'
     out_pdf = 'portfolio/Smart_DCA_Portfolio.pdf'
     
