@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#070A12">
+  <title>FortuneMatch (포춘매치) - 60fps Live Interactive Simulator</title>
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <style>
+    :root {
+      --sat: env(safe-area-inset-top, 0px);
+      --sab: env(safe-area-inset-bottom, 0px);
+      --sal: env(safe-area-inset-left, 0px);
+      --sar: env(safe-area-inset-right, 0px);
+      --device-scale: 1;
+      --gold-champagne: #E5C07B;
+      --gold-bright: #FFD700;
+      --bg-deep: #070A12;
+      --bg-surface: #0E1424;
+      --bg-card: #151C33;
+      --cyan-neon: #00E5FF;
+      --violet-aurora: #8A2BE2;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 25%, #10162a 0%, #070a12 60%, #030408 100%);
+      color: #F4F6FC;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Floating Glassmorphism Navigation Bar */
+    .proto-navbar {
+      width: 100%;
+      height: 56px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: rgba(14, 20, 36, 0.85);
+      border-bottom: 1px solid rgba(229, 192, 123, 0.22);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    .proto-nav-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn-back-deck {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(229, 192, 123, 0.3);
+      color: var(--gold-champagne);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 7px 15px;
+      border-radius: 9999px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-back-deck:hover {
+      background: rgba(229, 192, 123, 0.15);
+      border-color: var(--gold-bright);
+      color: var(--gold-bright);
+      transform: translateX(-2px);
+    }
+
+    .proto-brand {
+      font-size: 14px;
+      font-weight: 800;
+      color: #A3B0CC;
+      letter-spacing: -0.01em;
+    }
+
+    .proto-brand strong {
+      color: var(--gold-bright);
+    }
+
+    /* Center Flow Switcher Pills */
+    .flow-pill-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 4px 6px;
+      border-radius: 9999px;
+      border: 1px solid rgba(229, 192, 123, 0.25);
+    }
+
+    .flow-pill-btn {
+      background: transparent;
+      border: none;
+      color: #A3B0CC;
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .flow-pill-btn:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .flow-pill-btn.active {
+      background: linear-gradient(135deg, #FFD700 0%, #E5C07B 100%);
+      color: #070A12;
+      box-shadow: 0 2px 10px rgba(255, 215, 0, 0.35);
+    }
+
+    .proto-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .fps-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #34D399;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      letter-spacing: 0.05em;
+    }
+
+    .fps-dot {
+      width: 6px;
+      height: 6px;
+      background: #10B981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10B981;
+    }
+
+    .btn-proto-icon {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #A3B0CC;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s ease;
+      text-decoration: none;
+    }
+
+    .btn-proto-icon:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #FFFFFF;
+    }
+
+    /* ==========================================================================
+       DEVICE STAGE & HEIGHT-ADAPTIVE MOCKUP
+       ========================================================================== */
+    .device-stage {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      padding: 16px 20px;
+    }
+
+    .device-scale-wrapper {
+      transform: scale(var(--device-scale));
+      transform-origin: center center;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* iPhone 16 Pro Flagship Frame */
+    .iphone-device {
+      width: 393px;
+      height: 852px;
+      background: #070A12;
+      border-radius: 54px;
+      box-shadow: 
+        0 0 0 3px #182033,
+        0 0 0 5px rgba(229, 192, 123, 0.6),
+        0 25px 60px rgba(0, 0, 0, 0.8),
+        0 0 40px rgba(138, 43, 226, 0.2);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Side Buttons Protrusion */
+    .iphone-device::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 130px;
+      width: 4px;
+      height: 32px;
+      background: #2D323C;
+      border-radius: 2px 0 0 2px;
+      box-shadow: 0 45px 0 #2D323C, 0 95px 0 #2D323C;
+    }
+
+    .iphone-device::after {
+      content: '';
+      position: absolute;
+      right: -8px;
+      top: 175px;
+      width: 4px;
+      height: 54px;
+      background: #2D323C;
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* Authentic 44px iOS Status Bar */
+    .iphone-status-bar {
+      height: 44px;
+      width: 100%;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: -0.02em;
+      pointer-events: none;
+    }
+
+    .status-time {
+      font-variant-numeric: tabular-nums;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #F4F6FC;
+    }
+
+    /* Dynamic Island Pill */
+    .dynamic-island {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 122px;
+      height: 34px;
+      background: #000000;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+      pointer-events: auto;
+      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .di-camera {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #0A0E18;
+      border: 1px solid #1E293B;
+      box-shadow: inset 0 0 3px rgba(0, 229, 255, 0.6);
+    }
+
+    .di-sensor {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #111827;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #F4F6FC;
+    }
+
+    /* Simulator Content Screen (Iframe or Simulator Views) */
+    .simulator-viewport {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background-color: #070A12;
+      overflow-y: auto;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .simulator-viewport iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* Home Indicator Safe Area Bar */
+    .home-indicator-bar {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 136px;
+      height: 5px;
+      background: var(--gold-champagne);
+      border-radius: 9999px;
+      opacity: 0.85;
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    /* Fullscreen Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .proto-navbar {
+        padding: 0 14px;
+        height: 50px;
+      }
+      .proto-brand strong {
+        display: none;
+      }
+      .device-stage {
+        padding: 0;
+      }
+      .device-scale-wrapper {
+        transform: none !important;
+        width: 100%;
+        height: 100%;
+      }
+      .iphone-device {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .iphone-device::before,
+      .iphone-device::after {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Glassmorphism Navigation Bar -->
+  <header class="proto-navbar">
+    <div class="proto-nav-left">
+      <a href="index.html" class="btn-back-deck" title="포트폴리오 케이스 스터디로 돌아가기">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        케이스 스터디
+      </a>
+      <span class="proto-brand"><strong>FortuneMatch</strong> · 60fps 인터랙티브 프로토타입</span>
+    </div>
+
+    <!-- Center Flow Switcher Pills -->
+    <div class="flow-pill-group" role="tablist">
+      <button class="flow-pill-btn active" id="pill-hub" onclick="switchFlow('hub', this)">
+        <span>01</span> 우주 사주 허브
+      </button>
+      <button class="flow-pill-btn" id="pill-radar" onclick="switchFlow('radar', this)">
+        <span>02</span> 오행 레이더 분석
+      </button>
+      <button class="flow-pill-btn" id="pill-match" onclick="switchFlow('match', this)">
+        <span>03</span> 정밀 궁합 매칭
+      </button>
+      <button class="flow-pill-btn" id="pill-tarot" onclick="switchFlow('tarot', this)">
+        <span>04</span> 럭셔리 타로 & 볼트
+      </button>
+    </div>
+
+    <div class="proto-nav-right">
+      <span class="fps-badge">
+        <span class="fps-dot"></span>
+        60 FPS LIVE
+      </span>
+      <button class="btn-proto-icon" id="btn-fullscreen" title="전체화면 토글 (F)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      </button>
+      <a href="../index.html" class="btn-proto-icon" title="포트폴리오 스튜디오 메인으로" style="text-decoration:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Device Stage with Height-Adaptive Mockup -->
+  <main class="device-stage" id="deviceStage">
+    <div class="device-scale-wrapper" id="deviceWrapper">
+      <div class="iphone-device">
+        <!-- 44px Status Bar -->
+        <div class="iphone-status-bar">
+          <span class="status-time" id="statusClock">9:41</span>
+          <div class="dynamic-island">
+            <span class="di-sensor"></span>
+            <span class="di-camera"></span>
+          </div>
+          <div class="status-icons">
+            <!-- Cellular -->
+            <svg width="16" height="12" viewBox="0 0 18 12" fill="currentColor">
+              <rect x="0" y="9" width="3" height="3" rx="0.5"/>
+              <rect x="4.5" y="6.5" width="3" height="5.5" rx="0.5"/>
+              <rect x="9" y="4" width="3" height="8" rx="0.5"/>
+              <rect x="13.5" y="1" width="3" height="11" rx="0.5"/>
+            </svg>
+            <!-- Wifi -->
+            <svg width="15" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 18c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-4.9-4.9c2.7-2.7 7.1-2.7 9.8 0l1.4-1.4c-3.5-3.5-9.2-3.5-12.6 0l1.4 1.4zm-2.8-2.8c4.3-4.3 11.2-4.3 15.5 0l1.4-1.4c-5.1-5.1-13.3-5.1-18.4 0l1.5 1.4z"/>
+            </svg>
+            <!-- Battery -->
+            <svg width="22" height="11" viewBox="0 0 25 12" fill="currentColor">
+              <rect x="0.5" y="0.5" width="20" height="11" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.2"/>
+              <rect x="2" y="2" width="17" height="8" rx="2" fill="currentColor"/>
+              <path d="M22 4v4c.6 0 1-.4 1-1V5c0-.6-.4-1-1-1z" fill="currentColor"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Simulator Core Content (Embeds Web App) -->
+        <div class="simulator-viewport">
+          <iframe id="protoIframe" src="app/index.html" title="FortuneMatch Simulator"></iframe>
+        </div>
+
+        <!-- Native Home Indicator Bar -->
+        <div class="home-indicator-bar"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Live Digital Clock
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      let minutes = now.getMinutes();
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      const el = document.getElementById('statusClock');
+      if (el) el.textContent = `${hours}:${minutes}`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Height-Adaptive Auto-Resizing Engine
+    function autoResizeMockup() {
+      const stage = document.getElementById('deviceStage');
+      const wrapper = document.getElementById('deviceWrapper');
+      if (!stage || !wrapper) return;
+      if (window.innerWidth <= 768) {
+        document.documentElement.style.setProperty('--device-scale', '1');
+        return;
+      }
+      const availableHeight = stage.clientHeight - 36;
+      const baseHeight = 852;
+      let scale = Math.min(1, availableHeight / baseHeight);
+      if (scale < 0.45) scale = 0.45;
+      document.documentElement.style.setProperty('--device-scale', scale);
+    }
+
+    window.addEventListener('resize', autoResizeMockup);
+    window.addEventListener('DOMContentLoaded', autoResizeMockup);
+    autoResizeMockup();
+
+    // Flow Switcher
+    function switchFlow(flowName, btn) {
+      document.querySelectorAll('.flow-pill-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      const iframe = document.getElementById('protoIframe');
+      if (!iframe) return;
+
+      // Switch view inside iframe if available
+      try {
+        if (iframe.contentWindow && iframe.contentWindow.switchView) {
+          if (flowName === 'hub') iframe.contentWindow.switchView('landing');
+          else iframe.contentWindow.switchView('webapp');
+        }
+      } catch(e) {}
+    }
+
+    // Fullscreen Toggle
+    const btnFs = document.getElementById('btn-fullscreen');
+    if (btnFs) {
+      btnFs.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen();
+        } else {
+          document.exitFullscreen();
+        }
+      });
+    }
+  </script>
+</body>
+</html>

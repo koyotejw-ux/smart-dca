@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FortuneMatch (포춘매치) - Behance Enterprise Case Study & UX/UI Architecture</title>
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+  <link rel="stylesheet" href="style.css?v=20261030_ftmt_cosmic_luxury_v1">
+</head>
+<body>
+
+  <!-- Ambient Cosmic Aura Layer -->
+  <div class="cosmic-aura-layer" aria-hidden="true"></div>
+
+  <!-- Floating Navigation & Master Control Dock -->
+  <aside class="global-control-bar" aria-label="Deck Controls">
+    <div class="dock-left">
+      <span class="live-status-pill">
+        <span class="status-dot"></span>
+        Google Play Store Live
+      </span>
+      <span class="deck-title">FortuneMatch · Behance Case Study</span>
+    </div>
+
+    <div class="dock-center">
+      <button class="nav-arrow-btn" id="btn-prev" title="이전 슬라이드 (←, ↑)" aria-label="Previous Slide">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <span class="slide-counter" id="slide-counter">SLIDE <strong id="curr-num">01</strong> / 12</span>
+      <button class="nav-arrow-btn" id="btn-next" title="다음 슬라이드 (→, ↓, Space)" aria-label="Next Slide">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+
+    <div class="dock-right">
+      <a href="prototype.html" class="btn-live-proto" id="btn-goto-proto" title="인터랙티브 60fps 프로토타입 체험">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        60fps 프로토타입 체험 ↗
+      </a>
+      <button class="btn-icon" id="btn-fullscreen" title="전체화면 (F)" aria-label="Toggle Fullscreen">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      </button>
+      <a href="../index.html" class="btn-icon" title="포트폴리오 스튜디오 메인으로 돌아가기" aria-label="Return to Studio Hub" style="text-decoration:none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Right Slide Dot Navigation Rail -->
+  <nav class="slide-nav-rail" id="nav-rail" aria-label="Slide Jump Dots"></nav>
+
+  <!-- Main Slide Stream -->
+  <main class="deck-main-container" id="deck-container">
+    <div class="slide-frame" id="slide-1" data-index="1">
+      <img src="behance_slides/slide_01.png" alt="Slide 01 - FortuneMatch Hero Cover" loading="eager" />
+    </div>
+
+    <div class="slide-frame" id="slide-2" data-index="2">
+      <img src="behance_slides/slide_02.png" alt="Slide 02 - Problem Definition & Market Study" loading="lazy" />
+    </div>
+
+    <div class="slide-frame" id="slide-3" data-index="3">
+      <img src="behance_slides/slide_03.png" alt="Slide 03 - Target Persona & Journey Map" loading="lazy" />
+    </div>
+
+    <div class="slide-frame" id="slide-4" data-index="4">
+      <img src="behance_slides/slide_04.png" alt="Slide 04 - Information Architecture" loading="lazy" />
+    </div>
+
+    <div class="slide-frame" id="slide-5" data-index="5">
+      <img src="behance_slides/slide_05.png" alt="Slide 05 - User Flow & Experience Logic" loading="lazy" />
+    </div>
+
+    <div class="slide-frame" id="slide-6" data-index="6">
+      <img src="behance_slides/slide_06.png" alt="Slide 06 - Wireframe & Interaction Callout Pins" loading="lazy" />
+    </div>
+
+    <div class="slide-frame" id="slide-7" data-index="7">
+      <img src="behance_slides/slide_07.png" alt="Slide 07 - Visual Design System & Brand Tokens" loading="lazy" />
+    </div>
+
+    <div class="slide-frame" id="slide-8" data-index="8">
+      <img src="behance_slides/slide_08.png" alt="Slide 08 - Five Elements Interactive Radar" loading="lazy" />
+    </div>
+
+    <div class="slide-frame" id="slide-9" data-index="9">
+      <img src="behance_slides/slide_09.png" alt="Slide 09 - Compatibility Match Engine" loading="lazy" />
+    </div>
+
+    <div class="slide-frame" id="slide-10" data-index="10">
+      <img src="behance_slides/slide_10.png" alt="Slide 10 - High-Fidelity Mobile Screens Showcase" loading="lazy" />
+    </div>
+
+    <div class="slide-frame" id="slide-11" data-index="11">
+      <img src="behance_slides/slide_11.png" alt="Slide 11 - Business Impact & STAR Retrospective" loading="lazy" />
+    </div>
+
+    <div class="slide-frame" id="slide-12" data-index="12">
+      <img src="behance_slides/slide_12.png" alt="Slide 12 - Live Prototype Interactive Hub" loading="lazy" />
+      <div class="slide12-click-overlay" id="overlay-slide12" title="클릭하여 60fps 인터랙티브 프로토타입 실행"></div>
+    </div>
+  </main>
+
+  <!-- Keyboard Hint Toast -->
+  <div class="key-hint-pill" id="key-hint">
+    <span>💡 방향키 <kbd>←</kbd> <kbd>→</kbd> 슬라이드 이동 · <kbd>F</kbd> 전체화면 · <kbd>P</kbd> 라이브 프로토타입</span>
+  </div>
+
+  <script>
+    (function() {
+      const TOTAL_SLIDES = 12;
+      const currNumEl = document.getElementById('curr-num');
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+      const navRail = document.getElementById('nav-rail');
+      const btnFullscreen = document.getElementById('btn-fullscreen');
+      const overlaySlide12 = document.getElementById('overlay-slide12');
+
+      // Click on Slide 12 overlay goes to prototype
+      if (overlaySlide12) {
+        overlaySlide12.addEventListener('click', () => {
+          window.location.href = 'prototype.html';
+        });
+      }
+
+      // Generate Navigation Dots
+      for (let i = 1; i <= TOTAL_SLIDES; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'nav-dot' + (i === 1 ? ' active' : '');
+        dot.title = `슬라이드 ${i}`;
+        dot.dataset.target = i;
+        dot.addEventListener('click', () => scrollToSlide(i));
+        navRail.appendChild(dot);
+      }
+
+      let currentSlide = 1;
+      const slides = Array.from(document.querySelectorAll('.slide-frame'));
+
+      function scrollToSlide(idx) {
+        if (idx < 1 || idx > TOTAL_SLIDES) return;
+        const target = document.getElementById(`slide-${idx}`);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+
+      // Intersection Observer to track active slide
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const idx = parseInt(entry.target.dataset.index, 10);
+            currentSlide = idx;
+            currNumEl.textContent = String(idx).padStart(2, '0');
+            
+            // Update dots
+            document.querySelectorAll('.nav-dot').forEach((d, i) => {
+              d.classList.toggle('active', i + 1 === idx);
+            });
+          }
+        });
+      }, {
+        threshold: 0.5
+      });
+
+      slides.forEach(s => observer.observe(s));
+
+      btnPrev.addEventListener('click', () => scrollToSlide(currentSlide - 1));
+      btnNext.addEventListener('click', () => scrollToSlide(currentSlide + 1));
+
+      // Keyboard navigation
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+          e.preventDefault();
+          scrollToSlide(currentSlide + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          scrollToSlide(currentSlide - 1);
+        } else if (e.key === 'f' || e.key === 'F') {
+          e.preventDefault();
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+          } else {
+            document.exitFullscreen();
+          }
+        } else if (e.key === 'p' || e.key === 'P') {
+          e.preventDefault();
+          window.location.href = 'prototype.html';
+        }
+      });
+
+      // Fullscreen Toggle
+      btnFullscreen.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen();
+        } else {
+          document.exitFullscreen();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

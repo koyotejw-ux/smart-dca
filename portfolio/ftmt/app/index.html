@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>FortuneMatch | 우주적 고유 운세 & 타로</title>
+  <meta name="description" content="나의 우주 주파수(사주 일주)로 풀이하는 도파민 운세와 전통 타로 카드로 인연의 궁합을 완성하세요." />
+  <!-- Typography: Pretendard Variable & Google Fonts Fallback -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.9/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Ambient Cosmic Aura & Dynamic Rotating Keyvisual Elements -->
+  <div class="cosmic-bg"></div>
+  <div class="aura-glow-1"></div>
+  <div class="aura-glow-2"></div>
+  
+  <!-- Rotating Keyvisual Wheels (Background Layer) -->
+  <div class="cosmic-orbit-layer" aria-hidden="true">
+    <div class="astral-rotator astral-rotator-hero">
+      <svg class="astral-svg" viewBox="0 0 600 600">
+        <circle cx="300" cy="300" r="280" class="ring-outer" />
+        <circle cx="300" cy="300" r="240" class="ring-dashed" />
+        <circle cx="300" cy="300" r="190" class="ring-dotted" />
+        <circle cx="300" cy="300" r="130" class="ring-inner" />
+        <!-- 12 Zodiac Glyphs -->
+        <g class="glyph-group">
+          <text x="300" y="45" class="astral-glyph">♈</text>
+          <text x="430" y="80" class="astral-glyph">♉</text>
+          <text x="520" y="170" class="astral-glyph">♊</text>
+          <text x="555" y="300" class="astral-glyph">♋</text>
+          <text x="520" y="430" class="astral-glyph">♌</text>
+          <text x="430" y="520" class="astral-glyph">♍</text>
+          <text x="300" y="555" class="astral-glyph">♎</text>
+          <text x="170" y="520" class="astral-glyph">♏</text>
+          <text x="80" y="430" class="astral-glyph">♐</text>
+          <text x="45" y="300" class="astral-glyph">♑</text>
+          <text x="80" y="170" class="astral-glyph">♒</text>
+          <text x="170" y="80" class="astral-glyph">♓</text>
+        </g>
+        <!-- 8 Trigram / Stems Inner Ring -->
+        <g class="inner-glyph-group">
+          <text x="300" y="125" class="stem-glyph">甲</text>
+          <text x="425" y="175" class="stem-glyph">丙</text>
+          <text x="475" y="300" class="stem-glyph">戊</text>
+          <text x="425" y="425" class="stem-glyph">庚</text>
+          <text x="300" y="475" class="stem-glyph">壬</text>
+          <text x="175" y="425" class="stem-glyph">乙</text>
+          <text x="125" y="300" class="stem-glyph">丁</text>
+          <text x="175" y="175" class="stem-glyph">癸</text>
+        </g>
+        <!-- Center Ray Cross -->
+        <line x1="300" y1="20" x2="300" y2="580" class="ray-line" />
+        <line x1="20" y1="300" x2="580" y2="300" class="ray-line" />
+        <line x1="102" y1="102" x2="498" y2="498" class="ray-line diagonal" />
+        <line x1="498" y1="102" x2="102" y2="498" class="ray-line diagonal" />
+      </svg>
+    </div>
+
+    <!-- Secondary Counter-Rotating Orbit (Subtle) -->
+    <div class="astral-rotator astral-rotator-sub">
+      <svg class="astral-svg counter" viewBox="0 0 500 500">
+        <circle cx="250" cy="250" r="230" class="ring-outer alt" />
+        <circle cx="250" cy="250" r="160" class="ring-dashed alt" />
+        <g class="sub-symbols">
+          <text x="250" y="40" class="symbol-glyph">✦</text>
+          <text x="460" y="250" class="symbol-glyph">☽</text>
+          <text x="250" y="460" class="symbol-glyph">✦</text>
+          <text x="40" y="250" class="symbol-glyph">☼</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Header Navigation -->
+  <nav class="glitz-nav">
+    <div class="nav-content">
+      <div class="brand-logo" onclick="switchView('landing')">
+        <img src="assets/images/app_icon.png" alt="FortuneMatch Logo" class="logo-img" />
+        <span class="brand-text">FortuneMatch</span>
+      </div>
+      <div class="nav-tabs">
+        <button class="nav-btn active" id="tabLanding" onclick="switchView('landing')">앱 소개</button>
+        <button class="nav-btn" id="tabWebApp" onclick="switchView('webapp')">✦ 웹 운세 체험</button>
+      </div>
+      <a href="#install" class="cta-small">앱 다운로드</a>
+    </div>
+  </nav>
+
+  <!-- View 1: App Landing Page -->
+  <main id="landingView" class="view-section active">
+    <section class="hero">
+      <div class="hero-badge">✦ Global Luxury Fortune Platform</div>
+      <h1 class="hero-title">우주의 주파수에서 찾아낸<br><span class="gold-text">나의 우주 좌표</span>와 운명</h1>
+      <p class="hero-sub">
+        사주(四柱) 일주론과 서양 점성술의 황금빛 결합.<br>
+        오늘 당신에게 금전운이 터지는 최적의 시간과 인연의 궁합을 확인하세요.
+      </p>
+      <div class="hero-ctas">
+        <button onclick="switchView('webapp')" class="btn-primary">
+          <span class="btn-icon">✦</span> 웹으로 무료 운세 보기
+        </button>
+        <a href="#features" class="btn-secondary">주요 특징 살펴보기 ↓</a>
+      </div>
+
+      <!-- App Mockup Carousel -->
+      <div class="mockup-container">
+        <div class="phone-frame">
+          <div class="phone-speaker"></div>
+          <div class="phone-screen">
+            <img id="mockupImage" src="assets/images/01_fortune_hub_phone_1080x2400.png" alt="FortuneMatch App Screen" class="screen-img" />
+          </div>
+          <div class="phone-home-indicator"></div>
+        </div>
+        <div class="screen-thumbs">
+          <button class="thumb-btn active" onclick="setMockup('assets/images/01_fortune_hub_phone_1080x2400.png', this)">
+            <span class="thumb-tag">01</span> 운세 허브
+          </button>
+          <button class="thumb-btn" onclick="setMockup('assets/images/02_zodiac_match_phone_1080x2400.png', this)">
+            <span class="thumb-tag">02</span> 사주 궁합
+          </button>
+          <button class="thumb-btn" onclick="setMockup('assets/images/03_shop_vault_phone_1080x2400.png', this)">
+            <span class="thumb-tag">03</span> 상점 & 복채
+          </button>
+          <button class="thumb-btn" onclick="setMockup('assets/images/04_connections_phone_1080x2400.png', this)">
+            <span class="thumb-tag">04</span> 인연 보관함
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+      <div class="section-header">
+        <span class="sub-badge">KEY ARCHITECTURE</span>
+        <h2>천문학과 명리학의 만남</h2>
+        <p>단순한 텍스트 풀이를 넘어서 시각적 예술과 정확한 천문 알고리즘을 담았습니다.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="card-icon">⚡</div>
+          <h3>금전운 터지는 도파민 시크릿</h3>
+          <p>하루 중 나의 기운이 가장 강해지는 골든 아워와, 에너지를 뺏는 상성을 미리 알려줍니다.</p>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon">✦</div>
+          <h3>60갑자 사주 일주 궁합</h3>
+          <p>나와 상대방의 생년월일만으로 합(合)·충(沖) 관계를 도출하고 케미스트리 점수를 산출합니다.</p>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon">🔒</div>
+          <h3>100% 로컬 보안 보관함</h3>
+          <p>생년월일과 소중한 인연 정보는 외부 서버에 전송되지 않으며, 기기 내에 암호화 보관됩니다.</p>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon">🌙</div>
+          <h3>신비로운 타로 오라클</h3>
+          <p>아르누보 풍의 고화질 메이저 타로 카드로 사랑, 사업, 재물에 대한 해답을 즉시 얻으세요.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Install Info -->
+    <section id="install" class="cta-section">
+      <h2>Google Play 출시 진행 중</h2>
+      <p>FortuneMatch는 Google Play Console 비공개 테스트 및 프로덕션 등록 중입니다.</p>
+      <div class="download-box">
+        <div class="dev-info">
+          <strong>Package ID:</strong> com.fortunematch.tarot.zodiac<br>
+          <strong>Developer:</strong> JWJ Studio [Global Mobile Platform]
+        </div>
+        <button class="btn-primary" onclick="switchView('webapp')">✦ 지금 웹으로 먼저 체험하기</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- View 2: Mobile-First Responsive Web Fortune App -->
+  <main id="webAppView" class="view-section">
+    <div class="webapp-wrapper">
+      <!-- App Header Profile & Calculator (Top Controls) -->
+      <div class="webapp-top-bar">
+        <div class="app-header-card">
+          <div class="user-meta">
+            <div class="avatar-badge">✦</div>
+            <div>
+              <div class="coord-title">나의 우주 좌표</div>
+              <div class="coord-sub" id="userCoordLabel">무인(戊寅) · 범띠 · 사자자리</div>
+            </div>
+          </div>
+          <div class="hearts-badge">
+            <span class="heart-icon">❤</span> <span id="walletHearts">7</span>
+          </div>
+        </div>
+
+        <!-- Date Input & Calculator -->
+        <div class="calc-box">
+          <div class="box-title">🪐 내 사주 일주 & 별자리 설정</div>
+          <div class="calc-inputs">
+            <input type="date" id="birthInput" value="1998-08-15" />
+            <button class="btn-calc" onclick="calculateMySign()">좌표 갱신</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Title: 운세와 궁합 통합 대시보드 -->
+      <div class="dash-headline">
+        <span class="dash-badge">LIVE INSIGHT</span>
+        <h2>오늘의 운세 & 인연 궁합</h2>
+      </div>
+
+      <!-- Responsive Two-Column Grid on Wide Screens -->
+      <div class="dashboard-grid">
+        <!-- Card 1: 오늘의 운세 & 타로 리딩 -->
+        <div class="app-card fortune-live-card">
+          <div class="card-head">
+            <div class="card-badge gold">DAILY FORTUNE</div>
+            <h3>✦ 오늘의 도파민 운세 & 타로</h3>
+          </div>
+
+        <!-- 3D Tarot Stage -->
+        <div class="tarot-stage">
+          <div class="tarot-card" id="tarotCard" onclick="flipTarot()">
+            <div class="tarot-inner">
+              <div class="tarot-face tarot-back">
+                <img src="assets/images/tarot_back.jpg" alt="Tarot Card Back" />
+                <div class="flip-hint">카드를 터치하여 운명 열기</div>
+              </div>
+              <div class="tarot-face tarot-front">
+                <img id="tarotCardImg" src="assets/images/tarot_star.jpg" alt="Tarot Card Front" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tarot-card-buttons">
+          <button class="btn-pick active" onclick="pickCard(0, this)">The Star (희망)</button>
+          <button class="btn-pick" onclick="pickCard(1, this)">The Sun (성공)</button>
+          <button class="btn-pick" onclick="pickCard(2, this)">The Wheel (운명)</button>
+        </div>
+
+        <div class="result-card" id="tarotResultBox">
+          <h4 id="cardTitle">XVII. THE STAR (별)</h4>
+          <p id="cardDesc">어둠을 뚫고 쏟아지는 치유와 희망의 영감입니다. 당신의 직관을 신뢰하세요. 오랫동안 고민하던 금전 및 진로의 문제가 순조롭게 풀릴 것입니다.</p>
+        </div>
+
+        <!-- Dopamine Golden Time inside Fortune Section -->
+        <div class="dopamine-mini-box">
+          <div class="dopamine-meta-header">
+            <span class="mini-title">⚡ 오늘의 도파민 시크릿 & 골든 아워</span>
+            <span class="dopamine-date-badge" id="dopamineDateBadge">10월 5일 (오늘)</span>
+          </div>
+          <div class="golden-time" id="goldenTimeDisplay">14:30 ~ 16:00</div>
+          <div class="guidance-list">
+            <div class="guide-item" id="dopamineActionGuide">
+              <strong>✦ 행운의 추천 행동:</strong> 중요한 계약 체결, 복권 구매, 새로운 프로젝트 제안에 최적의 기운입니다.
+            </div>
+            <div class="guide-item warning" id="dopamineCautionGuide">
+              <strong>⚠ 주의할 인물 상성:</strong> 감정적 기복이 심하거나 날카로운 말을 쏟아내는 화(火) 기운의 인물을 피하세요.
+            </div>
+          </div>
+          <button class="btn-gold-action" onclick="boostFortune()">✨ 복채 하트 바치고 기운 2.4배 부스팅</button>
+        </div>
+      </div>
+
+      <!-- Card 2: 60갑자 사주 인연 궁합 -->
+      <div class="app-card match-live-card">
+        <div class="card-head">
+          <div class="card-badge cyan">ZODIAC MATCH</div>
+          <h3>❤ 우주 좌표 인연 궁합 분석</h3>
+        </div>
+
+        <div class="match-box">
+          <!-- Selection & Target Input -->
+          <div class="match-select-box">
+            <label for="targetSelect">✦ 인연의 생년월일 / 일주 선택:</label>
+            <select id="targetSelect" onchange="updateMatchScore()">
+              <option value="계해">계해 (癸亥) - 천생연분 합 (96점) · 水 기운</option>
+              <option value="갑자">갑자 (甲子) - 상생 조화 (84점) · 木 기운</option>
+              <option value="병인">병인 (丙寅) - 열정적 케미 (79점) · 火 기운</option>
+              <option value="신유">신유 (辛酉) - 성격 차이 주의 (55점) · 金 기운</option>
+            </select>
+          </div>
+
+          <!-- Celestial Orbit Interaction Circles -->
+          <div class="match-circles">
+            <div class="match-bubble my-bubble">
+              <span class="bubble-tag">나 (본인)</span>
+              <strong id="myMatchLabel">무인(戊寅)</strong>
+              <small class="element-tag">양토(陽土)</small>
+            </div>
+            <div class="match-vs-bridge">
+              <div class="bridge-line"></div>
+              <div class="bridge-core">⚡</div>
+              <div class="bridge-line"></div>
+            </div>
+            <div class="match-bubble target-bubble">
+              <span class="bubble-tag">인연 (상대방)</span>
+              <strong id="targetMatchLabel">계해(癸亥)</strong>
+              <small class="element-tag" id="targetElementTag">음수(陰水)</small>
+            </div>
+          </div>
+
+          <!-- Chemistry Score & Radial / Meter Box -->
+          <div class="score-container">
+            <div class="score-badge-label">우주 주파수 일치율</div>
+            <div class="score-value" id="matchScoreVal">96점</div>
+            <div class="score-meter-track">
+              <div class="score-meter-fill" id="scoreMeterFill" style="width: 96%;"></div>
+            </div>
+            <div class="score-desc" id="matchScoreDesc">천생연분 우주 좌표의 만남</div>
+          </div>
+
+          <!-- 5 Elements Synergy Matrix -->
+          <div class="element-matrix">
+            <div class="matrix-item">
+              <span class="matrix-label">오행 조화</span>
+              <strong class="matrix-val" id="harmonyVal">무계합화(戊癸合火)</strong>
+            </div>
+            <div class="matrix-item">
+              <span class="matrix-label">관계 에너지</span>
+              <strong class="matrix-val gold" id="energyVal">상생 촉진 (大吉)</strong>
+            </div>
+            <div class="matrix-item">
+              <span class="matrix-label">영혼 주파수</span>
+              <strong class="matrix-val cyan" id="frequencyVal">99.2 MHz</strong>
+            </div>
+          </div>
+
+          <!-- Match Solution Tip -->
+          <div class="match-tip" id="matchTipText">
+            무토(戊土)와 계수(癸水)가 만나 무계합화(戊癸合火)를 이루는 최상의 연분입니다. 서로의 부족한 기운을 자연스럽게 채워주는 평생의 파트너입니다.
+          </div>
+        </div>
+      </div>
+      <!-- /dashboard-grid -->
+
+      <!-- Launch Full Flutter Web App Card -->
+      <div class="launch-app-card">
+        <h4>📱 전체 기능 앱으로 실행하기</h4>
+        <p>상점, 복채 충전, 암호화 인연 보관함까지 모든 기능이 포함된 실물 웹앱을 실행해보세요.</p>
+        <a href="app.html" class="btn-full-app" target="_blank">
+          <span>✦ Flutter 앱 전체화면 열기</span> ↗
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="global-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <strong>FortuneMatch: Zodiac & Tarot</strong>
+        <p>Global Localized High-End Fortune & Divination Platform</p>
+      </div>
+      <div class="footer-meta">
+        <a href="privacy_policy.html" target="_blank">개인정보처리방침</a>
+        <a href="mailto:jwjentp@gmail.com">개발자 문의 (jwjentp@gmail.com)</a>
+      </div>
+      <div class="copy-text">© 2026 JWJ Studio. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script src="scripts.js"></script>
+</body>
+</html>
