@@ -702,35 +702,19 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                       ),
                       const SizedBox(height: 6),
                       SizedBox(
-                        height: 34,
+                        height: 38,
                         child: ListView.separated(
                           scrollDirection: Axis.horizontal,
                           itemCount: myAssets.length,
                           separatorBuilder: (context, index) => const SizedBox(width: 8),
                           itemBuilder: (context, index) {
                             final asset = myAssets[index];
-                            return ActionChip(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                              backgroundColor: TMembershipColors.primaryBlue.withOpacity(0.08),
-                              side: BorderSide(
-                                color: TMembershipColors.primaryBlue.withOpacity(0.3),
-                              ),
-                              label: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(Icons.bolt_rounded, size: 14, color: TMembershipColors.primaryBlue),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    "${asset.name} (${asset.initialQuantity.toInt()}주)",
-                                    style: TextStyle(
-                                      fontSize: 11.5,
-                                      fontWeight: FontWeight.w700,
-                                      color: isDark ? Colors.white : TMembershipColors.primaryBlue,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              onPressed: () => _applyAssetPreset(asset),
+                            return _buildPresetChip(
+                              label: "${asset.name} (${asset.initialQuantity.toInt()}주)",
+                              icon: const Icon(Icons.bolt_rounded, size: 14, color: TMembershipColors.primaryBlue),
+                              isHighlight: true,
+                              isDark: isDark,
+                              onTap: () => _applyAssetPreset(asset),
                             );
                           },
                         ),
@@ -758,28 +742,18 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                     ),
                     const SizedBox(height: 8),
                     SizedBox(
-                      height: 36,
+                      height: 38,
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: presets.length,
                         separatorBuilder: (context, index) => const SizedBox(width: 8),
                         itemBuilder: (context, index) {
                           final prompt = presets[index];
-                          return ActionChip(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                            backgroundColor: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.04),
-                            side: BorderSide(
-                              color: isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder,
-                            ),
-                            label: Text(
-                              prompt,
-                              style: TextStyle(
-                                fontSize: 11.5,
-                                fontWeight: FontWeight.w600,
-                                color: isDark ? Colors.white : Colors.black87,
-                              ),
-                            ),
-                            onPressed: () => _applyQuickPreset(prompt),
+                          return _buildPresetChip(
+                            label: prompt,
+                            isHighlight: false,
+                            isDark: isDark,
+                            onTap: () => _applyQuickPreset(prompt),
                           );
                         },
                       ),
@@ -1119,6 +1093,64 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
     );
   }
 
+  Widget _buildPresetChip({
+    required String label,
+    required VoidCallback onTap,
+    required bool isDark,
+    Widget? icon,
+    bool isHighlight = false,
+  }) {
+    final bgColor = isHighlight
+        ? TMembershipColors.primaryBlue.withOpacity(isDark ? 0.22 : 0.08)
+        : (isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.04));
+    final borderColor = isHighlight
+        ? TMembershipColors.primaryBlue.withOpacity(0.35)
+        : (isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder);
+    final textColor = isHighlight
+        ? (isDark ? Colors.white : TMembershipColors.primaryBlue)
+        : (isDark ? Colors.white : Colors.black87);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          onTap();
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: borderColor, width: 1),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (icon != null) ...[
+                icon,
+                const SizedBox(width: 5),
+              ],
+              Text(
+                label,
+                softWrap: false,
+                overflow: TextOverflow.visible,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: isHighlight ? FontWeight.w700 : FontWeight.w600,
+                  color: textColor,
+                  letterSpacing: -0.2,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildQuickModChip(String label, VoidCallback onTap, bool isDark) {
     return Material(
       color: Colors.transparent,
@@ -1139,6 +1171,7 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
           ),
           child: Text(
             label,
+            softWrap: false,
             style: TextStyle(
               fontSize: 11.5,
               fontWeight: FontWeight.w700,
