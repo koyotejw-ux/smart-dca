@@ -15,6 +15,7 @@
       --sab: env(safe-area-inset-bottom, 0px);
       --sal: env(safe-area-inset-left, 0px);
       --sar: env(safe-area-inset-right, 0px);
+      --device-scale: 1;
     }
 
     * {
@@ -197,17 +198,20 @@
       color: #FFFFFF;
     }
 
-    /* Device Center Stage: Zero Document Clutter */
+    /* Device Center Stage: Zero Document Clutter & Height Resilient */
     .device-stage {
       flex: 1;
       width: 100%;
+      height: calc(100vh - 56px);
+      height: calc(100dvh - 56px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: hidden;
-      padding: 12px 20px;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     /* Ambient Lighting Behind Mockup */
@@ -225,17 +229,19 @@
       z-index: 1;
     }
 
-    /* Authentic Smartphone Chassis */
+    /* Authentic Smartphone Chassis (Scaled dynamically to fit browser height) */
     .phone-chassis {
       position: relative;
       z-index: 10;
-      width: 390px;
-      max-width: 90vw;
-      height: min(844px, calc(100vh - 100px));
-      aspect-ratio: 390 / 844;
+      width: 412px;
+      height: 866px;
+      min-width: 412px;
+      min-height: 866px;
+      max-width: 412px;
+      max-height: 866px;
       background: #000000;
       border: 11px solid #1E232E;
-      border-radius: 52px;
+      border-radius: 54px;
       box-shadow: 
         0 30px 90px rgba(0, 0, 0, 0.95),
         0 0 0 1px rgba(255, 255, 255, 0.12),
@@ -244,7 +250,11 @@
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      flex-shrink: 0;
+      transform: scale(var(--device-scale, 1));
+      transform-origin: center center;
+      will-change: transform;
+      transition: transform 0.08s ease-out;
     }
 
     /* Side Hardware Buttons via Pseudo-elements */
@@ -271,44 +281,138 @@
       border-radius: 0 2px 2px 0;
     }
 
-    /* Dynamic Island at Top */
-    .phone-dynamic-island {
+    /* Authentic Smartphone Status Bar (44px) */
+    .phone-status-bar {
+      width: 100%;
+      height: 44px;
+      min-height: 44px;
+      max-height: 44px;
+      background: #0B0F17;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      z-index: 50;
+      position: relative;
+      flex-shrink: 0;
+      border-top-left-radius: 43px;
+      border-top-right-radius: 43px;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    .status-left {
+      display: flex;
+      align-items: center;
+      width: 60px;
+    }
+
+    .status-time {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      font-feature-settings: "tnum";
+      color: #FFFFFF;
+    }
+
+    .status-center {
       position: absolute;
-      top: 7px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
       align-items: center;
-      gap: 12px;
-      z-index: 50;
-      pointer-events: none;
+      justify-content: center;
+      pointer-events: auto;
+    }
+
+    .dynamic-island {
+      width: 110px;
+      height: 28px;
       background: #000000;
-      padding: 3px 14px;
       border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 10px;
+      gap: 8px;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
     }
 
-    .island-speaker {
-      width: 44px;
-      height: 4px;
-      background: #27272A;
-      border-radius: 2px;
-    }
-
-    .island-cam {
-      width: 8px;
-      height: 8px;
-      background: #09090B;
-      border: 1.5px solid #1E293B;
+    .island-camera {
+      width: 10px;
+      height: 10px;
+      background: #09090b;
+      border: 1.5px solid #1c2128;
       border-radius: 50%;
+      box-shadow: inset 0 0 2px #0057ff;
+    }
+
+    .island-sensor {
+      width: 6px;
+      height: 6px;
+      background: #05070a;
+      border-radius: 50%;
+    }
+
+    .status-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      width: 60px;
+      color: #FFFFFF;
+    }
+
+    .status-icon {
+      color: #FFFFFF;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .status-battery {
+      display: flex;
+      align-items: center;
+      gap: 1.5px;
+    }
+
+    .battery-pill {
+      width: 22px;
+      height: 11px;
+      border: 1.5px solid rgba(255, 255, 255, 0.85);
+      border-radius: 3.5px;
+      padding: 1.5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .battery-charge {
+      width: 100%;
+      height: 100%;
+      background: #FFFFFF;
+      border-radius: 1px;
+    }
+
+    .battery-tip {
+      width: 1.5px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.7);
+      border-top-right-radius: 1px;
+      border-bottom-right-radius: 1px;
     }
 
     /* Live Flutter Web App Iframe */
     .flutter-app-iframe {
       width: 100%;
-      height: 100%;
+      height: 800px;
+      flex: 1;
       border: none;
-      border-radius: 40px;
-      background: #05070B;
+      border-bottom-left-radius: 43px;
+      border-bottom-right-radius: 43px;
+      background: #0B0F17;
       display: block;
       z-index: 10;
     }
@@ -500,15 +604,23 @@
         display: none !important; /* Hide ambient glow on mobile */
       }
 
+      .phone-status-bar {
+        display: none !important; /* Real device already has native OS status bar */
+      }
+
       .phone-chassis {
         width: 100% !important;
         max-width: 100% !important;
         height: 100% !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        max-height: none !important;
         aspect-ratio: auto !important;
         border: none !important;
         border-radius: 0 !important;
         box-shadow: none !important;
         background: #0B0F17 !important;
+        transform: none !important;
       }
       .phone-chassis::before,
       .phone-chassis::after {
@@ -531,6 +643,13 @@
 
       .device-caption-hint {
         display: none !important; /* Remove hint to prevent covering bottom nav */
+      }
+    }
+
+    /* Auto-hide caption hint on small desktop window heights to prioritize mockup */
+    @media (max-height: 640px) {
+      .device-caption-hint {
+        display: none !important;
       }
     }
 
@@ -608,10 +727,37 @@
     
     <div class="phone-chassis" id="phone-chassis">
       
-      <!-- Speaker & Dynamic Island -->
-      <div class="phone-dynamic-island">
-        <div class="island-speaker"></div>
-        <div class="island-cam"></div>
+      <!-- Authentic Flagship Status Bar (44px) -->
+      <div class="phone-status-bar" id="phone-status-bar">
+        <div class="status-left">
+          <span class="status-time" id="status-live-time">9:41</span>
+        </div>
+        <div class="status-center">
+          <div class="dynamic-island">
+            <div class="island-camera"></div>
+            <div class="island-sensor"></div>
+          </div>
+        </div>
+        <div class="status-right">
+          <!-- Cellular 4-Bar Signal -->
+          <svg class="status-icon" width="17" height="12" viewBox="0 0 17 12" fill="none" aria-hidden="true">
+            <rect x="0.5" y="8.5" width="2.5" height="3" rx="0.6" fill="currentColor"/>
+            <rect x="4.5" y="6" width="2.5" height="5.5" rx="0.6" fill="currentColor"/>
+            <rect x="8.5" y="3.5" width="2.5" height="8" rx="0.6" fill="currentColor"/>
+            <rect x="12.5" y="0.5" width="2.5" height="11" rx="0.6" fill="currentColor"/>
+          </svg>
+          <!-- Wi-Fi -->
+          <svg class="status-icon" width="16" height="12" viewBox="0 0 16 12" fill="currentColor" aria-hidden="true">
+            <path d="M8 9.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm-3.8-2.6a5.4 5.4 0 0 1 7.6 0 .75.75 0 0 1-1.06 1.06 3.9 3.9 0 0 0-5.48 0 .75.75 0 0 1-1.06-1.06zm-2.8-2.8a9.4 9.4 0 0 1 13.2 0 .75.75 0 1 1-1.06 1.06 7.9 7.9 0 0 0-11.08 0 .75.75 0 1 1-1.06-1.06z"/>
+          </svg>
+          <!-- Battery -->
+          <div class="status-battery" aria-label="배터리 100%">
+            <div class="battery-pill">
+              <div class="battery-charge"></div>
+            </div>
+            <div class="battery-tip"></div>
+          </div>
+        </div>
       </div>
 
       <!-- Real Flutter Web App Iframe -->
@@ -682,6 +828,62 @@
         btnReload.addEventListener('click', () => {
           iframe.src = iframe.src;
         });
+      }
+
+      // Height-Adaptive Auto-Resizing: Ensure phone chassis unconditionally fits within viewport height
+      function updateDeviceScale() {
+        if (window.innerWidth <= 768) {
+          document.documentElement.style.setProperty('--device-scale', '1');
+          return;
+        }
+        const stage = document.querySelector('.device-stage');
+        if (!stage) return;
+
+        const stageH = stage.clientHeight || (window.innerHeight - 56);
+        const stageW = stage.clientWidth || window.innerWidth;
+
+        const chassisH = 866; // 844px screen + 22px border
+        const chassisW = 412; // 390px screen + 22px border
+
+        // Reserve vertical margin for stage breathing room & bottom caption hint
+        const verticalMargin = stageH < 650 ? 24 : 52;
+        const horizontalMargin = 32;
+
+        const availableH = Math.max(160, stageH - verticalMargin);
+        const availableW = Math.max(160, stageW - horizontalMargin);
+
+        const scaleH = availableH / chassisH;
+        const scaleW = availableW / chassisW;
+
+        // Unconditionally fit within available viewport height & width
+        const fitScale = Math.min(1.0, Math.min(scaleH, scaleW));
+        document.documentElement.style.setProperty('--device-scale', fitScale.toFixed(4));
+      }
+
+      // Live Status Bar Clock
+      function updateStatusBarTime() {
+        const timeEl = document.getElementById('status-live-time');
+        if (!timeEl) return;
+        const now = new Date();
+        let h = now.getHours();
+        let m = now.getMinutes();
+        timeEl.textContent = `${h}:${m < 10 ? '0' : ''}${m}`;
+      }
+
+      // Initial execution & Event binding
+      updateStatusBarTime();
+      updateDeviceScale();
+      setInterval(updateStatusBarTime, 10000);
+
+      window.addEventListener('resize', updateDeviceScale, { passive: true });
+      window.addEventListener('orientationchange', updateDeviceScale, { passive: true });
+      window.addEventListener('load', updateDeviceScale);
+
+      if (window.ResizeObserver) {
+        const stageEl = document.querySelector('.device-stage');
+        if (stageEl) {
+          new ResizeObserver(() => updateDeviceScale()).observe(stageEl);
+        }
       }
     })();
   </script>
