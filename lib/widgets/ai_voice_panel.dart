@@ -1003,39 +1003,73 @@ class _AiVoicePanelState extends ConsumerState<AiVoicePanel> with SingleTickerPr
                 children: [
                   Expanded(
                     flex: 1,
-                    child: OutlinedButton.icon(
-                      onPressed: _result.isValid ? _saveDirectlyToPortfolio : null,
-                      icon: const Icon(Icons.bookmark_add_rounded, size: 18),
-                      label: const Text(
-                        "자산 저장",
-                        style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    child: SizedBox(
+                      height: 52,
+                      child: ElevatedButton.icon(
+                        onPressed: _result.isValid ? _saveDirectlyToPortfolio : null,
+                        icon: Icon(
+                          Icons.bookmark_add_rounded,
+                          size: 20,
+                          color: _result.isValid
+                              ? (isDark ? Colors.white : TMembershipColors.primaryBlue)
+                              : (isDark ? Colors.white38 : Colors.black26),
+                        ),
+                        label: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            "자산 저장",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 14,
+                              color: _result.isValid
+                                  ? (isDark ? Colors.white : TMembershipColors.primaryBlue)
+                                  : (isDark ? Colors.white38 : Colors.black26),
+                            ),
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: isDark ? TMembershipColors.darkSurface : Colors.white,
+                          foregroundColor: isDark ? Colors.white : TMembershipColors.primaryBlue,
+                          disabledBackgroundColor: isDark ? Colors.white.withValues(alpha: 0.04) : Colors.black.withValues(alpha: 0.02),
+                          elevation: 0,
+                          minimumSize: const Size(double.infinity, 52),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          side: BorderSide(
+                            color: _result.isValid
+                                ? (isDark ? TMembershipColors.darkCardBorder : TMembershipColors.lightCardBorder)
+                                : (isDark ? Colors.white12 : Colors.black12),
+                            width: 1.4,
+                          ),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 10),
                   Expanded(
                     flex: 1,
-                    child: ElevatedButton.icon(
-                      onPressed: _result.isValid ? _applyToSimulator : null,
-                      icon: const Icon(Icons.calculate_rounded, color: Colors.white, size: 20),
-                      label: const Text(
-                        "시뮬레이터 적용",
-                        style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 14),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: TMembershipColors.primaryBlue,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    child: SizedBox(
+                      height: 52,
+                      child: ElevatedButton.icon(
+                        onPressed: _result.isValid ? _applyToSimulator : null,
+                        icon: const Icon(Icons.calculate_rounded, color: Colors.white, size: 20),
+                        label: const FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            "시뮬레이터 적용",
+                            style: TextStyle(fontWeight: FontWeight.w900, color: Colors.white, fontSize: 14),
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: TMembershipColors.primaryBlue,
+                          foregroundColor: Colors.white,
+                          disabledBackgroundColor: isDark ? Colors.white10 : Colors.black12,
+                          disabledForegroundColor: Colors.grey,
+                          elevation: _result.isValid ? 4 : 0,
+                          minimumSize: const Size(double.infinity, 52),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        ),
                       ),
                     ),
                   ),
