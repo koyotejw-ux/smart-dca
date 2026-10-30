@@ -2,10 +2,21 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0B0F17">
   <title>스마트 물타기 계산기 (Smart DCA Calculator) - Live Mockup Phone Simulator</title>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
   <style>
+    :root {
+      --sat: env(safe-area-inset-top, 0px);
+      --sab: env(safe-area-inset-bottom, 0px);
+      --sal: env(safe-area-inset-left, 0px);
+      --sar: env(safe-area-inset-right, 0px);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -353,28 +364,44 @@
         height: 100vh;
         height: 100dvh;
         overflow: hidden;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
       }
 
-      /* Compact, Sleek Mobile Top Navigation (46px) */
+      /* Compact, Sleek Mobile Top Navigation with Notch Clearance */
       .proto-navbar {
-        height: 46px;
-        padding: 0 10px;
-        gap: 6px;
-        background: rgba(11, 15, 23, 0.96);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        height: auto;
+        min-height: calc(46px + var(--sat));
+        padding-top: max(6px, var(--sat));
+        padding-bottom: 6px;
+        padding-left: max(8px, var(--sal));
+        padding-right: max(8px, var(--sar));
+        gap: 4px;
+        background: rgba(11, 15, 23, 0.98);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
 
       .proto-brand,
-      .live-status-pill,
-      #btn-fullscreen-app {
+      .live-status-pill {
         display: none !important;
       }
 
       .btn-back-deck {
-        padding: 5px 8px;
+        height: 32px;
+        padding: 0 8px;
         font-size: 11px;
-        gap: 4px;
+        gap: 3px;
         flex-shrink: 0;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        -webkit-tap-highlight-color: transparent;
       }
       .btn-back-deck .btn-back-label-desktop {
         display: none !important;
@@ -383,33 +410,43 @@
         display: inline !important;
       }
 
-      /* Flow Pills: Compact Mobile Touch Tabs */
+      /* Flow Pills: Touch-optimized horizontally scrollable tabs */
       .flow-pill-group {
-        gap: 3px;
-        padding: 2px 4px;
-        background: rgba(0, 0, 0, 0.65);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        gap: 2px;
+        padding: 2px;
+        background: rgba(0, 0, 0, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 9999px;
         flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
         justify-content: center;
-        max-width: calc(100vw - 110px);
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
+        touch-action: pan-x;
       }
       .flow-pill-group::-webkit-scrollbar {
         display: none;
       }
 
       .flow-pill {
-        padding: 5px 8px;
+        min-height: 30px;
+        padding: 4px 7px;
         font-size: 11px;
-        gap: 3px;
+        font-weight: 700;
+        gap: 2px;
         white-space: nowrap;
         border-radius: 9999px;
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        -webkit-tap-highlight-color: transparent;
       }
       .flow-pill .flow-num {
-        font-size: 9px;
+        font-size: 9.5px;
         font-weight: 800;
       }
       .flow-pill .desktop-label {
@@ -419,19 +456,31 @@
         display: inline !important;
       }
 
+      .proto-nav-right {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+
       .btn-icon-action {
-        padding: 6px;
+        width: 32px;
+        height: 32px;
+        padding: 0;
         font-size: 11px;
         flex-shrink: 0;
         border-radius: 50%;
-        width: 32px;
-        height: 32px;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
+        -webkit-tap-highlight-color: transparent;
       }
       .btn-icon-action .btn-label {
         display: none !important;
+      }
+
+      #btn-fullscreen-app {
+        display: inline-flex !important;
       }
 
       /* Transform Device Stage into 100% Native Full-Screen Mobile App */
@@ -439,11 +488,13 @@
         padding: 0 !important;
         margin: 0 !important;
         width: 100vw !important;
-        height: calc(100vh - 46px) !important;
-        height: calc(100dvh - 46px) !important;
-        max-height: calc(100dvh - 46px) !important;
-        background: #000000 !important;
+        height: calc(100vh - 46px - var(--sat) - var(--sab)) !important;
+        height: calc(100dvh - 46px - var(--sat) - var(--sab)) !important;
+        max-height: calc(100dvh - 46px - var(--sat) - var(--sab)) !important;
+        padding-bottom: var(--sab) !important;
+        background: #0B0F17 !important;
         overflow: hidden !important;
+        box-sizing: border-box;
       }
       .device-stage::before {
         display: none !important; /* Hide ambient glow on mobile */
@@ -457,7 +508,7 @@
         border: none !important;
         border-radius: 0 !important;
         box-shadow: none !important;
-        background: #000000 !important;
+        background: #0B0F17 !important;
       }
       .phone-chassis::before,
       .phone-chassis::after {
@@ -472,10 +523,30 @@
         border-radius: 0 !important;
         width: 100% !important;
         height: 100% !important;
+        border: none !important;
+        background: #0B0F17 !important;
+        -webkit-overflow-scrolling: touch !important;
+        touch-action: pan-y !important;
       }
 
       .device-caption-hint {
         display: none !important; /* Remove hint to prevent covering bottom nav */
+      }
+    }
+
+    /* Extra Narrow Mobile Screens (<= 380px, e.g. iPhone SE / Galaxy Z Flip) */
+    @media (max-width: 380px) {
+      .btn-back-deck {
+        padding: 0 7px;
+        font-size: 10.5px;
+      }
+      .flow-pill-group {
+        justify-content: flex-start;
+        padding: 2px;
+      }
+      .flow-pill {
+        padding: 4px 6px;
+        font-size: 10.5px;
       }
     }
   </style>
@@ -488,7 +559,7 @@
       <a href="index.html#slide-12" class="btn-back-deck">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         <span class="btn-back-label-desktop">포트폴리오로 돌아가기</span>
-        <span class="btn-back-label-mobile">포트폴리오</span>
+        <span class="btn-back-label-mobile">홈</span>
       </a>
       <div class="proto-brand">
         <strong>스마트 물타기 계산기</strong> · 모바일 목업 테스터
@@ -498,24 +569,20 @@
     <!-- Center Flow Segment Switcher: 4 Core Sections -->
     <nav class="flow-pill-group" aria-label="테스트 구간 선택">
       <button class="flow-pill active" data-flow="home" id="pill-home" title="01. 자산 현황 진단">
-        <span class="flow-num">01</span>
-        <span class="desktop-label">자산 진단</span>
-        <span class="mobile-label">진단</span>
+        <span class="desktop-label"><span class="flow-num">01</span> 자산 진단</span>
+        <span class="mobile-label"><span class="flow-num">1</span>진단</span>
       </button>
       <button class="flow-pill" data-flow="voice" id="pill-voice" title="02. 0.2초 음성 도크">
-        <span class="flow-num">02</span>
-        <span class="desktop-label">0.2초 음성 도크</span>
-        <span class="mobile-label">음성</span>
+        <span class="desktop-label"><span class="flow-num">02</span> 0.2초 음성 도크</span>
+        <span class="mobile-label"><span class="flow-num">2</span>음성</span>
       </button>
       <button class="flow-pill" data-flow="target" id="pill-target" title="03. 목표 평단가 역산 엔진">
-        <span class="flow-num">03</span>
-        <span class="desktop-label">목표 역산 엔진</span>
-        <span class="mobile-label">역산</span>
+        <span class="desktop-label"><span class="flow-num">03</span> 목표 역산 엔진</span>
+        <span class="mobile-label"><span class="flow-num">3</span>역산</span>
       </button>
       <button class="flow-pill" data-flow="sim" id="pill-sim" title="04. 최종 플랜 확정 & 안전 진단">
-        <span class="flow-num">04</span>
-        <span class="desktop-label">최종 플랜 확정</span>
-        <span class="mobile-label">플랜</span>
+        <span class="desktop-label"><span class="flow-num">04</span> 최종 플랜 확정</span>
+        <span class="mobile-label"><span class="flow-num">4</span>플랜</span>
       </button>
     </nav>
 
@@ -529,8 +596,9 @@
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
         <span class="btn-label">새로고침</span>
       </button>
-      <a href="app/index.html" target="_blank" class="btn-icon-action" id="btn-fullscreen-app" title="실제 앱 브라우저 새 창에서 열기">
-        새 탭 ↗
+      <a href="app/index.html" target="_blank" class="btn-icon-action" id="btn-fullscreen-app" title="실제 앱 브라우저 새 창에서 열기" aria-label="새 탭에서 앱 열기">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+        <span class="btn-label">새 탭 ↗</span>
       </a>
     </div>
   </header>
