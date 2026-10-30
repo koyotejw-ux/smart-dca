@@ -2231,7 +2231,7 @@ def make_slide_07():
         category_en="DESIGN SYSTEM | BRAND IDENTITY & COMPONENT ARCHITECTURE", 
         title_black="브랜드 정체성과 정밀함을 규정하는 ", 
         title_blue="비주얼 아이덴티티 & 디자인 시스템", 
-        subtitle_kr="스마트 DCA 핵심 디자인 컨셉(침착한 정밀성·폐쇄형 역산·무마찰 기동성), 기하학 키라인 그리드, 24dp 아이코노그라피, 토큰 & 아토믹 킷"
+        subtitle_kr="스마트 DCA 핵심 디자인 컨셉, 기하학 키라인 그리드, 24dp 아이코노그라피, 파운데이션 토큰 규칙(Radius·Spacing·Color) & 아토믹 킷"
     )
     
     # Coordinates
@@ -2489,22 +2489,22 @@ def make_slide_07():
     colB_w = 860
     
     # -------------------------------------------------------------
-    # CARD 04 (Lower Left): DESIGN TOKENS (COLOR & TYPOGRAPHY)
+    # CARD 04 (Lower Left): FOUNDATION DESIGN TOKENS (COLOR, TYPE, RADIUS, ELEVATION)
     # -------------------------------------------------------------
     draw.rounded_rectangle([colA_x, r2_y, colA_x + colA_w, r2_y + r2_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     b4_box = draw_pill_badge(draw, left_x=colA_x + 28, cy=r2_y + 32, text="FOUNDATION 04", font=get_font(9.5, 'bold'), theme='blue', has_dot=True, pad_x=8, height=22)
-    draw.text((b4_box[2] + 14, r2_y + 32), "시맨틱 컬러 시스템 & Pretendard 타이포그래피", font=get_font(14, 'bold'), fill=(15, 23, 42), anchor='lm')
+    draw.text((b4_box[2] + 14, r2_y + 32), "파운데이션 토큰 아키텍처 & Pretendard 타이포그래피", font=get_font(14, 'bold'), fill=(15, 23, 42), anchor='lm')
     draw.line([(colA_x + 28, r2_y + 54), (colA_x + colA_w - 28, r2_y + 54)], fill=(241, 245, 249), width=1)
     
     col_w_inner = (colA_w - 56 - 20) // 2  # 382px
     
-    # Hero Color Swatch Card: Primary Electric Blue #0051FF
-    hb_y = r2_y + 68
-    draw.rounded_rectangle([colA_x + 28, hb_y, colA_x + 28 + col_w_inner, hb_y + 64], radius=10, fill=(0, 81, 255))
-    draw.text((colA_x + 42, hb_y + 14), "PRIMARY ELECTRIC BLUE", font=get_font(12.5, 'bold'), fill=(255, 255, 255))
-    draw.text((colA_x + 42, hb_y + 32), "Color / Brand / Primary  ·  #0051FF", font=get_num_font(9.5, 'medium'), fill=(191, 219, 254))
-    draw.text((colA_x + 42, hb_y + 46), "투자의 확신과 신뢰를 상징하는 시그니처 퀀트 블루", font=get_font(8.5, 'regular'), fill=(224, 242, 254))
-    draw_pill_badge(draw, cx=colA_x + 28 + col_w_inner - 50, cy=hb_y + 32, text="8.4:1 AAA", font=get_font(9, 'bold'), theme='green', has_dot=False, pad_x=8, height=22)
+    # 1. Left Half: Hero Color, Semantics, Gradients, Elevation Scale
+    hb_y = r2_y + 64
+    draw.rounded_rectangle([colA_x + 28, hb_y, colA_x + 28 + col_w_inner, hb_y + 58], radius=10, fill=(0, 81, 255))
+    draw.text((colA_x + 42, hb_y + 12), "PRIMARY ELECTRIC BLUE", font=get_font(12, 'bold'), fill=(255, 255, 255))
+    draw.text((colA_x + 42, hb_y + 28), "Color / Brand / Primary  ·  #0051FF", font=get_num_font(9, 'medium'), fill=(191, 219, 254))
+    draw.text((colA_x + 42, hb_y + 42), "투자의 확신과 신뢰를 상징하는 시그니처 퀀트 블루", font=get_font(8, 'regular'), fill=(224, 242, 254))
+    draw_pill_badge(draw, cx=colA_x + 28 + col_w_inner - 48, cy=hb_y + 29, text="8.4:1 AAA", font=get_font(8.5, 'bold'), theme='green', has_dot=False, pad_x=7, height=20)
     
     # 5 Semantic Swatches
     sub_swatches = [
@@ -2515,18 +2515,18 @@ def make_slide_07():
         ("Premium Gold", "#FFB300", (255, 179, 0), "VIP 무광고 배너"),
     ]
     sw_w = (col_w_inner - 32) // 5
-    sw_y = hb_y + 74
+    sw_y = hb_y + 66
     for i, (s_name, s_hex, s_col, s_usage) in enumerate(sub_swatches):
         sx = colA_x + 28 + i * (sw_w + 8)
-        draw.rounded_rectangle([sx, sw_y, sx + sw_w, sw_y + 68], radius=8, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-        draw.rounded_rectangle([sx + 6, sw_y + 6, sx + sw_w - 6, sw_y + 24], radius=4, fill=s_col)
-        draw.text((sx + 6, sw_y + 28), s_name, font=get_font(8, 'bold'), fill=(15, 23, 42))
-        draw.text((sx + 6, sw_y + 40), s_hex, font=get_num_font(8, 'bold'), fill=(71, 85, 105))
-        draw.text((sx + 6, sw_y + 52), s_usage, font=get_font(7, 'medium'), fill=(100, 116, 139))
+        draw.rounded_rectangle([sx, sw_y, sx + sw_w, sw_y + 58], radius=7, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        draw.rounded_rectangle([sx + 5, sw_y + 5, sx + sw_w - 5, sw_y + 20], radius=3, fill=s_col)
+        draw.text((sx + 5, sw_y + 24), s_name, font=get_font(7.5, 'bold'), fill=(15, 23, 42))
+        draw.text((sx + 5, sw_y + 35), s_hex, font=get_num_font(7.5, 'bold'), fill=(71, 85, 105))
+        draw.text((sx + 5, sw_y + 46), s_usage, font=get_font(6.8, 'medium'), fill=(100, 116, 139))
         
     # Gradients Row
-    gr_y = sw_y + 78
-    draw.text((colA_x + 28, gr_y), "시그니처 브랜드 그라디언트 (Brand Gradients):", font=get_font(9.5, 'bold'), fill=(71, 85, 105))
+    gr_y = sw_y + 68
+    draw.text((colA_x + 28, gr_y), "시그니처 브랜드 그라디언트 (Brand Gradients):", font=get_font(9, 'bold'), fill=(71, 85, 105))
     gradients_data = [
         ("Primary Gradient", (0, 81, 255), (0, 210, 255)),
         ("Obsidian Teal", (10, 37, 64), (19, 62, 104)),
@@ -2541,11 +2541,28 @@ def make_slide_07():
             rc = int(g_c1[0] + (g_c2[0] - g_c1[0]) * ratio)
             gc = int(g_c1[1] + (g_c2[1] - g_c1[1]) * ratio)
             bc = int(g_c1[2] + (g_c2[2] - g_c1[2]) * ratio)
-            draw.line([(gx + step, gr_y + 16), (gx + step, gr_y + 36)], fill=(rc, gc, bc))
-        draw.rounded_rectangle([gx, gr_y + 16, gx + gr_w, gr_y + 36], radius=4, outline=(203, 213, 225), width=1)
-        draw.text((gx + gr_w//2, gr_y + 44), g_name, font=get_font(7.5, 'bold'), fill=(71, 85, 105), anchor='mm')
+            draw.line([(gx + step, gr_y + 14), (gx + step, gr_y + 30)], fill=(rc, gc, bc))
+        draw.rounded_rectangle([gx, gr_y + 14, gx + gr_w, gr_y + 30], radius=4, outline=(203, 213, 225), width=1)
+        draw.text((gx + gr_w//2, gr_y + 36), g_name, font=get_font(7, 'bold'), fill=(71, 85, 105), anchor='mm')
         
-    # Right Half of Card 04: Typography & Spatial Tokens
+    # NEW: Elevation & Depth Tokens Block
+    el_y = gr_y + 48
+    draw.text((colA_x + 28, el_y), "엘레베이션 & 뎁스 토큰 (Elevation Hierarchy):", font=get_font(9, 'bold'), fill=(71, 85, 105))
+    elevations = [
+        ("Elevation 1 (2dp)", "Y:2 Blur:4", "카드 서피스"),
+        ("Elevation 2 (8dp)", "Y:8 Blur:16", "팝오버 · 툴팁"),
+        ("Elevation 3 (16dp)", "Y:16 Blur:24", "플로팅 음성도크"),
+    ]
+    el_w = (col_w_inner - 16) // 3
+    for idx, (el_title, el_spec, el_use) in enumerate(elevations):
+        ex = colA_x + 28 + idx * (el_w + 8)
+        ey = el_y + 14
+        draw.rounded_rectangle([ex, ey, ex + el_w, ey + 42], radius=6, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        draw.text((ex + 8, ey + 6), el_title, font=get_font(7.5, 'bold'), fill=(0, 81, 255))
+        draw.text((ex + 8, ey + 18), el_spec, font=get_num_font(7.2, 'medium'), fill=(100, 116, 139))
+        draw.text((ex + 8, ey + 29), el_use, font=get_font(7, 'regular'), fill=(71, 85, 105))
+
+    # 2. Right Half of Card 04: Typography & Visual Corner Radius Token Matrix
     ty_x = colA_x + 28 + col_w_inner + 20
     ty_w = col_w_inner
     
@@ -2556,23 +2573,49 @@ def make_slide_07():
         ("Body 14", "Regular", "현재 평단가 기준 50주 추가", False),
         ("Caption 11", "Medium", "0.2s 음성 STT 파싱 완료", False),
     ]
-    ty_start = r2_y + 68
+    ty_start = r2_y + 64
     for i, (t_role, t_weight, t_sample, is_mono) in enumerate(t_rows):
-        ry = ty_start + i * 32
-        draw.rounded_rectangle([ty_x, ry, ty_x + ty_w, ry + 26], radius=6, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-        draw.text((ty_x + 10, ry + 6), t_role, font=get_font(9.5, 'bold'), fill=(0, 81, 255))
-        draw.text((ty_x + 95, ry + 6), t_weight, font=get_font(9, 'medium'), fill=(100, 116, 139))
-        draw.text((ty_x + ty_w - 10, ry + 6), t_sample, font=get_num_font(10, 'bold') if is_mono else get_font(9, 'semibold'), fill=(15, 23, 42), anchor='ra')
+        ry = ty_start + i * 25
+        draw.rounded_rectangle([ty_x, ry, ty_x + ty_w, ry + 21], radius=5, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        draw.text((ty_x + 8, ry + 4), t_role, font=get_font(8.5, 'bold'), fill=(0, 81, 255))
+        draw.text((ty_x + 85, ry + 4), t_weight, font=get_font(8, 'medium'), fill=(100, 116, 139))
+        draw.text((ty_x + ty_w - 8, ry + 4), t_sample, font=get_num_font(9, 'bold') if is_mono else get_font(8, 'semibold'), fill=(15, 23, 42), anchor='ra')
         
-    # OpenType Spec Box
-    sp_box_y = ty_start + len(t_rows) * 32 + 8
-    draw.rounded_rectangle([ty_x, sp_box_y, ty_x + ty_w, r2_y + r2_h - 20], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-    draw.text((ty_x + 14, sp_box_y + 10), "고정폭 숫자 정렬 (Tabular Figures) & 4/8pt 스케일", font=get_font(10, 'bold'), fill=(0, 81, 255))
-    draw.text((ty_x + 14, sp_box_y + 28), "• 고정폭 숫자 (Tabular Figures): 실시간 주가/평단가 변동 시 글자 떨림 방지", font=get_font(8.5, 'regular'), fill=(71, 85, 105))
-    draw.text((ty_x + 14, sp_box_y + 44), "• 스페이싱 시스템 (Spatial Scale): 4pt/8pt 베이스라인 그리드 및 R8/R12/R16 곡률", font=get_font(8.5, 'regular'), fill=(71, 85, 105))
-    draw.text((ty_x + 14, sp_box_y + 60), "• 타이포그래피 위계 (Type Scale): Display 28부터 Caption 11까지 체계적 정보 위계", font=get_font(8.5, 'regular'), fill=(71, 85, 105))
+    # NEW: Foundation Radius & Spatial Scale Token Matrix Box
+    sp_box_y = ty_start + len(t_rows) * 25 + 6
+    sp_box_h = (r2_y + r2_h - 26) - sp_box_y
+    draw.rounded_rectangle([ty_x, sp_box_y, ty_x + ty_w, sp_box_y + sp_box_h], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
     
-    draw.text((colA_x + 28, r2_y + r2_h - 18), "• WCAG 2.1 AAA 8.4:1 초고대비율 준수 · 디자인 시스템 시맨틱 컬러 토큰 아키텍처", font=get_font(9, 'regular'), fill=(100, 116, 139))
+    # Header inside Token Matrix Box
+    draw.text((ty_x + 12, sp_box_y + 9), "코너 라운드 & 스페이싱 토큰 규칙 (Foundation Rules)", font=get_font(9.5, 'bold'), fill=(0, 81, 255))
+    draw_pill_badge(draw, cx=ty_x + ty_w - 44, cy=sp_box_y + 16, text="8pt Grid", font=get_font(7.5, 'bold'), theme='blue', has_dot=False, pad_x=5, height=16)
+    
+    # 4 Visual Corner Radius Swatches
+    r_swatches = [
+        ("radius.sm", "8px", 8, "스텝퍼 · 태그"),
+        ("radius.md", "12px", 12, "버튼 · 인풋창"),
+        ("radius.lg", "16px", 16, "결과 카드 · 모달"),
+        ("radius.full", "999px", 19, "음성 도크 · 뱃지"),
+    ]
+    rw_item = (ty_w - 24 - 18) // 4  # 85px
+    r_y = sp_box_y + 28
+    for idx, (r_token, r_val, r_px, r_usage) in enumerate(r_swatches):
+        rx = ty_x + 12 + idx * (rw_item + 6)
+        # Swatch container demonstrating exact corner radius
+        draw.rounded_rectangle([rx, r_y, rx + rw_item, r_y + 46], radius=r_px, fill=(255, 255, 255), outline=(0, 81, 255), width=1)
+        # Inner accent corner curve indicator
+        draw.rounded_rectangle([rx + 4, r_y + 4, rx + rw_item - 4, r_y + 18], radius=max(2, r_px - 3), fill=(240, 246, 255))
+        draw.text((rx + rw_item // 2, r_y + 11), f"R {r_val}", font=get_font(7.5, 'bold'), fill=(0, 81, 255), anchor='mm')
+        draw.text((rx + rw_item // 2, r_y + 25), r_token, font=get_num_font(6.8, 'bold'), fill=(15, 23, 42), anchor='mm')
+        draw.text((rx + rw_item // 2, r_y + 36), r_usage, font=get_font(6.5, 'regular'), fill=(100, 116, 139), anchor='mm')
+        
+    # 3 Spec Bullet Lines below Radius Swatches
+    sy_line = r_y + 52
+    draw.text((ty_x + 12, sy_line), "• 스페이싱 토큰 (Spatial Scale): 4·8·12·16·24·32pt 기반 베이스라인 그리드", font=get_font(8, 'regular'), fill=(71, 85, 105))
+    draw.text((ty_x + 12, sy_line + 14), "• 고정폭 숫자 (Tabular Figures): 실시간 주가/평단가 변동 시 글자 떨림 완전 차단", font=get_font(8, 'regular'), fill=(71, 85, 105))
+    draw.text((ty_x + 12, sy_line + 28), "• 3-Tier 토큰 파이프라인: Global(Primitive) → Semantic(Context) → Component 1:1", font=get_font(8, 'bold'), fill=(0, 81, 255))
+    
+    draw.text((colA_x + 28, r2_y + r2_h - 17), "• WCAG 2.1 AAA 8.4:1 초고대비율 준수 · 디자인 시스템 시맨틱 토큰 100% 동기화 아키텍처", font=get_font(9, 'regular'), fill=(100, 116, 139))
     
     # -------------------------------------------------------------
     # CARD 05 (Lower Right): ATOMIC UI COMPONENT KIT
@@ -2670,7 +2713,7 @@ def make_slide_07():
         _, _, b_end, _ = draw_pill_badge(draw, left_x=cur_bx, cy=bdg_y + 14, text=b_txt, font=get_font(9.5, 'bold'), theme=b_thm, has_dot=b_dt, dark_mode=False, pad_x=8, height=24)
         cur_bx = b_end + 8
         
-    draw.text((colB_x + 28, r2_y + r2_h - 18), "• Flutter 실제 위젯 트리 1:1 바인딩 (app_colors.dart · simulator_screen.dart · MaterialIcons)", font=get_font(9, 'regular'), fill=(100, 116, 139))
+    draw.text((colB_x + 28, r2_y + r2_h - 18), "• 파운데이션 토큰 100% 바인딩: R8/R12/R16 라운딩, 4/8pt 스페이싱, 시맨틱 컬러가 Flutter 컴포넌트 트리에 실시간 동기화", font=get_font(9, 'regular'), fill=(100, 116, 139))
     
     draw_slide_footer(draw, 7)
     base.save(f'{OUT_DIR}/slide_07.png')
