@@ -404,7 +404,7 @@
       border-bottom-right-radius: 1px;
     }
 
-    /* Live Flutter Web App Iframe */
+    /* Live Interactive Prototype Frame */
     .flutter-app-iframe {
       width: 100%;
       height: 800px;
@@ -709,13 +709,13 @@
     <div class="proto-nav-right">
       <span class="live-status-pill">
         <span class="status-dot"></span>
-        Flutter Web 60fps
+        Interactive 60fps
       </span>
       <button class="btn-icon-action" id="btn-reload" title="현재 화면 새로고침">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
         <span class="btn-label">새로고침</span>
       </button>
-      <a href="app/index.html" target="_blank" class="btn-icon-action" id="btn-fullscreen-app" title="실제 앱 브라우저 새 창에서 열기" aria-label="새 탭에서 앱 열기">
+      <a href="app/index.html" target="_blank" class="btn-icon-action" id="btn-fullscreen-app" title="프로토타입 새 창에서 전체화면으로 열기" aria-label="새 탭에서 프로토타입 열기">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
         <span class="btn-label">새 탭 ↗</span>
       </a>
@@ -760,20 +760,20 @@
         </div>
       </div>
 
-      <!-- Real Flutter Web App Iframe -->
+      <!-- Real Interactive Prototype Iframe -->
       <iframe 
         id="flutter-frame" 
         class="flutter-app-iframe" 
         src="app/index.html?flow=home" 
         allow="microphone" 
-        title="Smart DCA Live Interactive Mobile Device">
+        title="Smart DCA Live Interactive Mobile Prototype">
       </iframe>
 
     </div>
 
     <!-- Subtle Floating Bottom Helper Hint -->
     <div class="device-caption-hint">
-      📱 화면 속 버튼 및 키패드를 직접 터치/클릭하여 <strong>실제 플러터 앱</strong>을 조작하세요.
+      📱 화면 속 버튼 및 키패드를 직접 터치/클릭하여 <strong>인터랙티브 프로토타입</strong>을 직접 조작하세요.
     </div>
 
   </main>
