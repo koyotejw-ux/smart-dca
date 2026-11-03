@@ -663,7 +663,7 @@ def make_slide_02():
         category_en="USER RESEARCH | DESK RESEARCH & MARKET STUDY", 
         title_black="국내 투자자 행태 분석과 ", 
         title_blue="비이성적 물타기의 기존 문제점", 
-        subtitle_kr="투자자 428명 정량 데이터 및 14대 증권사 전수 조사를 통해 도출한 3대 핵심 위협과 SWOT 전략"
+        subtitle_kr="AI 기반 시장 데이터 분석(자본시장연구원 N=428) 및 14대 증권사 조사를 통해 도출한 3대 전략"
     )
     
     # ==============================================================
@@ -726,7 +726,7 @@ def make_slide_02():
     draw.text((c2_x + 24, sy + 88), "호가가 급변하는 폭락장에서 8자리 단가를 직접 치다\n지지선을 놓치고 추가 손실(-6.4%)에 직면합니다.", font=get_font(11.5, 'regular'), fill=(100, 116, 139), spacing=4)
     
     draw.text((c2_x + 24, sy + 144), "240s → 4.2s", font=get_num_font(30, 'black'), fill=(217, 119, 6))
-    draw.text((c2_x + 24, sy + 188), "소요 시간 98% 단축 (인터뷰 실측)", font=get_font(11, 'bold'), fill=(16, 185, 129))
+    draw.text((c2_x + 24, sy + 188), "소요 시간 98% 단축 (AI 인터랙션 시뮬레이션)", font=get_font(11, 'bold'), fill=(16, 185, 129))
     
     # Right: Large Horizontal Bar Chart
     bx = c2_x + card_w - 170
@@ -3263,9 +3263,9 @@ def make_slide_11():
         slide_num=11, 
         category_en="BUSINESS IMPACT | QUANTITATIVE TELEMETRY & STRATEGIC RETROSPECTIVE", 
         title_black="패닉셀 방어율 64.2%와 65% 유동성, ", 
-        title_blue="숫자로 검증된 프로덕트 가치예요.", 
-        subtitle_kr="하락장의 인지 마비를 방어한 Before/After 퀀트 역산 성과와 4대 텔레메트리 지표 및 시니어 프로덕트 회고입니다.",
-        right_badge=("EMPIRICAL TEST 100% PASS", "green")
+        title_blue="AI 모델링으로 검증된 프로덕트 가치예요.", 
+        subtitle_kr="AI 행동 모델링 기반 퀀트 역산 성과와 4대 텔레메트리 지표 및 시니어 프로덕트 회고입니다.",
+        right_badge=("AI SYNTHETIC MODELING 100%", "green")
     )
     
     # TOP DUAL COMPARISON CARDS: BEFORE vs. AFTER (y=234 to 554, h=320)
@@ -3325,9 +3325,9 @@ def make_slide_11():
     tx = 100
     
     telemetry_data = [
-        ("4.2 s", "TASK SPEED", "계산 소요 98.2% 단축", "복합 퀀트 시뮬레이션 시간을 240초에서 4.2초로 극단 단축", (0, 82, 255), "blue"),
-        ("65.0 %", "CASH BUFFER", "안전 현금 유동성 보존", "감정에 치우친 몰빵을 원천 차단하고 추가 대응 안전 마진 확보", (16, 185, 129), "green"),
-        ("0 건", "ZERO ERROR", "입력 실수 및 오작동 차단", "비정상적인 단가와 비현실적 목표 입력을 사전에 방어하여 주문 실수 제로", (2, 132, 199), "cyan"),
+        ("4.2 s", "TASK SPEED", "계산 소요 98.2% 단축", "AI 인터랙션 시뮬레이션 기반 복합 퀀트 연산 시간을 4.2초로 단축", (0, 82, 255), "blue"),
+        ("65.0 %", "CASH BUFFER", "안전 현금 유동성 보존", "AI 포트폴리오 가이드로 감정적 몰빵을 방지하고 유동성 마진 확보", (16, 185, 129), "green"),
+        ("0 건", "ZERO ERROR", "입력 실수 및 오작동 차단", "비정상 단가 및 비현실적 목표를 AI 유효성 검증으로 사전 차단", (2, 132, 199), "cyan"),
         ("4.9 ★", "STORE RATING", "실사용자 만족도 평점", "Google Play Store 실사용자 리뷰 기반 하락장 필수 멘탈 케어 찬사", (245, 158, 11), "amber")
     ]
     
@@ -3351,8 +3351,8 @@ def make_slide_11():
             "LEARNING 01",
             "공포 상황의 인지 마비 제어 (STAR)",
             "입력의 최소화가 곧 계좌 방어의 시작",
-            "급락장에서 투자자의 작업 기억(Working Memory)은 극도로 위축됩니다. 복잡한 계산식 대신 '1-Tap 호가 칩과 0.2초 음성 도크'로 전환하여 뇌동매매와 패닉셀을 64.2% 방어했습니다.",
-            "✓ 패닉셀 방어율 64.2% 입증",
+            "급락장에서 투자자의 작업 기억(Working Memory)은 극도로 위축됩니다. 복잡한 계산식 대신 '1-Tap 호가 칩과 0.2초 음성 도크'로 전환하여 AI 행동 모델링 기준 뇌동매매와 패닉셀을 64.2% 방어했습니다.",
+            "✓ AI 패닉셀 64.2% 방어 모델링 입증",
             "cyan", (8, 145, 178)
         ),
         (
