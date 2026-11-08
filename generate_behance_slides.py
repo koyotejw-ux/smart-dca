@@ -524,64 +524,52 @@ def make_slide_01():
     # Top Kicker & Metadata
     draw_pill_badge(draw, left_x=100, cy=78, text="DCA QUANT LAB · 2026 CASE STUDY", font=get_font(11.5, 'bold'), theme='blue', has_dot=True, pad_x=12, height=28)
     
-    meta_txt = "Solo Production · Android App Live (v2.0) · UI/UX Design & Fullstack Engineering"
+    meta_txt = "Product Designer & Flutter Fullstack · Android App Live (v2.0) · Web Simulator"
     w_meta = draw.textlength(meta_txt, font=get_font(13.5, 'medium'))
     draw.text((1820 - w_meta, 70), meta_txt, font=get_font(13.5, 'medium'), fill=(100, 116, 139))
     
-    # 2. Main Title (Centered-Left, Simple, Clean, Impactful - Reference Image Style)
+    # 2. Main Title (Centered-Left, Simple, Clean, Impactful)
     draw.text((100, 170), "SMART DCA CALCULATOR", font=get_font(15, 'bold'), fill=(0, 82, 255))
     
     # Big Clean Headline
     title_p1 = "평단을 낮추다, "
-    title_p2 = "공포를 이기다."
+    title_p2 = "하락장을 이기다."
     w_p1 = draw.textlength(title_p1, font=get_font(56, 'black'))
     draw.text((100, 206), title_p1, font=get_font(56, 'black'), fill=(15, 23, 42))
     draw.text((100 + w_p1, 206), title_p2, font=get_font(56, 'black'), fill=(0, 82, 255))
     
     # Clean Subtitle (1-2 sentences)
-    sub1 = "급격한 주가 급락 속에서 막연한 감이나 단순 산술평균 계산이 아닌,"
-    sub2 = "0.2초 음성 도크와 닫힌 형식(Closed-Form) 퀀트 역산으로 1초 만에 완성하는 스마트 물타기 계산기"
+    sub1 = "급격한 주가 하락과 변동성 속에서 감이나 단순 물타기가 아닌,"
+    sub2 = "0.2초 음성 도크와 폐쇄형(Closed-Form) 퀀트 알고리즘으로 1초 만에 탈출 플랜을 완성하는 스마트 핀테크 솔루션"
     draw.text((100, 290), sub1, font=get_font(16.5, 'regular'), fill=(71, 85, 105))
     draw.text((100, 318), sub2, font=get_font(16.5, 'semibold'), fill=(30, 41, 59))
     
-    # 4 Status Badges (Clean Pastel Theme - Reflecting v2.0 & Android Production)
-    badges = [
-        ("SOLO PO & FULLSTACK 100%", "blue"),
-        ("GOOGLE PLAY (ANDROID) LIVE", "green"),
-        ("v2.0 MAJOR UPDATE (2026.10)", "purple"),
-        ("0.2s VOICE & CLOSED-FORM", "cyan")
-    ]
-    bx = 100
-    for b_text, b_theme in badges:
-        _, _, b_end, _ = draw_pill_badge(draw, left_x=bx, cy=385, text=b_text, font=get_font(11, 'bold'), theme=b_theme, has_dot=True, pad_x=12, height=30)
-        bx = b_end + 12
-        
-    # Core Highlights Card (Clean Left Box)
-    h_box_y = 445
+    # Core Highlights Card (Cleaned & Spacious - Zero Redundant Badges)
+    h_box_y = 396
     h_box_w = 680
-    h_box_h = 365
+    h_box_h = 418
     draw.rounded_rectangle([100, h_box_y, 100 + h_box_w, h_box_y + h_box_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     
     # Card Header
     draw_pill_badge(draw, left_x=128, cy=h_box_y + 36, text="PRODUCT MISSION", font=get_font(10.5, 'bold'), theme='blue', has_dot=False, pad_x=10, height=24)
-    draw.text((270, h_box_y + 26), "감에 의존한 물타기를 멈추고 출구 전략을 세우다", font=get_font(15.5, 'bold'), fill=(15, 23, 42))
+    draw.text((270, h_box_y + 26), "감에 의존한 물타기를 끝내고 수학적 탈출 해법을 제시하다", font=get_font(15.5, 'bold'), fill=(15, 23, 42))
     
     draw.line([(128, h_box_y + 60), (100 + h_box_w - 28, h_box_y + 60)], fill=(241, 245, 249), width=1)
     
     key_points = [
-        ("01", "0.2초 음성 도크 (Voice-First)", "호가 급변 시 타이핑 오타를 원천 차단하고 자연어 발화 즉시 수치 자동 파싱"),
-        ("02", "닫힌 형식 퀀트 역산 (Closed-Form)", "희망 탈출 목표가 입력 시 필요한 매수 수량과 가용 자금을 0ms 즉각 도출"),
-        ("03", "65% 예수금 안전 가드 (Safety Guard)", "무리한 물타기로 인한 계좌 묶임을 방지하고 차수별 현금 방어선 유지"),
-        ("04", "100% 온디바이스 보안 (Zero-Server)", "금융 자산 데이터를 외부 서버에 전송하지 않고 기기 내부 로컬 저장")
+        ("01", "0.2초 음성 도크 (Voice-First)", "호가창 급변 시 타이핑 스트레스 없이 자연어 음성으로 단가·수량 즉각 파싱"),
+        ("02", "폐쇄형 퀀트 엔진 (Closed-Form)", "목표 탈출 평단 입력 시 필요한 추가 매수 수량과 총 투입 자금 0ms 역산"),
+        ("03", "65% 현금 안전 버퍼 (Safety Guard)", "과도한 물타기로 인한 유동성 고갈 방지 및 리스크 관리 안전선 권고"),
+        ("04", "100% 온디바이스 보안 (Zero-Server)", "민감한 개인 투자 자산 데이터를 외부 서버로 전송하지 않고 기기 내 로컬 암호화")
     ]
     
-    k_y = h_box_y + 78
+    k_y = h_box_y + 82
     for num, k_title, k_desc in key_points:
         draw.rounded_rectangle([128, k_y, 160, k_y + 26], radius=6, fill=(241, 245, 249))
         draw.text((144, k_y + 13), num, font=get_font(11, 'bold'), fill=(0, 82, 255), anchor='mm')
         draw.text((172, k_y + 3), k_title, font=get_font(13.5, 'bold'), fill=(15, 23, 42))
         draw.text((172, k_y + 25), k_desc, font=get_font(11.5, 'regular'), fill=(100, 116, 139))
-        k_y += 66
+        k_y += 76
         
     # 3. Modern Flagship 19.5:9 Smartphone Mockups (Centered-Right, Clean & Elegant)
     phone_home = Image.open('portfolio/iphone_mockups/iphone_01_home.png').convert('RGBA')
@@ -607,10 +595,8 @@ def make_slide_01():
     sh_back, pad_b = make_shadow(rot_back, blur=38, offset=(18, 32), alpha=60)
     sh_front, pad_f = make_shadow(rot_front, blur=44, offset=(22, 40), alpha=85)
     
-    # Beautiful spatial placement (tuned for 19.5:9 slender profile)
     p_back_x = 1310
     p_back_y = 145
-    
     p_front_x = 1010
     p_front_y = 200
     
@@ -620,23 +606,17 @@ def make_slide_01():
     base.paste(sh_front, (p_front_x - pad_f[0], p_front_y - pad_f[1]), sh_front)
     base.paste(rot_front, (p_front_x, p_front_y), rot_front)
     
-    # 4. Floating Feature Callout Pills anchored to Mockups (Reference Style)
-    draw = ImageDraw.Draw(base)
-    draw_pill_badge(draw, cx=1140, cy=160, text="0.2s VOICE DOCK", font=get_font(10.5, 'bold'), theme='cyan', pad_x=12, height=28, solid=True)
-    draw_pill_badge(draw, cx=1640, cy=200, text="GOAL-SEEKING ENGINE", font=get_font(10.5, 'bold'), theme='amber', pad_x=12, height=28, solid=True)
-    draw_pill_badge(draw, cx=1580, cy=815, text="65% CASH SAFETY GUARD", font=get_font(10.5, 'bold'), theme='green', pad_x=12, height=28, solid=True)
-    
-    # 5. Bottom Simple & Clean Specification Strip (Reference Style, Clean 4 Columns)
+    # 4. Bottom Simple & Clean Specification Strip (Reference Style, Clean 4 Columns)
     bar_y = 856
     bar_h = 108
     draw.rounded_rectangle([100, bar_y, 1820, bar_y + bar_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     
     col_w = (1720) // 4
     specs = [
-        ("PROJECT ROLE", "PO & Solo Fullstack", "기획(PM) · UI/UX 디자인 · Flutter 풀스택 · v2.0 운영"),
-        ("PERIOD & SPRINT", "2026.02 - 2026.10 (v2.0)", "v1.0 런칭(4월) ➔ v2.0 고도화 배포(10월, 운영 중)"),
-        ("TECH STACK", "Flutter 3.x · Riverpod", "Dart · 온디바이스 STT · Python 퀀트 · Android Native"),
-        ("PLATFORM RELEASE", "Google Play Live (Android)", "Android 단독 상용 정식 출시 (실서비스 운영) & Web 데모")
+        ("PROJECT ROLE", "PO & Flutter Fullstack", "서비스 기획(PM) · UI/UX 디자인 · Flutter 개발 · v2.0 운영"),
+        ("PLATFORM RELEASE", "Google Play Store Live", "Google Play Store 정식 출시 · Web 60fps 인터랙티브 시뮬레이터"),
+        ("CORE TECH STACK", "Flutter 3.x, Riverpod, SQLite", "폐쇄형 퀀트 역산 엔진 · 60fps 애니메이션 · 온디바이스 로컬 암호화"),
+        ("DEVELOPMENT PERIOD", "6주 스프린트 & v2.0", "2026.02 - 2026.04 (MVP 런칭) · 2026.10 (v2.0 업데이트)")
     ]
     
     for i, (cat, val_bold, val_desc) in enumerate(specs):
@@ -650,7 +630,9 @@ def make_slide_01():
         
     draw_slide_footer(draw, 1)
     base.save(f'{OUT_DIR}/slide_01.png')
-    print("SAVED clean simple Slide 01 successfully!")
+    auto_out = 'd:/097.flutter_project/auto_portfolio/smart_dca/behance_slides/slide_01.png'
+    base.save(auto_out)
+    print("SAVED clean simple Slide 01 to both repos successfully!")
 
 def make_slide_02():
     base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
