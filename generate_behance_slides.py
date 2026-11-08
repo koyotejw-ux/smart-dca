@@ -505,14 +505,13 @@ def draw_hero_pill(draw, cx, cy, text, font=None, fill_color=(255, 255, 255, 25)
     draw.text((x0 + pad_x, y0 + (height - th) // 2 - 1), text, font=font, fill=text_color)
 
 def make_slide_01():
-    # Pristine soft airy canvas
     base = Image.new('RGBA', (W, H), (250, 252, 255, 255))
     
     # 1. Subtle Ambient Radial Glow in the center-right behind phones
     glow = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     g_draw = ImageDraw.Draw(glow)
-    g_draw.ellipse([850, 140, 1850, 840], fill=(0, 82, 255, 18))
-    g_draw.ellipse([1100, 220, 1750, 750], fill=(6, 182, 212, 14))
+    g_draw.ellipse([800, 100, 1850, 850], fill=(0, 82, 255, 20))
+    g_draw.ellipse([1050, 180, 1750, 780], fill=(6, 182, 212, 16))
     glow = glow.filter(ImageFilter.GaussianBlur(130))
     base = Image.alpha_composite(base, glow)
     
@@ -522,40 +521,56 @@ def make_slide_01():
     draw.line([(100, 52), (1820, 52)], fill=(226, 232, 240), width=1)
     
     # Top Kicker & Metadata
-    draw_pill_badge(draw, left_x=100, cy=78, text="DCA QUANT LAB · 2026 CASE STUDY", font=get_font(11.5, 'bold'), theme='blue', has_dot=True, pad_x=12, height=28)
+    draw_pill_badge(draw, left_x=100, cy=76, text="DCA QUANT LAB · 2026 CASE STUDY", font=get_font(11.5, 'bold'), theme='blue', has_dot=True, pad_x=12, height=28)
     
     meta_txt = "Product Designer & Flutter Fullstack · Android App Live (v2.0) · Web Simulator"
     w_meta = draw.textlength(meta_txt, font=get_font(13.5, 'medium'))
-    draw.text((1820 - w_meta, 70), meta_txt, font=get_font(13.5, 'medium'), fill=(100, 116, 139))
+    draw.text((1820 - w_meta, 68), meta_txt, font=get_font(13.5, 'medium'), fill=(100, 116, 139))
     
-    # 2. Main Title (Centered-Left, Simple, Clean, Impactful)
-    draw.text((100, 170), "SMART DCA CALCULATOR", font=get_font(15, 'bold'), fill=(0, 82, 255))
+    # 2. Main Title (Centered-Left, Compact & Punchy)
+    draw.text((100, 155), "SMART DCA CALCULATOR", font=get_font(14, 'bold'), fill=(0, 82, 255))
     
     # Big Clean Headline
     title_p1 = "평단을 낮추다, "
     title_p2 = "하락장을 이기다."
-    w_p1 = draw.textlength(title_p1, font=get_font(56, 'black'))
-    draw.text((100, 206), title_p1, font=get_font(56, 'black'), fill=(15, 23, 42))
-    draw.text((100 + w_p1, 206), title_p2, font=get_font(56, 'black'), fill=(0, 82, 255))
+    w_p1 = draw.textlength(title_p1, font=get_font(58, 'black'))
+    draw.text((100, 188), title_p1, font=get_font(58, 'black'), fill=(15, 23, 42))
+    draw.text((100 + w_p1, 188), title_p2, font=get_font(58, 'black'), fill=(0, 82, 255))
     
     # Clean Subtitle (1-2 sentences)
     sub1 = "급격한 주가 하락과 변동성 속에서 감이나 단순 물타기가 아닌,"
     sub2 = "0.2초 음성 도크와 폐쇄형(Closed-Form) 퀀트 알고리즘으로 1초 만에 탈출 플랜을 완성하는 스마트 핀테크 솔루션"
-    draw.text((100, 290), sub1, font=get_font(16.5, 'regular'), fill=(71, 85, 105))
-    draw.text((100, 318), sub2, font=get_font(16.5, 'semibold'), fill=(30, 41, 59))
+    draw.text((100, 272), sub1, font=get_font(16.5, 'regular'), fill=(71, 85, 105))
+    draw.text((100, 300), sub2, font=get_font(16.5, 'semibold'), fill=(30, 41, 59))
     
-    # Core Highlights Card (Cleaned & Spacious - Zero Redundant Badges)
-    h_box_y = 396
-    h_box_w = 680
-    h_box_h = 418
+    # Core Highlights Card (Expanded Width & Zero-Void Layout)
+    h_box_y = 356
+    h_box_w = 760
+    h_box_h = 460
     draw.rounded_rectangle([100, h_box_y, 100 + h_box_w, h_box_y + h_box_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     
     # Card Header
-    draw_pill_badge(draw, left_x=128, cy=h_box_y + 36, text="PRODUCT MISSION", font=get_font(10.5, 'bold'), theme='blue', has_dot=False, pad_x=10, height=24)
-    draw.text((270, h_box_y + 26), "감에 의존한 물타기를 끝내고 수학적 탈출 해법을 제시하다", font=get_font(15.5, 'bold'), fill=(15, 23, 42))
+    draw_pill_badge(draw, left_x=126, cy=h_box_y + 30, text="PRODUCT MISSION", font=get_font(10.5, 'bold'), theme='blue', has_dot=False, pad_x=10, height=24)
+    draw.text((264, h_box_y + 20), "감에 의존한 물타기를 끝내고 수학적 탈출 해법을 제시하다", font=get_font(15.5, 'bold'), fill=(15, 23, 42))
+    draw.line([(126, h_box_y + 54), (100 + h_box_w - 26, h_box_y + 54)], fill=(241, 245, 249), width=1)
     
-    draw.line([(128, h_box_y + 60), (100 + h_box_w - 28, h_box_y + 60)], fill=(241, 245, 249), width=1)
+    # Quant Performance Metric Ribbon (High-Density Context)
+    metrics = [
+        ("0.0ms", "폐쇄형 퀀트 역산"),
+        ("100%", "온디바이스 보안"),
+        ("65%", "안전 버퍼 가드")
+    ]
+    m_w = (h_box_w - 52 - 24) // 3
+    for m_i, (m_val, m_lbl) in enumerate(metrics):
+        mx = 126 + m_i * (m_w + 12)
+        my = h_box_y + 66
+        draw.rounded_rectangle([mx, my, mx + m_w, my + 34], radius=8, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
+        draw.text((mx + 14, my + 8), m_val, font=get_font(13.5, 'black'), fill=(0, 82, 255))
+        draw.text((mx + 70, my + 10), m_lbl, font=get_font(11, 'medium'), fill=(71, 85, 105))
+        
+    draw.line([(126, h_box_y + 112), (100 + h_box_w - 26, h_box_y + 112)], fill=(241, 245, 249), width=1)
     
+    # 4 Service Pillars
     key_points = [
         ("01", "0.2초 음성 도크 (Voice-First)", "호가창 급변 시 타이핑 스트레스 없이 자연어 음성으로 단가·수량 즉각 파싱"),
         ("02", "폐쇄형 퀀트 엔진 (Closed-Form)", "목표 탈출 평단 입력 시 필요한 추가 매수 수량과 총 투입 자금 0ms 역산"),
@@ -563,21 +578,20 @@ def make_slide_01():
         ("04", "100% 온디바이스 보안 (Zero-Server)", "민감한 개인 투자 자산 데이터를 외부 서버로 전송하지 않고 기기 내 로컬 암호화")
     ]
     
-    k_y = h_box_y + 82
+    k_y = h_box_y + 128
     for num, k_title, k_desc in key_points:
-        draw.rounded_rectangle([128, k_y, 160, k_y + 26], radius=6, fill=(241, 245, 249))
-        draw.text((144, k_y + 13), num, font=get_font(11, 'bold'), fill=(0, 82, 255), anchor='mm')
-        draw.text((172, k_y + 3), k_title, font=get_font(13.5, 'bold'), fill=(15, 23, 42))
-        draw.text((172, k_y + 25), k_desc, font=get_font(11.5, 'regular'), fill=(100, 116, 139))
-        k_y += 76
+        draw.rounded_rectangle([126, k_y, 160, k_y + 26], radius=6, fill=(241, 245, 249))
+        draw.text((143, k_y + 13), num, font=get_font(11, 'bold'), fill=(0, 82, 255), anchor='mm')
+        draw.text((174, k_y + 3), k_title, font=get_font(13.5, 'bold'), fill=(15, 23, 42))
+        draw.text((174, k_y + 27), k_desc, font=get_font(11.5, 'regular'), fill=(100, 116, 139))
+        k_y += 74
         
-    # 3. Modern Flagship 19.5:9 Smartphone Mockups (Centered-Right, Clean & Elegant)
-    phone_home = Image.open('portfolio/iphone_mockups/iphone_01_home.png').convert('RGBA')
-    phone_target = Image.open('portfolio/iphone_mockups/iphone_03_target.png').convert('RGBA')
+    # Dual Angled 19.5:9 Smartphone Mockups (Enlarged & Flawlessly Positioned)
+    phone_home = Image.open(r"portfolio/iphone_mockups\iphone_01_home.png").convert('RGBA')
+    phone_target = Image.open(r"portfolio/iphone_mockups\iphone_03_target.png").convert('RGBA')
     
-    target_h = 640
+    target_h = 680
     target_w = int(round(target_h * (phone_home.width / phone_home.height)))
-    
     p_front = phone_home.resize((target_w, target_h), Image.Resampling.LANCZOS)
     p_back = phone_target.resize((target_w, target_h), Image.Resampling.LANCZOS)
     
@@ -585,20 +599,18 @@ def make_slide_01():
     rot_front = p_front.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC)
     rot_back = p_back.rotate(angle, expand=True, resample=Image.Resampling.BICUBIC)
     
-    def make_shadow(img, blur=40, offset=(20, 36), alpha=75):
+    def make_shadow(img, blur=44, offset=(22, 40), alpha=80):
         mask = img.split()[3]
         sh_img = Image.new('RGBA', (img.width + 120, img.height + 120), (0, 0, 0, 0))
         black = Image.new('RGBA', img.size, (0, 0, 0, alpha))
         sh_img.paste(black, (60 + offset[0], 60 + offset[1]), mask)
         return sh_img.filter(ImageFilter.GaussianBlur(blur)), (60, 60)
         
-    sh_back, pad_b = make_shadow(rot_back, blur=38, offset=(18, 32), alpha=60)
-    sh_front, pad_f = make_shadow(rot_front, blur=44, offset=(22, 40), alpha=85)
+    sh_back, pad_b = make_shadow(rot_back, blur=40, offset=(18, 34), alpha=65)
+    sh_front, pad_f = make_shadow(rot_front, blur=48, offset=(24, 44), alpha=88)
     
-    p_back_x = 1310
-    p_back_y = 145
-    p_front_x = 1010
-    p_front_y = 200
+    p_back_x, p_back_y = 1250, 115
+    p_front_x, p_front_y = 940, 170
     
     base.paste(sh_back, (p_back_x - pad_b[0], p_back_y - pad_b[1]), sh_back)
     base.paste(rot_back, (p_back_x, p_back_y), rot_back)
@@ -606,9 +618,14 @@ def make_slide_01():
     base.paste(sh_front, (p_front_x - pad_f[0], p_front_y - pad_f[1]), sh_front)
     base.paste(rot_front, (p_front_x, p_front_y), rot_front)
     
-    # 4. Bottom Simple & Clean Specification Strip (Reference Style, Clean 4 Columns)
-    bar_y = 856
-    bar_h = 108
+    # Screen Mockup Context Tags
+    draw = ImageDraw.Draw(base)
+    draw_pill_badge(draw, left_x=1320, cy=94, text="SCREEN 02 · QUANT GOAL-SEEKING", font=get_font(10, 'bold'), theme='cyan', has_dot=True, pad_x=10, height=22, solid=True)
+    draw_pill_badge(draw, left_x=1010, cy=148, text="SCREEN 01 · ASSET HEALTH DASHBOARD", font=get_font(10, 'bold'), theme='blue', has_dot=True, pad_x=10, height=22, solid=True)
+    
+    # 4. Bottom Simple & Clean Specification Strip
+    bar_y = 850
+    bar_h = 114
     draw.rounded_rectangle([100, bar_y, 1820, bar_y + bar_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     
     col_w = (1720) // 4
@@ -625,15 +642,14 @@ def make_slide_01():
             draw.line([(cx, bar_y + 18), (cx, bar_y + bar_h - 18)], fill=(226, 232, 240), width=1)
         
         draw.text((cx + 28, bar_y + 18), cat, font=get_font(11, 'bold'), fill=(0, 82, 255))
-        draw.text((cx + 28, bar_y + 40), val_bold, font=get_font(15, 'bold'), fill=(15, 23, 42))
-        draw.text((cx + 28, bar_y + 66), val_desc, font=get_font(11.5, 'regular'), fill=(100, 116, 139))
+        draw.text((cx + 28, bar_y + 42), val_bold, font=get_font(15, 'bold'), fill=(15, 23, 42))
+        draw.text((cx + 28, bar_y + 70), val_desc, font=get_font(11.5, 'regular'), fill=(100, 116, 139))
         
     draw_slide_footer(draw, 1)
     base.save(f'{OUT_DIR}/slide_01.png')
     auto_out = 'd:/097.flutter_project/auto_portfolio/smart_dca/behance_slides/slide_01.png'
     base.save(auto_out)
     print("SAVED clean simple Slide 01 to both repos successfully!")
-
 def make_slide_02():
     base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
     draw = ImageDraw.Draw(base)
