@@ -507,7 +507,7 @@ def draw_hero_pill(draw, cx, cy, text, font=None, fill_color=(255, 255, 255, 25)
 def make_slide_01():
     base = Image.new('RGBA', (W, H), (250, 252, 255, 255))
     
-    # 1. Subtle Ambient Radial Glow in the center-right behind phones
+    # 1. Subtle Ambient Radial Glow
     glow = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     g_draw = ImageDraw.Draw(glow)
     g_draw.ellipse([800, 100, 1850, 850], fill=(0, 82, 255, 20))
@@ -523,12 +523,12 @@ def make_slide_01():
     # Top Kicker & Metadata
     draw_pill_badge(draw, left_x=100, cy=76, text="DCA QUANT LAB · 2026 CASE STUDY", font=get_font(11.5, 'bold'), theme='blue', has_dot=True, pad_x=12, height=28)
     
-    meta_txt = "Product Designer & Flutter Fullstack · Android App Live (v2.0) · Web Simulator"
+    meta_txt = "기획(PM) · UI/UX 디자인 · Android Live (v2.0) · Web Prototype"
     w_meta = draw.textlength(meta_txt, font=get_font(13.5, 'medium'))
     draw.text((1820 - w_meta, 68), meta_txt, font=get_font(13.5, 'medium'), fill=(100, 116, 139))
     
-    # 2. Main Title (Centered-Left, Compact & Punchy)
-    draw.text((100, 155), "SMART DCA CALCULATOR", font=get_font(14, 'bold'), fill=(0, 82, 255))
+    # Category Label
+    draw.text((100, 155), "SMART DCA · UX/UI CASE STUDY", font=get_font(14, 'bold'), fill=(0, 82, 255))
     
     # Big Clean Headline
     title_p1 = "평단을 낮추다, "
@@ -537,58 +537,62 @@ def make_slide_01():
     draw.text((100, 188), title_p1, font=get_font(58, 'black'), fill=(15, 23, 42))
     draw.text((100 + w_p1, 188), title_p2, font=get_font(58, 'black'), fill=(0, 82, 255))
     
-    # Clean Subtitle (1-2 sentences)
-    sub1 = "급격한 주가 하락과 변동성 속에서 감이나 단순 물타기가 아닌,"
-    sub2 = "0.2초 음성 도크와 폐쇄형(Closed-Form) 퀀트 알고리즘으로 1초 만에 탈출 플랜을 완성하는 스마트 핀테크 솔루션"
+    # Clean UX Subtitle (2 balanced lines)
+    sub1 = "급격한 주가 변동 속 투자자의 인지 과부하와 심리적 불안을 해소하고,"
+    sub2 = "음성 인터랙션과 직관적인 역산 UX로 명확한 탈출 기준을 제시하는 핀테크 프로덕트 기획·디자인"
     draw.text((100, 272), sub1, font=get_font(16.5, 'regular'), fill=(71, 85, 105))
     draw.text((100, 300), sub2, font=get_font(16.5, 'semibold'), fill=(30, 41, 59))
     
-    # Core Highlights Card (Expanded Width & Zero-Void Layout)
-    h_box_y = 356
+    # UX Core Architecture Card (w=760, h=472, starts y=348)
+    h_box_y = 348
     h_box_w = 760
-    h_box_h = 460
+    h_box_h = 472
     draw.rounded_rectangle([100, h_box_y, 100 + h_box_w, h_box_y + h_box_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     
     # Card Header
-    draw_pill_badge(draw, left_x=126, cy=h_box_y + 30, text="PRODUCT MISSION", font=get_font(10.5, 'bold'), theme='blue', has_dot=False, pad_x=10, height=24)
-    draw.text((264, h_box_y + 20), "감에 의존한 물타기를 끝내고 수학적 탈출 해법을 제시하다", font=get_font(15.5, 'bold'), fill=(15, 23, 42))
-    draw.line([(126, h_box_y + 54), (100 + h_box_w - 26, h_box_y + 54)], fill=(241, 245, 249), width=1)
+    draw_pill_badge(draw, left_x=126, cy=h_box_y + 32, text="UX DESIGN STRATEGY", font=get_font(10.5, 'bold'), theme='blue', has_dot=False, pad_x=10, height=24)
+    draw.text((290, h_box_y + 22), "계산의 인지 부하를 없애고, 불안을 확신으로 바꾸는 의사결정 UX", font=get_font(15, 'bold'), fill=(15, 23, 42))
+    draw.line([(126, h_box_y + 58), (100 + h_box_w - 26, h_box_y + 58)], fill=(241, 245, 249), width=1)
     
-    # Quant Performance Metric Ribbon (High-Density Context)
-    metrics = [
-        ("0.0ms", "폐쇄형 퀀트 역산"),
-        ("100%", "온디바이스 보안"),
-        ("65%", "안전 버퍼 가드")
-    ]
-    m_w = (h_box_w - 52 - 24) // 3
-    for m_i, (m_val, m_lbl) in enumerate(metrics):
-        mx = 126 + m_i * (m_w + 12)
-        my = h_box_y + 66
-        draw.rounded_rectangle([mx, my, mx + m_w, my + 34], radius=8, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-        draw.text((mx + 14, my + 8), m_val, font=get_font(13.5, 'black'), fill=(0, 82, 255))
-        draw.text((mx + 70, my + 10), m_lbl, font=get_font(11, 'medium'), fill=(71, 85, 105))
-        
-    draw.line([(126, h_box_y + 112), (100 + h_box_w - 26, h_box_y + 112)], fill=(241, 245, 249), width=1)
-    
-    # 4 Service Pillars
-    key_points = [
-        ("01", "0.2초 음성 도크 (Voice-First)", "호가창 급변 시 타이핑 스트레스 없이 자연어 음성으로 단가·수량 즉각 파싱"),
-        ("02", "폐쇄형 퀀트 엔진 (Closed-Form)", "목표 탈출 평단 입력 시 필요한 추가 매수 수량과 총 투입 자금 0ms 역산"),
-        ("03", "65% 현금 안전 버퍼 (Safety Guard)", "과도한 물타기로 인한 유동성 고갈 방지 및 리스크 관리 안전선 권고"),
-        ("04", "100% 온디바이스 보안 (Zero-Server)", "민감한 개인 투자 자산 데이터를 외부 서버로 전송하지 않고 기기 내 로컬 암호화")
+    # 4 UX Pillars
+    ux_pillars = [
+        ("01", "인지 부하 제로 설계", "Zero-Friction Voice Dock", "급변하는 호가창 상황에서 복잡한 자판 입력 스트레스 없이, 자연어 음성 인식으로 단가와 수량을 즉각 파싱하여 긴급 대응성 극대화"),
+        ("02", "직관적인 역산 UX", "Goal-Seeking Interactive Flow", "공식이나 계산 과정을 사용자가 직접 풀 필요 없이, 목표 탈출 평단 슬라이더 하나로 추가 매수 자금을 직관적으로 도출하는 3단계 인터랙티브 플로우"),
+        ("03", "행동경제학적 안전 장치", "Safety Margin Alert UI", "공포와 처분 효과에 의한 무리한 물타기를 방지하도록, 자산 대비 65% 현금 비중 안전선을 시각적 가이드로 제공하여 감정적 뇌동매매 원천 차단"),
+        ("04", "금융 신뢰감과 안심 UX", "Trust & Privacy-First Interface", "자산 데이터 입력의 심리적 저항을 없애기 위해 회원가입과 서버 전송이 없는 안심 구조를 확립하고, 시인성이 뛰어난 현대적 다크/라이트 테마 완성")
     ]
     
-    k_y = h_box_y + 128
-    for num, k_title, k_desc in key_points:
-        draw.rounded_rectangle([126, k_y, 160, k_y + 26], radius=6, fill=(241, 245, 249))
-        draw.text((143, k_y + 13), num, font=get_font(11, 'bold'), fill=(0, 82, 255), anchor='mm')
-        draw.text((174, k_y + 3), k_title, font=get_font(13.5, 'bold'), fill=(15, 23, 42))
-        draw.text((174, k_y + 27), k_desc, font=get_font(11.5, 'regular'), fill=(100, 116, 139))
-        k_y += 74
+    k_y = h_box_y + 76
+    for num, k_title, k_en, k_desc in ux_pillars:
+        draw.rounded_rectangle([126, k_y, 158, k_y + 24], radius=6, fill=(241, 245, 249))
+        draw.text((142, k_y + 12), num, font=get_font(11, 'bold'), fill=(0, 82, 255), anchor='mm')
         
-    # Dual Angled 19.5:9 Smartphone Mockups (Enlarged & Flawlessly Positioned)
-    phone_home = Image.open(r"portfolio/iphone_mockups\iphone_01_home.png").convert('RGBA')
-    phone_target = Image.open(r"portfolio/iphone_mockups\iphone_03_target.png").convert('RGBA')
+        draw.text((170, k_y + 2), k_title, font=get_font(14, 'bold'), fill=(15, 23, 42))
+        draw.text((170 + draw.textlength(k_title, font=get_font(14, 'bold')) + 10, k_y + 4), f"·  {k_en}", font=get_font(11.5, 'medium'), fill=(100, 116, 139))
+        
+        words = k_desc.split(' ')
+        lines = []
+        cur_l = ""
+        for w in words:
+            test = (cur_l + ' ' + w).strip()
+            if draw.textlength(test, font=get_font(11.5, 'regular')) <= 555:
+                cur_l = test
+            else:
+                lines.append(cur_l)
+                cur_l = w
+        if cur_l:
+            lines.append(cur_l)
+            
+        desc_y = k_y + 28
+        for l in lines[:2]:
+            draw.text((170, desc_y), l, font=get_font(11.5, 'regular'), fill=(100, 116, 139))
+            desc_y += 18
+            
+        k_y += 94
+        
+    # Dual Angled 19.5:9 Smartphone Mockups
+    phone_home = Image.open('portfolio/iphone_mockups/iphone_01_home.png').convert('RGBA')
+    phone_target = Image.open('portfolio/iphone_mockups/iphone_03_target.png').convert('RGBA')
     
     target_h = 680
     target_w = int(round(target_h * (phone_home.width / phone_home.height)))
@@ -618,10 +622,10 @@ def make_slide_01():
     base.paste(sh_front, (p_front_x - pad_f[0], p_front_y - pad_f[1]), sh_front)
     base.paste(rot_front, (p_front_x, p_front_y), rot_front)
     
-    # Screen Mockup Context Tags
+    # Screen Mockup Labels
     draw = ImageDraw.Draw(base)
-    draw_pill_badge(draw, left_x=1320, cy=94, text="SCREEN 02 · QUANT GOAL-SEEKING", font=get_font(10, 'bold'), theme='cyan', has_dot=True, pad_x=10, height=22, solid=True)
-    draw_pill_badge(draw, left_x=1010, cy=148, text="SCREEN 01 · ASSET HEALTH DASHBOARD", font=get_font(10, 'bold'), theme='blue', has_dot=True, pad_x=10, height=22, solid=True)
+    draw_pill_badge(draw, left_x=1320, cy=94, text="SCREEN 02 · 목표 평단 역산 시뮬레이터", font=get_font(10, 'bold'), theme='cyan', has_dot=True, pad_x=10, height=22, solid=True)
+    draw_pill_badge(draw, left_x=1010, cy=148, text="SCREEN 01 · 자산 현황 진단 대시보드", font=get_font(10, 'bold'), theme='blue', has_dot=True, pad_x=10, height=22, solid=True)
     
     # 4. Bottom Simple & Clean Specification Strip
     bar_y = 850
@@ -630,10 +634,10 @@ def make_slide_01():
     
     col_w = (1720) // 4
     specs = [
-        ("PROJECT ROLE", "PO & Flutter Fullstack", "서비스 기획(PM) · UI/UX 디자인 · Flutter 개발 · v2.0 운영"),
-        ("PLATFORM RELEASE", "Google Play Store Live", "Google Play Store 정식 출시 · Web 60fps 인터랙티브 시뮬레이터"),
-        ("CORE TECH STACK", "Flutter 3.x, Riverpod, SQLite", "폐쇄형 퀀트 역산 엔진 · 60fps 애니메이션 · 온디바이스 로컬 암호화"),
-        ("DEVELOPMENT PERIOD", "6주 스프린트 & v2.0", "2026.02 - 2026.04 (MVP 런칭) · 2026.10 (v2.0 업데이트)")
+        ("PROJECT ROLE", "기획(PM) 100% · UI/UX 디자인 100%", "문제 정의 · 사용자 여정 맵 · IA 설계 · 와이어프레임 · UI 디자인 총괄"),
+        ("DESIGN SYSTEM", "Figma · 디자인 토큰 · 인터랙션 규격", "8pt 그리드 시스템 · 금융 다크/라이트 테마 · 햅틱 마이크로 인터랙션 규격화"),
+        ("UX ARCHITECTURE", "인지 부하 최소화 & 직관적 역산 플로우", "3-Step 탈출 시뮬레이션 플로우 · 인터랙티브 슬라이더 · 모바일 사용성 최적화"),
+        ("DELIVERY & RELEASE", "Google Play 상용 출시 & 웹 프로토타입", "실제 스토어 사용자 피드백 반영(v2.0) · 60fps 인터랙티브 체험 환경 구축")
     ]
     
     for i, (cat, val_bold, val_desc) in enumerate(specs):
@@ -642,8 +646,8 @@ def make_slide_01():
             draw.line([(cx, bar_y + 18), (cx, bar_y + bar_h - 18)], fill=(226, 232, 240), width=1)
         
         draw.text((cx + 28, bar_y + 18), cat, font=get_font(11, 'bold'), fill=(0, 82, 255))
-        draw.text((cx + 28, bar_y + 42), val_bold, font=get_font(15, 'bold'), fill=(15, 23, 42))
-        draw.text((cx + 28, bar_y + 70), val_desc, font=get_font(11.5, 'regular'), fill=(100, 116, 139))
+        draw.text((cx + 28, bar_y + 42), val_bold, font=get_font(14.5, 'bold'), fill=(15, 23, 42))
+        draw.text((cx + 28, bar_y + 70), val_desc, font=get_font(11, 'regular'), fill=(100, 116, 139))
         
     draw_slide_footer(draw, 1)
     base.save(f'{OUT_DIR}/slide_01.png')
