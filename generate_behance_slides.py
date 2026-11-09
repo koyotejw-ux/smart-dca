@@ -537,54 +537,45 @@ def make_slide_01():
     draw.text((100, 178), title_p1, font=get_font(56, 'black'), fill=(15, 23, 42))
     draw.text((100 + w_p1, 178), title_p2, font=get_font(56, 'black'), fill=(0, 82, 255))
     
-    # Clean UX Subtitle (2 balanced lines)
-    sub1 = "급격한 주가 변동 속 투자자의 인지 과부하와 심리적 불안을 해소하고,"
-    sub2 = "음성 인터랙션과 직관적인 역산 UX로 명확한 탈출 기준을 제시하는 핀테크 프로덕트 기획·디자인"
+        # Clean UX Subtitle (2 balanced lines)
+    sub1 = "하락장에서 불안에 휩쓸려 무작정 매수하던 기존 계산 방식을 완전히 탈피하고,"
+    sub2 = "목표 평단가 도달에 필요한 매수 수량과 자금을 한눈에 제시하는 스마트 금융 솔루션"
     draw.text((100, 260), sub1, font=get_font(16.5, 'regular'), fill=(71, 85, 105))
     draw.text((100, 288), sub2, font=get_font(16.5, 'semibold'), fill=(30, 41, 59))
     
-    # 2x2 Modular Bento Grid (x=100 to 940, w=840 total, y=345 to 805)
-    bento_pillars = [
-        (0, 0, "01", "인지 부하 해소", "인지 부하 제로 설계", "Zero-Friction Voice Dock",
-         "급변하는 호가창 상황에서 복잡한 자판 입력 없이, 자연어 음성 인식으로 단가와 수량을 즉각 파싱하여 긴급 대응성 극대화"),
-        (1, 0, "02", "직관적 역산 UX", "직관적인 역산 인터랙션", "Goal-Seeking Interactive Flow",
-         "공식을 직접 풀 필요 없이, 목표 탈출 평단 슬라이더 조작 하나로 추가 매수 자금을 직관 도출하는 3단계 인터랙티브 플로우"),
-        (0, 1, "03", "행동경제학", "행동경제학적 안전 장치", "Safety Margin Alert UI",
-         "공포와 처분 효과에 의한 무리한 물타기를 방지하도록, 자산 대비 65% 현금 비중 안전선을 시각 가이드로 제공하여 뇌동매매 차단"),
-        (1, 1, "04", "신뢰 & 안심", "금융 신뢰감과 안심 UX", "Trust & Privacy Interface",
-         "자산 입력 저항을 없애는 비로그인 안심 구조를 확립하고, 시인성이 뛰어난 현대적 다크/라이트 금융 인터페이스 완성")
+    # OPEN STORYLINE: Key Strengths (Open layout with zero enclosing boxes as requested)
+    strengths = [
+        ("01", "인지 부하 해소", "인지 부하 제로 설계", "Zero-Friction Voice Dock",
+         "급변하는 매수 타이밍에서 복잡한 수치 입력을 제거하고, 음성과 탭 한 번으로 즉시 계산을 완료하여 인지 부하를 제로화했습니다."),
+        ("02", "직관적 역산 UX", "직관적인 역산 인터랙션", "Goal-Seeking Interactive Flow",
+         "목표 평단가를 지정하면 필요 매수 수량과 추가 필요 예수금을 역산출하여 하락장에서도 감정에 휘둘리지 않고 명확한 의사결정을 지원합니다."),
+        ("03", "행동경제학", "행동경제학적 안전 장치", "Safety Margin Alert UI",
+         "손실 회피 편향으로 인한 무리한 뇌동매매를 방지하도록 포트폴리오 비중 초과 경고와 단계별 분할 매수 가이드를 인터랙티브하게 제공합니다."),
+        ("04", "신뢰 & 안심", "금융 신뢰감과 안심 UX", "Trust & Privacy Interface",
+         "모든 자산 데이터를 외부 전송 없이 로컬에서만 완결 처리하여 금융 데이터의 완벽한 프라이버시를 보장하며 높은 신뢰감을 구축했습니다.")
     ]
     
-    col_xs = [100, 535]
-    row_ys = [345, 585]
-    card_w = 405
-    card_h = 220
-    
-    for c_i, r_i, num, tag, title_ko, sub_en, desc in bento_pillars:
-        x0 = col_xs[c_i]
-        y0 = row_ys[r_i]
-        x1 = x0 + card_w
-        y1 = y0 + card_h
+    k_y = 358
+    for idx, (num, tag, title_ko, sub_en, desc) in enumerate(strengths):
+        # Open number pill
+        draw.rounded_rectangle([100, k_y + 2, 136, k_y + 28], radius=6, fill=(241, 245, 249), outline=(203, 213, 225), width=1)
+        draw.text((118, k_y + 15), num, font=get_font(11, 'bold'), fill=(0, 82, 255), anchor='mm')
         
-        draw.rounded_rectangle([x0, y0, x1, y1], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+        # Tag & Title & EN Subtitle
+        draw_pill_badge(draw, left_x=144, cy=k_y + 15, text=tag, font=get_font(10, 'bold'), theme='blue', has_dot=False, pad_x=8, height=22)
         
-        draw.rounded_rectangle([x0 + 20, y0 + 20, x0 + 52, y0 + 44], radius=6, fill=(241, 245, 249))
-        draw.text((x0 + 36, y0 + 32), num, font=get_font(11, 'bold'), fill=(0, 82, 255), anchor='mm')
+        draw.text((226, k_y + 4), title_ko, font=get_font(15.5, 'bold'), fill=(15, 23, 42))
         
-        draw_pill_badge(draw, left_x=x0 + 60, cy=y0 + 32, text=tag, font=get_font(10, 'bold'), theme='blue', has_dot=False, pad_x=8, height=22)
+        w_title = draw.textlength(title_ko, font=get_font(15.5, 'bold'))
+        draw.text((226 + w_title + 12, k_y + 6), f"·  {sub_en}", font=get_font(12, 'medium'), fill=(100, 116, 139))
         
-        w_sub = draw.textlength(sub_en, font=get_font(10, 'medium'))
-        draw.text((x1 - 20 - w_sub, y0 + 26), sub_en, font=get_font(10, 'medium'), fill=(100, 116, 139))
-        
-        draw.text((x0 + 20, y0 + 64), title_ko, font=get_font(15.5, 'bold'), fill=(15, 23, 42))
-        draw.line([(x0 + 20, y0 + 94), (x1 - 20, y0 + 94)], fill=(241, 245, 249), width=1)
-        
+        # 2-line description with comfortable width (up to 780px)
         words = desc.split(' ')
         lines = []
         cur_l = ""
         for w in words:
             test = (cur_l + ' ' + w).strip()
-            if draw.textlength(test, font=get_font(11.5, 'regular')) <= 365:
+            if draw.textlength(test, font=get_font(12, 'regular')) <= 780:
                 cur_l = test
             else:
                 lines.append(cur_l)
@@ -592,11 +583,17 @@ def make_slide_01():
         if cur_l:
             lines.append(cur_l)
             
-        desc_y = y0 + 110
-        for l in lines[:3]:
-            draw.text((x0 + 20, desc_y), l, font=get_font(11.5, 'regular'), fill=(100, 116, 139))
-            desc_y += 21
+        desc_y = k_y + 36
+        for l in lines[:2]:
+            draw.text((144, desc_y), l, font=get_font(12, 'regular'), fill=(71, 85, 105))
+            desc_y += 20
             
+        # Subtle hairline divider between items
+        if idx < 3:
+            draw.line([(100, k_y + 92), (900, k_y + 92)], fill=(226, 232, 240), width=1)
+            
+        k_y += 114
+        
     # Right Side: Dual Flagship iPhone Mockups
     phone_home = Image.open('portfolio/iphone_mockups/iphone_01_home.png').convert('RGBA')
     phone_target = Image.open('portfolio/iphone_mockups/iphone_03_target.png').convert('RGBA')
@@ -640,9 +637,9 @@ def make_slide_01():
     
     col_w = (1720) // 4
     specs = [
-        ("PROJECT ROLE", "기획(PM) 100% · UI/UX 디자인 100%", "문제 정의 · 사용자 여정 맵 · IA 설계 · 와이어프레임 · UI 디자인 총괄"),
-        ("DESIGN SYSTEM", "Figma · 디자인 토큰 · 인터랙션 규격", "8pt 그리드 시스템 · 금융 다크/라이트 테마 · 햅틱 마이크로 인터랙션 규격화"),
-        ("UX ARCHITECTURE", "인지 부하 최소화 & 직관적 역산 플로우", "3-Step 탈출 시뮬레이션 플로우 · 인터랙티브 슬라이더 · 모바일 사용성 최적화"),
+        ("PROJECT ROLE", "서비스 기획 100% · UI/UX 디자인 100%", "사용자 리서치 · 문제 정의 · IA 정보 설계 · 와이어프레임 · UI 디자인 총괄"),
+        ("PERIOD & TIMELINE", "2026.07 - 2026.10 (4개월 완결)", "문제 발견 -> 역산 UX 모델링 -> 금융 디자인 시스템 -> 실기기 출시"),
+        ("DESIGN SYSTEM", "FinTech Trust 토큰 · 컴포넌트 규격", "8pt 베이스라인 · 인디고/블루 신뢰 컬러 팔레트 · 라이트/다크 테마 규격화"),
         ("DELIVERY & RELEASE", "Google Play 상용 출시 & 웹 프로토타입", "실제 스토어 사용자 피드백 반영(v2.0) · 60fps 인터랙티브 체험 환경 구축")
     ]
     
