@@ -521,7 +521,7 @@ def make_slide_01():
     draw.line([(100, 52), (1820, 52)], fill=(226, 232, 240), width=1)
     
     # Top Kicker & Metadata
-    draw_pill_badge(draw, left_x=100, cy=76, text="DCA QUANT LAB · 2026 CASE STUDY", font=get_font(11.5, 'bold'), theme='blue', has_dot=True, pad_x=12, height=28)
+    draw_pill_badge(draw, left_x=100, cy=76, text="2026 CASE STUDY", font=get_font(11.5, 'bold'), theme='blue', has_dot=True, pad_x=12, height=28)
     
     meta_txt = "기획(PM) · UI/UX 디자인 · Android Live (v2.0) · Web Prototype"
     w_meta = draw.textlength(meta_txt, font=get_font(13.5, 'medium'))
@@ -631,8 +631,6 @@ def make_slide_01():
     base.paste(rot_front, (p_front_x, p_front_y), rot_front)
     
     draw = ImageDraw.Draw(base)
-    draw_pill_badge(draw, left_x=1340, cy=94, text="SCREEN 02 · 목표 평단 역산 시뮬레이터", font=get_font(10, 'bold'), theme='cyan', has_dot=True, pad_x=10, height=22, solid=True)
-    draw_pill_badge(draw, left_x=1040, cy=148, text="SCREEN 01 · 자산 현황 진단 대시보드", font=get_font(10, 'bold'), theme='blue', has_dot=True, pad_x=10, height=22, solid=True)
     
     # Bottom 4-Column Specification Strip (Spanning x=100 to 1820, y=840 to 956)
     bar_y = 840
@@ -642,7 +640,7 @@ def make_slide_01():
     col_w = (1720) // 4
     specs = [
         ("PROJECT ROLE", "서비스 기획 100% · UI/UX 디자인 100%", "사용자 리서치 · 문제 정의 · IA 정보 설계 · 와이어프레임 · UI 디자인 총괄"),
-        ("PERIOD & TIMELINE", "2026.07 - 2026.10 (4개월 완결)", "문제 발견 -> 역산 UX 모델링 -> 금융 디자인 시스템 -> 실기기 출시"),
+        ("PERIOD & TIMELINE", "2026.07 - 현재 (v2.0 라이브 운영)", "2026년 7월 첫 출시 후 실 사용자 피드백 반영 및 v2.0 지속 고도화 중"),
         ("DESIGN SYSTEM", "FinTech Trust 토큰 · 컴포넌트 규격", "8pt 베이스라인 · 인디고/블루 신뢰 컬러 팔레트 · 라이트/다크 테마 규격화"),
         ("DELIVERY & RELEASE", "Google Play 상용 출시 & 웹 프로토타입", "실제 스토어 사용자 피드백 반영(v2.0) · 60fps 인터랙티브 체험 환경 구축")
     ]
