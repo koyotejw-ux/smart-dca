@@ -510,8 +510,8 @@ def make_slide_01():
     # 1. Subtle Ambient Radial Glow
     glow = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     g_draw = ImageDraw.Draw(glow)
-    g_draw.ellipse([800, 100, 1850, 850], fill=(0, 82, 255, 20))
-    g_draw.ellipse([1050, 180, 1750, 780], fill=(6, 182, 212, 16))
+    g_draw.ellipse([800, 100, 1850, 850], fill=(0, 82, 255, 18))
+    g_draw.ellipse([1050, 180, 1750, 780], fill=(6, 182, 212, 14))
     glow = glow.filter(ImageFilter.GaussianBlur(130))
     base = Image.alpha_composite(base, glow)
     
@@ -528,54 +528,63 @@ def make_slide_01():
     draw.text((1820 - w_meta, 68), meta_txt, font=get_font(13.5, 'medium'), fill=(100, 116, 139))
     
     # Category Label
-    draw.text((100, 155), "SMART DCA · UX/UI CASE STUDY", font=get_font(14, 'bold'), fill=(0, 82, 255))
+    draw.text((100, 146), "SMART DCA · UX/UI CASE STUDY", font=get_font(14, 'bold'), fill=(0, 82, 255))
     
     # Big Clean Headline
     title_p1 = "평단을 낮추다, "
     title_p2 = "하락장을 이기다."
-    w_p1 = draw.textlength(title_p1, font=get_font(58, 'black'))
-    draw.text((100, 188), title_p1, font=get_font(58, 'black'), fill=(15, 23, 42))
-    draw.text((100 + w_p1, 188), title_p2, font=get_font(58, 'black'), fill=(0, 82, 255))
+    w_p1 = draw.textlength(title_p1, font=get_font(56, 'black'))
+    draw.text((100, 178), title_p1, font=get_font(56, 'black'), fill=(15, 23, 42))
+    draw.text((100 + w_p1, 178), title_p2, font=get_font(56, 'black'), fill=(0, 82, 255))
     
     # Clean UX Subtitle (2 balanced lines)
     sub1 = "급격한 주가 변동 속 투자자의 인지 과부하와 심리적 불안을 해소하고,"
     sub2 = "음성 인터랙션과 직관적인 역산 UX로 명확한 탈출 기준을 제시하는 핀테크 프로덕트 기획·디자인"
-    draw.text((100, 272), sub1, font=get_font(16.5, 'regular'), fill=(71, 85, 105))
-    draw.text((100, 300), sub2, font=get_font(16.5, 'semibold'), fill=(30, 41, 59))
+    draw.text((100, 260), sub1, font=get_font(16.5, 'regular'), fill=(71, 85, 105))
+    draw.text((100, 288), sub2, font=get_font(16.5, 'semibold'), fill=(30, 41, 59))
     
-    # UX Core Architecture Card (w=760, h=472, starts y=348)
-    h_box_y = 348
-    h_box_w = 760
-    h_box_h = 472
-    draw.rounded_rectangle([100, h_box_y, 100 + h_box_w, h_box_y + h_box_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-    
-    # Card Header
-    draw_pill_badge(draw, left_x=126, cy=h_box_y + 32, text="UX DESIGN STRATEGY", font=get_font(10.5, 'bold'), theme='blue', has_dot=False, pad_x=10, height=24)
-    draw.text((290, h_box_y + 22), "계산의 인지 부하를 없애고, 불안을 확신으로 바꾸는 의사결정 UX", font=get_font(15, 'bold'), fill=(15, 23, 42))
-    draw.line([(126, h_box_y + 58), (100 + h_box_w - 26, h_box_y + 58)], fill=(241, 245, 249), width=1)
-    
-    # 4 UX Pillars
-    ux_pillars = [
-        ("01", "인지 부하 제로 설계", "Zero-Friction Voice Dock", "급변하는 호가창 상황에서 복잡한 자판 입력 스트레스 없이, 자연어 음성 인식으로 단가와 수량을 즉각 파싱하여 긴급 대응성 극대화"),
-        ("02", "직관적인 역산 UX", "Goal-Seeking Interactive Flow", "공식이나 계산 과정을 사용자가 직접 풀 필요 없이, 목표 탈출 평단 슬라이더 하나로 추가 매수 자금을 직관적으로 도출하는 3단계 인터랙티브 플로우"),
-        ("03", "행동경제학적 안전 장치", "Safety Margin Alert UI", "공포와 처분 효과에 의한 무리한 물타기를 방지하도록, 자산 대비 65% 현금 비중 안전선을 시각적 가이드로 제공하여 감정적 뇌동매매 원천 차단"),
-        ("04", "금융 신뢰감과 안심 UX", "Trust & Privacy-First Interface", "자산 데이터 입력의 심리적 저항을 없애기 위해 회원가입과 서버 전송이 없는 안심 구조를 확립하고, 시인성이 뛰어난 현대적 다크/라이트 테마 완성")
+    # 2x2 Modular Bento Grid (x=100 to 940, w=840 total, y=345 to 805)
+    bento_pillars = [
+        (0, 0, "01", "인지 부하 해소", "인지 부하 제로 설계", "Zero-Friction Voice Dock",
+         "급변하는 호가창 상황에서 복잡한 자판 입력 없이, 자연어 음성 인식으로 단가와 수량을 즉각 파싱하여 긴급 대응성 극대화"),
+        (1, 0, "02", "직관적 역산 UX", "직관적인 역산 인터랙션", "Goal-Seeking Interactive Flow",
+         "공식을 직접 풀 필요 없이, 목표 탈출 평단 슬라이더 조작 하나로 추가 매수 자금을 직관 도출하는 3단계 인터랙티브 플로우"),
+        (0, 1, "03", "행동경제학", "행동경제학적 안전 장치", "Safety Margin Alert UI",
+         "공포와 처분 효과에 의한 무리한 물타기를 방지하도록, 자산 대비 65% 현금 비중 안전선을 시각 가이드로 제공하여 뇌동매매 차단"),
+        (1, 1, "04", "신뢰 & 안심", "금융 신뢰감과 안심 UX", "Trust & Privacy Interface",
+         "자산 입력 저항을 없애는 비로그인 안심 구조를 확립하고, 시인성이 뛰어난 현대적 다크/라이트 금융 인터페이스 완성")
     ]
     
-    k_y = h_box_y + 76
-    for num, k_title, k_en, k_desc in ux_pillars:
-        draw.rounded_rectangle([126, k_y, 158, k_y + 24], radius=6, fill=(241, 245, 249))
-        draw.text((142, k_y + 12), num, font=get_font(11, 'bold'), fill=(0, 82, 255), anchor='mm')
+    col_xs = [100, 535]
+    row_ys = [345, 585]
+    card_w = 405
+    card_h = 220
+    
+    for c_i, r_i, num, tag, title_ko, sub_en, desc in bento_pillars:
+        x0 = col_xs[c_i]
+        y0 = row_ys[r_i]
+        x1 = x0 + card_w
+        y1 = y0 + card_h
         
-        draw.text((170, k_y + 2), k_title, font=get_font(14, 'bold'), fill=(15, 23, 42))
-        draw.text((170 + draw.textlength(k_title, font=get_font(14, 'bold')) + 10, k_y + 4), f"·  {k_en}", font=get_font(11.5, 'medium'), fill=(100, 116, 139))
+        draw.rounded_rectangle([x0, y0, x1, y1], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
         
-        words = k_desc.split(' ')
+        draw.rounded_rectangle([x0 + 20, y0 + 20, x0 + 52, y0 + 44], radius=6, fill=(241, 245, 249))
+        draw.text((x0 + 36, y0 + 32), num, font=get_font(11, 'bold'), fill=(0, 82, 255), anchor='mm')
+        
+        draw_pill_badge(draw, left_x=x0 + 60, cy=y0 + 32, text=tag, font=get_font(10, 'bold'), theme='blue', has_dot=False, pad_x=8, height=22)
+        
+        w_sub = draw.textlength(sub_en, font=get_font(10, 'medium'))
+        draw.text((x1 - 20 - w_sub, y0 + 26), sub_en, font=get_font(10, 'medium'), fill=(100, 116, 139))
+        
+        draw.text((x0 + 20, y0 + 64), title_ko, font=get_font(15.5, 'bold'), fill=(15, 23, 42))
+        draw.line([(x0 + 20, y0 + 94), (x1 - 20, y0 + 94)], fill=(241, 245, 249), width=1)
+        
+        words = desc.split(' ')
         lines = []
         cur_l = ""
         for w in words:
             test = (cur_l + ' ' + w).strip()
-            if draw.textlength(test, font=get_font(11.5, 'regular')) <= 555:
+            if draw.textlength(test, font=get_font(11.5, 'regular')) <= 365:
                 cur_l = test
             else:
                 lines.append(cur_l)
@@ -583,18 +592,16 @@ def make_slide_01():
         if cur_l:
             lines.append(cur_l)
             
-        desc_y = k_y + 28
-        for l in lines[:2]:
-            draw.text((170, desc_y), l, font=get_font(11.5, 'regular'), fill=(100, 116, 139))
-            desc_y += 18
+        desc_y = y0 + 110
+        for l in lines[:3]:
+            draw.text((x0 + 20, desc_y), l, font=get_font(11.5, 'regular'), fill=(100, 116, 139))
+            desc_y += 21
             
-        k_y += 94
-        
-    # Dual Angled 19.5:9 Smartphone Mockups
+    # Right Side: Dual Flagship iPhone Mockups
     phone_home = Image.open('portfolio/iphone_mockups/iphone_01_home.png').convert('RGBA')
     phone_target = Image.open('portfolio/iphone_mockups/iphone_03_target.png').convert('RGBA')
     
-    target_h = 680
+    target_h = 670
     target_w = int(round(target_h * (phone_home.width / phone_home.height)))
     p_front = phone_home.resize((target_w, target_h), Image.Resampling.LANCZOS)
     p_back = phone_target.resize((target_w, target_h), Image.Resampling.LANCZOS)
@@ -613,8 +620,8 @@ def make_slide_01():
     sh_back, pad_b = make_shadow(rot_back, blur=40, offset=(18, 34), alpha=65)
     sh_front, pad_f = make_shadow(rot_front, blur=48, offset=(24, 44), alpha=88)
     
-    p_back_x, p_back_y = 1250, 115
-    p_front_x, p_front_y = 940, 170
+    p_back_x, p_back_y = 1270, 115
+    p_front_x, p_front_y = 970, 170
     
     base.paste(sh_back, (p_back_x - pad_b[0], p_back_y - pad_b[1]), sh_back)
     base.paste(rot_back, (p_back_x, p_back_y), rot_back)
@@ -622,14 +629,13 @@ def make_slide_01():
     base.paste(sh_front, (p_front_x - pad_f[0], p_front_y - pad_f[1]), sh_front)
     base.paste(rot_front, (p_front_x, p_front_y), rot_front)
     
-    # Screen Mockup Labels
     draw = ImageDraw.Draw(base)
-    draw_pill_badge(draw, left_x=1320, cy=94, text="SCREEN 02 · 목표 평단 역산 시뮬레이터", font=get_font(10, 'bold'), theme='cyan', has_dot=True, pad_x=10, height=22, solid=True)
-    draw_pill_badge(draw, left_x=1010, cy=148, text="SCREEN 01 · 자산 현황 진단 대시보드", font=get_font(10, 'bold'), theme='blue', has_dot=True, pad_x=10, height=22, solid=True)
+    draw_pill_badge(draw, left_x=1340, cy=94, text="SCREEN 02 · 목표 평단 역산 시뮬레이터", font=get_font(10, 'bold'), theme='cyan', has_dot=True, pad_x=10, height=22, solid=True)
+    draw_pill_badge(draw, left_x=1040, cy=148, text="SCREEN 01 · 자산 현황 진단 대시보드", font=get_font(10, 'bold'), theme='blue', has_dot=True, pad_x=10, height=22, solid=True)
     
-    # 4. Bottom Simple & Clean Specification Strip
-    bar_y = 850
-    bar_h = 114
+    # Bottom 4-Column Specification Strip (Spanning x=100 to 1820, y=840 to 956)
+    bar_y = 840
+    bar_h = 116
     draw.rounded_rectangle([100, bar_y, 1820, bar_y + bar_h], radius=16, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
     
     col_w = (1720) // 4
@@ -653,7 +659,7 @@ def make_slide_01():
     base.save(f'{OUT_DIR}/slide_01.png')
     auto_out = 'd:/097.flutter_project/auto_portfolio/smart_dca/behance_slides/slide_01.png'
     base.save(auto_out)
-    print("SAVED clean simple Slide 01 to both repos successfully!")
+    print("SAVED Bento Grid Slide 01 to both repos successfully!")
 def make_slide_02():
     base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
     draw = ImageDraw.Draw(base)
