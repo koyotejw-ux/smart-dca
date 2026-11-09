@@ -1145,54 +1145,34 @@ def make_slide_04():
     draw_slide_header(
         draw, 
         slide_num=4, 
-        category_en="INFORMATION ARCHITECTURE | SERVICE STRUCTURE", 
-        title_black="핵심 기능을 직관적으로 연결한 ", 
-        title_blue="5대 정보 구조(IA)", 
-        subtitle_kr="포트폴리오 진단부터 퀀트 역산, 리스크 감사까지 한눈에 파악하는 서비스 계층 구조"
+        category_en="INFORMATION ARCHITECTURE · SERVICE STRUCTURE", 
+        title_black="누구나 바로 이해하고 쓰는 ", 
+        title_blue="5대 핵심 메뉴 구조", 
+        subtitle_kr="자산 확인부터 목표 평단 계산, 위험 방지까지 필요한 기능을 한눈에 찾을 수 있는 쉬운 화면 구성"
     )
     
-    # Top-Right Legend: Compact IA Notation (w=540, h=78)
-    leg_x = 1280
-    leg_y = 65
-    leg_w = 540
-    leg_h = 78
-    draw.rounded_rectangle([leg_x, leg_y, leg_x + leg_w, leg_y + leg_h], radius=10, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
-    draw_pill_badge(draw, left_x=leg_x + 16, cy=leg_y + 20, text="IA NOTATION", font=get_font(8, 'bold'), theme='blue', has_dot=True, pad_x=6, height=18)
-    draw.text((leg_x + 120, leg_y + 20), "화면 및 컴포넌트 표기 범례", font=get_font(11, 'bold'), fill=(15, 23, 42), anchor='lm')
+    # Top-Right Badge: Clean, Compact Overview (w=340, h=60, nicely proportioned)
+    top_badge_x = 1480
+    top_badge_y = 65
+    draw.rounded_rectangle([top_badge_x, top_badge_y, top_badge_x + 340, top_badge_y + 60], radius=10, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
+    draw_pill_badge(draw, left_x=top_badge_x + 16, cy=top_badge_y + 30, text="서비스 구성", font=get_font(9.5, 'bold'), theme='blue', has_dot=True, pad_x=8, height=24)
+    draw.text((top_badge_x + 110, top_badge_y + 20), "5대 메인 탭", font=get_font(12, 'bold'), fill=(15, 23, 42))
+    draw.text((top_badge_x + 110, top_badge_y + 39), "총 15개 직관적 화면 설계", font=get_font(10.5, 'medium'), fill=(100, 116, 139))
     
-    # 4 clean legend items with generous margins
-    draw.rounded_rectangle([leg_x + 16, leg_y + 44, leg_x + 66, leg_y + 68], radius=4, fill=(241, 245, 249), outline=(203, 213, 225), width=1)
-    draw.text((leg_x + 41, leg_y + 56), "Page", font=get_font(8.5, 'bold'), fill=(71, 85, 105), anchor='mm')
-    draw.text((leg_x + 74, leg_y + 56), "기본 화면", font=get_font(9.5, 'medium'), fill=(100, 116, 139), anchor='lm')
-    
-    draw.rounded_rectangle([leg_x + 146, leg_y + 44, leg_x + 224, leg_y + 68], radius=4, fill=(239, 246, 255), outline=(191, 219, 254), width=1)
-    draw.text((leg_x + 185, leg_y + 56), "BottomSheet", font=get_font(8, 'bold'), fill=(0, 82, 255), anchor='mm')
-    draw.text((leg_x + 232, leg_y + 56), "액션 시트", font=get_font(9.5, 'medium'), fill=(100, 116, 139), anchor='lm')
-    
-    draw.rounded_rectangle([leg_x + 300, leg_y + 44, leg_x + 350, leg_y + 68], radius=4, fill=(241, 245, 249), outline=(203, 213, 225), width=1)
-    draw.text((leg_x + 325, leg_y + 56), "Modal", font=get_font(8.5, 'bold'), fill=(71, 85, 105), anchor='mm')
-    draw.text((leg_x + 358, leg_y + 56), "팝업/모달", font=get_font(9.5, 'medium'), fill=(100, 116, 139), anchor='lm')
-    
-    draw_pill_badge(draw, left_x=leg_x + 430, cy=leg_y + 56, text="NEW", font=get_font(8, 'bold'), theme='blue', pad_x=5, height=18)
-    draw.text((leg_x + 470, leg_y + 56), "혁신 기능", font=get_font(9.5, 'bold'), fill=(0, 82, 255), anchor='lm')
-    
-    # -----------------------------------------------------------------
-    # BODY GROUP: Generous 52px Clearance from Subtitle (y = 234)
-    # -----------------------------------------------------------------
-    # LEVEL 0: ROOT NODE (Service Master Hub) - Spacious & Clean
-    root_x1, root_y1, root_x2, root_y2 = 640, 234, 1280, 286
+    # Level 0 Root Node: Compact, Centered, Clean Korean!
+    # Width: 460px (x: 730 to 1190) - NOT overly wide!
+    root_x1, root_y1, root_x2, root_y2 = 730, 226, 1190, 286
     draw.rounded_rectangle([root_x1, root_y1, root_x2, root_y2], radius=12, fill=(255, 255, 255), outline=(0, 82, 255), width=2)
-    draw_pill_badge(draw, cx=root_x1 + 72, cy=root_y1 + 26, text="MASTER HUB", font=get_font(9, 'bold'), theme='blue', pad_x=8, height=24)
-    draw.text((root_x1 + 142, root_y1 + 16), "SMART DCA SERVICE MASTER HUB (L0)", font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
-    draw.text((root_x1 + 142, root_y1 + 37), "모바일 한 손 조작 최적화 및 0ms 온디바이스 퀀트 엔진 통합 제어", font=get_font(10.5, 'medium'), fill=(71, 85, 105), anchor='lm')
+    b_root = draw_pill_badge(draw, left_x=root_x1 + 18, cy=root_y1 + 30, text="시작 화면", font=get_font(10, 'bold'), theme='blue', has_dot=True, pad_x=10, height=26)
+    draw.text((b_root[2] + 16, root_y1 + 19), "물타기 계산기 전체 메뉴 구조", font=get_font(14.5, 'bold'), fill=(15, 23, 42))
+    draw.text((b_root[2] + 16, root_y1 + 41), "한 손으로 편리하게 이용하는 5대 핵심 메뉴와 기능 안내", font=get_font(10.5, 'medium'), fill=(71, 85, 105))
     
-    # Connectors from Root Node to Level 1
+    # Connectors from Root Node to 5 Level 1 Columns
     cw = 328
     cgap = 20
     cols_x = [100 + i * (cw + cgap) for i in range(5)]
-    col_centers = [cx + cw // 2 for cx in cols_x] # [264, 612, 960, 1308, 1656]
+    col_centers = [cx + cw // 2 for cx in cols_x]
     
-    # Connector lines
     draw.line([(960, root_y2), (960, 308)], fill=(0, 82, 255), width=2)
     draw.ellipse([956, 304, 964, 312], fill=(0, 82, 255))
     draw.line([(col_centers[0], 308), (col_centers[-1], 308)], fill=(0, 82, 255, 180), width=2)
@@ -1200,58 +1180,57 @@ def make_slide_04():
         draw.ellipse([cx - 4, 308 - 4, cx + 4, 308 + 4], fill=(0, 82, 255))
         draw_arrow(draw, (cx, 308), (cx, 330), col=(0, 82, 255), width=2, arrow_size=4)
         
-    # Domains Data (3 High-Impact Cards per Domain, concise text)
+    # 5 Domains Data (Clean Korean, easily understandable terms, zero developer jargon!)
     domains_data = [
-        ("1.0 DASHBOARD", "포트폴리오 대시보드", "자산 현황 및 손실 포지션 1초 조망", [
-            ("SCR-DASH-01", "Page", "자산 종합 진단 요약", "총 투자금 · 평가손익 · 실시간 환율 조망", False),
-            ("SCR-DASH-02", "Page", "보유 포지션 카드 뷰", "종목별 평단가 · 손실 상단 스마트 정렬", False),
-            ("SCR-VOICE-01", "BottomSheet", "AI 음성 도크 & 호가칩", "0.2초 음성 인식 및 원터치 호가 주입", True)
+        ("01. 자산 현황", "내 투자 자산 확인", "총 투자금과 현재 손익, 환율을 한눈에 조회", [
+            ("기본 화면", "자산 현황 요약", "내 투자금과 총 수익률, 현재 환율을 한눈에 확인", False),
+            ("목록 화면", "보유 종목 목록", "종목별 현재 평단가와 손익 현황을 보기 쉽게 정리", False),
+            ("입력 창", "음성 간편 입력", "숫자를 직접 치지 않고 말 한마디로 단가와 수량 입력", True)
         ]),
-        ("2.0 DCA SIMULATOR", "물타기 계산기", "차수별 분할 매수 및 평단 시뮬레이션", [
-            ("SCR-CALC-01", "Page", "다회차 분할 매수 설계", "1차~N차 단계별 매수가 및 수량 입력", False),
-            ("SCR-CALC-02", "Widget", "실시간 평단 피드백", "수량 조절에 따른 신규 평단 60fps 연산", False),
-            ("SCR-CALC-03", "Page", "전략 비교 매트릭스", "일괄 매수 vs 분할 매수 2종 시나리오 대조", True)
+        ("02. 물타기 계산", "단계별 추가 매수", "매수가와 수량을 입력해 변경될 평단가를 미리 확인", [
+            ("계산 화면", "단계별 추가 매수", "1차, 2차 나눠서 살 때 최종 평단가를 미리 계산", False),
+            ("실시간 화면", "실시간 평단 계산", "수량을 바꿀 때마다 달라지는 평단가를 즉시 표시", False),
+            ("비교 화면", "매수 방식 비교", "한 번에 몰아서 살 때와 나눠서 살 때의 결과 비교", True)
         ]),
-        ("3.0 GOAL-SEEKING", "목표 평단가 역산기", "희망 탈출 평단 도달 필요수량 0ms 산출", [
-            ("SCR-INVT-01", "Page", "손익분기 목표가 역산", "단일 대수 폐쇄형 공식 0ms 즉시 산출", True),
-            ("SCR-INVT-02", "Modal", "수학적 유효성 가드", "비현실적 목표 차단 및 대안 평단 가이드", True),
-            ("SCR-INVT-03", "Widget", "예수금 제약 인터랙션", "가용 현금 한도 내 최적 도달 평단 탐색", True)
+        ("03. 목표 평단", "원하는 평단가 도달", "탈출하고 싶은 목표가를 넣으면 필요한 매수 수량을 계산", [
+            ("역산 화면", "목표 평단가 계산", "원하는 평단가를 입력하면 사야 할 수량을 바로 계산", True),
+            ("안내 팝업", "현실적인 목표 안내", "도달하기 어려운 무리한 목표일 때 실현 가능한 수치 안내", True),
+            ("설정 창", "내 현금 한도 확인", "현재 가진 예수금 범위 안에서 가능한 최선의 평단 탐색", True)
         ]),
-        ("4.0 RISK AUDIT", "계좌 리스크 진단실", "단일 종목 과밀 및 급락 스트레스 테스트", [
-            ("SCR-RISK-01", "Page", "포트폴리오 비중 분석", "추가 매수 후 계좌 쏠림도 및 비중 시각화", True),
-            ("SCR-RISK-02", "Widget", "65% 예수금 안전선 가드", "단일 종목 과밀 시 뇌동매매 방어 경보", True),
-            ("SCR-RISK-03", "Widget", "하락 스트레스 테스트", "시장 -10%~-30% 급락 시 계좌 충격도 점검", True)
+        ("04. 위험 진단", "안전한 계좌 관리", "무리한 추가 매수를 막고 현금 비중을 안전하게 유지", [
+            ("진단 화면", "종목 비중 점검", "특정 종목에 투자금이 너무 쏠리지 않도록 비중 점검", True),
+            ("알림 창", "안전 잔고 알림", "무리한 매수로 현금이 바닥나지 않도록 안전 가이드 제공", True),
+            ("예측 화면", "시장 변동 점검", "주가가 더 떨어졌을 때 내 계좌에 미치는 영향 미리 확인", True)
         ]),
-        ("5.0 SETTINGS", "맞춤 환경설정", "글로벌 통화 · 세션 · 온디바이스 보안", [
-            ("SCR-SETT-01", "Page", "글로벌 통화 & 환율", "KRW, USD, JPY, EUR 및 10개국어 다국어", False),
-            ("SCR-SETT-02", "BottomSheet", "24시간 안심 세션", "보상형 광고 1회 시청 시 24h 광고 차단", True),
-            ("SCR-SETT-03", "Page", "온디바이스 프라이버시", "외부 통신 0건, 로컬 SQLite 암호화 보관", True)
+        ("05. 맞춤 설정", "편리한 환경 설정", "통화 변경, 다국어 지원, 안전한 내 기기 데이터 보관", [
+            ("설정 화면", "통화 및 환율 선택", "원화(KRW), 달러(USD) 등 원하는 화폐 단위로 자유롭게 변환", False),
+            ("안내 화면", "광고 없는 안심 모드", "방해 요소 없이 깔끔하고 쾌적하게 계산기 이용", True),
+            ("보안 화면", "안전한 기기 내 보관", "모든 자산 정보는 외부 전송 없이 내 폰에만 안전하게 보관", True)
         ])
     ]
     
-    # Render 5 Columns (Level 1 + 3 Level 2 cards) with generous inner padding (18px)
+    # Render 5 Columns
     for i, (dom_code, dom_name, dom_desc, containers) in enumerate(domains_data):
         cx = cols_x[i]
         
-        # Level 1 Domain Header Card (y=330 to 402, h=72, generous bottom margin)
+        # Level 1 Domain Header Card (y=330 to 402, h=72)
         draw.rounded_rectangle([cx, 330, cx + cw, 402], radius=10, fill=(240, 246, 255), outline=(191, 219, 254), width=1)
-        draw.text((cx + 18, 344), dom_code, font=get_font(9.5, 'bold'), fill=(0, 82, 255))
-        draw.text((cx + 18, 363), dom_name, font=get_font(13, 'bold'), fill=(15, 23, 42))
-        draw.text((cx + 18, 382), dom_desc, font=get_font(8.5, 'medium'), fill=(100, 116, 139))
+        draw.text((cx + 18, 344), dom_code, font=get_font(10, 'bold'), fill=(0, 82, 255))
+        draw.text((cx + 18, 363), dom_name, font=get_font(13.5, 'bold'), fill=(15, 23, 42))
+        draw.text((cx + 18, 383), dom_desc, font=get_font(9, 'medium'), fill=(100, 116, 139))
         
         # Vertical Tree Line
         tree_x = cx + 16
-        draw.line([(tree_x, 402), (tree_x, 670)], fill=(0, 82, 255, 100), width=2)
+        draw.line([(tree_x, 402), (tree_x, 672)], fill=(0, 82, 255, 100), width=2)
         
-        # 3 L2 Cards with generous inner padding (card_h = 82, gap = 10)
+        # 3 L2 Cards per column (card_h = 82, gap = 10)
         card_w = cw - 32
         card_x = cx + 32
         cy = 414
         card_h = 82
         gap = 10
         
-        for scr_id, view_type, title, desc, is_new in containers:
-            # Tree branch line
+        for scr_type, title, desc, is_new in containers:
             draw.line([(tree_x, cy + 20), (card_x, cy + 20)], fill=(0, 82, 255, 120), width=2)
             draw.ellipse([tree_x - 3, cy + 20 - 3, tree_x + 3, cy + 20 + 3], fill=(0, 82, 255))
             
@@ -1259,49 +1238,77 @@ def make_slide_04():
             card_bd = (226, 232, 240) if not is_new else (191, 219, 254)
             draw.rounded_rectangle([card_x, cy, card_x + card_w, cy + card_h], radius=8, fill=card_bg, outline=card_bd, width=1)
             
-            # Generous Inner Margins: left=18, right=18, top=12, bottom=16
-            # Row 1: SCR ID & Type tag + NEW badge
-            draw.text((card_x + 18, cy + 14), f"{scr_id}  ·  [{view_type}]", font=get_font(8.5, 'bold'), fill=(100, 116, 139), anchor='lm')
+            # Row 1: Friendly Korean Type tag + NEW badge
+            draw_pill_badge(draw, left_x=card_x + 14, cy=cy + 15, text=scr_type, font=get_font(8.5, 'bold'), theme='gray', pad_x=6, height=18)
             if is_new:
-                draw_pill_badge(draw, cx=card_x + card_w - 24, cy=cy + 14, text="NEW", font=get_font(7.5, 'bold'), theme='blue', has_dot=False, pad_x=5, height=16)
+                draw_pill_badge(draw, left_x=card_x + card_w - 46, cy=cy + 15, text="핵심", font=get_font(8, 'bold'), theme='blue', pad_x=6, height=18, solid=True)
                 
             # Row 2: Title with breathing room
-            draw.text((card_x + 18, cy + 38), title, font=get_font(11.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+            draw.text((card_x + 14, cy + 39), title, font=get_font(12, 'bold'), fill=(15, 23, 42), anchor='lm')
             
-            # Row 3: Description (Clean, concise, 15px bottom margin)
-            draw.text((card_x + 18, cy + 61), desc, font=get_font(9.5, 'medium'), fill=(71, 85, 105), anchor='lm')
+            # Row 3: Description in clear, friendly Korean
+            draw.text((card_x + 14, cy + 62), desc, font=get_font(9.5, 'regular'), fill=(71, 85, 105), anchor='lm')
             
             cy += card_h + gap
             
-    # Clean Bottom Architecture Highlights Strip (y=702 to 828, h=126)
-    bar_x = 100
-    bar_y = 702
-    bar_w = 1720
-    bar_h = 126
-    draw.rounded_rectangle([bar_x, bar_y, bar_x + bar_w, bar_y + bar_h], radius=12, fill=(255, 255, 255), outline=(203, 213, 225), width=1)
-    
-    draw_pill_badge(draw, left_x=bar_x + 24, cy=bar_y + 24, text="CORE ARCHITECTURE", font=get_font(8.5, 'bold'), theme='blue', has_dot=True, pad_x=8, height=20)
-    draw.text((bar_x + 185, bar_y + 24), "엔터프라이즈 정보 구조 설계 4대 원칙", font=get_font(12, 'bold'), fill=(15, 23, 42), anchor='lm')
-    draw.text((bar_x + 480, bar_y + 24), "복잡한 금융 연산을 0-Tap 직관적 UI로 단순화한 모바일 최적화 계층 구조", font=get_font(9.5, 'regular'), fill=(100, 116, 139), anchor='lm')
+    # 3. Bottom Architecture Principles: 4 Clean, Well-Proportioned Cards!
+    bar_y = 730
+    bp_w = 415
+    bp_gap = 20
+    bp_h = 195
     
     pillars = [
-        ("01. 독립 도메인 라우팅", "5대 핵심 기능을 GNB 레벨에서 완전히 분리하여 탐색 비용을 최소화합니다.", "blue"),
-        ("02. Thumb-Zone 최적화", "모든 입력 및 주문 제어 컴포넌트를 한 손 엄지 조작 영역(하단 48dp)에 집중 배치합니다.", "cyan"),
-        ("03. 0ms 폐쇄형 역산 연동", "단일 대수 수식 엔진을 통해 반복 시뮬레이션 없이 목표 필요 수량을 즉각 도출합니다.", "blue"),
-        ("04. 100% 로컬 보안 무결성", "외부 통신 0건, 개인 금융 자산 데이터를 온디바이스 SQLite로 완벽히 암호화합니다.", "green")
+        ("01", "명확한 5대 메뉴 분리", "찾고 싶은 기능을 헤매지 않고 바로 접근할 수 있도록 5개 핵심 메뉴를 명확하게 분리했습니다.",
+         ["· 자산 확인과 계산, 리스크 진단을 목적별로 직관화", "· 불필요한 단계 없이 필요한 메뉴로 1초 만에 이동"]),
+        ("02", "한 손 조작 최적화", "엄지손가락이 닿기 쉬운 화면 하단에 핵심 입력과 조작 버튼을 집중 배치했습니다.",
+         ["· 이동 중에도 한 손으로 흔들림 없이 편안한 입력", "· 자연어 음성 인식으로 숫자 자판 입력 부담 해소"]),
+        ("03", "즉각적인 목표 계산", "복잡한 공식 없이 내가 원하는 목표 탈출 평단가만 정하면 사야 할 수량을 바로 계산합니다.",
+         ["· 직관적인 슬라이더 조작으로 실시간 결과 피드백", "· 무리한 매수를 방지하는 현실적인 대안 평단 제시"]),
+        ("04", "100% 기기 내 안심 보관", "개인 금융 데이터나 자산 정보를 외부 서버로 보내지 않고 내 폰 안에서만 안전하게 보관합니다.",
+         ["· 회원가입이나 로그인 없이 즉시 사용 가능한 안심 구조", "· 외부 유출 걱정 없는 완벽한 프라이버시 보장"])
     ]
-    pw = (bar_w - 48 - 36) // 4
-    py = bar_y + 48
-    for pidx, (ptitle, pdesc, pcol) in enumerate(pillars):
-        px = bar_x + 24 + pidx * (pw + 12)
-        draw.rounded_rectangle([px, py, px + pw, py + 62], radius=8, fill=(248, 250, 252), outline=(226, 232, 240), width=1)
-        # Inner padding inside pillar cards: 16px left, 15px top, 15px bottom breathing room
-        draw.text((px + 16, py + 16), ptitle, font=get_font(10, 'bold'), fill=(0, 82, 255) if pcol == 'blue' else (15, 23, 42))
-        draw.text((px + 16, py + 36), pdesc, font=get_font(8.5, 'medium'), fill=(71, 85, 105))
+    
+    for pidx, (pnum, ptitle, pdesc, psub_lines) in enumerate(pillars):
+        px = 100 + pidx * (bp_w + bp_gap)
+        draw.rounded_rectangle([px, bar_y, px + bp_w, bar_y + bp_h], radius=12, fill=(255, 255, 255), outline=(226, 232, 240), width=1)
         
+        # Number chip + Title
+        draw.rounded_rectangle([px + 18, bar_y + 18, px + 52, bar_y + 44], radius=6, fill=(239, 246, 255), outline=(191, 219, 254), width=1)
+        draw.text((px + 35, bar_y + 31), pnum, font=get_font(11, 'bold'), fill=(0, 82, 255), anchor='mm')
+        
+        draw.text((px + 62, bar_y + 31), ptitle, font=get_font(13.5, 'bold'), fill=(15, 23, 42), anchor='lm')
+        draw.line([(px + 18, bar_y + 54), (px + bp_w - 18, bar_y + 54)], fill=(241, 245, 249), width=1)
+        
+        # Description
+        words = pdesc.split(' ')
+        lines = []
+        cur_l = ""
+        for w in words:
+            test = (cur_l + ' ' + w).strip()
+            if draw.textlength(test, font=get_font(10.5, 'regular')) <= bp_w - 36:
+                cur_l = test
+            else:
+                lines.append(cur_l)
+                cur_l = w
+        if cur_l:
+            lines.append(cur_l)
+            
+        dy = bar_y + 70
+        for l in lines[:2]:
+            draw.text((px + 18, dy), l, font=get_font(10.5, 'regular'), fill=(51, 65, 85))
+            dy += 20
+            
+        # Bullet details
+        dy += 6
+        for subl in psub_lines:
+            draw.text((px + 18, dy), subl, font=get_font(9.5, 'medium'), fill=(100, 116, 139))
+            dy += 18
+            
     draw_slide_footer(draw, 4)
     base.save(f'{OUT_DIR}/slide_04.png')
-    print("SAVED perfect Slide 04 successfully!")
+    auto_out = 'd:/097.flutter_project/auto_portfolio/smart_dca/behance_slides/slide_04.png'
+    base.save(auto_out)
+    print("SAVED new Slide 04 to both locations successfully!")
 
 def make_slide_05():
     base = Image.new('RGBA', (W, H), (248, 250, 252, 255))
