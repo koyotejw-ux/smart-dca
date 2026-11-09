@@ -528,7 +528,7 @@ def make_slide_01():
     draw.text((1820 - w_meta, 68), meta_txt, font=get_font(13.5, 'medium'), fill=(100, 116, 139))
     
     # Category Label
-    draw.text((100, 146), "SMART DCA · UX/UI CASE STUDY", font=get_font(14, 'bold'), fill=(0, 82, 255))
+    draw.text((100, 146), "SMART DCA · UX/UI", font=get_font(14, 'bold'), fill=(0, 82, 255))
     
     # Big Clean Headline
     title_p1 = "평단을 낮추다, "
