@@ -2091,3 +2091,11 @@ body.fit-window .behance-slide-img {
 
 
 
+
+
+/* Global Badge Dot Removal - Simple & Clean Design Standard */
+.status-dot,
+.geo-dot,
+.pulse-dot {
+  display: none !important;
+}

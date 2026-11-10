@@ -180,7 +180,7 @@ def draw_l_arrow(draw, corner, p2, col=(100, 116, 139), width=2, arrow_size=6):
             draw.polygon([(x2 + arrow_size * 1.5, y2 - arrow_size), (x2 + arrow_size * 1.5, y2 + arrow_size), (x2, y2)], fill=col)
 
 
-def draw_pill_badge(draw, cx=None, cy=0, text="", font=None, theme='blue', has_dot=True, dark_mode=False, pad_x=14, height=30, left_x=None, solid=False):
+def draw_pill_badge(draw, cx=None, cy=0, text="", font=None, theme='blue', has_dot=False, dark_mode=False, pad_x=14, height=30, left_x=None, solid=False):
     """
     Renders a mathematically centered, high-contrast, beautiful pill badge with pixel-perfect alignment.
     Supports themes: 'blue', 'green', 'red', 'amber', 'purple', 'cyan', 'slate', 'dark'.
@@ -228,6 +228,7 @@ def draw_pill_badge(draw, cx=None, cy=0, text="", font=None, theme='blue', has_d
     else:
         scheme = color_schemes_light.get(theme, color_schemes_light['blue'])
     
+    has_dot = False  # Completely remove leading dot from all badges per user request
     tw = draw.textlength(text, font=font)
     dot_diameter = 7
     dot_gap = 8
